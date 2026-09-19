@@ -1,0 +1,20 @@
+{
+  "name": "lesson-toolkit",
+  "version": "1.0.0",
+  "description": "Builds 50-minute lesson decks and worksheets. See CLAUDE.md.",
+  "private": true,
+  "scripts": {
+    "timers": "node tools/make-timers.js",
+    "icons": "node tools/make-icons.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1",
+    "docx": "^9.7.1",
+    "sharp": "^0.33.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.0.0",
+    "adm-zip": "^0.5.10",
+    "@xmldom/xmldom": "^0.8.10"
+  }
+}

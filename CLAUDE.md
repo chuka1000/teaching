@@ -1,0 +1,210 @@
+# Lesson Toolkit
+
+Builds 50-minute lesson decks and worksheets for Chuka, a science and maths
+teacher at a British international school. Years 7–11 Science and Maths.
+
+**This is a working system, not a starting point.** It has produced about a
+dozen lessons. Most of what looks like an arbitrary choice below is a bug that
+was found the hard way. Read the "Things that will bite you" section before
+changing anything in `lib/`.
+
+---
+
+## Build a lesson
+
+```bash
+node build/<lesson-slug>.js          # writes out/<Lesson Name>.pptx
+node spec/<lesson-slug>-spec.js      # writes spec/<lesson-slug>.anim.json
+node lib/animate.js spec/<lesson-slug>.anim.json
+node lib/autoplay-media.js "out/<Lesson Name>.pptx"
+node tools/validate.js "out/<Lesson Name>.pptx"
+```
+
+Order matters. `animate.js` writes `<p:timing>`; `autoplay-media.js` merges
+into it. Run autoplay **after** animate, never before.
+
+Then **look at it**. Convert to PDF, render to PNG, and open the images.
+LibreOffice renders things Keynote refuses — a clean PDF is not proof.
+
+---
+
+## The lesson archetype
+
+Fixed. Ten slides, one per phase, in this order. Total 50 minutes.
+
+| Slide | Phase | Min |
+|---|---|---|
+| 1 | Do Now | 10 |
+| 2 | Today | 1 |
+| 3 | Hook | 2 |
+| 4 | I Do | 3 |
+| 5 | I Do | 3 |
+| 6 | We Do | 5 |
+| 7 | Cold Call | 6 |
+| 8 | You Do | 14 |
+| 9 | Answers | 3 |
+| 10 | Plenary | 3 |
+
+**Slide 1 (Do Now)** carries the lesson title and date. Phase pill top-left,
+title centred, date right-aligned, accent rule beneath, then six question cards
+in a 2×3 grid. Each card: number, question, and the **real answer** revealed on
+click. Never "keep your answer for later" — show the answer.
+
+**Slide 6 (We Do)** is always "What should be the correct answer?" with the
+subtitle "Spot the mistake." A wrong statement on the left, the correction in a
+box on the right. No explanation column. 16 pt.
+
+**Slide 7 (Cold Call)** has no title, just the pill. Six questions in a 2×3
+grid, 16 pt. The teacher names a student and then asks. **Students have no mini
+whiteboards** — never write an instruction that needs one.
+
+**Slide 8 (You Do)** shows `assets/classroom.png` at 62% transparency, top
+right. Title is `"<Lesson Name> worksheet"`. Red subtitle: "Open Google
+Classroom now." Three tier cards: Bronze / Silver / Gold.
+
+**Slide 9 (Answers)** holds ten model answers that match worksheet questions
+1–10 **exactly, in order**. Students mark their own. There is no separate
+answers document.
+
+**Slide 10 (Plenary)** is dark. Five true/false statements. Every FALSE should
+be a real misconception from the lesson.
+
+No hidden teacher slide. Everything a teacher needs goes in speaker notes, and
+**every slide must have them** — `validate.js` checks this.
+
+---
+
+## Layout
+
+Science decks: **13.333 × 7.5 in**. Maths decks: **10 × 5.625 in** (matches the
+school's existing Number Revision deck — see `examples/maths-deck-*.js`).
+
+All content is shifted right to clear the timer bar:
+
+```js
+const TIMER_X = 0.34, TIMER_W = 0.50, TIMER_Y = 0.34, TIMER_H = H - 0.68;
+const M = 1.28;            // content left margin
+const RIGHT = W - 0.60;    // content right edge
+```
+
+On-slide text is large — this is read from the back of a classroom. Titles 32–38,
+questions 16–18, card body 15–16. The "DO NOW · 10 MIN" pill is the *smallest*
+text on its slide.
+
+---
+
+## The timer bar
+
+A video, **not** a shape animation. One clip per phase length, draining top to
+bottom. Pre-built clips are in `assets/timers/`; regenerate with
+`node tools/make-timers.js`.
+
+```js
+slide.addMedia({
+  type: 'video',
+  path: `assets/timers/timer_${theme}_${minutes}.mp4`,
+  cover: coverDataUri(theme),      // base64 data URI, NOT a path
+  x: TIMER_X, y: TIMER_Y, w: TIMER_W, h: TIMER_H,
+  objectName: 'timer_video',
+});
+```
+
+Themes: `light` / `dark` (Prasae palette), `motionlight` / `motiondark` (Night
+Highway). Add more in `tools/make-timers.js`.
+
+Timer colours must be quiet. A solid saturated bar competes with the content;
+use a pale tint of the palette's support colour.
+
+---
+
+## Things that will bite you
+
+Each of these cost real time to find.
+
+**1. A timer animation gets fast-forwarded by the first click.**
+Anything inside `<p:seq nodeType="mainSeq">` is on the click timeline. Clicking
+to reveal the next build *completes* any still-running animation in that
+sequence — so a 10-minute drain snaps to empty instantly. `autoplay-media.js`
+puts a `<p:video>` node **outside** `</p:seq>`, which is its own clock. This is
+the only reliable way to run something for the whole phase.
+
+**2. ffmpeg's `drawbox` evaluates its position once, at init.**
+`drawbox=y='ih*t/60'` produces a bar that never moves, silently. This build has
+no `eval=frame` option. Use two colour sources and an overlay instead:
+
+```
+[0][1]overlay=x=0:y='H*t/<secs>':shortest=1
+```
+
+**3. `ImageRun` in docx 9.x needs an explicit `type`.**
+Without it the media part is written as `<hash>.undefined`. LibreOffice sniffs
+the bytes and renders it anyway; **Word and Keynote show nothing**. A worksheet
+full of invisible images passed a PDF check this way.
+
+```js
+new ImageRun({ type: 'png', data, transformation: { width, height } })
+```
+
+**4. `addMedia`'s `cover` must be a base64 data URI**, not a file path.
+A path throws at build time.
+
+**5. Staggered builds step at a flat 150 ms.** Never an increasing delay — it
+makes the build feel like it is running down. See `beat()` in the spec examples.
+
+**6. Row blocks need vertical centring.** Compute the block height and centre it
+in the available area, or you get a dead band under the content.
+
+**7. Check answers with sympy, not mentally.** Every numeric answer in a deck
+and its worksheet must agree. Write a throwaway sympy script and run it before
+the numbers go into either file. This has caught real errors.
+
+---
+
+## Writing style
+
+Read `examples/` for tone. In short:
+
+- Short, plain, direct sentences. Exclamation marks where there's genuine energy.
+- No similes, no dry asides, no "every time", no "worth noting".
+- British English.
+- Icons or photographs next to nouns students may not recognise. Match the
+  picture to the word — a water droplet labelled "bottle" is worse than nothing.
+- Minimise Thailand-specific references; use global examples.
+- Speaker notes are written *to the teacher* and can be rich: misconceptions,
+  what to say, what will go wrong, what to cut if short of time.
+
+---
+
+## Facts and sources
+
+Verify anything factual with a web search before it goes on a slide. Prefer
+primary sources. Put a credits slide in decks that use photographs or figures,
+with licence and attribution.
+
+Images: Wikimedia Commons, filtered to CC or public domain. Square-crop and
+inspect them before use — a "tree" that is a dot on the horizon will not read at
+20 mm.
+
+---
+
+## What gets delivered
+
+A deck and a worksheet. **No answers document** (answers are slide 9) and **no
+key-word sheet** (they consume time neither Chuka nor the lesson has).
+
+Filenames in plain English: `Into The Lab.pptx`, `Into The Lab worksheet.docx`.
+Never coded names like `Y7_U1_L4`.
+
+---
+
+## Layout
+
+```
+lib/        theme, furniture, shapes, docparts, animate, autoplay-media
+tools/      validate, make-timers, make-icons, make-preview
+assets/     pre-built timer videos, Google Classroom logo
+examples/   complete working builds — read these before writing a new one
+build/      your lesson builders go here
+spec/       animation specs
+out/        generated decks and worksheets
+```
