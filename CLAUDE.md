@@ -10,6 +10,41 @@ changing anything in `lib/`.
 
 ---
 
+## Before you build anything
+
+Work through this every time. Skipping it is how errors get made.
+
+1. **Which class?** `7B` `8I` `8CN` `9G` `9I` `10A` `T3` — see `TIMETABLE.md`.
+   There are two Year 9 Science classes; if Chuka says "Year 9" without a code,
+   **ask which**.
+2. **Which track?** Science, Maths or CLIL. They are genuinely different builds
+   — see "The three tracks" below.
+3. **Is it a single or a double?** Four slots a fortnight are 100-minute
+   doubles. Check `TIMETABLE.md`. A double is **not** two 50-minute decks.
+4. **Does a previous lesson exist?** Look in `reference/`. If it does,
+   **open it and read it** — runtime, phases, vocabulary introduced, what the
+   plenary promised. **Never infer any of that.** See `reference/README.md`.
+5. **For `T3`, read `CLIL.md`** before planning. The archetype does not apply.
+
+If any of 1–5 is unclear, ask. One question costs less than a rebuilt lesson.
+
+---
+
+## The three tracks
+
+| Track | Classes | Canvas | Palette | Structure |
+|---|---|---|---|---|
+| **Science** | `7B` `8I` `9G` `9I` `10A` | 13.333 × 7.5 | per unit | The 10-phase archetype |
+| **Maths** | `8CN` | **10 × 5.625** | Number Revision navy/coral | The 10-phase archetype |
+| **CLIL** | `T3` | 13.333 × 7.5 | per unit | **`CLIL.md` — different shape entirely** |
+
+Maths decks use a smaller canvas to match the school's existing Number Revision
+deck. See `examples/maths-deck-10x5.625.js`. **Every numeric answer in a maths
+deck and its worksheet must be checked with sympy before it is written into
+either file, and the two must agree.**
+
+---
+
 ## Build a lesson
 
 ```bash
@@ -31,6 +66,16 @@ LibreOffice renders things Keynote refuses — a clean PDF is not proof.
 ## The lesson archetype
 
 Fixed. Ten slides, one per phase, in this order. Total 50 minutes.
+
+> **Two exceptions.**
+>
+> **`T3` Developing Science (CLIL)** — this archetype does NOT apply. Read
+> `CLIL.md` first. Beginner EAL, different lesson shape entirely.
+>
+> **Doubles** — four slots a fortnight run 100 minutes with no bell in the
+> middle (`8CN` twice, `9I` once, `T3` once). A double is one deck of about 95
+> minutes with a 5-minute break slide between the halves, not two decks. Ask
+> Chuka how he wants the time split before building. See `TIMETABLE.md`.
 
 | Slide | Phase | Min |
 |---|---|---|
@@ -175,6 +220,29 @@ Read `examples/` for tone. In short:
 
 ---
 
+## Sequences
+
+Most lessons follow another one. Units built so far:
+
+- **Y7 Science, The World of Science** — 4 lessons, all built
+- **Y9 Science, Ecosystems** — 4 lessons, all built (ends on Human Population Growth)
+- **Y10 Science, Motion** — acceleration, motion graphs, equations of motion
+- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify
+- **T3 CLIL, Atoms** — 5 lessons planned, only Lesson 1 built
+
+Before building lesson N, read lesson N−1 from `reference/`. Take from it:
+
+- the **actual runtime**, from the phase pills — never assume 50
+- the **vocabulary and notation** already introduced, so you build on it rather
+  than redefining it
+- **what the plenary promised** — the next lesson has to keep that promise
+- any **open decision** flagged in the speaker notes
+
+Carry the palette and the visual conventions forward within a unit. A second
+lesson in a unit should look like the first one.
+
+---
+
 ## Facts and sources
 
 Verify anything factual with a web search before it goes on a slide. Prefer
@@ -200,6 +268,9 @@ Never coded names like `Y7_U1_L4`.
 ## Layout
 
 ```
+TIMETABLE.md  classes, loads, doubles, and the T3 slot pattern
+CLIL.md       the T3 Developing Science exception — read before planning for them
+reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, animate, autoplay-media
 tools/      validate, make-timers, make-icons, make-preview
 assets/     pre-built timer videos, Google Classroom logo
