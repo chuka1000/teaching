@@ -121,6 +121,20 @@ sentence frame or a practical in the second half, with a proper break between.
 
 ---
 
+## Timers apply here too
+
+**CLIL lessons get the timer bar like any other lesson.** It was missing from
+Atoms Lesson 1 only because no clips existed for the `nucleus` palette — a bug,
+now fixed. `lib/timer.js` renders whatever is needed.
+
+It arguably matters more for this group than any other: a draining bar says
+"this much time left" with no English in it at all.
+
+The CLIL phases are not the archetype's, so the durations differ — 2, 3, 4, 5,
+6, 7 and 8 minutes are the usual ones. `timer.js` renders any of them.
+
+---
+
 ## Rules for this group
 
 - **Every word has a picture. Always.** No exceptions.

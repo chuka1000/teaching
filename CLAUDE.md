@@ -28,6 +28,10 @@ Work through this every time. Skipping it is how errors get made.
 
 If any of 1–5 is unclear, ask. One question costs less than a rebuilt lesson.
 
+Chuka may write the request as prose or using the template in
+`LESSON-REQUEST.md`. Either is fine — the checklist above is what you need out
+of it, however it arrives.
+
 ---
 
 ## The three tracks
@@ -48,11 +52,11 @@ either file, and the two must agree.**
 ## Build a lesson
 
 ```bash
-node build/<lesson-slug>.js          # writes out/<Lesson Name>.pptx
-node spec/<lesson-slug>-spec.js      # writes spec/<lesson-slug>.anim.json
+node build/<lesson-slug>.js          # writes out/<Lesson Name>/<Lesson Name>.pptx
+node spec/<lesson-slug>-spec.js
 node lib/animate.js spec/<lesson-slug>.anim.json
-node lib/autoplay-media.js "out/<Lesson Name>.pptx"
-node tools/validate.js "out/<Lesson Name>.pptx"
+node lib/autoplay-media.js "out/<Lesson Name>/<Lesson Name>.pptx"
+node tools/validate.js "out/<Lesson Name>/<Lesson Name>.pptx"
 ```
 
 Order matters. `animate.js` writes `<p:timing>`; `autoplay-media.js` merges
@@ -60,6 +64,27 @@ into it. Run autoplay **after** animate, never before.
 
 Then **look at it**. Convert to PDF, render to PNG, and open the images.
 LibreOffice renders things Keynote refuses — a clean PDF is not proof.
+
+### Output layout
+
+**One folder per lesson, named after the lesson.** Everything Chuka opens sits
+at the top of it; everything generated for checking goes in `_check/`.
+
+```
+out/
+  Motion Graphs/
+    Motion Graphs.pptx
+    Motion Graphs worksheet.docx
+    _check/                    <- PDFs and PNGs. Build artefacts, not deliverables.
+```
+
+The PDFs and PNGs exist **only** so you can look at the output before handing it
+over. Chuka does not want them. Put them in `_check/` and do not mention them —
+but do not skip making them either, because looking at the render is the step
+that catches the errors a validator cannot.
+
+Delete `_check/` at the end of a build if the lesson passed. Keep it if
+something looked wrong and you want to show Chuka the evidence.
 
 ---
 
@@ -140,25 +165,34 @@ text on its slide.
 
 ## The timer bar
 
-A video, **not** a shape animation. One clip per phase length, draining top to
-bottom. Pre-built clips are in `assets/timers/`; regenerate with
-`node tools/make-timers.js`.
+**Every lesson has one. Science, Maths and CLIL alike.** A draining bar tells
+the room how long is left without anyone saying anything, which matters most
+for the group with the least English.
+
+Use `lib/timer.js`. It derives the colours from the palette and renders any
+clip that does not exist yet, so any palette and any duration just works:
 
 ```js
-slide.addMedia({
-  type: 'video',
-  path: `assets/timers/timer_${theme}_${minutes}.mp4`,
-  cover: coverDataUri(theme),      // base64 data URI, NOT a path
-  x: TIMER_X, y: TIMER_Y, w: TIMER_W, h: TIMER_H,
-  objectName: 'timer_video',
-});
+const { addTimer } = require('../lib/timer');
+PHASES.push(addTimer(pptx, s, {
+  key: 'nucleus', palette: C, minutes: 4, mode: 'light', slideH: H,
+}));
 ```
 
-Themes: `light` / `dark` (Prasae palette), `motionlight` / `motiondark` (Night
-Highway). Add more in `tools/make-timers.js`.
+`addTimer` returns the minutes, so collect them in `PHASES` and print the total
+at the end of the build. It must come to **50** for a single and **95** for a
+double (the other 5 is the break).
 
-Timer colours must be quiet. A solid saturated bar competes with the content;
-use a pale tint of the palette's support colour.
+Clips cache in `assets/timers/` and are gitignored — reproducible, not worth
+versioning. `node tools/make-timers.js` warms the cache but is optional.
+
+**Never build a deck without a timer.** If ffmpeg is missing, `timer.js` throws
+with instructions. Fix ffmpeg; do not carry on without the bar.
+
+> **This was a real bug.** Clips used to be hand-rendered per palette, so any
+> lesson using a palette nobody had generated for came out with no timer at all
+> and nothing failed. Three of the five palettes were affected, including the
+> CLIL one. That is why generation is automatic now.
 
 ---
 
@@ -269,6 +303,7 @@ Never coded names like `Y7_U1_L4`.
 
 ```
 TIMETABLE.md  classes, loads, doubles, and the T3 slot pattern
+LESSON-REQUEST.md  how Chuka asks for a lesson, and what he gets back
 CLIL.md       the T3 Developing Science exception — read before planning for them
 reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, animate, autoplay-media
