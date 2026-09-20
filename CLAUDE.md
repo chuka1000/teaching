@@ -88,6 +88,30 @@ something looked wrong and you want to show Chuka the evidence.
 
 ---
 
+## Definition of done
+
+A lesson is not finished until all of these pass. Run them; do not assume.
+
+```bash
+L="out/<Lesson Name>/<Lesson Name>.pptx"
+
+# 1. Structure and speaker notes
+node tools/validate.js "$L"
+
+# 2. Timer present on every slide, and outside the click sequence
+python3 tools/check-timers.py "$L"
+
+# 3. Phase minutes total 50 (single) or 95 (double)
+#    The build script prints this. Check it.
+
+# 4. Render and LOOK at every slide
+```
+
+If check 2 fails, the deck will *look* fine and the timer will not run. It is
+the failure mode that hides.
+
+---
+
 ## The lesson archetype
 
 Fixed. Ten slides, one per phase, in this order. Total 50 minutes.
