@@ -1,6 +1,6 @@
 {
-  "deck": "out/The Nucleus.pptx",
-  "output": "out/The Nucleus.pptx",
+  "deck": "out/The Nucleus/The Nucleus.pptx",
+  "output": "out/The Nucleus/The Nucleus.pptx",
   "defaults": {
     "transition": "fade",
     "dur": 400

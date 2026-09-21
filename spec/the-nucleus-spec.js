@@ -111,7 +111,7 @@ S(3, { builds: [0, 1, 2, 3, 4].map((i) => click({ target: `d${i}_a`, effect: 'wi
 }
 
 fs.writeFileSync(path.join(__dirname, '..', 'spec', 'the-nucleus.anim.json'), JSON.stringify({
-  deck: 'out/The Nucleus.pptx', output: 'out/The Nucleus.pptx',
+  deck: 'out/The Nucleus/The Nucleus.pptx', output: 'out/The Nucleus/The Nucleus.pptx',
   defaults: { transition: 'fade', dur: 400 }, slides,
 }, null, 2));
 console.log('spec:', slides.reduce((n, s) => n + s.builds.length, 0), 'click builds');

@@ -10,7 +10,9 @@ DP.useDocPalette('nucleus');
 const { D, C, FONT, PAGE_W, p, runs, t, h1, cell, table, ruledBox, blankBox, ragGrid, q, boxed } = DP;
 const { Document, Packer, Paragraph, TextRun, TableRow, AlignmentType, HeightRule, Header, Footer, PageNumber } = D;
 
-const OUT = path.join(__dirname, '..', 'out');
+const LESSON = 'The Nucleus';
+const OUT = path.join(__dirname, '..', 'out', LESSON);
+fs.mkdirSync(OUT, { recursive: true });
 const A4 = { size: { width: 11906, height: 16838 }, margin: { top: 1134, bottom: 1134, left: 964, right: 964 } };
 
 const SUCCESS = [
@@ -100,7 +102,7 @@ function worksheet() {
 
 (async () => {
   const buf = await Packer.toBuffer(worksheet());
-  const name = 'The Nucleus worksheet.docx';
+  const name = `${LESSON} worksheet.docx`;
   fs.writeFileSync(path.join(OUT, name), buf);
   console.log('written:', name, Math.round(buf.length / 1024) + ' KB');
 })();

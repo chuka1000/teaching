@@ -105,10 +105,18 @@ python3 tools/check-timers.py "$L"
 #    The build script prints this. Check it.
 
 # 4. Render and LOOK at every slide
+
+# 5. Palette contrast — only when a palette is new or its values changed,
+#    not on every lesson build
+node tools/check-contrast.js <palette-name>
 ```
 
 If check 2 fails, the deck will *look* fine and the timer will not run. It is
 the failure mode that hides.
+
+If check 5 fails, the deck will *look* fine too — right up until someone
+tries to read the card numbers. See "The palette" below for the accent /
+accentInk split this check enforces.
 
 ---
 
@@ -184,6 +192,34 @@ const RIGHT = W - 0.60;    // content right edge
 On-slide text is large — this is read from the back of a classroom. Titles 32–38,
 questions 16–18, card body 15–16. The "DO NOW · 10 MIN" pill is the *smallest*
 text on its slide.
+
+---
+
+## The palette
+
+Each unit has one, in `lib/theme.js`'s `PALETTES`. Six roles: `dark`, `accent`,
+`accentInk`, `support`, `alert`, `tint`, plus the derived `darkSoft`,
+`tintDeep`, `ink`, `inkSoft`, `white`.
+
+**`accent` vs `accentInk` — they are not interchangeable.** `accent` is
+chosen to pop as a **fill**: a pill, a badge, a highlighted box. Several
+accents sit close to white in luminance, so `accent` used as **text on a
+light background** is often close to unreadable even though it looks fine as
+a fill. `accentInk` is the same hue, darkened, for exactly that case:
+
+- **`accent`** — fills, badges, and text *on a dark background* (a pill in
+  dark mode, the Plenary FALSE label).
+- **`accentInk`** — text *on a light background*: card numbers, section
+  letters, Answers numbering.
+
+Mixing these up is the easiest way to ship a deck where the numbers are
+technically there but nobody can read them from the back of the room.
+
+`tools/check-contrast.js` enforces the split — WCAG contrast for every
+text/background role pair the toolkit actually uses, checked against every
+palette. Run it when a palette is new or its values change (see "Definition
+of done"). It is not part of every lesson build; palettes do not change that
+often.
 
 ---
 
@@ -330,11 +366,12 @@ TIMETABLE.md  classes, loads, doubles, and the T3 slot pattern
 LESSON-REQUEST.md  how Chuka asks for a lesson, and what he gets back
 CLIL.md       the T3 Developing Science exception — read before planning for them
 reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
-lib/        theme, furniture, shapes, docparts, animate, autoplay-media
-tools/      validate, make-timers, make-icons, make-preview
+lib/        theme, furniture, shapes, docparts, timer, animate, autoplay-media
+tools/      build-lesson, validate, check-timers, check-contrast, make-timers,
+            make-icons, make-preview
 assets/     pre-built timer videos, Google Classroom logo
 examples/   complete working builds — read these before writing a new one
 build/      your lesson builders go here
 spec/       animation specs
-out/        generated decks and worksheets
+out/        one folder per lesson — see "Output layout"
 ```

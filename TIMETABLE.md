@@ -31,9 +31,11 @@ at the same point in a unit.
 
 ## Doubles
 
-**Four slots in the fortnight are doubles.** A double is 100 minutes with no
-bell in the middle — Break falls between P2 and P3, and Lunch after P5, so
-P3–P4 and P6–P7 both run continuously.
+**Five slots in the fortnight are double-length**, but they are not all the
+same shape.
+
+**Four run continuously** — Break falls between P2 and P3, and Lunch after
+P5, so P3–P4 and P6–P7 both run 100 minutes with no bell in the middle:
 
 | Week | Day | Periods | Class | Time |
 |---|---|---|---|---|
@@ -42,7 +44,18 @@ P3–P4 and P6–P7 both run continuously.
 | 1 | Tuesday | P3–P4 | `T3` CLIL | 10:00–11:40 |
 | 2 | Tuesday | P6–P7 | `8CN` Maths | 13:20–15:00 |
 
-### Rule for doubles
+**One straddles the real Break.** `10A` runs P2 then P3 — with the school's
+own 20-minute Break in between, not a 5-minute in-deck pause:
+
+| Week | Day | Periods | Class | Time |
+|---|---|---|---|---|
+| 1 | Tuesday | P2, Break, P3 | `10A` Science | 08:50–09:40, 09:40–10:00, 10:00–10:50 |
+
+Confirmed from Chuka directly (2026-09-21) after this file had no 10A double
+on record at all — the "5 (2+3)" split in the Classes table above may need
+rechecking against this; flag it if the two disagree again.
+
+### Rule for the four continuous doubles
 
 The 50-minute archetype in `CLAUDE.md` describes **one** lesson. A double is
 not two decks run back to back.
@@ -57,6 +70,23 @@ not two decks run back to back.
   drawing task, a longer independent stretch.
 - `8CN` gets two doubles a fortnight. Maths doubles suit expand-and-simplify
   style practice: a full lesson, then an extended worksheet stretch.
+
+### Rule for 10A's double — different arithmetic
+
+The 20-minute Break is the school's own, not the deck's. It needs no on-slide
+content, and it is not carved out of teaching time.
+
+- **Plan 100 real minutes, not 95** — two full periods, not one 95-minute
+  flow with a pause in it.
+- **Still one deck, one worksheet.** Each period can run the full standard
+  10-phase archetype (50 min each) rather than splitting one archetype in
+  half — a real 20-minute gap is enough to lose the thread, so Period 3
+  is worth its own short Do Now retrieving Period 2, same as the day-after-a-
+  gap logic in `CLIL.md`.
+- **Give Period 2 a light closing checkpoint, not the dark Plenary.** The true
+  Plenary belongs at the end of Period 3, once both periods' content is in.
+- Ask which of the two periods gets the practical / hands-on stretch — it is
+  not automatically the second half here the way it is for the other doubles.
 
 ---
 

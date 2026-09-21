@@ -4,7 +4,7 @@
  *
  * Runs the whole pipeline for one lesson, in the order CLAUDE.md documents:
  *
- *   build/<slug>.js            writes out/<Lesson Name>.pptx
+ *   build/<slug>.js            writes out/<Lesson Name>/<Lesson Name>.pptx
  *   spec/<slug>-spec.js        writes spec/<slug>.anim.json
  *   lib/animate.js             writes <p:timing> into the deck
  *   lib/autoplay-media.js      makes the timer video its own clock
@@ -14,7 +14,12 @@
  *
  *   tools/make-preview.py      QA copy with show="0" stripped
  *   soffice --convert-to pdf   PDF
- *   pdftoppm                   one PNG per slide, in out/preview-png/<slug>/
+ *   pdftoppm                   one PNG per slide
+ *
+ * Per CLAUDE.md's output layout, everything from the render step goes in
+ * out/<Lesson Name>/_check/ — build artefacts for looking at the deck before
+ * handing it over, not deliverables. Delete that folder once a lesson passes;
+ * keep it if something looked wrong and needs showing.
  *
  * Stops at the first failure — nothing downstream of a broken step runs,
  * and the reason is printed, not just a stack trace.
@@ -98,25 +103,26 @@ if (!which('soffice')) fail('LibreOffice (soffice) not found on PATH — brew in
 if (!which('pdftoppm')) fail('pdftoppm not found on PATH — brew install poppler');
 
 const lessonName = path.basename(deckPath, '.pptx');
-const previewPptxRel = path.join('out', `${lessonName}.preview.pptx`);
-const previewPdfRel = path.join('out', `${lessonName}.preview.pdf`);
-const previewDirRel = path.join('out', 'preview-png', slug);
-const previewDir = path.join(ROOT, previewDirRel);
+const lessonDirRel = path.relative(ROOT, path.dirname(deckPath));
+const checkDirRel = path.join(lessonDirRel, '_check');
+const checkDir = path.join(ROOT, checkDirRel);
+fs.mkdirSync(checkDir, { recursive: true });
+
+const previewPptxRel = path.join(checkDirRel, `${lessonName}.preview.pptx`);
+const previewPdfRel = path.join(checkDirRel, `${lessonName}.preview.pdf`);
 
 step('preview copy (un-hide slide 1)', 'python3', ['tools/make-preview.py', deckRel, previewPptxRel]);
 
-step('convert to PDF', 'soffice', ['--headless', '--convert-to', 'pdf', '--outdir', 'out', previewPptxRel]);
+step('convert to PDF', 'soffice', ['--headless', '--convert-to', 'pdf', '--outdir', checkDirRel, previewPptxRel]);
 if (!fs.existsSync(path.join(ROOT, previewPdfRel))) {
   fail(`LibreOffice did not produce ${previewPdfRel}`);
 }
 
-fs.mkdirSync(previewDir, { recursive: true });
-step('render PNGs', 'pdftoppm', ['-png', '-r', '110', previewPdfRel, path.join(previewDirRel, 'slide')]);
+step('render PNGs', 'pdftoppm', ['-png', '-r', '110', previewPdfRel, path.join(checkDirRel, 'slide')]);
 
-const pngs = fs.readdirSync(previewDir).filter((f) => f.endsWith('.png')).sort();
-if (!pngs.length) fail(`pdftoppm produced no PNGs in ${previewDirRel}/`);
+const pngs = fs.readdirSync(checkDir).filter((f) => f.endsWith('.png')).sort();
+if (!pngs.length) fail(`pdftoppm produced no PNGs in ${checkDirRel}/`);
 
 console.log(`\n✓ ${lessonName} built, validated and rendered`);
 console.log(`  deck:   ${deckRel}`);
-console.log(`  pdf:    ${previewPdfRel}`);
-console.log(`  slides: ${pngs.length} PNGs in ${previewDirRel}/`);
+console.log(`  check:  ${checkDirRel}/  (${pngs.length} PNGs — delete this folder once the deck looks right)`);

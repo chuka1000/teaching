@@ -1,0 +1,1363 @@
+{
+  "deck": "out/Gravitational Fields and Free Fall/Gravitational Fields and Free Fall.pptx",
+  "output": "out/Gravitational Fields and Free Fall/Gravitational Fields and Free Fall.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "d0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_badge",
+            "o0_num",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_badge",
+            "o1_num",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_badge",
+            "o2_num",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "obj_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "h0",
+          "members": [
+            "h0_bg",
+            "h0_k",
+            "h0_t"
+          ]
+        },
+        {
+          "name": "h1",
+          "members": [
+            "h1_bg",
+            "h1_k",
+            "h1_t"
+          ]
+        },
+        {
+          "name": "h2",
+          "members": [
+            "h2_bg",
+            "h2_k",
+            "h2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "h0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "h1",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "h2",
+              "effect": "fade",
+              "delay": 300
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "fd1_diagram",
+          "members": [
+            "fd1_ground",
+            "fd1_ground_lbl",
+            "fd1_fld0",
+            "fd1_fld1",
+            "fd1_fld2",
+            "fd1_fld3",
+            "fd1_mass",
+            "fd1_mass_t",
+            "fd1_weight",
+            "fd1_weight_lbl"
+          ]
+        },
+        {
+          "name": "fw_0",
+          "members": [
+            "fw_0_bg",
+            "fw_0_n",
+            "fw_0_e",
+            "fw_0_t"
+          ]
+        },
+        {
+          "name": "fw_1",
+          "members": [
+            "fw_1_bg",
+            "fw_1_n",
+            "fw_1_e",
+            "fw_1_t"
+          ]
+        },
+        {
+          "name": "fw_2",
+          "members": [
+            "fw_2_bg",
+            "fw_2_n",
+            "fw_2_e",
+            "fw_2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "fd1_diagram",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fw_0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fw_1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fw_2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "gf_0",
+          "members": [
+            "gf_0_bg",
+            "gf_0_n",
+            "gf_0_e",
+            "gf_0_t"
+          ]
+        },
+        {
+          "name": "gf_1",
+          "members": [
+            "gf_1_bg",
+            "gf_1_n",
+            "gf_1_e",
+            "gf_1_t"
+          ]
+        },
+        {
+          "name": "gf_2",
+          "members": [
+            "gf_2_bg",
+            "gf_2_n",
+            "gf_2_e",
+            "gf_2_t"
+          ]
+        },
+        {
+          "name": "gf_3",
+          "members": [
+            "gf_3_bg",
+            "gf_3_n",
+            "gf_3_e",
+            "gf_3_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "gf_0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gf_1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gf_2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gf_3",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wd0_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd1_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd2_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd3_a",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "c0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_h",
+            "t0_s",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_h",
+            "t1_s",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_h",
+            "t2_s",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_note",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "a0",
+          "members": [
+            "a0_bg",
+            "a0_n",
+            "a0_t"
+          ]
+        },
+        {
+          "name": "a1",
+          "members": [
+            "a1_bg",
+            "a1_n",
+            "a1_t"
+          ]
+        },
+        {
+          "name": "a2",
+          "members": [
+            "a2_bg",
+            "a2_n",
+            "a2_t"
+          ]
+        },
+        {
+          "name": "a3",
+          "members": [
+            "a3_bg",
+            "a3_n",
+            "a3_t"
+          ]
+        },
+        {
+          "name": "a4",
+          "members": [
+            "a4_bg",
+            "a4_n",
+            "a4_t"
+          ]
+        },
+        {
+          "name": "a5",
+          "members": [
+            "a5_bg",
+            "a5_n",
+            "a5_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "a0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "rc0",
+          "members": [
+            "rc0_bg",
+            "rc0_q",
+            "rc0_a"
+          ]
+        },
+        {
+          "name": "rc1",
+          "members": [
+            "rc1_bg",
+            "rc1_q",
+            "rc1_a"
+          ]
+        },
+        {
+          "name": "rc2",
+          "members": [
+            "rc2_bg",
+            "rc2_q",
+            "rc2_a"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rc0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rc1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rc2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "e0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "e1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "e2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "e3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "e4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "e5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "p2o0",
+          "members": [
+            "p2o0_bg",
+            "p2o0_badge",
+            "p2o0_num",
+            "p2o0_t"
+          ]
+        },
+        {
+          "name": "p2o1",
+          "members": [
+            "p2o1_bg",
+            "p2o1_badge",
+            "p2o1_num",
+            "p2o1_t"
+          ]
+        },
+        {
+          "name": "p2o2",
+          "members": [
+            "p2o2_bg",
+            "p2o2_badge",
+            "p2o2_num",
+            "p2o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "p2o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2o2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "obj_banner2",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "hk0",
+          "members": [
+            "hk0_bg",
+            "hk0_k",
+            "hk0_t"
+          ]
+        },
+        {
+          "name": "hk1",
+          "members": [
+            "hk1_bg",
+            "hk1_k",
+            "hk1_t"
+          ]
+        },
+        {
+          "name": "hk2",
+          "members": [
+            "hk2_bg",
+            "hk2_k",
+            "hk2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "hk0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "hk1",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "hk2",
+              "effect": "fade",
+              "delay": 300
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "ff_0",
+          "members": [
+            "ff_0_bg",
+            "ff_0_n",
+            "ff_0_e",
+            "ff_0_t"
+          ]
+        },
+        {
+          "name": "ff_1",
+          "members": [
+            "ff_1_bg",
+            "ff_1_n",
+            "ff_1_e",
+            "ff_1_t"
+          ]
+        },
+        {
+          "name": "ff_2",
+          "members": [
+            "ff_2_bg",
+            "ff_2_n",
+            "ff_2_e",
+            "ff_2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ff_0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ff_1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ff_2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "up_0",
+          "members": [
+            "up_0_bg",
+            "up_0_n",
+            "up_0_e",
+            "up_0_t"
+          ]
+        },
+        {
+          "name": "up_1",
+          "members": [
+            "up_1_bg",
+            "up_1_n",
+            "up_1_e",
+            "up_1_t"
+          ]
+        },
+        {
+          "name": "up_2",
+          "members": [
+            "up_2_bg",
+            "up_2_n",
+            "up_2_e",
+            "up_2_t"
+          ]
+        },
+        {
+          "name": "up_3",
+          "members": [
+            "up_3_bg",
+            "up_3_n",
+            "up_3_e",
+            "up_3_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "up_0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "up_1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "up_2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "up_3",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "we0_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "we1_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "we2_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "we3_a",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "cc0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cc1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cc2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cc3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cc4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cc5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "gd0",
+          "members": [
+            "gd0_bg",
+            "gd0_n",
+            "gd0_h",
+            "gd0_b"
+          ]
+        },
+        {
+          "name": "gd1",
+          "members": [
+            "gd1_bg",
+            "gd1_n",
+            "gd1_h",
+            "gd1_b"
+          ]
+        },
+        {
+          "name": "gd2",
+          "members": [
+            "gd2_bg",
+            "gd2_n",
+            "gd2_h",
+            "gd2_b"
+          ]
+        },
+        {
+          "name": "gd3",
+          "members": [
+            "gd3_bg",
+            "gd3_n",
+            "gd3_h",
+            "gd3_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "gd0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gd1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gd2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gd3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_note2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "ga0",
+          "members": [
+            "ga0_bg",
+            "ga0_n",
+            "ga0_t"
+          ]
+        },
+        {
+          "name": "ga1",
+          "members": [
+            "ga1_bg",
+            "ga1_n",
+            "ga1_t"
+          ]
+        },
+        {
+          "name": "ga2",
+          "members": [
+            "ga2_bg",
+            "ga2_n",
+            "ga2_t"
+          ]
+        },
+        {
+          "name": "ga3",
+          "members": [
+            "ga3_bg",
+            "ga3_n",
+            "ga3_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ga0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ga1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ga2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ga3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "pl0_stmt",
+          "members": [
+            "pl0_bg",
+            "pl0_q"
+          ]
+        },
+        {
+          "name": "pl1_stmt",
+          "members": [
+            "pl1_bg",
+            "pl1_q"
+          ]
+        },
+        {
+          "name": "pl2_stmt",
+          "members": [
+            "pl2_bg",
+            "pl2_q"
+          ]
+        },
+        {
+          "name": "pl3_stmt",
+          "members": [
+            "pl3_bg",
+            "pl3_q"
+          ]
+        },
+        {
+          "name": "pl4_stmt",
+          "members": [
+            "pl4_bg",
+            "pl4_q"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "pl0_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl0_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl1_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl1_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl2_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl2_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl3_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl3_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl4_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl4_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl_next2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

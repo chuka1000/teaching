@@ -1,0 +1,780 @@
+{
+  "deck": "out/How Scientists Investigate/How Scientists Investigate.pptx",
+  "output": "out/How Scientists Investigate/How Scientists Investigate.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "d0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_badge",
+            "o0_num",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_badge",
+            "o1_num",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_badge",
+            "o2_num",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "obj_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "h0",
+          "members": [
+            "h0_bg",
+            "h0_k",
+            "h0_t"
+          ]
+        },
+        {
+          "name": "h1",
+          "members": [
+            "h1_bg",
+            "h1_k",
+            "h1_t"
+          ]
+        },
+        {
+          "name": "h2",
+          "members": [
+            "h2_bg",
+            "h2_k",
+            "h2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "h0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "h1",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "h2",
+              "effect": "fade",
+              "delay": 300
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "loop_nodes",
+          "members": [
+            "loop_n0_bg",
+            "loop_n0_t",
+            "loop_n1_bg",
+            "loop_n1_t",
+            "loop_n2_bg",
+            "loop_n2_t",
+            "loop_n3_bg",
+            "loop_n3_t",
+            "loop_n4_bg",
+            "loop_n4_t",
+            "loop_fwd0",
+            "loop_fwd1",
+            "loop_fwd2",
+            "loop_fwd3"
+          ]
+        },
+        {
+          "name": "loop_return",
+          "members": [
+            "loop_loop",
+            "loop_loop_label"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "loop_nodes",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "loop_return",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "loop_note",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "hy_0",
+          "members": [
+            "hy_0_bg",
+            "hy_0_n",
+            "hy_0_e",
+            "hy_0_t"
+          ]
+        },
+        {
+          "name": "hy_1",
+          "members": [
+            "hy_1_bg",
+            "hy_1_n",
+            "hy_1_e",
+            "hy_1_t"
+          ]
+        },
+        {
+          "name": "hy_2",
+          "members": [
+            "hy_2_bg",
+            "hy_2_n",
+            "hy_2_e",
+            "hy_2_t"
+          ]
+        },
+        {
+          "name": "hy_3",
+          "members": [
+            "hy_3_bg",
+            "hy_3_n",
+            "hy_3_e",
+            "hy_3_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "hy_0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hy_1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hy_2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hy_3",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wd0_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd1_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd2_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd3_a",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "c0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_h",
+            "t0_s",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_h",
+            "t1_s",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_h",
+            "t2_s",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_note",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "a0",
+          "members": [
+            "a0_bg",
+            "a0_n",
+            "a0_t"
+          ]
+        },
+        {
+          "name": "a1",
+          "members": [
+            "a1_bg",
+            "a1_n",
+            "a1_t"
+          ]
+        },
+        {
+          "name": "a2",
+          "members": [
+            "a2_bg",
+            "a2_n",
+            "a2_t"
+          ]
+        },
+        {
+          "name": "a3",
+          "members": [
+            "a3_bg",
+            "a3_n",
+            "a3_t"
+          ]
+        },
+        {
+          "name": "a4",
+          "members": [
+            "a4_bg",
+            "a4_n",
+            "a4_t"
+          ]
+        },
+        {
+          "name": "a5",
+          "members": [
+            "a5_bg",
+            "a5_n",
+            "a5_t"
+          ]
+        },
+        {
+          "name": "a6",
+          "members": [
+            "a6_bg",
+            "a6_n",
+            "a6_t"
+          ]
+        },
+        {
+          "name": "a7",
+          "members": [
+            "a7_bg",
+            "a7_n",
+            "a7_t"
+          ]
+        },
+        {
+          "name": "a8",
+          "members": [
+            "a8_bg",
+            "a8_n",
+            "a8_t"
+          ]
+        },
+        {
+          "name": "a9",
+          "members": [
+            "a9_bg",
+            "a9_n",
+            "a9_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "a0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a6",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a7",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "a8",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "a9",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "p0_stmt",
+          "members": [
+            "p0_bg",
+            "p0_q"
+          ]
+        },
+        {
+          "name": "p1_stmt",
+          "members": [
+            "p1_bg",
+            "p1_q"
+          ]
+        },
+        {
+          "name": "p2_stmt",
+          "members": [
+            "p2_bg",
+            "p2_q"
+          ]
+        },
+        {
+          "name": "p3_stmt",
+          "members": [
+            "p3_bg",
+            "p3_q"
+          ]
+        },
+        {
+          "name": "p4_stmt",
+          "members": [
+            "p4_bg",
+            "p4_q"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "p0_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p0_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p1_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p1_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p3_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p3_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p4_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p4_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl_next",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

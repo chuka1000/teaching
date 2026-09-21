@@ -1,14 +1,17 @@
 /**
- * Y10 Motion: the equations of motion.
+ * Y10 Science — Mass and Weight (P1.3.1-3).
+ * Single, 50 minutes. Standard archetype, no deviation needed.
  *
- * Both equations are DERIVED from the velocity-time graph taught last lesson:
- * the gradient gives v = u + at, the area gives s = (u+v)t/2. That bridge is
- * the whole point, so the two I Do slides each show the graph beside it.
+ * Follows reference/Equations of Motion.pptx directly — same 'motion'
+ * palette, same unit, carried forward per CLAUDE.md's "a second lesson
+ * should look like the first". More than palette carries over: the gradient
+ * skill from that deck's slide 4 (v = u + at from the gradient of a v-t
+ * graph) is reused here for g = W/m from the gradient of a W-m graph. Say so
+ * on I Do 2 — it is the same skill in a new place, not a new one.
  *
- * Standard archetype: Do Now 10 · Today 1 · Hook 2 · I Do 3 · I Do 3 ·
- * We Do 5 · Cold Call 6 · You Do 14 · Answers 3 · Plenary 3 = 50.
- * Timer bars are videos so they run independently of the click sequence;
- * run lib/autoplay-media.js after lib/animate.js.
+ * AVOID, per the brief: g = 10 N/kg (always 9.8), and any wording that lets
+ * "weight" mean mass. Every numeric answer checked with sympy before it went
+ * on a slide or the worksheet — see the check script this was built from.
  */
 const PptxGenJS = require('pptxgenjs');
 const path = require('path');
@@ -16,9 +19,10 @@ const fs = require('fs');
 const THEME = require('../lib/theme');
 THEME.usePalette('motion');
 const { PALETTE: C, F, W, H } = THEME;
+const { addTimer } = require('../lib/timer');
 
-const DATE = 'Friday 18 September 2026';
-const LESSON = 'Equations of Motion';
+const DATE = 'Thursday 24 September 2026';
+const LESSON = 'Mass and Weight';
 const GC_LOGO = path.join(__dirname, '..', 'assets', 'classroom.png');
 
 const TIMER_X = 0.34, TIMER_W = 0.50, TIMER_Y = 0.34, TIMER_H = H - 0.68;
@@ -31,7 +35,7 @@ pptx.defineLayout({ name: 'W16x9', width: W, height: H });
 pptx.layout = 'W16x9';
 pptx.author = 'Chuka';
 pptx.title = LESSON;
-pptx.subject = 'Y10 Physics · Motion · equations of motion';
+pptx.subject = 'Y10 Physics · General Physics · Mass and weight';
 
 const S = pptx.ShapeType;
 const _addSlide = pptx.addSlide.bind(pptx);
@@ -44,24 +48,11 @@ pptx.addSlide = function (...args) {
 
 const bg = (slide, mode) => { slide.background = { color: mode === 'dark' ? C.dark : C.tint }; };
 
-const COVER = {};
-function coverDataUri(theme) {
-  if (!COVER[theme]) {
-    const b = fs.readFileSync(path.join(__dirname, '..', 'assets', 'timers', `cover_${theme}.png`));
-    COVER[theme] = `image/png;base64,${b.toString('base64')}`;
-  }
-  return COVER[theme];
-}
 function timer(slide, minutes, mode) {
-  const theme = mode === 'dark' ? 'motiondark' : 'motionlight';
-  slide.addMedia({
-    type: 'video',
-    path: path.join(__dirname, '..', 'assets', 'timers', `timer_${theme}_${minutes}.mp4`),
-    cover: coverDataUri(theme),
+  return addTimer(pptx, slide, {
+    key: 'motion', palette: C, minutes, mode, slideH: H,
     x: TIMER_X, y: TIMER_Y, w: TIMER_W, h: TIMER_H,
-    objectName: 'timer_video',
   });
-  return minutes;
 }
 
 function pill(slide, label, minutes, mode) {
@@ -77,7 +68,7 @@ function pill(slide, label, minutes, mode) {
 }
 const title = (slide, text, mode) => slide.addText(text, {
   x: M, y: TITLE_Y, w: RIGHT - M, h: 0.80,
-  color: mode === 'dark' ? C.tint : C.dark, fontFace: F.title, fontSize: 36, bold: true,
+  color: mode === 'dark' ? C.tint : C.dark, fontFace: F.title, fontSize: 34, bold: true,
   valign: 'middle', margin: 0, objectName: 'slide_title',
 });
 const sub = (slide, text, mode) => slide.addText(text, {
@@ -104,23 +95,18 @@ function badge(slide, o) {
   });
 }
 
-/**
- * A motion graph drawn from native shapes.
- * `pts` are fractions of the plot area, origin bottom-left, joined in order.
- */
+/** A small mass-vs-weight graph, same visual language as the motion decks' velocity-time graphs. */
 function graph(slide, o) {
-  const { x, y, w, h, name } = o;           // y is the BOTTOM of the plot area
+  const { x, y, w, h, name } = o;
   slide.addShape(S.rect, {
     x, y: y - h, w, h, fill: { color: 'FFFFFF' },
     line: { color: 'D8DEEC', width: 1.2 }, objectName: `${name}_panel`,
   });
-  if (o.grid !== false) {
-    for (let i = 1; i < 4; i++) {
-      slide.addShape(S.line, {
-        x, y: y - (i / 4) * h, w, h: 0,
-        line: { color: 'EDF0F7', width: 1 }, objectName: `${name}_g${i}`,
-      });
-    }
+  for (let i = 1; i < 4; i++) {
+    slide.addShape(S.line, {
+      x, y: y - (i / 4) * h, w, h: 0,
+      line: { color: 'EDF0F7', width: 1 }, objectName: `${name}_g${i}`,
+    });
   }
   slide.addShape(S.line, { x, y: y - h, w: 0, h, line: { color: C.inkSoft, width: 1.6 }, objectName: `${name}_ay` });
   slide.addShape(S.line, { x, y, w, h: 0, line: { color: C.inkSoft, width: 1.6 }, objectName: `${name}_ax` });
@@ -131,6 +117,13 @@ function graph(slide, o) {
       line: { color: o.colour || C.accent, width: 4 }, objectName: `${name}_s${i}`,
     });
   }
+  o.pts.forEach(([px, py], i) => {
+    const r = 0.09;
+    slide.addShape(S.ellipse, {
+      x: x + px * w - r / 2, y: y - py * h - r / 2, w: r, h: r,
+      fill: { color: C.dark }, line: { color: C.dark, width: 0 }, objectName: `${name}_pt${i}`,
+    });
+  });
   slide.addText(o.ylab, {
     x: x - 0.10, y: y - h - 0.44, w: 2.4, h: 0.34, color: C.inkSoft, fontFace: F.body,
     fontSize: 13, bold: true, valign: 'middle', margin: 0, objectName: `${name}_yl`,
@@ -166,12 +159,12 @@ const PHASES = [];
   });
 
   const QS = [
-    ['What does the gradient of a velocity\u2013time graph give you?', 'The acceleration.'],
-    ['What does the area under a velocity\u2013time graph give you?', 'The displacement.'],
-    ['In these equations, what does u stand for?', 'The starting velocity.'],
-    ['What is the area of a trapezium?', '\u00BD (a + b) \u00D7 h'],
-    ['A car goes from 4 to 20 m s\u207B\u00B9 in 4.0 s. Find a.', '4 m s\u207B\u00B2'],
-    ['The same car. How far did it travel in those 4 s?', '48 m'],
+    ['What does the gradient of a velocity–time graph give you?', 'The acceleration.'],
+    ['What is the unit of acceleration?', 'm s⁻²'],
+    ['A car accelerates at 4 m s⁻² for 3 s from rest. Find v.', '12 m s⁻¹'],
+    ['What is the unit of force?', 'The newton (N).'],
+    ['What tool measures force directly?', 'A newtonmeter.'],
+    ['v = u + at came from the gradient of which graph?', 'A velocity–time graph.'],
   ];
   const cw = (RIGHT - M - 0.30) / 2, ch = 1.62;
   QS.forEach(([q, a], i) => {
@@ -181,7 +174,7 @@ const PHASES = [];
     badge(s, { x: x + 0.22, y: y + 0.18, n: i + 1, name: `d${i}` });
     s.addText(q, {
       x: x + 0.80, y: y + 0.14, w: cw - 1.02, h: 0.78, color: C.ink, fontFace: F.body,
-      fontSize: 17, valign: 'middle', margin: 0, lineSpacing: 22, objectName: `d${i}_q`,
+      fontSize: 16, valign: 'middle', margin: 0, lineSpacing: 21, objectName: `d${i}_q`,
     });
     s.addText(a, {
       shape: S.roundRect, rectRadius: 0.10,
@@ -193,9 +186,8 @@ const PHASES = [];
   });
   s.addNotes(
     'DO NOW — 10 minutes. Six clicks.\n\n'
-    + 'Q1 to Q4 are the raw materials for today. Both equations come out of a gradient and an area, and Q4 is the shape of the area.\n\n'
-    + 'Q4 SURPRISES THEM in a physics lesson. Tell them that is the point \u2014 they are about to build a physics equation out of a Year 8 area formula.\n\n'
-    + 'Q5 AND Q6 are the same car. They can already do both without either equation, using last lesson\u2019s graph rules. Say so when you mark them.\n\n'
+    + 'Q1, Q3 AND Q6 are direct retrieval from Equations of Motion — same wording, same graph. Point that out: today reuses "gradient" for something new.\n\n'
+    + 'Q4 AND Q5 bridge into today’s practical. If "newtonmeter" gets no response, that is worth knowing before the demo.\n\n'
     + 'CHANGE THE DATE before you teach.'
   );
 }
@@ -211,9 +203,9 @@ const PHASES = [];
   title(s, 'Learning Objectives', 'light');
 
   const GOALS = [
-    'Get  v = u + at  from the gradient of a graph.',
-    'Get  s = \u00BD(u + v)t  from the area under it.',
-    'Choose the right equation and use it.',
+    'Say what mass actually measures.',
+    'Say what weight actually measures — and that it is not the same thing.',
+    'Use g = W ÷ m, with g ≈ 9.8 N/kg.',
   ];
   const cw = (RIGHT - M - 2 * 0.30) / 3;
   GOALS.forEach((g, i) => {
@@ -222,17 +214,17 @@ const PHASES = [];
     badge(s, { x: x + 0.26, y: BODY_Y + 0.52, n: i + 1, name: `o${i}` });
     s.addText(g, {
       x: x + 0.26, y: BODY_Y + 1.08, w: cw - 0.52, h: 1.00, color: C.ink, fontFace: F.body,
-      fontSize: 17, bold: true, valign: 'top', margin: 0, lineSpacing: 22, objectName: `o${i}_t`,
+      fontSize: 16, bold: true, valign: 'top', margin: 0, lineSpacing: 21, objectName: `o${i}_t`,
     });
   });
-  s.addText('You are not being given these equations. You are going to build them.', {
+  s.addText('Same amount of stuff, different amount of pull. That is the whole lesson.', {
     shape: S.roundRect, rectRadius: 0.12,
     x: M, y: BODY_Y + 2.58, w: RIGHT - M, h: 0.70,
     fill: { color: C.dark }, line: { color: C.dark, width: 0 },
-    color: C.accent, fontFace: F.body, fontSize: 17, bold: true,
+    color: C.accent, fontFace: F.body, fontSize: 16, bold: true,
     align: 'center', valign: 'middle', margin: 0, objectName: 'obj_banner',
   });
-  s.addNotes('TODAY — 1 minute. Four clicks. The banner matters: these are not formulae to memorise, they are last lesson\u2019s graph rules written as algebra.');
+  s.addNotes('TODAY — 1 minute. Four clicks. The banner is the misconception the whole lesson is aimed at: mass and weight get treated as the same thing measured two ways. They are not.');
 }
 
 /* ================================================================== *
@@ -243,16 +235,16 @@ const PHASES = [];
   bg(s, 'light');
   PHASES.push(timer(s, 2, 'light'));
   pill(s, 'Hook', 2, 'light');
-  s.addText('A train speeds up from 10 to 30 m s\u207B\u00B9 in 20 s.', {
-    x: M, y: 0.88, w: RIGHT - M, h: 1.06, color: C.dark, fontFace: F.title, fontSize: 32,
-    bold: true, valign: 'middle', margin: 0, lineSpacing: 40, objectName: 'slide_title',
+  s.addText('"I weigh 60 kg."', {
+    x: M, y: 0.88, w: RIGHT - M, h: 1.06, color: C.dark, fontFace: F.title, fontSize: 36,
+    bold: true, valign: 'middle', margin: 0, lineSpacing: 44, objectName: 'slide_title',
   });
-  s.addText('How far does it travel?', {
+  s.addText('What is wrong with this sentence?', {
     x: M, y: 1.98, w: RIGHT - M, h: 0.42, color: C.inkSoft, fontFace: F.body, fontSize: 18,
     valign: 'middle', margin: 0, objectName: 'slide_sub',
   });
 
-  const OPTS = [['A', '600 m'], ['B', '400 m'], ['C', '200 m']];
+  const OPTS = [['A', 'Nothing — that’s correct.'], ['B', 'Kilograms measure mass, not weight.'], ['C', 'You can’t weigh a number.']];
   const cw = (RIGHT - M - 2 * 0.30) / 3;
   OPTS.forEach(([k, txt], i) => {
     const x = M + i * (cw + 0.30);
@@ -262,50 +254,81 @@ const PHASES = [];
       fontSize: 26, bold: true, valign: 'middle', margin: 0, objectName: `h${i}_k`,
     });
     s.addText(txt, {
-      x: x + 0.28, y: BODY_Y + 1.40, w: cw - 0.56, h: 0.60, color: C.dark, fontFace: F.title,
-      fontSize: 24, bold: true, valign: 'middle', margin: 0, objectName: `h${i}_t`,
+      x: x + 0.28, y: BODY_Y + 1.36, w: cw - 0.56, h: 0.66, color: C.dark, fontFace: F.title,
+      fontSize: 17, bold: true, valign: 'middle', margin: 0, lineSpacing: 21, objectName: `h${i}_t`,
     });
   });
   s.addNotes(
     'HOOK — 2 minutes. Four clicks.\n\n'
     + 'Hands up for each. Tally on the board.\n\n'
-    + 'ANSWER: B, 400 m. Do not reveal it here \u2014 slide 5 gets it from the area.\n\n'
-    + 'A IS 30 \u00D7 20: they used the final velocity for the whole journey. It was only going that fast at the very end.\n\n'
-    + 'C IS 10 \u00D7 20: the starting velocity for the whole journey. Too slow.\n\n'
-    + 'THE ANSWER IS BETWEEN THEM, and that is worth saying before you move on. The average of 10 and 30 is 20, and 20 \u00D7 20 = 400.'
+    + 'ANSWER: B. 60 kg is a mass. Their weight is 60 × 9.8 = 588 N — say the number, do not reveal how yet, I Do 2 gets there.\n\n'
+    + 'C IS A DISTRACTOR, not the point — "I weigh 60" without units would be the real problem with C’s reasoning; the sentence as given does have units, they are just the wrong quantity’s units.'
   );
 }
 
 /* ================================================================== *
- * 4. I DO · 3  —  v = u + at
+ * 4. I DO · 3 — mass vs weight
  * ================================================================== */
 {
   const s = pptx.addSlide();
   bg(s, 'light');
   PHASES.push(timer(s, 3, 'light'));
   pill(s, 'I Do', 3, 'light');
-  title(s, 'The gradient gives you the first equation', 'light');
+  title(s, 'Mass and weight are not the same thing', 'light');
+
+  const ROWS = [
+    ['Mass', 'The amount of matter in something.', 'kilograms (kg)', 'Same everywhere — Earth, Moon, space.'],
+    ['Weight', 'The gravitational force pulling on that mass.', 'newtons (N)', 'Changes with gravity — less on the Moon.'],
+  ];
+  ROWS.forEach(([n, def, unit, note], i) => {
+    const y = BODY_Y + 0.20 + i * 1.55;
+    card(s, { x: M, y, w: RIGHT - M, h: 1.35, fill: i === 1 ? 'FFEFE2' : 'FFFFFF', line: i === 1 ? C.accent : 'D8DEEC', name: `mw${i}` });
+    s.addText(n, {
+      x: M + 0.24, y: y + 0.14, w: 2.2, h: 0.50, color: C.dark, fontFace: F.title, fontSize: 22,
+      bold: true, valign: 'middle', margin: 0, objectName: `mw${i}_n`,
+    });
+    s.addText(def, {
+      x: M + 2.50, y: y + 0.14, w: 5.6, h: 0.50, color: C.ink, fontFace: F.body, fontSize: 15,
+      valign: 'middle', margin: 0, objectName: `mw${i}_d`,
+    });
+    s.addText(unit, {
+      shape: S.roundRect, rectRadius: 0.08,
+      x: RIGHT - 2.60, y: y + 0.16, w: 1.40, h: 0.46, fill: { color: C.dark }, line: { color: C.dark, width: 0 },
+      color: 'FFFFFF', fontFace: F.body, fontSize: 14, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: `mw${i}_u`,
+    });
+    s.addText(note, {
+      x: M + 0.24, y: y + 0.74, w: RIGHT - M - 0.48, h: 0.44, color: C.inkSoft, fontFace: F.body,
+      fontSize: 13.5, italic: true, valign: 'middle', margin: 0, objectName: `mw${i}_note`,
+    });
+  });
+  s.addNotes(
+    'I DO — 3 minutes. Four clicks: mass row, weight row, then talk through the demo.\n\n'
+    + 'DEMO NOW: hang 100 g, then 200 g, then 500 g from a newtonmeter. Expect readings of about 1 N, 2 N and 5 N. Say the numbers out loud as you read them — do not just show the meter.\n\n'
+    + 'THE POINT OF THE DEMO: mass goes up, weight goes up, but they are never the same number — 100 g gives about 1 N, not 100 N and not 0.1 N. That gap IS gravity.\n\n'
+    + 'IF NO NEWTONMETER IS AVAILABLE: use the numbers anyway and say so — "these are real readings from this experiment" is worth more than a video, but a description with real numbers still beats skipping it.'
+  );
+}
+
+/* ================================================================== *
+ * 5. I DO · 3 — finding g
+ * ================================================================== */
+{
+  const s = pptx.addSlide();
+  bg(s, 'light');
+  PHASES.push(timer(s, 3, 'light'));
+  pill(s, 'I Do', 3, 'light');
+  title(s, 'The gradient gives you g', 'light');
 
   graph(s, {
     x: M + 0.20, y: 5.70, w: 4.60, h: 2.60, name: 'g1',
-    pts: [[0, 0.25], [1, 0.85]], ylab: 'v / m s\u207B\u00B9', xlab: 't / s', colour: C.support,
-  });
-  s.addText('u', {
-    x: M - 0.16, y: 5.70 - 0.25 * 2.60 - 0.17, w: 0.34, h: 0.34, color: C.accentInk,
-    fontFace: F.title, fontSize: 17, bold: true, align: 'center', valign: 'middle',
-    margin: 0, objectName: 'g1_u',
-  });
-  s.addText('v', {
-    x: M - 0.16, y: 5.70 - 0.85 * 2.60 - 0.17, w: 0.34, h: 0.34, color: C.accentInk,
-    fontFace: F.title, fontSize: 17, bold: true, align: 'center', valign: 'middle',
-    margin: 0, objectName: 'g1_v',
+    pts: [[0.02, 0.05], [0.98, 0.95]], ylab: 'W / N', xlab: 'm / kg', colour: C.support,
   });
 
   const STEPS = [
-    ['1', 'gradient  =  acceleration', 'That was last lesson.'],
-    ['2', 'gradient  =  (v \u2212 u) \u00F7 t', 'Rise over run, from u up to v.'],
-    ['3', 'a  =  (v \u2212 u) \u00F7 t', 'So put the two together.'],
-    ['4', 'v  =  u + at', 'Rearranged. That is the first equation.'],
+    ['1', 'gradient of a W–m graph = W ÷ m', 'Same gradient skill as v = u + at.'],
+    ['2', 'W ÷ m is called g', 'Weight per unit mass.'],
+    ['3', 'g ≈ 9.8 N/kg', 'Not 10. Near the Earth’s surface.'],
+    ['4', 'g = W ÷ m,   so   W = mg', 'Both forms, same equation.'],
   ];
   const tx = M + 5.30;
   STEPS.forEach(([n, eq, note], i) => {
@@ -313,82 +336,27 @@ const PHASES = [];
     card(s, {
       x: tx, y, w: RIGHT - tx, h: 0.86,
       fill: i === 3 ? 'FFEFE2' : 'FFFFFF', line: i === 3 ? C.accent : 'D8DEEC',
-      lineWidth: i === 3 ? 1.7 : 1.3, name: `e1_${i}`,
+      lineWidth: i === 3 ? 1.7 : 1.3, name: `gr_${i}`,
     });
     s.addText(n, {
       x: tx + 0.22, y, w: 0.34, h: 0.86, color: C.accentInk, fontFace: F.title, fontSize: 18,
-      bold: true, valign: 'middle', margin: 0, objectName: `e1_${i}_n`,
+      bold: true, valign: 'middle', margin: 0, objectName: `gr_${i}_n`,
     });
     s.addText(eq, {
       x: tx + 0.64, y: y + 0.08, w: RIGHT - tx - 0.88, h: 0.42, color: C.dark, fontFace: F.title,
-      fontSize: 19, bold: true, valign: 'middle', margin: 0, objectName: `e1_${i}_e`,
+      fontSize: 17, bold: true, valign: 'middle', margin: 0, objectName: `gr_${i}_e`,
     });
     s.addText(note, {
       x: tx + 0.64, y: y + 0.48, w: RIGHT - tx - 0.88, h: 0.32, color: C.inkSoft, fontFace: F.body,
-      fontSize: 13, valign: 'middle', margin: 0, objectName: `e1_${i}_t`,
+      fontSize: 13, valign: 'middle', margin: 0, objectName: `gr_${i}_t`,
     });
   });
   s.addNotes(
-    'I DO — 3 minutes. Six clicks: the graph with u and v marked, then the four steps.\n\n'
-    + 'THEY ALREADY KNOW STEP 1. Say so. All you are doing is writing it in symbols.\n\n'
-    + 'STEP 2: the rise is from u up to v, so the rise is v \u2212 u. The run is t. Point at the graph.\n\n'
-    + 'STEP 4 is one rearrangement: multiply both sides by t, then add u. Do it on the board, do not just show it.\n\n'
-    + 'CHECK IT AGAINST DO NOW Q5: u = 4, a = 4, t = 4 gives v = 4 + 16 = 20. Which is what the question said.'
-  );
-}
-
-/* ================================================================== *
- * 5. I DO · 3  —  s = ½(u+v)t
- * ================================================================== */
-{
-  const s = pptx.addSlide();
-  bg(s, 'light');
-  PHASES.push(timer(s, 3, 'light'));
-  pill(s, 'I Do', 3, 'light');
-  title(s, 'The area gives you the second', 'light');
-
-  graph(s, {
-    x: M + 0.20, y: 5.70, w: 4.60, h: 2.60, name: 'g2',
-    pts: [[0, 0.25], [1, 0.85]], ylab: 'v / m s\u207B\u00B9', xlab: 't / s', colour: C.support,
-  });
-  s.addText('This shape is a trapezium.', {
-    x: M + 0.20, y: 5.86, w: 4.60, h: 0.34, color: C.inkSoft, fontFace: F.body, fontSize: 14,
-    italic: true, align: 'center', valign: 'middle', margin: 0, objectName: 'g2_note',
-  });
-
-  const STEPS = [
-    ['1', 'area  =  displacement', 'Also last lesson.'],
-    ['2', 'area of a trapezium  =  \u00BD(a + b) \u00D7 h', 'The two parallel sides are u and v.'],
-    ['3', 's  =  \u00BD(u + v) \u00D7 t', 'The height of the trapezium is the time.'],
-    ['4', 'So the train travels  \u00BD(10 + 30) \u00D7 20  =  400 m', 'The hook, answered.'],
-  ];
-  const tx = M + 5.30;
-  STEPS.forEach(([n, eq, note], i) => {
-    const y = BODY_Y + 0.30 + i * 1.02;
-    card(s, {
-      x: tx, y, w: RIGHT - tx, h: 0.86,
-      fill: i === 3 ? 'FFEFE2' : 'FFFFFF', line: i === 3 ? C.accent : 'D8DEEC',
-      lineWidth: i === 3 ? 1.7 : 1.3, name: `e2_${i}`,
-    });
-    s.addText(n, {
-      x: tx + 0.22, y, w: 0.34, h: 0.86, color: C.accentInk, fontFace: F.title, fontSize: 18,
-      bold: true, valign: 'middle', margin: 0, objectName: `e2_${i}_n`,
-    });
-    s.addText(eq, {
-      x: tx + 0.64, y: y + 0.08, w: RIGHT - tx - 0.88, h: 0.42, color: C.dark, fontFace: F.title,
-      fontSize: i === 3 ? 16 : 18, bold: true, valign: 'middle', margin: 0, objectName: `e2_${i}_e`,
-    });
-    s.addText(note, {
-      x: tx + 0.64, y: y + 0.48, w: RIGHT - tx - 0.88, h: 0.32, color: C.inkSoft, fontFace: F.body,
-      fontSize: 13, valign: 'middle', margin: 0, objectName: `e2_${i}_t`,
-    });
-  });
-  s.addNotes(
-    'I DO — 3 minutes. Six clicks.\n\n'
-    + 'THE PARALLEL SIDES ARE u AND v. Turn the graph on its side in the air if it helps \u2014 the trapezium is lying down.\n\n'
-    + 'STEP 4 SETTLES THE HOOK. Go back to the tally. \u00BD(10 + 30) is 20, the average velocity, and 20 \u00D7 20 = 400 m.\n\n'
-    + 'THE USEFUL SENTENCE: this equation is just "average velocity \u00D7 time". If they remember nothing else, that gets them there.\n\n'
-    + 'CHECK AGAINST DO NOW Q6: \u00BD(4 + 20) \u00D7 4 = 48 m. Same answer they got from the graph.'
+    'I DO — 3 minutes. Six clicks: the graph, then the four steps.\n\n'
+    + 'PLOT THE DEMO’S OWN THREE POINTS if you have time — (0.1, 0.98), (0.2, 1.96), (0.5, 4.9). They sit on a straight line through the origin, and that line’s gradient is g.\n\n'
+    + 'THIS IS THE SAME SKILL AS EQUATIONS OF MOTION SLIDE 4. Say so directly: "you already know how to read a gradient off a graph — today it gives you g instead of a."\n\n'
+    + 'STEP 3 IS THE ONE TO BE STRICT ABOUT. g ≈ 9.8 N/kg, never 10 — 10 is a shortcut some students bring from other resources. Correct it every time it appears today.\n\n'
+    + 'CHECK AGAINST THE HOOK: 60 kg × 9.8 = 588 N. That is where that number came from.'
   );
 }
 
@@ -401,13 +369,13 @@ const PHASES = [];
   PHASES.push(timer(s, 5, 'light'));
   pill(s, 'We Do', 5, 'light');
   title(s, 'What should be the correct answer?', 'light');
-  sub(s, 'Spot the mistake. The train goes from 10 to 30 m s\u207B\u00B9 in 20 s.', 'light');
+  sub(s, 'Spot the mistake.', 'light');
 
   const ROWS = [
-    ['s = 30 \u00D7 20 = 600 m', '400 m'],
-    ['a = 30 \u00F7 20 = 1.5 m s\u207B\u00B2', '1.0 m s\u207B\u00B2'],
-    ['u is always 0, so s = \u00BD \u00D7 30 \u00D7 20 = 300 m', 'u is 10 here'],
-    ['A negative acceleration means a negative displacement.', 'It can still go forwards'],
+    ['"My mass is 70 N."', 'My mass is 70 kg.'],
+    ['g = 10 N/kg', 'g ≈ 9.8 N/kg'],
+    ['"A 2 kg mass weighs 2 N."', 'A 2 kg mass weighs about 19.6 N.'],
+    ['"Weight is measured in kilograms."', 'Weight is in newtons. Mass is in kilograms.'],
   ];
   const rowH = 0.92, gap = 0.20;
   ROWS.forEach(([wrong, right], i) => {
@@ -419,18 +387,17 @@ const PHASES = [];
     });
     s.addText(right, {
       shape: S.roundRect, rectRadius: 0.10,
-      x: M + 7.10, y: y + 0.14, w: RIGHT - (M + 7.10) - 0.10, h: 0.64,
+      x: M + 7.10, y: y + 0.10, w: RIGHT - (M + 7.10) - 0.10, h: 0.72,
       fill: { color: 'FFEFE2' }, line: { color: C.alert, width: 1.5 },
-      color: C.dark, fontFace: F.body, fontSize: 16, bold: true,
+      color: C.dark, fontFace: F.body, fontSize: 14.5, bold: true,
       align: 'center', valign: 'middle', margin: 0.06, objectName: `wd${i}_a`,
     });
   });
   s.addNotes(
     'WE DO — 5 minutes. Four clicks. Take answers from the room first.\n\n'
-    + 'ROW 1 is hook answer A. It uses the final velocity for the whole journey.\n\n'
-    + 'ROW 2 forgot u. a = (30 \u2212 10) \u00F7 20 = 1.0. Very common.\n\n'
-    + 'ROW 3 is the "u is always zero" habit that forms when every early question starts from rest. Here u = 10.\n\n'
-    + 'ROW 4 IS THE SUBTLE ONE. The train could be slowing down and still moving forwards the whole time. Negative a, positive s. This is last lesson\u2019s falling-line question wearing different clothes.'
+    + 'ROW 1 AND ROW 4 ARE THE UNITS ROWS — kg for mass, N for weight, every time. This is the single most common exam slip at this level: writing "kg" where "N" belongs, or the reverse.\n\n'
+    + 'ROW 2 IS THE g = 10 TRAP. Some students will insist this is what they were taught elsewhere. Hold the line: 9.8 here, always.\n\n'
+    + 'ROW 3: 2 × 9.8 = 19.6 N, not 2 N. This is the Hook misconception again, with numbers.'
   );
 }
 
@@ -444,12 +411,12 @@ const PHASES = [];
   pill(s, 'Cold Call', 6, 'light');
 
   const QS = [
-    ['Write the equation linking v, u, a and t.', 'v = u + at'],
-    ['Write the equation for s using u, v and t.', 's = \u00BD(u + v)t'],
-    ['An object starts from rest. What is u?', 'Zero.'],
-    ['A car goes from 0 to 18 m s\u207B\u00B9 in 6.0 s. Find a.', '3 m s\u207B\u00B2'],
-    ['The same car. How far does it travel?', '\u00BD(0 + 18) \u00D7 6 = 54 m'],
-    ['You are not told the acceleration. Which equation do you use?', 's = \u00BD(u + v)t'],
+    ['What is mass?', 'The amount of matter in something.'],
+    ['What is weight?', 'The gravitational force on a mass.'],
+    ['What is the unit of mass?', 'kg'],
+    ['What is the unit of weight?', 'N'],
+    ['A 3 kg mass. Find its weight.', '3 × 9.8 = 29.4 N'],
+    ['Complete: g = ___ ÷ ___', 'W ÷ m'],
   ];
   const cw = (RIGHT - M - 0.26) / 2, ch = 1.52;
   QS.forEach(([q, a], i) => {
@@ -471,9 +438,9 @@ const PHASES = [];
   });
   s.addNotes(
     'COLD CALL — 6 minutes. Six clicks. Name a student, then ask. Thinking time before the answer.\n\n'
-    + 'Q4 and Q5 are the same car, so Q5 should be quick once Q4 lands.\n\n'
-    + 'Q6 IS THE ONE THAT MATTERS. Choosing the equation is the skill; doing the arithmetic is not. Ask two or three students how they decided.\n\n'
-    + 'If a student cannot answer, take it elsewhere and come back for them to repeat it.'
+    + 'Q1 AND Q2 want the DEFINITION, not the unit — if a student answers "kg" to Q1, that is the unit, not the definition. Push once: "what does mass actually measure?"\n\n'
+    + 'Q5 IS THE FIRST TIMED CALCULATION. If they reach for 10 instead of 9.8, that is the moment to correct it, not later.\n\n'
+    + 'Q6 checks the equation both ways — they need this rearranged on the worksheet.'
   );
 }
 
@@ -492,7 +459,7 @@ const PHASES = [];
   });
   s.addText(`${LESSON} worksheet`, {
     x: M, y: 0.86, w: RIGHT - M - 2.00, h: 1.14, color: C.dark, fontFace: F.title,
-    fontSize: 32, bold: true, valign: 'middle', margin: 0, lineSpacing: 40, objectName: 'slide_title',
+    fontSize: 30, bold: true, valign: 'middle', margin: 0, lineSpacing: 36, objectName: 'slide_title',
   });
   s.addText('Open Google Classroom now.', {
     x: M, y: 2.04, w: RIGHT - M - 2.00, h: 0.40, color: C.alert, fontFace: F.body,
@@ -500,9 +467,9 @@ const PHASES = [];
   });
 
   const TIERS = [
-    ['BRONZE', C.alert, 'FFE9E0', 'Substitute', 'Numbers straight into the equation.'],
-    ['SILVER', '5A6480', 'F1F2F6', 'Two steps', 'Find v first, then use it to find s.'],
-    ['GOLD', C.accent, 'FFEFE2', 'Reason', 'Rearrange, derive, and say when these equations fail.'],
+    ['BRONZE', C.alert, 'FFE9E0', 'Substitute', 'Use W = mg. g ≈ 9.8 N/kg, never 10.'],
+    ['SILVER', '5A6480', 'F1F2F6', 'Rearrange', 'Find m or g when W is given.'],
+    ['GOLD', C.accentInk, 'FFEFE2', 'Plot it', 'A data table of mass and weight — plot it, read off g from the gradient.'],
   ];
   const cw = (RIGHT - M - 2 * 0.30) / 3;
   TIERS.forEach(([n, col, fill, subh, body], i) => {
@@ -518,18 +485,17 @@ const PHASES = [];
     });
     s.addText(body, {
       x: x + 0.26, y: BODY_Y + 1.40, w: cw - 0.52, h: 0.90, color: C.inkSoft, fontFace: F.body,
-      fontSize: 15, valign: 'top', margin: 0, lineSpacing: 20, objectName: `t${i}_b`,
+      fontSize: 14.5, valign: 'top', margin: 0, lineSpacing: 19, objectName: `t${i}_b`,
     });
   });
-  s.addText('Write down u, v, a, s and t before you pick an equation.', {
+  s.addText('Units every time: kg for mass, N for weight. g ≈ 9.8 N/kg.', {
     x: M, y: BODY_Y + 2.76, w: RIGHT - M, h: 0.46, color: C.dark, fontFace: F.body,
-    fontSize: 17, bold: true, valign: 'middle', margin: 0, objectName: 'yd_note',
+    fontSize: 16, bold: true, valign: 'middle', margin: 0, objectName: 'yd_note',
   });
   s.addNotes(
     'YOU DO — 14 minutes. Four clicks.\n\n'
-    + 'THE LIST FIRST. u, v, a, s, t down the side of the page, filled in from the question, with a gap for the unknown. It turns "which equation?" into "which one has three things I know?"\n\n'
-    + 'CIRCULATE WITH ONE QUESTION: "what have you written down for u?"\n\n'
-    + 'WHERE THEY WILL STALL: Q8, where s is given and v is the unknown, and the Gold rearrangements.\n\n'
+    + 'CIRCULATE WITH ONE QUESTION: "is that a mass or a weight, and how do you know?"\n\n'
+    + 'WHERE THEY WILL STALL: the Gold plot — reading a gradient off their own axes rather than a printed graph. Point them back to I Do 2 if they freeze.\n\n'
     + 'AT 3 MINUTES REMAINING, stop them. Answers are on the next slide.'
   );
 }
@@ -545,16 +511,16 @@ const PHASES = [];
   title(s, 'Answers', 'light');
 
   const ANS = [
-    ['1', 'v = u + at'],
-    ['2', 's = \u00BD(u + v)t'],
-    ['3', '15 m s\u207B\u00B9'],
-    ['4', '3 m s\u207B\u00B2'],
-    ['5', '72 m'],
-    ['6', 'v = 21 m s\u207B\u00B9,  then  s = 104 m'],
-    ['7', 'a = \u22123 m s\u207B\u00B2,  s = 126 m'],
-    ['8', '25 m s\u207B\u00B9  (100 = \u00BD \u00D7 v \u00D7 8)'],
-    ['9', 'a = 0,  s = 120 m'],
-    ['10', 'v = 13 m s\u207B\u00B9,  then  s = 51 m'],
+    ['1', 'W = 0.5 × 9.8 = 4.9 N'],
+    ['2', 'W = 8 × 9.8 = 78.4 N'],
+    ['3', 'kg for mass, N for weight'],
+    ['4', 'm = 19.6 ÷ 9.8 = 2 kg'],
+    ['5', 'm = 4.9 ÷ 9.8 = 0.5 kg'],
+    ['6', 'g = 14.7 ÷ 1.5 = 9.8 N/kg'],
+    ['7', 'g ≈ 9.8 N/kg (from the graph’s gradient)'],
+    ['8', 'W = mg, so the graph is a straight line through the origin'],
+    ['9', 'Mass stays the same — weight changes with gravity'],
+    ['10', 'Any correct pair, e.g. 0.4 kg → 3.92 N'],
   ];
   const cw = (RIGHT - M - 0.26) / 2, rowH = 0.72, gap = 0.10;
   ANS.forEach(([n, a], i) => {
@@ -566,16 +532,14 @@ const PHASES = [];
       bold: true, valign: 'middle', margin: 0, objectName: `a${i}_n`,
     });
     s.addText(a, {
-      x: x + 0.82, y, w: cw - 1.04, h: rowH, color: C.ink, fontFace: F.body, fontSize: 15,
-      valign: 'middle', margin: 0, lineSpacing: 19, objectName: `a${i}_t`,
+      x: x + 0.82, y, w: cw - 1.04, h: rowH, color: C.ink, fontFace: F.body, fontSize: 14,
+      valign: 'middle', margin: 0, lineSpacing: 18, objectName: `a${i}_t`,
     });
   });
   s.addNotes(
     'ANSWERS — 3 minutes. Five clicks, two at a time. They mark their own in a different colour.\n\n'
-    + 'Q7 has a NEGATIVE acceleration and a POSITIVE displacement. That pairing is worth thirty seconds \u2014 it is We Do row 4.\n\n'
-    + 'Q8 is the rearrangement. Show it on the board: 100 = \u00BD \u00D7 v \u00D7 8 gives 100 = 4v, so v = 25.\n\n'
-    + 'Q9 has a = 0, so the object is at constant velocity. Some will think the question is broken.\n\n'
-    + 'The Gold answers are not here \u2014 take two or three out loud.'
+    + 'Q6 AND Q7 use the Gold data table — both should land on 9.8, within rounding from reading the graph by eye.\n\n'
+    + 'Q9 IS THE CONCEPTUAL ONE. If they can say this without you prompting, the lesson has landed.'
   );
 }
 
@@ -590,11 +554,11 @@ const PHASES = [];
   title(s, 'True or false?', 'dark');
 
   const QS = [
-    ['s = \u00BD(u + v)t is just average velocity \u00D7 time.', 'TRUE'],
-    ['u is always zero.', 'FALSE'],
-    ['v = u + at comes from the area under a velocity\u2013time graph.', 'FALSE'],
-    ['A negative acceleration always gives a negative displacement.', 'FALSE'],
-    ['These equations only work when the acceleration is constant.', 'TRUE'],
+    ['Mass and weight are the same thing.', 'FALSE'],
+    ['Weight is measured in newtons.', 'TRUE'],
+    ['g ≈ 10 N/kg near the Earth’s surface.', 'FALSE'],
+    ['A 5 kg mass has a weight of 49 N.', 'TRUE'],
+    ['Your mass would change if you went to the Moon.', 'FALSE'],
   ];
   const rowH = 0.70, gap = 0.18;
   QS.forEach(([q, v], i) => {
@@ -613,19 +577,21 @@ const PHASES = [];
       margin: 0, objectName: `p${i}_v`,
     });
   });
-  s.addText('Write down what you know first. Then pick the equation that has three of them in it.', {
+  s.addText('Same mass everywhere. Different weight wherever gravity is different.', {
     x: M, y: H - 0.86, w: RIGHT - M, h: 0.50, color: C.accent, fontFace: F.body, fontSize: 16,
     bold: true, italic: true, valign: 'middle', margin: 0, objectName: 'pl_next',
   });
   s.addNotes(
     'PLENARY — 3 minutes. Six clicks.\n\n'
-    + 'Q3 checks they know WHICH graph feature gave WHICH equation. The gradient gave v = u + at; the area gave s = \u00BD(u + v)t. If this splits the room, reteach the two I Do slides in the next Do Now.\n\n'
-    + 'Q5 IS THE HONEST LIMIT of everything today. If the acceleration changes, neither equation works \u2014 and a curved velocity\u2013time graph is exactly that case.\n\n'
+    + 'Q3 IS THE AVOID POINT, asked directly. If this one is wrong, five minutes of retrieval next lesson before anything new.\n\n'
+    + 'Q5 IS THE HONEST TEST of whether "mass vs weight" actually landed, not just the arithmetic. Ask a follow-up: "so what WOULD change?" — weight, because gravity is different.\n\n'
     + 'The closing line is the habit to leave them with.'
   );
 }
 
-const out = path.join(__dirname, '..', 'out', `${LESSON}.pptx`);
+const outDir = path.join(__dirname, '..', 'out', LESSON);
+fs.mkdirSync(outDir, { recursive: true });
+const out = path.join(outDir, `${LESSON}.pptx`);
 pptx.writeFile({ fileName: out }).then(() => {
   console.log('deck written:', out);
   console.log('phase minutes:', PHASES.join(', '), '=', PHASES.reduce((a, b) => a + b, 0), 'min');

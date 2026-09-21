@@ -9,11 +9,15 @@
  * Lesson 1, so they get one proposed gesture each — flagged in the notes as
  * mine to confirm, not fixed.
  *
- * No timer-bar video: neither T3 reference deck uses one, so this uses
- * lib/furniture.js's plain layout (no TIMER_X gutter) rather than the
- * Science/Maths timer margin.
+ * KNOWN GAP: this deck has no timer bar. That was written down at the time
+ * as "neither T3 reference deck uses one" — CLAUDE.md has since confirmed
+ * that absence was itself the bug lib/timer.js was built to close (CLIL was
+ * one of the three palettes that silently shipped with no timer). Adding one
+ * now means re-laying every slide for the TIMER_X gutter, which is bigger
+ * than this pass's scope — flagged, not fixed, here.
  */
 const PptxGenJS = require('pptxgenjs');
+const fs = require('fs');
 const path = require('path');
 const THEME = require('../lib/theme');
 THEME.usePalette('nucleus');
@@ -200,7 +204,7 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
     const y = BODY_Y + 0.10 + i * (rowH + gap);
     card(pptx, s, { x: M, y, w: CONTENT_W, h: rowH, objectName: `d${i}_bg` });
     s.addText(String(i + 1), {
-      x: M + 0.22, y, w: 0.44, h: rowH, color: C.accent, fontFace: F.title, fontSize: 17,
+      x: M + 0.22, y, w: 0.44, h: rowH, color: C.accentInk, fontFace: F.title, fontSize: 17,
       bold: true, valign: 'middle', margin: 0, objectName: `d${i}_n`,
     });
     s.addText(q, {
@@ -303,7 +307,7 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
 
   nucleusDiagram(s, { cx: 3.2, cy: 5.5, r: 1.55, name: 'ido', reveal: 'full' });
   s.addText('proton', {
-    x: 4.95, y: 4.55, w: 1.9, h: 0.4, color: C.accent, fontFace: F.body, fontSize: 15,
+    x: 4.95, y: 4.55, w: 1.9, h: 0.4, color: C.accentInk, fontFace: F.body, fontSize: 15,
     bold: true, valign: 'middle', margin: 0, objectName: 'ido_plabel',
   });
   s.addText('neutron', {
@@ -321,7 +325,7 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
     const y = BODY_Y + 0.30 + i * 1.15;
     card(pptx, s, { x: tx, y, w: RIGHT - tx, h: 1.0, objectName: `i${i}_bg` });
     s.addText(n, {
-      x: tx + 0.22, y, w: 0.34, h: 1.0, color: C.accent, fontFace: F.title, fontSize: 18,
+      x: tx + 0.22, y, w: 0.34, h: 1.0, color: C.accentInk, fontFace: F.title, fontSize: 18,
       bold: true, valign: 'middle', margin: 0, objectName: `i${i}_n`,
     });
     s.addText(eq, {
@@ -397,7 +401,7 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
     const x = M + i * (cw + 0.28);
     card(pptx, s, { x, y: BODY_Y + 0.30, w: cw, h: 2.5, objectName: `a${i}_bg` });
     s.addText(n, {
-      x: x + 0.24, y: BODY_Y + 0.48, w: 0.5, h: 0.5, color: C.accent, fontFace: F.title,
+      x: x + 0.24, y: BODY_Y + 0.48, w: 0.5, h: 0.5, color: C.accentInk, fontFace: F.title,
       fontSize: 20, bold: true, valign: 'middle', margin: 0, objectName: `a${i}_n`,
     });
     s.addText(head, {
@@ -440,7 +444,7 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
     const y = BODY_Y + 0.30 + i * (rowH + gap);
     card(pptx, s, { x: M, y, w: CONTENT_W, h: rowH, objectName: `y${i}_bg` });
     s.addText(k, {
-      x: M + 0.24, y, w: 0.5, h: rowH, color: C.accent, fontFace: F.title, fontSize: 22,
+      x: M + 0.24, y, w: 0.5, h: rowH, color: C.accentInk, fontFace: F.title, fontSize: 22,
       bold: true, valign: 'middle', margin: 0, objectName: `y${i}_k`,
     });
     s.addText(head, {
@@ -504,7 +508,9 @@ const phase = (label, mins) => { PHASES.push(mins); return mins; };
   );
 }
 
-const out = path.join(__dirname, '..', 'out', `${LESSON}.pptx`);
+const outDir = path.join(__dirname, '..', 'out', LESSON);
+fs.mkdirSync(outDir, { recursive: true });
+const out = path.join(outDir, `${LESSON}.pptx`);
 pptx.writeFile({ fileName: out }).then(() => {
   console.log('deck written:', out);
   console.log('phase minutes:', PHASES.join(', '), '=', 1 + PHASES.reduce((a, b) => a + b, 0), 'min (incl. 1 for title)');
