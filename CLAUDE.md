@@ -311,6 +311,17 @@ Read `examples/` for tone. In short:
 - Minimise Thailand-specific references; use global examples.
 - Speaker notes are written *to the teacher* and can be rich: misconceptions,
   what to say, what will go wrong, what to cut if short of time.
+- **Minimise the em dash.** It had crept into nearly every sentence — titles,
+  notes, question text. Reach for a full stop, a comma, or just restructuring
+  the sentence first.
+- **Question stems lead with the instruction, not a bare statement.**
+  "A 0.5 kg mass. Find its weight." is two choppy sentences. "Find the weight
+  of a 0.5 kg mass." is one. This applies to Do Now, Cold Call, and worksheet
+  questions alike.
+- **The Gold tier's worksheet subtitle does not get alert-red styling.**
+  Bronze and Silver's italic subtitles are neutral grey (`C.soft`); Gold's
+  should match, not switch to `C.alert`. The red never earned its keep —
+  flagged after it showed up unhelpfully across several worksheets running.
 
 ---
 

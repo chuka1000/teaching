@@ -1,9 +1,13 @@
 /**
- * Renders a handful of react-icons to PNG for the Y7 decks.
+ * Renders a handful of react-icons to PNG, one file per icon/palette-role
+ * pair, into assets/icons/ (repo root — every deck reads from here).
  *
- * Asked for after Lesson 1: "add images, even if small or just icons — not
- * everyone would know what a spanner is." Icons sit next to the concrete
+ * Asked for after Y7 Lesson 1: "add images, even if small or just icons —
+ * not everyone would know what a spanner is." Icons sit next to the concrete
  * nouns so a word nobody knows still has a picture attached.
+ *
+ * Colours come from lib/theme.js's PALETTES rather than a hardcoded set, so
+ * a new deck's icons always match its own palette instead of an old one.
  */
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -12,8 +16,9 @@ const fs = require('fs');
 const path = require('path');
 const Fa = require('react-icons/fa');
 const Gi = require('react-icons/gi');
+const { PALETTES } = require('../lib/theme');
 
-const OUT = path.join(__dirname, 'assets/icons');
+const OUT = path.join(__dirname, '..', 'assets', 'icons');
 fs.mkdirSync(OUT, { recursive: true });
 
 const ICONS = {
@@ -37,28 +42,38 @@ const ICONS = {
   boiling:     Gi.GiBoilingBubbles,
   duck:        Gi.GiDuck,
   rice:        Gi.GiBowlOfRice,
+  globe:       Fa.FaGlobeAmericas,
+  bolt:        Fa.FaBolt,
+  compass:     Fa.FaCompass,
+  satellite:   Fa.FaSatelliteDish,
 };
 
-const COLOURS = {
-  dark: '#4A2C6F', accent: '#F2A03D', support: '#2BA6A0',
-  alert: '#D94F6A', tint: '#F7F4FB', white: '#FFFFFF', ink: '#241535',
-};
+// Which palettes to render icons for, and which roles within each. 'white'
+// is fixed (not a palette role) for icons that sit on a dark or coloured fill.
+const PALETTE_NAMES = process.argv.slice(2).length ? process.argv.slice(2) : Object.keys(PALETTES);
+const ROLES = ['dark', 'accent', 'accentInk', 'support', 'alert', 'ink'];
 
 (async () => {
   const missing = Object.entries(ICONS).filter(([, I]) => !I).map(([n]) => n);
   if (missing.length) throw new Error(`no such icon export: ${missing.join(', ')}`);
-  for (const [name, Icon] of Object.entries(ICONS)) {
-    for (const [cname, hex] of Object.entries(COLOURS)) {
-      const svg = ReactDOMServer.renderToStaticMarkup(
-        React.createElement(Icon, { color: hex, size: 512 })
-      );
-      const file = path.join(OUT, `${name}_${cname}.png`);
-      await sharp(Buffer.from(svg)).resize(512, 512, {
-        fit: 'contain',
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
-      }).png().toFile(file);
+  let count = 0;
+  for (const palName of PALETTE_NAMES) {
+    const pal = PALETTES[palName];
+    if (!pal) throw new Error(`unknown palette: ${palName}`);
+    const colours = { white: '#FFFFFF', ...Object.fromEntries(ROLES.map((r) => [r, `#${pal[r]}`])) };
+    for (const [name, Icon] of Object.entries(ICONS)) {
+      for (const [cname, hex] of Object.entries(colours)) {
+        const svg = ReactDOMServer.renderToStaticMarkup(
+          React.createElement(Icon, { color: hex, size: 512 })
+        );
+        const file = path.join(OUT, `${name}_${palName}_${cname}.png`);
+        await sharp(Buffer.from(svg)).resize(512, 512, {
+          fit: 'contain',
+          background: { r: 0, g: 0, b: 0, alpha: 0 },
+        }).png().toFile(file);
+        count++;
+      }
     }
   }
-  const made = fs.readdirSync(OUT).filter((f) => f.endsWith('.png'));
-  console.log(`rendered ${made.length} icon PNGs into ${OUT}`);
+  console.log(`rendered ${count} icon PNGs into ${OUT}`);
 })();

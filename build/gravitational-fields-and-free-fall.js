@@ -568,7 +568,7 @@ const PHASES_P3 = [];
   bg(s, 'light');
   PHASES_P3.push(timer(s, 10, 'light'));
   pill(s, 'Do Now', 10, 'light');
-  s.addText('Welcome back — Period 3', {
+  s.addText('Welcome back to Period 3', {
     x: 3.60, y: 0.22, w: 6.10, h: 0.66, color: C.dark, fontFace: F.title, fontSize: 22,
     bold: true, align: 'center', valign: 'middle', margin: 0, objectName: 'lesson_title',
   });
@@ -580,7 +580,7 @@ const PHASES_P3 = [];
   const QS = [
     ['What does g actually measure?', 'The strength of a gravitational field.'],
     ['g ≈ ___ N/kg near the Earth’s surface.', '9.8'],
-    ['A 6 kg mass. Find its weight.', '6 × 9.8 = 58.8 N'],
+    ['Find the weight of a 6 kg mass.', '6 × 9.8 = 58.8 N'],
     ['True or false: a bigger mass has a bigger g.', 'False.'],
     ['What is the unit of weight?', 'N'],
     ['Complete: W = ___', 'm × g'],
@@ -604,9 +604,9 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'PERIOD 3, DO NOW — 10 minutes. Six clicks.\n\n'
-    + 'ALL SIX RETRIEVE PERIOD 2, on purpose — a real 20-minute break is enough to lose the thread. Do not skip this because "we just did it before break".\n\n'
-    + 'IF Q4 (g does not depend on mass) IS SHAKY, reteach it here with the field diagram before starting free fall — everything this period assumes it landed.'
+    'PERIOD 3, DO NOW. 10 minutes. Six clicks.\n\n'
+    + 'ALL SIX RETRIEVE PERIOD 2, on purpose. A real 20-minute break is enough to lose the thread. Do not skip this because "we just did it before break".\n\n'
+    + 'IF Q4 (g does not depend on mass) IS SHAKY, reteach it here with the field diagram before starting free fall. Everything this period assumes it landed.'
   );
 }
 
@@ -621,7 +621,7 @@ const PHASES_P3 = [];
   const GOALS = [
     'Say that g is also the acceleration of free fall.',
     'Show that N/kg and m/s² are the same unit.',
-    'Use SUVAT for free fall — ignoring air resistance.',
+    'Use SUVAT for free fall, ignoring air resistance.',
   ];
   const cw = (RIGHT - M - 2 * 0.30) / 3;
   GOALS.forEach((g, i) => {
@@ -640,7 +640,7 @@ const PHASES_P3 = [];
     color: C.accent, fontFace: F.body, fontSize: 15.5, bold: true,
     align: 'center', valign: 'middle', margin: 0, objectName: 'obj_banner2',
   });
-  s.addNotes('TODAY — 1 minute. Four clicks. The banner is this afternoon’s whole argument, said up front.');
+  s.addNotes('TODAY. 1 minute. Four clicks. The banner is this afternoon’s whole argument, said up front.');
 }
 
 /* 13. HOOK · 2 */
@@ -673,8 +673,8 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'HOOK — 2 minutes. Four clicks.\n\n'
-    + 'ANSWER: C. Both feel the same downward acceleration g, regardless of any sideways motion. This is the Galileo result, and it only holds because we are ignoring air resistance — say that explicitly.\n\n'
+    'HOOK. 2 minutes. Four clicks.\n\n'
+    + 'ANSWER: C. Both feel the same downward acceleration g, regardless of any sideways motion. This is the Galileo result, and it only holds because we are ignoring air resistance. Say that explicitly.\n\n'
     + 'DO NOT GET DRAWN INTO A DISCUSSION OF AIR RESISTANCE. "That is a real effect, and it is a different topic" is the whole answer if it comes up.'
   );
 }
@@ -688,7 +688,7 @@ const PHASES_P3 = [];
   title(s, 'g is also an acceleration', 'light');
 
   const STEPS = [
-    ['1', 'Drop something. Ignore air resistance.', 'It speeds up as it falls — it accelerates.'],
+    ['1', 'Drop something. Ignore air resistance.', 'It speeds up as it falls. That is acceleration.'],
     ['2', 'That acceleration is g ≈ 9.8 m/s².', 'The same number as the field strength.'],
     ['3', 'This works for ANY falling object.', 'A pebble and a brick fall at the same rate.'],
   ];
@@ -713,8 +713,8 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'I DO — 3 minutes. Four clicks.\n\n'
-    + '"IGNORE AIR RESISTANCE" goes on the board, said out loud, every single time free fall comes up today. It is not a throwaway phrase — it is the condition that makes step 3 true.\n\n'
+    'I DO. 3 minutes. Four clicks.\n\n'
+    + '"IGNORE AIR RESISTANCE" goes on the board, said out loud, every single time free fall comes up today. It is not a throwaway phrase. It is the condition that makes step 3 true.\n\n'
     + 'STEP 3 ANSWERS THE HOOK properly: same g for both balls, so same vertical acceleration, so same time to fall, whatever the sideways speed.'
   );
 }
@@ -754,9 +754,9 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'I DO — 3 minutes. Four clicks.\n\n'
-    + 'THIS IS THE PROOF FOR OBJECTIVE 3. Write it on the board alongside the slide — the algebra is short enough that copying it themselves matters more than watching it appear.\n\n'
-    + 'STEP 1 IS FROM AN EARLIER TOPIC (forces). If F = ma has not landed yet, this whole proof will not either — check before going further.\n\n'
+    'I DO. 3 minutes. Four clicks.\n\n'
+    + 'THIS IS THE PROOF FOR OBJECTIVE 3. Write it on the board alongside the slide. The algebra is short enough that copying it themselves matters more than watching it appear.\n\n'
+    + 'STEP 1 IS FROM AN EARLIER TOPIC (forces). If F = ma has not landed yet, this whole proof will not either. Check before going further.\n\n'
     + 'THE PAYOFF: g can be written either way, and neither is "more correct". N/kg when talking about a field, m/s² when talking about an acceleration.'
   );
 }
@@ -773,7 +773,7 @@ const PHASES_P3 = [];
   const ROWS = [
     ['"N/kg and m/s² are different units for different things."', 'They are the same unit. g can be written either way.'],
     ['"v = u + at, so v = 0 + 9.8 + 3 = 12.8."', 'v = 0 + 9.8 × 3 = 29.4 m/s'],
-    ['"A heavier object falls faster (ignoring air resistance)."', 'They fall at the same rate — g does not depend on mass.'],
+    ['"A heavier object falls faster (ignoring air resistance)."', 'They fall at the same rate. g does not depend on mass.'],
     ['g = 9.8 kg/N', 'g ≈ 9.8 N/kg, or equivalently 9.8 m/s²'],
   ];
   const rowH = 0.92, gap = 0.20;
@@ -793,10 +793,10 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'WE DO — 5 minutes. Four clicks. Take answers from the room first.\n\n'
-    + 'ROW 2 IS TODAY’S SUBSTITUTION SLIP — the same "added instead of multiplied" mistake as Period 2’s We Do, now inside SUVAT instead of W = mg. Name the pattern: "this is the same kind of mistake as this morning, just in a new equation."\n\n'
+    'WE DO. 5 minutes. Four clicks. Take answers from the room first.\n\n'
+    + 'ROW 2 IS TODAY’S SUBSTITUTION SLIP: the same "added instead of multiplied" mistake as Period 2’s We Do, now inside SUVAT instead of W = mg. Name the pattern: "this is the same kind of mistake as this morning, just in a new equation."\n\n'
     + 'ROW 3 EXTENDS PERIOD 2’S IDEA (g does not depend on mass) into motion: it is the reason free-fall time does not depend on mass either.\n\n'
-    + 'ROW 4 IS A UNITS-ORDER SLIP, not a new idea — quick to fix, worth catching.'
+    + 'ROW 4 IS A UNITS-ORDER SLIP, not a new idea. Quick to fix, worth catching.'
   );
 }
 
@@ -810,9 +810,9 @@ const PHASES_P3 = [];
   const QS = [
     ['What is g equivalent to, in terms of motion?', 'The acceleration of free fall.'],
     ['In one sentence, why does N/kg = m/s²?', 'Because N = kg × m/s², from F = ma.'],
-    ['Dropped from rest. Falls for 1 s. Find v.', 'v = 9.8 × 1 = 9.8 m/s'],
-    ['Same ball. Find how far it has fallen.', 's = ½ × 9.8 × 1² = 4.9 m'],
-    ['Why do we say "ignore air resistance"?', 'So every object falls with the same g — otherwise it is a different, harder problem.'],
+    ['Find the speed of an object dropped from rest after falling for 1 s.', 'v = 9.8 × 1 = 9.8 m/s'],
+    ['Find how far the same object has fallen in that time.', 's = ½ × 9.8 × 1² = 4.9 m'],
+    ['Why do we say "ignore air resistance"?', 'So every object falls with the same g. Otherwise it is a different, harder problem.'],
     ['Complete: g ≈ 9.8 ___ or 9.8 ___', 'N/kg or m/s²'],
   ];
   const cw = (RIGHT - M - 0.26) / 2, ch = 1.52;
@@ -834,9 +834,9 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'COLD CALL — 6 minutes. Six clicks. Name a student, then ask. Thinking time before the answer.\n\n'
-    + 'Q3 AND Q4 ARE THE FIRST TIMED SUVAT-STYLE CALCULATIONS today — both use u = 0, so the substitution is as simple as it gets. Save the harder versions for the worksheet.\n\n'
-    + 'Q5 CHECKS UNDERSTANDING, not just the phrase — accept anything that says real objects would fall differently without it.'
+    'COLD CALL. 6 minutes. Six clicks. Name a student, then ask. Thinking time before the answer.\n\n'
+    + 'Q3 AND Q4 ARE THE FIRST TIMED SUVAT-STYLE CALCULATIONS today. Both use u = 0, so the substitution is as simple as it gets. Save the harder versions for the worksheet.\n\n'
+    + 'Q5 CHECKS UNDERSTANDING, not just the phrase. Accept anything that says real objects would fall differently without it.'
   );
 }
 
@@ -862,7 +862,7 @@ const PHASES_P3 = [];
 
   const STEPS = [
     ['7', 'Free fall, one variable.', 'Find v or s from u, a = g and t.'],
-    ['8', 'Free fall, two steps.', 'Find v first, then use it — or the reverse.'],
+    ['8', 'Free fall, two steps.', 'Find v first, then use it, or the reverse.'],
     ['9', 'Show N/kg = m/s² yourself.', 'In your own words, starting from F = ma.'],
     ['10', 'Explain why g does not depend on mass.', 'One or two sentences. Use the field idea.'],
   ];
@@ -888,9 +888,9 @@ const PHASES_P3 = [];
     fontSize: 15, bold: true, valign: 'middle', margin: 0, objectName: 'yd_note2',
   });
   s.addNotes(
-    'YOU DO — 14 minutes. Four clicks.\n\n'
-    + 'GOLD ONLY — they should already have Bronze and Silver done from Period 2. Anyone who does not, give them the first five minutes to finish those instead; Gold can wait.\n\n'
-    + 'CIRCULATE WITH ONE QUESTION: "is that a substitution or a two-step problem?" — same framing as Period 2, new content.\n\n'
+    'YOU DO. 14 minutes. Four clicks.\n\n'
+    + 'GOLD ONLY. They should already have Bronze and Silver done from Period 2. Anyone who does not, give them the first five minutes to finish those instead; Gold can wait.\n\n'
+    + 'CIRCULATE WITH ONE QUESTION: "is that a substitution or a two-step problem?" Same framing as Period 2, new content.\n\n'
     + 'AT 3 MINUTES REMAINING, stop them. Full answers, Bronze through Gold, are on the next slide.'
   );
 }
@@ -901,13 +901,13 @@ const PHASES_P3 = [];
   bg(s, 'light');
   PHASES_P3.push(timer(s, 3, 'light'));
   pill(s, 'Answers', 3, 'light');
-  title(s, 'Answers — Gold', 'light');
+  title(s, 'Answers: Gold', 'light');
 
   const ANS = [
     ['7', 'v = 9.8 × 3 = 29.4 m/s'],
     ['8', 's = ½ × 9.8 × 3² = 44.1 m'],
     ['9', 'F = ma → N = kg·m/s² → N ÷ kg = m/s²'],
-    ['10', 'g belongs to the field, not the object — the field’s strength is the same for every mass placed in it'],
+    ['10', 'g belongs to the field, not the object. The field’s strength is the same for every mass placed in it.'],
   ];
   const cw = (RIGHT - M - 0.26) / 2, rowH = 1.10, gap = 0.16;
   ANS.forEach(([n, a], i) => {
@@ -924,8 +924,8 @@ const PHASES_P3 = [];
     });
   });
   s.addNotes(
-    'ANSWERS — 3 minutes. Two clicks. They mark their own in a different colour — this is the second and final Answers slide, covering Q7-10.\n\n'
-    + 'Q8 ASSUMES Q7’S v IS NOT NEEDED — s uses u, a, t directly. If someone used v to find s, the answer can still be right; the method just took a longer route.\n\n'
+    'ANSWERS. 3 minutes. Two clicks. They mark their own in a different colour. This is the second and final Answers slide, covering Q7-10.\n\n'
+    + 'Q8 ASSUMES Q7’S v IS NOT NEEDED. s uses u, a, t directly. If someone used v to find s, the answer can still be right; the method just took a longer route.\n\n'
     + 'Q9 AND Q10 have no single wording. Mark on whether the physics is right, not whether it matches this card.'
   );
 }
@@ -967,9 +967,9 @@ const PHASES_P3 = [];
     bold: true, italic: true, valign: 'middle', margin: 0, objectName: 'pl_next2',
   });
   s.addNotes(
-    'PLENARY — 3 minutes. Six clicks. This is the true close of the double, not Period 2’s Recap.\n\n'
+    'PLENARY. 3 minutes. Six clicks. This is the true close of the double, not Period 2’s Recap.\n\n'
     + 'Q2 AND Q3 ARE THE TWO IDEAS THE WHOLE DOUBLE WAS BUILT AROUND. If either is wrong, that is the first five minutes of next lesson, not a footnote.\n\n'
-    + 'Q5 CHECKS THE HOOK LANDED PROPERLY, not just the vocabulary — "at the same time" is the only fully correct answer; "FALSE" alone without knowing why is not enough.\n\n'
+    + 'Q5 CHECKS THE HOOK LANDED PROPERLY, not just the vocabulary. "At the same time" is the only fully correct answer; "FALSE" alone without knowing why is not enough.\n\n'
     + 'The closing line is the whole double in one sentence.'
   );
 }

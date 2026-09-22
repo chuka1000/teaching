@@ -1,0 +1,550 @@
+{
+  "deck": "out/Introduction to Fields/Introduction to Fields.pptx",
+  "output": "out/Introduction to Fields/Introduction to Fields.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "d0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_badge",
+            "o0_num",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_badge",
+            "o1_num",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_badge",
+            "o2_num",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "obj_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "hook_reveal",
+          "members": [
+            "hook_reveal_bg",
+            "hook_reveal_t",
+            "hook_reveal_n"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "hook_reveal",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "def",
+          "members": [
+            "def_bg",
+            "def_t"
+          ]
+        },
+        {
+          "name": "ctA",
+          "members": [
+            "ctA_bg",
+            "ctA_h",
+            "ctA_list"
+          ]
+        },
+        {
+          "name": "ctB",
+          "members": [
+            "ctB_bg",
+            "ctB_h",
+            "ctB_r0_icon",
+            "ctB_r0_t",
+            "ctB_r1_icon",
+            "ctB_r1_t",
+            "ctB_r2_icon",
+            "ctB_r2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "def",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ctA",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ctB",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "fc0",
+          "members": [
+            "fc0_bg",
+            "fc0_icon",
+            "fc0_h",
+            "fc0_rule",
+            "fc0_r0_l",
+            "fc0_r0_v",
+            "fc0_r1_l",
+            "fc0_r1_v",
+            "fc0_r2_l",
+            "fc0_r2_v"
+          ]
+        },
+        {
+          "name": "fc1",
+          "members": [
+            "fc1_bg",
+            "fc1_icon",
+            "fc1_h",
+            "fc1_rule",
+            "fc1_r0_l",
+            "fc1_r0_v",
+            "fc1_r1_l",
+            "fc1_r1_v",
+            "fc1_r2_l",
+            "fc1_r2_v"
+          ]
+        },
+        {
+          "name": "fc2",
+          "members": [
+            "fc2_bg",
+            "fc2_icon",
+            "fc2_h",
+            "fc2_rule",
+            "fc2_r0_l",
+            "fc2_r0_v",
+            "fc2_r1_l",
+            "fc2_r1_v",
+            "fc2_r2_l",
+            "fc2_r2_v"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "fc0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fc1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fc2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "fl0",
+          "members": [
+            "fl0_h",
+            "g_core",
+            "g_lbl",
+            "g_ln0",
+            "g_ln1",
+            "g_ln2",
+            "g_ln3",
+            "g_ln4",
+            "g_ln5",
+            "g_ln6",
+            "g_ln7",
+            "fl0_cap"
+          ]
+        },
+        {
+          "name": "fl1",
+          "members": [
+            "fl1_h",
+            "e_core",
+            "e_lbl",
+            "e_ln0",
+            "e_ln1",
+            "e_ln2",
+            "e_ln3",
+            "e_ln4",
+            "e_ln5",
+            "e_ln6",
+            "e_ln7",
+            "fl1_cap"
+          ]
+        },
+        {
+          "name": "fl2",
+          "members": [
+            "fl2_h",
+            "fl2_photo",
+            "fl2_cap"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "fl0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fl1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fl2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "sc0",
+          "members": [
+            "sc0_bg",
+            "sc0_icon",
+            "sc0_t",
+            "sc0_a"
+          ]
+        },
+        {
+          "name": "sc1",
+          "members": [
+            "sc1_bg",
+            "sc1_icon",
+            "sc1_t",
+            "sc1_a"
+          ]
+        },
+        {
+          "name": "sc2",
+          "members": [
+            "sc2_bg",
+            "sc2_icon",
+            "sc2_t",
+            "sc2_a"
+          ]
+        },
+        {
+          "name": "sc3",
+          "members": [
+            "sc3_bg",
+            "sc3_icon",
+            "sc3_t",
+            "sc3_a"
+          ]
+        },
+        {
+          "name": "sc4",
+          "members": [
+            "sc4_bg",
+            "sc4_icon",
+            "sc4_t",
+            "sc4_a"
+          ]
+        },
+        {
+          "name": "sc5",
+          "members": [
+            "sc5_bg",
+            "sc5_icon",
+            "sc5_t",
+            "sc5_a"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "sc0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sc1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sc2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sc3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sc4",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sc5",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "cl0",
+          "members": [
+            "cl0_bg",
+            "cl0_icon",
+            "cl0_t"
+          ]
+        },
+        {
+          "name": "cl1",
+          "members": [
+            "cl1_bg",
+            "cl1_icon",
+            "cl1_t"
+          ]
+        },
+        {
+          "name": "cl2",
+          "members": [
+            "cl2_bg",
+            "cl2_icon",
+            "cl2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "cl0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cl1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "cl2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl_next",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

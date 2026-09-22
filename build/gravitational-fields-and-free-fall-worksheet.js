@@ -43,7 +43,7 @@ function worksheet() {
 
   k.push(runs([
     t('One worksheet, two periods. ', { bold: true, size: 10.5 }),
-    t('Bronze and Silver this morning. Gold this afternoon, after the break. Units every time — kg for mass, N for weight. g ≈ 9.8, never 10.', { size: 10.5 }),
+    t('Bronze and Silver this morning. Gold this afternoon, after the break. Units every time: kg for mass, N for weight. g ≈ 9.8, never 10.', { size: 10.5 }),
   ], { before: 160, after: 40 }));
 
   /* ---- BRONZE (Period 2) ---- */
@@ -74,11 +74,11 @@ function worksheet() {
 
   /* ---- GOLD (Period 3) ---- */
   k.push(tier('GOLD'));
-  k.push(p('Free fall and the unit proof — this afternoon.', { size: 10, italic: true, color: C.alert, after: 60 }));
+  k.push(p('Free fall and the unit proof, this afternoon.', { size: 10, italic: true, color: C.soft, after: 60 }));
 
-  k.push(q('7', 'A ball is dropped from rest and falls for 3 s. Ignore air resistance. Find its speed.', { marks: 2 }));
+  k.push(q('7', 'Find the speed of a ball dropped from rest after falling for 3 s. Ignore air resistance.', { marks: 2 }));
   k.push(ruledBox(2));
-  k.push(q('8', 'The same ball. Find how far it has fallen in that time.', { marks: 3 }));
+  k.push(q('8', 'Find how far the same ball has fallen in that time.', { marks: 3 }));
   k.push(ruledBox(2));
   k.push(q('9', 'Show that N/kg and m/s² are the same unit. Start from F = ma.', { marks: 3 }));
   k.push(ruledBox(4));
@@ -86,7 +86,7 @@ function worksheet() {
   k.push(ruledBox(3));
 
   k.push(p('', { after: 160 }));
-  k.push(boxed(p('Gemini: ask it to check your working for Q7 or Q8, or to explain any step of the Q9 proof you are stuck on. Do not ask it to write Q10 for you — explaining it yourself is the point.', {
+  k.push(boxed(p('Gemini: ask it to check your working for Q7 or Q8, or to explain any step of the Q9 proof you are stuck on. Do not ask it to write Q10 for you. Explaining it yourself is the point.', {
     size: 10, after: 0 }), { colour: C.rule, weight: 4, fill: 'E4E8F2' }));
 
   return new Document({
