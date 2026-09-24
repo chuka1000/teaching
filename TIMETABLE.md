@@ -21,9 +21,12 @@ P6 13:20–14:10, P7 14:10–15:00.
 | `10A` | Year 10 Co-ordinated Science | Science | 5 (2 + 3) |
 | `T3` | Developing Science | **CLIL** | 5 (3 + 2) |
 
-**There are two separate Year 9 Science classes, 9G and 9I.** If Chuka says
-"Year 9" without a code, ask which one before building. Do not assume they are
-at the same point in a unit.
+**There are two separate Year 9 Science classes, 9G and 9I** — but Chuka
+teaches them identical content, kept in step (confirmed 2026-09-24). One
+deck and worksheet serves both; only the taught date differs. Still worth
+a quick check if a brief ever implies they have diverged (different
+homework completion, one class behind after a disruption), since this is
+a stated practice, not a guarantee.
 
 `8CN` is the only Maths class. Everything else is Science except `T3`.
 

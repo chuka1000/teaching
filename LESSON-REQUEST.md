@@ -38,6 +38,8 @@ PREVIOUS:   <reference/<file>.pptx, or "none — first of the unit">
 THEY FOUND HARD: <what went wrong last lesson, if anything>
 
 PRACTICAL:  <what they do, what equipment, any safety concern>
+MEDIA:      <optional — only if you want something specific, or none at all>
+GAME:       <optional — a type from GAMES.md, or "your call">
 ASSESSMENT: <what's being assessed, if anything>
 AVOID:      <anything specific — a context, a method, a piece of kit>
 ```
@@ -68,6 +70,13 @@ These change the build, and Claude Code cannot infer them:
 - **"This is the last lesson of the unit."** Changes the plenary and usually
   means an assessment.
 - **"Pitch it low / this is a strong group."** Otherwise it aims at the middle.
+- **"No video this lesson."** Say it if the room has no speakers, the projector
+  is unreliable, or you want a print-friendly deck. Otherwise media is the
+  default and you do not need to ask for it.
+- **"Animate the ___."** Worth saying when a specific process would land better
+  moving than still — particle motion, a wave, a graph being drawn.
+- **"GAME: <type, or 'your call'>"** — the You Do becomes a game. The worksheet
+  is still built. Only asked for when you want one; see `GAMES.md`.
 
 ---
 

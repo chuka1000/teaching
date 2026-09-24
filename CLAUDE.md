@@ -62,6 +62,10 @@ node tools/validate.js "out/<Lesson Name>/<Lesson Name>.pptx"
 Order matters. `animate.js` writes `<p:timing>`; `autoplay-media.js` merges
 into it. Run autoplay **after** animate, never before.
 
+`node tools/build-lesson.js <lesson-slug>` runs the build, spec, animate,
+autoplay and validate steps in that order, then renders the deck to PDF and
+PNG in `_check/`. It builds the deck only; the worksheet has its own script.
+
 Then **look at it**. Convert to PDF, render to PNG, and open the images.
 LibreOffice renders things Keynote refuses — a clean PDF is not proof.
 
@@ -152,6 +156,24 @@ title centred, date right-aligned, accent rule beneath, then six question cards
 in a 2×3 grid. Each card: number, question, and the **real answer** revealed on
 click. Never "keep your answer for later" — show the answer.
 
+**The Do Now may draw on the other sciences.** For `10A` this is not a
+flourish — Co-ordinated Sciences is one course covering biology, chemistry and
+physics, and the syllabus expects links across it. A physics Do Now can
+legitimately carry a chemistry or biology retrieval question where the idea
+connects. **How many is flexible:** two, one, or none. Let the topic decide;
+never force a link that is not there. `curriculum/0654-INDEX.md` lists the
+worked links. The same applies loosely at KS3, where science is taught as one
+subject anyway.
+
+**The Do Now must vary.** Test a range of skills across the six: recall, a
+definition, a short calculation, spotting an error, a link back to an earlier
+lesson, a link across the sciences. And do not repeat what the class has just
+answered. Before writing a Do Now, open the last three lessons' Do Nows in
+`reference/` (or `out/`) and check each new question against them. The same
+question or the same fact turning up three or four lessons running has
+happened, and students notice. Retrieval means coming back to an idea in a new
+shape, not asking it again.
+
 **Slide 6 (We Do)** is always "What should be the correct answer?" with the
 subtitle "Spot the mistake." A wrong statement on the left, the correction in a
 box on the right. No explanation column. 16 pt.
@@ -163,6 +185,10 @@ whiteboards** — never write an instruction that needs one.
 **Slide 8 (You Do)** shows `assets/classroom.png` at 62% transparency, top
 right. Title is `"<Lesson Name> worksheet"`. Red subtitle: "Open Google
 Classroom now." Three tier cards: Bronze / Silver / Gold.
+
+**The You Do may be a game instead of the worksheet when asked.** The
+worksheet is still produced every time. Only build a game when Chuka asks for
+one. See `GAMES.md`.
 
 **Slide 9 (Answers)** holds ten model answers that match worksheet questions
 1–10 **exactly, in order**. Students mark their own. There is no separate
@@ -348,11 +374,104 @@ lesson in a unit should look like the first one.
 
 ---
 
+## The syllabus
+
+`10A` follows **Cambridge IGCSE Co-ordinated Sciences 0654**. The scheme of
+work is the 0654 PDF in `curriculum/` (any filename containing "0654") — 198
+pages.
+
+**Never read it whole.** Use the index and the lookup tool:
+
+```bash
+python3 tools/syllabus.py P1.4            # one sub-topic
+python3 tools/syllabus.py C1 --pages      # page range only
+python3 tools/syllabus.py density         # free-text across the scheme
+```
+
+`curriculum/0654-INDEX.md` maps all 37 topics to page ranges and declared
+teaching hours.
+
+For every reference the scheme gives Cambridge's own wording of the learning
+objective, plus suggested activities — named practicals, PhET simulations,
+Resource Plus packs, and the misconceptions Cambridge expects. **Quote the
+objective wording exactly**; it is what the exam is written against. Tag every
+objective on the Today slide with its code.
+
+Before building any `10A` lesson, pull the relevant section and read it. It
+often names the exact misconception and the exact demonstration to use, which
+is better than inventing one.
+
+---
+
+## Media — images and video
+
+**Use real media, and use it often.** A photograph of the thing, or a short
+animation of the process, does work that a bullet point cannot. Aim for
+something visual on most content slides, not one image per deck.
+
+**But every media item must do a job.** It should show something the words
+cannot: a process moving, a scale, a real specimen, a piece of apparatus
+nobody in the room has seen. Decoration is worse than nothing, because it
+costs attention and teaches nothing.
+
+### In order of preference
+
+**1. Generate the animation yourself.** Best option for anything that moves or
+changes — particle motion, a wave, a graph being drawn, a circuit filling,
+orbital motion. Render frames with PIL, encode with ffmpeg. It is
+copyright-clean, exactly on topic, and small: eight seconds at 960×540 costs
+about 100 KB.
+
+```bash
+ffmpeg -y -framerate 20 -i frames/%04d.png \
+  -c:v libx264 -pix_fmt yuv420p -crf 26 -preset veryslow out.mp4
+```
+
+Match the palette. Keep it 5–15 seconds, silent, and looping-friendly.
+
+**2. Public-domain or CC video.** NASA and ESA footage is public domain;
+Wikimedia Commons has good CC demonstration video. Convert to H.264 mp4 with
+`-pix_fmt yuv420p` or PowerPoint will not play it.
+
+**3. Real photographs.** Wikimedia Commons, filtered to CC or public domain.
+Square-crop, then **look at the image** before using it — a "tree" that is a
+dot on the horizon will not read at 20 mm.
+
+**4. Icons.** Only where a photograph genuinely cannot show the thing — an
+atom, or an abstract property like "tiny".
+
+### Hard rules
+
+- **Never download video from YouTube** or use copyrighted footage. Not for
+  classroom use, not "just this once".
+- **Never use pptxgenjs `type: 'online'`** YouTube embeds. They need live
+  internet in the room and Keynote handles them badly.
+- **No credits slide, and no attribution on the slides.** Nobody in the room
+  needs it, and a source can be found with a reverse image search. Still use
+  only public-domain or CC material, and never copyrighted footage; that is a
+  question of what is allowed, not of what is shown.
+- **Run `lib/autoplay-media.js` after `lib/animate.js`.** It gives every video
+  on the slide an autoplay node, content video included.
+- **Keep the deck under about 25 MB.** If media pushes past that, shorten the
+  clips or drop the resolution before dropping the media.
+- `tools/check-timers.py` counts videos per slide, so a content video alongside
+  a timer is fine.
+
+### Where media earns its place
+
+- **Hook** — a photograph or a five-second clip is a better hook than a
+  sentence.
+- **I Do** — an animation of the process being explained.
+- **Context** — the real thing: the apparatus, the organism, the place.
+- Not the Do Now, the Cold Call or the Answers. Those are text and need to
+  stay scannable.
+
+---
+
 ## Facts and sources
 
 Verify anything factual with a web search before it goes on a slide. Prefer
-primary sources. Put a credits slide in decks that use photographs or figures,
-with licence and attribution.
+primary sources. There is no credits slide.
 
 Images: Wikimedia Commons, filtered to CC or public domain. Square-crop and
 inspect them before use — a "tree" that is a dot on the horizon will not read at
@@ -375,11 +494,13 @@ Never coded names like `Y7_U1_L4`.
 ```
 TIMETABLE.md  classes, loads, doubles, and the T3 slot pattern
 LESSON-REQUEST.md  how Chuka asks for a lesson, and what he gets back
+curriculum/   scheme of work PDFs and their indexes — look up, never read whole
 CLIL.md       the T3 Developing Science exception — read before planning for them
+GAMES.md      when the You Do becomes a game, and how to build one
 reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, timer, animate, autoplay-media
 tools/      build-lesson, validate, check-timers, check-contrast, make-timers,
-            make-icons, make-preview
+            make-icons, make-preview, syllabus
 assets/     pre-built timer videos, Google Classroom logo
 examples/   complete working builds — read these before writing a new one
 build/      your lesson builders go here
