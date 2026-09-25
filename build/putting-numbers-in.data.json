@@ -1,0 +1,258 @@
+[
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 1,
+  "formula": "n + 7",
+  "subs": {
+   "n": 5
+  },
+  "category": "onestep",
+  "answer": 12,
+  "wrong": {}
+ },
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 2,
+  "formula": "6n",
+  "subs": {
+   "n": 4
+  },
+  "category": "onestep",
+  "answer": 24,
+  "wrong": {
+   "64": "join"
+  }
+ },
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 3,
+  "formula": "n - 3",
+  "subs": {
+   "n": 9
+  },
+  "category": "onestep",
+  "answer": 6,
+  "wrong": {
+   "12": "operation"
+  }
+ },
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 4,
+  "formula": "8n",
+  "subs": {
+   "n": 7
+  },
+  "category": "onestep",
+  "answer": 56,
+  "wrong": {
+   "87": "join"
+  }
+ },
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 5,
+  "formula": "15 - n",
+  "subs": {
+   "n": 6
+  },
+  "category": "onestep",
+  "answer": 9,
+  "wrong": {
+   "21": "operation"
+  }
+ },
+ {
+  "round": 1,
+  "roundName": "One-step formulas",
+  "n": 6,
+  "formula": "3n",
+  "subs": {
+   "n": 12
+  },
+  "category": "onestep",
+  "answer": 36,
+  "wrong": {
+   "312": "join"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 1,
+  "formula": "3n + 2",
+  "subs": {
+   "n": 4
+  },
+  "category": "order",
+  "answer": 14,
+  "wrong": {
+   "20": "addfirst"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 2,
+  "formula": "2 + 5n",
+  "subs": {
+   "n": 3
+  },
+  "category": "order",
+  "answer": 17,
+  "wrong": {
+   "21": "addfirst"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 3,
+  "formula": "20 - 2n",
+  "subs": {
+   "n": 6
+  },
+  "category": "order",
+  "answer": 8,
+  "wrong": {
+   "108": "subfirst"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 4,
+  "formula": "2(n + 3)",
+  "subs": {
+   "n": 4
+  },
+  "category": "bracket",
+  "answer": 14,
+  "wrong": {
+   "11": "bracket"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 5,
+  "formula": "5(n + 2)",
+  "subs": {
+   "n": 3
+  },
+  "category": "bracket",
+  "answer": 25,
+  "wrong": {
+   "17": "bracket"
+  }
+ },
+ {
+  "round": 2,
+  "roundName": "Two steps and brackets",
+  "n": 6,
+  "formula": "4(n + 1)",
+  "subs": {
+   "n": 6
+  },
+  "category": "bracket",
+  "answer": 28,
+  "wrong": {
+   "25": "bracket"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 1,
+  "formula": "3a + b",
+  "subs": {
+   "a": 2,
+   "b": 5
+  },
+  "category": "letters",
+  "answer": 11,
+  "wrong": {
+   "17": "swapped"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 2,
+  "formula": "2x + 3y",
+  "subs": {
+   "x": 4,
+   "y": 3
+  },
+  "category": "letters",
+  "answer": 17,
+  "wrong": {
+   "18": "swapped"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 3,
+  "formula": "ab",
+  "subs": {
+   "a": 4,
+   "b": 6
+  },
+  "category": "letters",
+  "answer": 24,
+  "wrong": {
+   "46": "join"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 4,
+  "formula": "5m + 2n",
+  "subs": {
+   "m": 3,
+   "n": 4
+  },
+  "category": "letters",
+  "answer": 23,
+  "wrong": {
+   "26": "swapped"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 5,
+  "formula": "3(a + b)",
+  "subs": {
+   "a": 2,
+   "b": 5
+  },
+  "category": "bracket",
+  "answer": 21,
+  "wrong": {
+   "11": "bracket"
+  }
+ },
+ {
+  "round": 3,
+  "roundName": "Two letters",
+  "n": 6,
+  "formula": "2(l + 3w)",
+  "subs": {
+   "l": 4,
+   "w": 2
+  },
+  "category": "bracket",
+  "answer": 20,
+  "wrong": {
+   "14": "bracket"
+  }
+ }
+]

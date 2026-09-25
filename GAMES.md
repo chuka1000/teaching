@@ -61,6 +61,11 @@ Each of these is buildable in one pass and fits 10–14 minutes.
   builder, always with pictures.
 - **A lesson whose misconceptions are the point** → True or false blitz.
 - **A lesson with a diagram** → Labeller.
+- **`T3`, any lesson** → follow the CLIL question order (yes/no, then either/or, then
+  open) and use only the words and pictures already taught. Worked example:
+  `build/atoms-words-and-picture-game.html` (words, then point at the parts of an
+  atom, then sentence gaps, with the syllable split and the agreed gesture shown
+  after every answer).
 
 ### Non-digital, when the room suits it better
 
@@ -94,6 +99,59 @@ deck it came from.
 **Rounds of about six.** Three rounds is right for 14 minutes. Show progress.
 
 **Name it after the lesson**: `Measuring Properly game.html`.
+
+**Randomised per student.** See "Every student gets a different game" below. This is a build rule, not an option.
+
+---
+
+## Every student gets a different game
+
+**Never ship one fixed set of questions.** If every student sees the same
+questions in the same order, the answers are shared in ten seconds and the
+game measures nothing. Each game is generated from a short **game code**, random
+for each student:
+
+- Numbers, forms and letters come from templates, not from a fixed list.
+- Within each block of similar difficulty the order is shuffled. Easy blocks
+  still come first, so the round still gets harder.
+- The **skills and their order stay the same for everyone**, so the diagnostic
+  ("brackets: 2 of 5") means the same thing for every student.
+- The code is shown on the start and end screens. Opening the file with
+  `#CODE` on the end of the address gives exactly that game again, so a teacher
+  can see what a student saw. The code lives in memory only.
+- Every wrong answer the game names as a known mistake carries the sum that
+  produces it (`how`). The feedback is therefore correct for whatever numbers
+  came up, not for one hard-coded case.
+- Validity rules are part of the template: whole numbers only, positive results,
+  no two mistakes with the same value, no mistake equal to the answer.
+
+`build/putting-numbers-in-game.html` is the worked example (a seeded generator,
+about 300 lines).
+
+### How this carries over to science
+
+| Game | What varies per student |
+|---|---|
+| **Drill rounds** (density, speed, weight, V = IR, moles) | The numbers, the units (g and cm³ against kg and m³), and the context (an object, a metal, a liquid). Each template names its slips: inverted formula, unit not converted, forgot to square. |
+| **Sorter** | Draw 8 to 10 items from a pool of 14 to 18, so no two students sort the same set. Shuffle item order and bin positions. Keep the misconception items in every draw (a rule, not chance). |
+| **Sequencer** | Draw a different subset of steps, or a different example process of the same shape (three food chains, not one). |
+| **Pairs / Labeller** | Random subset of pairs, random card positions. Labeller: random rotation, mirror or zoom of the same diagram. |
+| **Spot the error** | Generate the worked solution from numbers, then inject one error of a chosen type at a random line. Which line is wrong differs per student. |
+| **Number line** | A random target value inside a band, in a scale that changes (0 to 100, 0 to 20). |
+| **Graph match** | Random gradient and intercept, so the graphs are not the same picture. The description changes with them. |
+| **True or false blitz** | Draw 20 statements from a bank of 30 to 40, and flip some by rewording. Options shuffled on every multiple-choice item. |
+
+**Conceptual items with no numbers** cannot be numerically varied. Vary them
+three ways instead: several phrasings of the same misconception, options shuffled,
+and a bank larger than the draw. Do not pretend a single fixed question is
+varied because its options are in a new order.
+
+**Testing a random game is different.** A hand-written question can be checked
+by eye; a generator cannot. Dump a few hundred generated games and check every
+answer, every mistake value and every worked line with sympy
+(`build/check-putting-numbers-in-game.py`), then check no two games are alike.
+Then play it in a browser at both viewports
+(`build/test-putting-numbers-in-game.js`).
 
 ---
 

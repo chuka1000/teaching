@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atoms: words and pictures</title>
+<style>
+/*PALETTE*/
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--white); color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 760px; padding: 14px 16px 28px; }
+  h1, h2 { margin: 0; color: var(--dark); font-family: Georgia, 'Times New Roman', serif; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .pill { background: var(--dark); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--dark); background: var(--white); }
+  .dot.now { background: var(--accent); }
+  .dot.right { background: var(--support); border-color: var(--support); }
+  .dot.wrong { background: var(--alert); border-color: var(--alert); }
+  .card { background: var(--tint); border-radius: 16px; padding: 16px; margin-bottom: 12px; text-align: center; }
+  .ask { font-size: 22px; font-weight: 700; color: var(--dark); margin: 4px 0 10px; }
+  .pic { width: 190px; height: 190px; object-fit: contain; display: block; margin: 0 auto 8px; }
+  .pic.wide { width: 250px; height: 182px; border-radius: 12px; }
+  .pics { display: flex; justify-content: center; gap: 14px; }
+  .pics .pic { width: 96px; height: 96px; margin: 0 0 8px; }
+  .word { font-size: 40px; font-weight: 700; color: var(--dark); }
+  .say { font-size: 24px; color: var(--inkSoft); letter-spacing: .04em; margin-top: 2px; }
+  .say b { color: var(--dark); }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .choices.four { grid-template-columns: 1fr 1fr; }
+  button { font: inherit; cursor: pointer; }
+  .choice { min-height: 74px; font-size: 30px; font-weight: 700; color: var(--dark); background: var(--white);
+    border: 3px solid var(--tintDeep); border-radius: 16px; padding: 8px 10px; touch-action: manipulation; }
+  .choice:active { background: var(--tintDeep); }
+  .choice.pickedOK { border-color: var(--support); background: #E3F6EF; }
+  .choice.pickedNo { border-color: var(--alert); background: #FDE7EC; }
+  .btn { padding: 15px 30px; border-radius: 14px; font-size: 22px; font-weight: 700; min-height: 58px;
+    background: var(--dark); color: var(--white); border: 3px solid var(--dark); touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--dark); }
+  button:disabled { opacity: .4; cursor: default; }
+  button:focus-visible, [tabindex]:focus-visible { outline: 4px solid var(--accentInk); outline-offset: 2px; }
+  #feedback { border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; border: 4px solid; text-align: center; }
+  #feedback.right { border-color: var(--support); background: #E3F6EF; }
+  #feedback.wrong { border-color: var(--alert); background: #FDE7EC; }
+  #feedback .head { font-size: 26px; font-weight: 700; color: var(--dark); }
+  #feedback .msg { font-size: 20px; font-weight: 700; color: var(--dark); margin-top: 6px; }
+  #feedback .mean { font-size: 18px; color: var(--ink); margin-top: 6px; }
+  #feedback .gest { font-size: 16px; color: var(--inkSoft); margin-top: 6px; font-style: italic; }
+  #feedback .sent { font-size: 28px; font-weight: 700; color: var(--dark); margin-top: 8px; font-family: Georgia, serif; }
+  #feedback .aloud { font-size: 18px; font-weight: 700; color: var(--accentInk); margin-top: 6px; }
+  .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .yn .choice { min-height: 70px; font-size: 32px; }
+  /* the sentence builder */
+  .sentence { font-size: 30px; font-weight: 700; color: var(--dark); line-height: 1.9; font-family: Georgia, serif; }
+  .gap { display: inline-block; min-width: 92px; min-height: 48px; padding: 0 10px; margin: 0 4px; border: 3px dashed var(--inkSoft);
+    border-radius: 10px; vertical-align: middle; line-height: 42px; background: var(--white); font-family: Arial, sans-serif; font-size: 26px; color: var(--dark); }
+  .gap.filled { border-style: solid; border-color: var(--dark); cursor: pointer; }
+  .gap.ok { border-color: var(--support); background: #E3F6EF; }
+  .gap.no { border-color: var(--alert); background: #FDE7EC; }
+  .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 12px; }
+  .tile { min-height: 60px; min-width: 96px; font-size: 26px; font-weight: 700; color: var(--dark); background: var(--white);
+    border: 3px solid var(--dark); border-radius: 14px; padding: 6px 16px; touch-action: manipulation; }
+  .tile:disabled { visibility: hidden; }
+  /* the atom pictures */
+  svg.board { width: 100%; max-width: 330px; height: auto; display: block; margin: 0 auto; touch-action: manipulation; }
+  svg.board [data-part] { cursor: pointer; }
+  svg.board .glow { stroke: var(--accentInk); stroke-width: 6; fill: none; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--tintDeep); text-align: left; }
+  .row:last-child { border-bottom: 0; }
+  .row img { width: 56px; height: 56px; object-fit: contain; flex: none; }
+  .row .w { font-size: 24px; font-weight: 700; color: var(--dark); }
+  .row .s { font-size: 17px; color: var(--inkSoft); }
+  .bar { height: 14px; border-radius: 7px; background: var(--tintDeep); overflow: hidden; width: 120px; flex: none; }
+  .bar i { display: block; height: 100%; background: var(--support); }
+  .lead { font-size: 22px; line-height: 1.45; margin: 8px 0; }
+  .small { font-size: 14px; color: var(--inkSoft); }
+  .score { font-size: 46px; font-family: Georgia, serif; font-weight: 700; color: var(--dark); }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--dark); }
+  .hide { display: none !important; }
+  @media (max-width: 480px) {
+    .pic { width: 150px; height: 150px; } .pic.wide { width: 220px; height: 160px; }
+    .word { font-size: 34px; } .choice { font-size: 26px; min-height: 66px; } .sentence { font-size: 25px; }
+    .gap { min-width: 78px; font-size: 22px; } .tile { font-size: 22px; min-width: 84px; } .bar { width: 80px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+  var IMG = /*IMAGES*/;
+
+  /* ================================================================== *
+   * THE WORDS. Only the ten words, the pictures and the sentences from Atoms 1,
+   * Atoms 2 and Atoms 3. Nothing new. `say` is the syllable split the class drilled,
+   * with the stressed beat in capitals. `mean` is the one-line meaning from the deck.
+   * `gest` is the gesture agreed in Atoms 1 (none was fixed for the others).
+   * ================================================================== */
+  var WORDS = {
+    atom:     { pic: 'atom',     say: 'A-tom',        mean: 'A very, very small part.',                 gest: 'Gesture: fingers circling.' },
+    matter:   { pic: 'matter',   say: 'MAT-ter',      mean: 'Anything you can touch.',                  gest: 'Gesture: hold up a pen.' },
+    tiny:     { pic: 'tiny',     say: 'TY-nee',       mean: 'Very, very small.',                        gest: 'Gesture: finger and thumb pinched together.' },
+    part:     { pic: 'part',     say: 'PART',         mean: 'One piece of something.',                  gest: 'Gesture: chop one hand into the other.' },
+    nucleus:  { pic: 'nucleus',  say: 'NEW-clee-us',  mean: 'It is in the centre of the atom.',         gest: '' },
+    centre:   { pic: 'centre',   say: 'SEN-ter',      mean: 'The middle of something.',                 gest: '' },
+    electron: { pic: 'electron', say: 'eh-LEK-tron',  mean: 'A part of the atom.',                      gest: '' },
+    outside:  { pic: 'outside',  say: 'OWT-side',     mean: 'The electron is outside the nucleus.',     gest: '' },
+    proton:   { pic: 'proton',   say: 'PRO-ton',      mean: 'A small part inside the nucleus.',         gest: '' },
+    neutron:  { pic: 'neutron',  say: 'NEW-tron',     mean: 'Another small part inside the nucleus.',   gest: '' }
+  };
+  var ORDER = ['atom', 'matter', 'tiny', 'part', 'nucleus', 'centre', 'electron', 'outside', 'proton', 'neutron'];
+  // words that get mixed up, from the notes: the trap pairs
+  var CONFUSE = {
+    nucleus: ['neutron', 'electron', 'proton'], electron: ['neutron', 'nucleus', 'atom'], neutron: ['nucleus', 'proton', 'electron'],
+    proton: ['neutron', 'electron'], centre: ['outside'], outside: ['centre'], matter: ['part', 'atom'], part: ['matter', 'tiny'],
+    atom: ['matter', 'nucleus'], tiny: ['part', 'atom']
+  };
+  var NOUNS = [{ t: 'Water', pic: 'water' }, { t: 'An apple', pic: 'apple' }, { t: 'Air', pic: 'air' }, { t: 'My hand', pic: 'hand' }];
+  var HARD = ['nucleus', 'electron'];        // the two the class found hard: in every game
+
+  /* ================================================================== *
+   * NOBODY GETS THE SAME GAME. Every game is generated from a six-character code,
+   * random for each student. Opening the file with #CODE on the end of the address
+   * gives the same game again, so a teacher can see what a student saw.
+   * The skills and their order are the same for everyone (words, then the
+   * atom pictures, then sentences), so the end screen means the same thing.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var out = [];
+
+    /* ---- Round 1: words. Yes or no first, then either/or (CLIL order: never open first). ---- */
+    var others = shuffle(ORDER.filter(function (w) { return HARD.indexOf(w) < 0; })).slice(0, 4);
+    var targets = shuffle(HARD.concat(others));
+    var truths = shuffle([true, false]);
+    targets.forEach(function (w, i) {
+      var wrongWord = pick(CONFUSE[w]);
+      if (i < 2) out.push({ round: 1, n: i + 1, type: 'yn', cat: 'words', word: w, shown: truths[i] ? w : wrongWord, truth: truths[i] });
+      else out.push({ round: 1, n: i + 1, type: 'eo', cat: 'words', word: w, options: shuffle([w, wrongWord]) });
+    });
+
+    /* ---- Round 2: point to the part. The atom as they drew it, then the nucleus. ---- */
+    var atomLayout = (function () {
+      var n = int(3, 5), start = int(0, 359), angles = [];
+      for (var i = 0; i < n; i++) angles.push(start + i * (360 / n) + int(-12, 12));
+      return { electrons: angles };
+    })();
+    var nucLayout = (function () {
+      var pts = [], kinds = shuffle(['p', 'p', 'p', 'n', 'n', 'n']);
+      var tries = 0;
+      while (pts.length < 6 && tries < 2000) {
+        tries++;
+        var ang = rnd() * Math.PI * 2, rad = Math.sqrt(rnd()) * 0.66, x = Math.cos(ang) * rad, y = Math.sin(ang) * rad;
+        if (pts.every(function (p) { return Math.hypot(p.x - x, p.y - y) > 0.36; })) pts.push({ x: x, y: y, k: kinds[pts.length] });
+      }
+      return { dots: pts };
+    })();
+    shuffle(['centre', 'outside', 'electron']).forEach(function (w, i) { out.push({ round: 2, n: i + 1, type: 'point', cat: 'labels', board: 'atom', word: w, layout: atomLayout }); });
+    shuffle(['nucleus', 'proton', 'neutron']).forEach(function (w, i) { out.push({ round: 2, n: i + 4, type: 'point', cat: 'labels', board: 'nucleus', word: w, layout: nucLayout }); });
+
+    /* ---- Round 3: build the sentence. Tap the words into the gaps. ---- */
+    var tiles = function (need, pool, count) {      // the needed words, plus distractors from the taught words, shuffled
+      var extra = shuffle(pool.filter(function (w) { return need.indexOf(w) < 0; })).slice(0, count);
+      return shuffle(need.concat(extra));
+    };
+    var noun = function () { return pick(NOUNS); };
+    var madeOf = function (nn, id) {
+      var others2 = shuffle(NOUNS.filter(function (x) { return x.t !== nn.t; })).slice(0, 2).map(function (x) { return x.t; });
+      return { id: id, pic: nn.pic, segs: [{ gap: 0 }, ' is made of ', { gap: 1 }, '.'], gaps: [[nn.t], ['atoms']],
+        tiles: shuffle([nn.t].concat(others2, ['atoms', 'atom'])), full: nn.t + ' is made of atoms.', words: ['atom'], gest: 'Gesture: hands building.' };
+    };
+    var n1 = noun(), n2 = pick(NOUNS.filter(function (x) { return x.t !== n1.t; }));
+    var sents = {
+      madeof1: madeOf(n1, 'madeof1'), madeof2: madeOf(n2, 'madeof2'),
+      centre: { id: 'centre', pic: 'centre', segs: ['The nucleus is in the ', { gap: 0 }, ' of the atom.'], gaps: [['centre']],
+        tiles: tiles(['centre'], ['outside', 'electron', 'nucleus'], 2), full: 'The nucleus is in the centre of the atom.', words: ['centre', 'nucleus'], gest: '' },
+      outside: { id: 'outside', pic: 'electron', segs: ['The electron is ', { gap: 0 }, ' the nucleus.'], gaps: [['outside']],
+        tiles: tiles(['outside'], ['centre', 'nucleus', 'atom'], 2), full: 'The electron is outside the nucleus.', words: ['outside', 'electron'], gest: '' },
+      protons: { id: 'protons', pics: ['proton', 'neutron'], segs: ['The nucleus is made of ', { gap: 0 }, ' and ', { gap: 1 }, '.'], gaps: [['protons', 'neutrons'], ['protons', 'neutrons']],
+        tiles: shuffle(['protons', 'neutrons'].concat(shuffle(['electron', 'nucleus', 'atom']).slice(0, 2))), full: 'The nucleus is made of protons and neutrons.', words: ['proton', 'neutron', 'nucleus'], gest: 'Gesture: hands building.' },
+      tinypart: { id: 'tinypart', pic: 'atom', segs: ['An atom is a tiny ', { gap: 0 }, ' of ', { gap: 1 }, '.'], gaps: [['part'], ['matter']],
+        tiles: tiles(['part', 'matter'], ['atom', 'tiny', 'nucleus'], 2), full: 'An atom is a tiny part of matter.', words: ['part', 'matter'], gest: '' }
+    };
+    var early = shuffle(['madeof1', 'madeof2', 'centre', 'outside']).concat(['protons', 'tinypart']);
+    early.forEach(function (k, i) { var s = sents[k]; s.round = 3; s.n = i + 1; s.type = 'build'; s.cat = 'sentences'; out.push(s); });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Words', 'Atom pictures', 'Sentences'];
+  var CATS = { words: 'Words', labels: 'Atom pictures', sentences: 'Sentences' };
+  var HABIT = {
+    partmatter: 'part and matter. A part is a piece OF the stuff. Matter is the stuff.',
+    plural: 'atoms, with an s. More than one atom.',
+    picture: 'the picture. Look at the picture, then choose the word.',
+    centreoutside: 'centre and outside. The centre is the middle. Outside is around the centre.',
+    protonneutron: 'proton and neutron. A proton is a yellow dot. A neutron is a rose dot.',
+    nucleusdot: 'nucleus and the dots. The nucleus is the whole dark circle.',
+    other: 'the words in the sentence. Read it again.'
+  };
+
+  var app = document.getElementById('app');
+  var state, filled, locked;
+
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), i: 0, results: [], screen: 'start' }; locked = false; }
+  function Q() { return state.qs[state.i]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  function img(name, cls) { return '<img class="pic ' + (cls || '') + '" alt="" src="' + IMG[name] + '">'; }
+  // the say line, stressed beat in bold: "NEW-clee-us"
+  function sayHtml(w) { return '<span class="say">' + WORDS[w].say.split('-').map(function (s) { return s === s.toUpperCase() && /[A-Z]/.test(s) ? '<b>' + s + '</b>' : s; }).join('-') + '</span>'; }
+
+  function header() {
+    var q = Q(), h = el('header');
+    h.appendChild(el('span', 'pill', 'Round ' + q.round + ' · ' + ROUND_NAMES[q.round - 1]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + q.n + ' of 6');
+    for (var k = 0; k < 6; k++) {
+      var idx = (q.round - 1) * 6 + k, res = state.results[idx];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (idx === state.i ? ' now' : ''))));
+    }
+    h.appendChild(d); return h;
+  }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Atoms: words and pictures'));
+    card.appendChild(el('p', 'lead', 'Look. Tap. Say it out loud.'));
+    card.appendChild(el('p', 'lead', '3 rounds.'));
+    card.appendChild(el('p', 'small', 'Your game is different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start'); b.id = 'start'; b.onclick = function () { state.i = 0; question(); }; app.appendChild(b); b.focus();
+  }
+
+  function question() {
+    clear(); locked = false; filled = null; state.screen = 'question';
+    var q = Q(); app.appendChild(header());
+    if (q.type === 'yn') ynScreen(q); else if (q.type === 'eo') eoScreen(q); else if (q.type === 'point') pointScreen(q); else buildScreen(q);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var nb = el('button', 'btn hide', 'Next'); nb.id = 'next'; nb.onclick = next; app.appendChild(nb);
+  }
+
+  function record(ok, tag, words) { state.results[state.i] = { ok: ok, tag: tag || null, cat: Q().cat, words: words || [] }; locked = true; }
+  function showFeedback(ok, headText, msg, w, extraHtml, gest) {
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + headText + '</div>' + (msg ? '<div class="msg">' + msg + '</div>' : '') +
+      (w ? '<div class="word" style="font-size:32px;margin-top:8px">' + w + '</div>' + sayHtml(w) + '<div class="mean">' + WORDS[w].mean + '</div>' + (WORDS[w].gest ? '<div class="gest">' + WORDS[w].gest + '</div>' : '') : '') +
+      (gest ? '<div class="gest">' + gest + '</div>' : '') + (extraHtml || '');
+    var nb = document.getElementById('next'); nb.classList.remove('hide'); nb.textContent = state.i % 6 === 5 ? 'Finish round' : 'Next';
+    var d = document.querySelectorAll('.dot'); if (d[state.i % 6]) d[state.i % 6].className = 'dot ' + (ok ? 'right' : 'wrong');
+    nb.scrollIntoView({ block: 'nearest' });
+  }
+
+  /* ---- round 1: yes or no ---- */
+  function ynScreen(q) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Is this right?'));
+    card.appendChild(el('div', null, img(WORDS[q.word].pic, q.word === 'outside' ? 'wide' : '')));
+    card.appendChild(el('div', 'word', q.shown));
+    app.appendChild(card);
+    var box = el('div', 'yn');
+    [['Yes', true], ['No', false]].forEach(function (o) {
+      var b = el('button', 'choice', o[0]); b.type = 'button'; b.dataset.k = o[1] ? 'yes' : 'no';
+      b.onclick = function () { answerYN(q, o[1], b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerYN(q, said, btn) {
+    if (locked) return;
+    var ok = said === q.truth;
+    record(ok, ok ? null : 'word', [q.word]);
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', ok ? '' : (q.truth ? 'It is right.' : 'The word is wrong. Look.'), q.word);
+    disable('.yn .choice');
+  }
+
+  /* ---- round 1: either/or ---- */
+  function eoScreen(q) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Tap the word.'));
+    card.appendChild(el('div', null, img(WORDS[q.word].pic, q.word === 'outside' ? 'wide' : '')));
+    app.appendChild(card);
+    var box = el('div', 'choices');
+    q.options.forEach(function (w, i) {
+      var b = el('button', 'choice', w); b.type = 'button'; b.dataset.k = String(i + 1);
+      b.onclick = function () { answerEO(q, w, b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerEO(q, w, btn) {
+    if (locked) return;
+    var ok = w === q.word;
+    record(ok, ok ? null : 'word', [q.word]);
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    if (!ok) [].forEach.call(document.querySelectorAll('.choices .choice'), function (b) { if (b.textContent === q.word) b.classList.add('pickedOK'); });
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', '', q.word);
+    disable('.choices .choice');
+  }
+  function disable(sel) { [].forEach.call(document.querySelectorAll(sel), function (b) { b.disabled = true; b.style.opacity = '1'; }); }
+
+  /* ---- round 2: the atom pictures. Point first. ---- */
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) { var e = document.createElementNS(SVGNS, tag); Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); }); if (parent) parent.appendChild(e); return e; }
+  function partStyle(e, part) { e.dataset.part = part; e.setAttribute('tabindex', '0'); e.setAttribute('role', 'button'); e.setAttribute('aria-label', 'part of the picture'); }
+
+  function pointScreen(q) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Tap the'));
+    card.appendChild(el('div', 'word', q.word));
+    var svg = svgEl('svg', { viewBox: '0 0 300 300', 'class': 'board', role: 'group', 'aria-label': 'Atom picture' });
+    var cx = 150, cy = 150;
+    if (q.board === 'atom') {
+      // the atom as they drew it: a circle, a yellow centre, green electrons on the edge
+      var ring = svgEl('circle', { cx: cx, cy: cy, r: 132, fill: '#EDF5F8', stroke: 'var(--dark)', 'stroke-width': 4 }, svg); partStyle(ring, 'outside');
+      var c = svgEl('circle', { cx: cx, cy: cy, r: 40, fill: 'var(--accent)', stroke: 'var(--dark)', 'stroke-width': 3 }, svg); partStyle(c, 'centre');
+      q.layout.electrons.forEach(function (deg) {
+        var a = deg * Math.PI / 180, ex = cx + 132 * Math.cos(a), ey = cy + 132 * Math.sin(a);
+        var hit = svgEl('circle', { cx: ex, cy: ey, r: 26, fill: 'transparent' }, svg); partStyle(hit, 'electron');
+        var d = svgEl('circle', { cx: ex, cy: ey, r: 15, fill: '#2E8B57', 'pointer-events': 'none' }, svg);
+      });
+    } else {
+      // the nucleus as they drew it: dark nucleus, yellow protons, rose neutrons
+      var atom = svgEl('circle', { cx: cx, cy: cy, r: 140, fill: '#fff', stroke: 'var(--inkSoft)', 'stroke-width': 4 }, svg); partStyle(atom, 'atom');
+      var nr = 92, nuc = svgEl('circle', { cx: cx, cy: cy, r: nr, fill: 'var(--dark)' }, svg); partStyle(nuc, 'nucleus');
+      q.layout.dots.forEach(function (d) {
+        var dx = cx + d.x * nr, dy = cy + d.y * nr, part = d.k === 'p' ? 'proton' : 'neutron', col = d.k === 'p' ? 'var(--accent)' : 'var(--alert)';
+        var hit = svgEl('circle', { cx: dx, cy: dy, r: 24, fill: 'transparent' }, svg); partStyle(hit, part);
+        svgEl('circle', { cx: dx, cy: dy, r: 17, fill: col, 'pointer-events': 'none' }, svg);
+      });
+    }
+    card.appendChild(svg); app.appendChild(card);
+    [].forEach.call(svg.querySelectorAll('[data-part]'), function (p) {
+      var go = function (e) { if (e) e.stopPropagation(); answerPoint(q, p.dataset.part, p, svg); };
+      p.addEventListener('click', go);
+      p.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); go(); } });
+    });
+  }
+  var POINT_MSG = {
+    // [asked][tapped] -> what to say
+    centre:   { outside: 'That is the outside. The centre is the middle.', electron: 'That is an electron. The centre is the middle.' },
+    outside:  { centre: 'That is the centre. The outside is around the centre.', electron: 'That is an electron. The outside is around the centre.' },
+    electron: { centre: 'That is the centre. An electron is a green dot.', outside: 'That is the outside. An electron is a green dot.' },
+    nucleus:  { proton: 'That is a proton. The nucleus is the whole dark circle.', neutron: 'That is a neutron. The nucleus is the whole dark circle.', atom: 'That is the atom. The nucleus is the dark circle.' },
+    proton:   { neutron: 'That is a neutron. A proton is a yellow dot.', nucleus: 'That is the nucleus. A proton is a yellow dot inside it.', atom: 'That is the atom. A proton is a yellow dot.' },
+    neutron:  { proton: 'That is a proton. A neutron is a rose dot.', nucleus: 'That is the nucleus. A neutron is a rose dot inside it.', atom: 'That is the atom. A neutron is a rose dot.' }
+  };
+  function answerPoint(q, tapped, elmt, svg) {
+    if (locked) return;
+    var ok = tapped === q.word, tag = null;
+    if (!ok) tag = (q.word === 'centre' || q.word === 'outside' || tapped === 'centre' || tapped === 'outside') ? 'centreoutside'
+      : (q.word === 'nucleus' || tapped === 'nucleus' || tapped === 'atom') ? 'nucleusdot' : 'protonneutron';
+    record(ok, tag, [q.word]);
+    // show the right place
+    var right = [].filter.call(svg.querySelectorAll('[data-part="' + q.word + '"]'), function (x) { return true; });
+    right.forEach(function (r) {
+      var g = r.cloneNode(false); g.removeAttribute('data-part'); g.removeAttribute('tabindex'); g.removeAttribute('role'); g.removeAttribute('aria-label');
+      g.setAttribute('class', 'glow'); g.setAttribute('fill', 'none'); g.setAttribute('pointer-events', 'none');
+      if (r.getAttribute('fill') === 'transparent') g.setAttribute('r', String(parseFloat(r.getAttribute('r')) - 6));
+      svg.appendChild(g);
+    });
+    var msg = ok ? '' : (POINT_MSG[q.word] && POINT_MSG[q.word][tapped]) || '';
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', msg, q.word);
+    [].forEach.call(svg.querySelectorAll('[data-part]'), function (p) { p.removeAttribute('tabindex'); p.style.cursor = 'default'; });
+  }
+
+  /* ---- round 3: build the sentence ---- */
+  function buildScreen(q) {
+    filled = q.gaps.map(function () { return null; });
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Fill the gaps.'));
+    var pics = el('div', 'pics');
+    (q.pics || [q.pic]).forEach(function (p) { pics.appendChild(el('div', null, img(p, p === 'outside' ? 'wide' : ''))); });
+    card.appendChild(pics);
+    var s = el('div', 'sentence'); s.id = 'sentence';
+    q.segs.forEach(function (seg) {
+      if (typeof seg === 'string') s.appendChild(document.createTextNode(seg));
+      else { var g = el('span', 'gap'); g.dataset.g = seg.gap; g.setAttribute('role', 'button'); g.setAttribute('tabindex', '0');
+        g.onclick = function () { removeGap(seg.gap); }; g.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); removeGap(seg.gap); } }; s.appendChild(g); }
+    });
+    card.appendChild(s); app.appendChild(card);
+    var tl = el('div', 'tiles'); tl.id = 'tiles';
+    q.tiles.forEach(function (t, i) {
+      var b = el('button', 'tile', t); b.type = 'button'; b.dataset.t = t; b.dataset.i = String(i + 1);
+      b.onclick = function () { addTile(b); }; tl.appendChild(b);
+    });
+    app.appendChild(tl);
+    var cb = el('button', 'btn', 'Check'); cb.id = 'check'; cb.disabled = true; cb.onclick = checkBuild; app.appendChild(cb);
+    app.appendChild(el('div', null, '<div style="height:12px"></div>'));
+  }
+  function paintGaps() {
+    var gs = document.querySelectorAll('.gap');
+    [].forEach.call(gs, function (g, i) { g.textContent = filled[i] ? filled[i].t : ''; g.className = 'gap' + (filled[i] ? ' filled' : ''); });
+    var cb = document.getElementById('check'); if (cb && !locked) cb.disabled = filled.some(function (x) { return !x; });
+  }
+  function addTile(b) {
+    if (locked || b.disabled) return;
+    var i = filled.findIndex(function (x) { return !x; }); if (i < 0) return;
+    filled[i] = { t: b.dataset.t, btn: b }; b.disabled = true; paintGaps();
+  }
+  function removeGap(i) { if (locked || !filled[i]) return; filled[i].btn.disabled = false; filled[i] = null; paintGaps(); }
+  function checkBuild() {
+    if (locked) return;
+    var q = Q(), got = filled.map(function (x) { return x.t; }), ok, tag = null;
+    if (q.id === 'protons') ok = got.slice().sort().join() === 'neutrons,protons';
+    else ok = q.gaps.every(function (a, i) { return a.indexOf(got[i]) >= 0; });
+    if (!ok) {
+      if (q.id === 'tinypart') tag = (got[0] === 'matter' && got[1] === 'part') ? 'partmatter' : 'other';
+      else if (q.id === 'madeof1' || q.id === 'madeof2') tag = got[0] !== q.gaps[0][0] ? 'picture' : 'plural';
+      else if (q.id === 'centre' || q.id === 'outside') tag = (got[0] === 'centre' || got[0] === 'outside') ? 'centreoutside' : 'other';
+      else tag = 'other';
+    }
+    record(ok, tag, ok ? [] : q.words);
+    [].forEach.call(document.querySelectorAll('.gap'), function (g, i) { g.classList.add(q.id === 'protons' ? (ok ? 'ok' : 'no') : (q.gaps[i].indexOf(got[i]) >= 0 ? 'ok' : 'no')); });
+    disable('.tile'); document.getElementById('check').classList.add('hide');
+    var msg = '';
+    if (!ok) msg = tag === 'partmatter' ? 'A part is a piece OF the stuff. Matter is the stuff.' : tag === 'plural' ? 'More than one atom: atoms, with an s.'
+      : tag === 'picture' ? 'Look at the picture.' : tag === 'centreoutside' ? 'The centre is the middle. Outside is around the centre.' : 'Read the sentence again.';
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', msg, null, '<div class="sent">' + q.full + '</div><div class="aloud">Say it out loud.</div>', q.gest);
+  }
+
+  var lastRound = 0;                              // the round that has just finished
+  function next() {
+    if (!locked) return;
+    if (state.i % 6 === 5) { lastRound = Math.floor(state.i / 6); roundEnd(); }
+    else { state.i++; question(); }
+  }
+
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(lastRound * 6, lastRound * 6 + 6);
+    var right = mine.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (lastRound + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    var missed = []; mine.forEach(function (x) { if (!x.ok) (x.words || []).forEach(function (w) { if (missed.indexOf(w) < 0) missed.push(w); }); });
+    if (missed.length) { card.appendChild(el('p', 'lead', 'Say these again:')); missed.forEach(function (w) { card.appendChild(wordRow(w)); }); }
+    else card.appendChild(el('p', 'lead', 'Every one right.'));
+    app.appendChild(card);
+    var b = el('button', 'btn', lastRound < 2 ? 'Round ' + (lastRound + 2) : 'See results'); b.id = 'roundnext';
+    b.onclick = function () { if (lastRound < 2) { state.i = (lastRound + 1) * 6; question(); } else final(); };
+    app.appendChild(b); b.focus();
+  }
+
+  function wordRow(w) {
+    return el('div', 'row', '<img alt="" src="' + IMG[WORDS[w].pic] + '"><div><div class="w">' + w + '</div>' + sayHtml(w) + '<div class="s">' + WORDS[w].mean + '</div></div>');
+  }
+
+  function final() {
+    clear(); state.screen = 'final';
+    var total = state.results.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Your results'));
+    card.appendChild(el('div', 'score', total + ' of 18'));
+    Object.keys(CATS).forEach(function (c) {
+      var rs = state.results.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span style="flex:1"><b style="font-size:20px">' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + rs.length + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / rs.length) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var missed = [];
+    state.results.forEach(function (x) { if (!x.ok) (x.words || []).forEach(function (w) { if (missed.indexOf(w) < 0) missed.push(w); }); });
+    var tips = el('div', 'card');
+    tips.appendChild(el('h2', null, missed.length ? 'Say these words again' : 'Every word was right'));
+    missed.forEach(function (w) { tips.appendChild(wordRow(w)); });
+    var counts = {};
+    state.results.forEach(function (x) { if (!x.ok && x.tag && x.tag !== 'word') counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    Object.keys(counts).forEach(function (t) { tips.appendChild(el('p', 'lead', 'Look again: ' + (HABIT[t] || HABIT.other))); });
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same game.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); lastRound = 0; start(); }; app.appendChild(b); b.focus();
+  }
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var t = e.target && e.target.getAttribute ? e.target.getAttribute('data-part') : null;
+    if (state.screen !== 'question') return;
+    var q = Q();
+    if (e.key === 'Enter') {
+      if (locked) { e.preventDefault(); next(); }
+      else if (q.type === 'build') { var cb = document.getElementById('check'); if (cb && !cb.disabled) { e.preventDefault(); checkBuild(); } }
+      return;
+    }
+    if (locked) return;
+    if (q.type === 'yn') { if (e.key === 'y' || e.key === 'Y' || e.key === '1') document.querySelector('.yn .choice[data-k="yes"]').click(); else if (e.key === 'n' || e.key === 'N' || e.key === '2') document.querySelector('.yn .choice[data-k="no"]').click(); }
+    else if (q.type === 'eo') { var b = document.querySelector('.choices .choice[data-k="' + e.key + '"]'); if (b) b.click(); }
+    else if (q.type === 'build') {
+      if (e.key === 'Backspace') { e.preventDefault(); for (var i = filled.length - 1; i >= 0; i--) if (filled[i]) { removeGap(i); break; } }
+      else { var tb = document.querySelector('.tile[data-i="' + e.key + '"]'); if (tb && !tb.disabled) tb.click(); }
+    }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; } };  // read by the test script only
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

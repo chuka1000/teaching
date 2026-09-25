@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Putting Numbers In</title>
+<style>
+  :root {
+    --navy: #2B2350; --coral: #EC6B58; --brick: #C0392B; --lav: #F2F0F8; --lav2: #E1DDEF;
+    --ink: #1E1A3A; --soft: #5E5A70; --green: #1F7A48; --white: #fff; --blue: #1F6FB2;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--white); color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 760px; padding: 14px 16px 28px; }
+  h1, h2, .big { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .pill { background: var(--navy); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--navy); background: var(--white); }
+  .dot.now { background: var(--lav2); }
+  .dot.right { background: var(--green); border-color: var(--green); }
+  .dot.wrong { background: var(--brick); border-color: var(--brick); }
+  .card { background: var(--lav); border-radius: 14px; padding: 18px 18px; margin-bottom: 12px; }
+  .ask { font-size: 16px; color: var(--soft); font-weight: 700; margin-bottom: 6px; }
+  .formula { font-size: 46px; font-weight: 700; color: var(--navy); line-height: 1.1; }
+  .when { font-size: 22px; margin-top: 8px; font-weight: 700; color: var(--navy); }
+  .when b { color: var(--brick); font-size: 26px; }
+  .letter { color: var(--blue); }
+  #answer { height: 66px; border: 3px solid var(--navy); border-radius: 12px; background: var(--white);
+    font-size: 36px; font-weight: 700; color: var(--navy); display: flex; align-items: center; padding: 0 16px;
+    margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9A96AE; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 62px; font-size: 28px; font-weight: 700; color: var(--navy); background: var(--white);
+    border: 2px solid var(--lav2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--lav2); }
+  .key.fn { background: var(--lav); font-size: 22px; }
+  .key.go, .btn { background: var(--navy); color: var(--white); border: 2px solid var(--navy); }
+  .key.go { font-size: 20px; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--navy); }
+  button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  #feedback { border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; }
+  #feedback.wrong { border-color: var(--brick); background: #FDF0EE; }
+  #feedback .head { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--brick); }
+  #feedback .msg { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  #feedback .work { font-size: 20px; font-family: Georgia, serif; color: var(--navy); font-weight: 700; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--lav2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--lav2); overflow: hidden; width: 140px; flex: none; }
+  .bar i { display: block; height: 100%; background: var(--green); }
+  .tag-right { color: var(--green); font-weight: 700; } .tag-wrong { color: var(--brick); font-weight: 700; }
+  .lead { font-size: 18px; line-height: 1.45; }
+  .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--navy); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--navy); }
+  .hide { display: none !important; }
+  @media (max-width: 480px) {
+    .formula { font-size: 38px; } .when { font-size: 19px; } .when b { font-size: 23px; }
+    .key { height: 56px; } #answer { height: 58px; font-size: 32px; } .bar { width: 90px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * QUESTIONS. Nobody gets the same game.
+   *
+   * Every question is generated from a template with random numbers, and the
+   * order within each block is shuffled, all from a six-character game code.
+   * The code is random for each student. Opening the file with #CODE after the
+   * address gives the same game again, so a teacher can see exactly what a
+   * student saw. Each round still has the same skills in the same difficulty
+   * order (easy blocks first), so the diagnostic at the end means the same
+   * thing for everyone.
+   *
+   * Every answer is a positive whole number, there is no division, and each
+   * wrong answer that is shown as a known mistake comes from a stated method
+   * (`how`), which the test script checks against the answer with sympy.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {                                   // xmur3 hash, then mulberry32
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var ONE = ['n', 'm', 'k', 'x', 't', 'p'];
+  var TWO = [['a', 'b'], ['x', 'y'], ['m', 'n'], ['p', 'q'], ['s', 't']];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var oneLetter = function () { return pick(ONE); };
+    var twoLetters = function () { return pick(TWO); };
+
+    // W(value, tag, how, msg): a mistake a student might make, and the sum that produces it
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg || null }; };
+    var Q = function (cat, formula, subs, answer, worked, wrongs) { return { cat: cat, formula: formula, subs: subs, answer: answer, worked: worked, wrongs: wrongs }; };
+
+    /* ---- Round 1: one-step ---- */
+    var R1 = {
+      add: function () { var v = oneLetter(), a = int(3, 9), n = int(2, 9), first = rnd() < 0.5, ans = n + a;
+        return Q('onestep', first ? v + ' + ' + a : a + ' + ' + v, (function (o) { o[v] = n; return o; })({}), ans,
+          first ? n + ' + ' + a + ' = ' + ans : a + ' + ' + n + ' = ' + ans,
+          [W(n - a, 'addsub', n + ' − ' + a, 'This formula adds. Add the two numbers.')]); },
+      times: function () { var v = oneLetter(), a = int(3, 9), n = int(2, 9), ans = a * n;
+        return Q('onestep', a + v, (function (o) { o[v] = n; return o; })({}), ans, a + ' × ' + n + ' = ' + ans,
+          [W(parseInt('' + a + n, 10), 'join', '' + a + n), W(a + n, 'addsub', a + ' + ' + n, 'A number next to a letter means times. Multiply, do not add.')]); },
+      sub1: function () { var v = oneLetter(), a = int(2, 5), n = int(6, 12), ans = n - a;
+        return Q('onestep', v + ' − ' + a, (function (o) { o[v] = n; return o; })({}), ans, n + ' − ' + a + ' = ' + ans,
+          [W(n + a, 'addsub', n + ' + ' + a, 'This formula takes away. Subtract.')]); },
+      sub2: function () { var v = oneLetter(), a = int(12, 20), n = int(3, 9), ans = a - n;
+        return Q('onestep', a + ' − ' + v, (function (o) { o[v] = n; return o; })({}), ans, a + ' − ' + n + ' = ' + ans,
+          [W(a + n, 'addsub', a + ' + ' + n, 'This formula takes away. Subtract.')]); },
+      timesBig: function () { var v = oneLetter(), a = int(3, 9), n = int(10, 12), ans = a * n;
+        return Q('onestep', a + v, (function (o) { o[v] = n; return o; })({}), ans, a + ' × ' + n + ' = ' + ans,
+          [W(parseInt('' + a + n, 10), 'join', '' + a + n)]); },
+      addBig: function () { var v = oneLetter(), a = int(3, 9), n = int(10, 19), first = rnd() < 0.5, ans = n + a;
+        return Q('onestep', first ? v + ' + ' + a : a + ' + ' + v, (function (o) { o[v] = n; return o; })({}), ans,
+          first ? n + ' + ' + a + ' = ' + ans : a + ' + ' + n + ' = ' + ans,
+          [W(n - a, 'addsub', n + ' − ' + a, 'This formula adds. Add the two numbers.')]); }
+    };
+
+    /* ---- Round 2: order of operations, then brackets ---- */
+    var R2o = {
+      an_b: function () { var v = oneLetter(), a = int(2, 6), n = int(2, 8), b = int(1, 9), ans = a * n + b;
+        return Q('order', a + v + ' + ' + b, (function (o) { o[v] = n; return o; })({}), ans,
+          a + ' × ' + n + ' + ' + b + ' = ' + (a * n) + ' + ' + b + ' = ' + ans, [W((a + b) * n, 'addfirst', '(' + a + ' + ' + b + ') × ' + n)]); },
+      b_an: function () { var v = oneLetter(), a = int(2, 6), n = int(2, 8), b = int(1, 9), ans = b + a * n;
+        return Q('order', b + ' + ' + a + v, (function (o) { o[v] = n; return o; })({}), ans,
+          b + ' + ' + a + ' × ' + n + ' = ' + b + ' + ' + (a * n) + ' = ' + ans, [W((b + a) * n, 'addfirst', '(' + b + ' + ' + a + ') × ' + n)]); },
+      b_minus_an: function () { var v = oneLetter(), a = int(2, 5), n = int(2, 6), b = a * n + int(2, 12), ans = b - a * n;
+        return Q('order', b + ' − ' + a + v, (function (o) { o[v] = n; return o; })({}), ans,
+          b + ' − ' + a + ' × ' + n + ' = ' + b + ' − ' + (a * n) + ' = ' + ans, [W((b - a) * n, 'subfirst', '(' + b + ' − ' + a + ') × ' + n)]); },
+      an_minus_b: function () { var v = oneLetter(), a = int(3, 6), n = int(3, 8), b = int(1, Math.min(9, a * n - 1)), ans = a * n - b;
+        return Q('order', a + v + ' − ' + b, (function (o) { o[v] = n; return o; })({}), ans,
+          a + ' × ' + n + ' − ' + b + ' = ' + (a * n) + ' − ' + b + ' = ' + ans, []); }
+    };
+    var R2b = {
+      plus: function () { var v = oneLetter(), a = int(2, 6), n = int(2, 8), b = int(1, 6), ans = a * (n + b);
+        return Q('bracket', a + '(' + v + ' + ' + b + ')', (function (o) { o[v] = n; return o; })({}), ans,
+          a + ' × (' + n + ' + ' + b + ') = ' + a + ' × ' + (n + b) + ' = ' + ans, [W(a * n + b, 'bracket', a + ' × ' + n + ' + ' + b)]); },
+      plusFlip: function () { var v = oneLetter(), a = int(2, 6), n = int(2, 8), b = int(1, 6), ans = a * (b + n);
+        return Q('bracket', a + '(' + b + ' + ' + v + ')', (function (o) { o[v] = n; return o; })({}), ans,
+          a + ' × (' + b + ' + ' + n + ') = ' + a + ' × ' + (b + n) + ' = ' + ans, [W(a * b + n, 'bracket', a + ' × ' + b + ' + ' + n)]); },
+      minus: function () { var v = oneLetter(), a = int(2, 6), n = int(5, 9), b = int(1, 4), ans = a * (n - b);
+        return Q('bracket', a + '(' + v + ' − ' + b + ')', (function (o) { o[v] = n; return o; })({}), ans,
+          a + ' × (' + n + ' − ' + b + ') = ' + a + ' × ' + (n - b) + ' = ' + ans, [W(a * n - b, 'bracket', a + ' × ' + n + ' − ' + b)]); }
+    };
+
+    /* ---- Round 3: two letters, then brackets with two letters ---- */
+    var two = function (p, X, Y) { var o = {}; o[p[0]] = X; o[p[1]] = Y; return o; };
+    var R3l = {
+      ax_by: function () { var p = twoLetters(), a, b, X, Y; do { a = int(2, 6); b = int(2, 6); X = int(2, 8); Y = int(2, 8); } while ((a - b) * (X - Y) === 0);
+        var ans = a * X + b * Y;
+        return Q('letters', a + p[0] + ' + ' + b + p[1], two(p, X, Y), ans,
+          a + ' × ' + X + ' + ' + b + ' × ' + Y + ' = ' + (a * X) + ' + ' + (b * Y) + ' = ' + ans, [W(a * Y + b * X, 'swapped', a + ' × ' + Y + ' + ' + b + ' × ' + X)]); },
+      ax_y: function () { var p = twoLetters(), a = int(2, 6), X, Y; do { X = int(2, 8); Y = int(2, 9); } while (X === Y);
+        var ans = a * X + Y;
+        return Q('letters', a + p[0] + ' + ' + p[1], two(p, X, Y), ans,
+          a + ' × ' + X + ' + ' + Y + ' = ' + (a * X) + ' + ' + Y + ' = ' + ans, [W(a * Y + X, 'swapped', a + ' × ' + Y + ' + ' + X)]); },
+      xy: function () { var p = twoLetters(), X = int(3, 9), Y = int(3, 9), ans = X * Y, ex = p[0] + p[1];
+        return Q('letters', ex, two(p, X, Y), ans, X + ' × ' + Y + ' = ' + ans,
+          [W(parseInt('' + X + Y, 10), 'join', '' + X + Y, ex + ' means ' + p[0] + ' × ' + p[1] + ', so multiply the two numbers. Do not join the digits.')]); },
+      ax_minus_by: function () { var p = twoLetters(), a, X, b, Y; do { a = int(3, 6); X = int(4, 9); b = int(2, 4); Y = int(2, 5); } while (a * X <= b * Y);
+        var ans = a * X - b * Y;
+        var wr = [];
+        if (a * Y - b * X > 0 && X !== Y) wr.push(W(a * Y - b * X, 'swapped', a + ' × ' + Y + ' − ' + b + ' × ' + X));
+        return Q('letters', a + p[0] + ' − ' + b + p[1], two(p, X, Y), ans,
+          a + ' × ' + X + ' − ' + b + ' × ' + Y + ' = ' + (a * X) + ' − ' + (b * Y) + ' = ' + ans, wr); }
+    };
+    var R3b = {
+      a_xy: function () { var p = twoLetters(), a = int(2, 6), X = int(2, 7), Y = int(2, 7), ans = a * (X + Y);
+        return Q('bracket', a + '(' + p[0] + ' + ' + p[1] + ')', two(p, X, Y), ans,
+          a + ' × (' + X + ' + ' + Y + ') = ' + a + ' × ' + (X + Y) + ' = ' + ans, [W(a * X + Y, 'bracket', a + ' × ' + X + ' + ' + Y)]); },
+      a_x_by: function () { var p = twoLetters(), a = int(2, 4), X = int(2, 6), b = int(2, 4), Y = int(2, 5), ans = a * (X + b * Y);
+        return Q('bracket', a + '(' + p[0] + ' + ' + b + p[1] + ')', two(p, X, Y), ans,
+          a + ' × (' + X + ' + ' + b + ' × ' + Y + ') = ' + a + ' × (' + X + ' + ' + (b * Y) + ') = ' + a + ' × ' + (X + b * Y) + ' = ' + ans,
+          [W(a * X + b * Y, 'bracket', a + ' × ' + X + ' + ' + b + ' × ' + Y)]); }
+    };
+
+    var plan = [
+      { name: 'One-step formulas', qs: shuffle(['add', 'times', 'sub1', 'sub2', 'timesBig', 'addBig']).map(function (k) { return R1[k]; }) },
+      { name: 'Two steps and brackets', qs: shuffle(shuffle(['an_b', 'b_an', 'b_minus_an', 'an_minus_b']).slice(0, 3)).map(function (k) { return R2o[k]; })
+          .concat(shuffle(['plus', 'plusFlip', 'minus']).map(function (k) { return R2b[k]; })) },
+      { name: 'Two letters', qs: shuffle(['ax_by', 'ax_y', 'xy', 'ax_minus_by']).map(function (k) { return R3l[k]; })
+          .concat([R3b.a_xy, R3b.a_x_by]) }
+    ];
+    var out = [];
+    plan.forEach(function (r, ri) {
+      r.qs.forEach(function (make, qi) {
+        var q = make();
+        q.round = ri + 1; q.n = qi + 1; q.roundName = r.name;
+        q.formula = q.formula.replace(/ − /g, ' − ');
+        var seen = {}, wrong = {};
+        q.wrongs.forEach(function (w) {                          // keep only real, distinct, positive mistakes
+          if (w.value > 0 && w.value !== q.answer && w.value <= 9999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; }
+        });
+        q.wrong = wrong; delete q.wrongs;
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['One-step formulas', 'Two steps and brackets', 'Two letters'];
+  var CATS = { onestep: 'One-step formulas', order: 'Order of operations', bracket: 'Brackets', letters: 'Two letters' };
+  // Feedback for a recognised mistake, in the same words as the lesson slides.
+  var MSG = {
+    join: 'A number next to a letter means times. Do not join the digits.',
+    addsub: 'Look at the sign in the formula, and use it.',
+    addfirst: 'Multiply before you add.',
+    subfirst: 'Multiply before you take away.',
+    bracket: 'The number outside the bracket multiplies everything inside.',
+    swapped: 'Each letter gets its own number. Do not swap them.'
+  };
+  // What to say about a mistake that happened, at the end.
+  var HABIT = {
+    join: 'You joined digits together. A number next to a letter means times: 4n is 4 × n, not 43.',
+    addsub: 'You used the wrong sign. Read the formula and check whether it adds, takes away, or multiplies.',
+    addfirst: 'You added before multiplying. Multiply first, then add.',
+    subfirst: 'You took away before multiplying. Multiply first, then take away.',
+    bracket: 'You multiplied only the first term in the bracket. The number outside multiplies everything inside.',
+    swapped: 'You swapped the letters. Write a = ..., b = ... first, then put each number in its own place.'
+  };
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart;
+
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function q() { return state.qs[state.r * 6 + state.i]; }
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  function formulaHtml(f) { return f.replace(/[a-z]/g, function (c) { return '<span class="letter">' + c + '</span>'; }); }
+  function whenHtml(subs) {
+    var parts = Object.keys(subs).map(function (k) { return '<span class="letter">' + k + '</span> = <b>' + subs[k] + '</b>'; });
+    return 'when ' + parts.join(' and ');
+  }
+  function subsText(subs) { return Object.keys(subs).map(function (s) { return s + ' = ' + subs[s]; }).join(', '); }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Putting Numbers In'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Swap each letter for its number, then work it out.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. At the end you see what to practise. There is no timer on the questions.'));
+    card.appendChild(el('p', 'small', 'Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b);
+    b.focus();
+  }
+
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill', 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) {
+      var res = state.results[state.r * 6 + k];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : ''))));
+    }
+    h.appendChild(d); return h;
+  }
+
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false;
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Question ' + (state.i + 1) + ' of 6. Find the value of'));
+    card.appendChild(el('div', 'formula', formulaHtml(Q.formula)));
+    card.appendChild(el('div', 'when', whenHtml(Q.subs)));
+    app.appendChild(card);
+    var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var pad = el('div', 'pad'); pad.id = 'pad';
+    ['1','2','3','4','5','6','7','8','9','back','0','go'].forEach(function (k) {
+      var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+      b.type = 'button'; b.dataset.k = k;
+      if (k === 'back') b.setAttribute('aria-label', 'Delete');
+      b.onclick = function () { press(k); };
+      pad.appendChild(b);
+    });
+    app.appendChild(pad);
+  }
+
+  function paintAnswer() {
+    var a = document.getElementById('answer'); if (!a) return;
+    a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer';
+  }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(); }
+    else if (typed.length < 4) typed += k;
+    paintAnswer();
+  }
+
+  function check() {
+    var Q = q(), given = parseInt(typed, 10), ok = given === Q.answer, w = ok ? null : Q.wrong[String(given)], tag = ok ? null : (w ? w.tag : 'other');
+    state.results[state.r * 6 + state.i] = { ok: ok, given: given, tag: tag, cat: Q.cat };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    var msg = ok ? '' : (tag === 'other' ? 'Write out each step and check the order.' : (w.msg || MSG[tag]));
+    fb.innerHTML = '<div class="head">' + (ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + '.') + '</div>' +
+      (msg ? '<div class="msg">' + msg + '</div>' : '') + '<div class="work">' + Q.worked + '</div>';
+    var last = state.i === 5;
+    document.querySelector('.key.go').textContent = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    document.getElementById('answer').style.opacity = '.6';
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6);
+    var right = mine.filter(function (x) { return x.ok; }).length;
+    var secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    mine.forEach(function (x, k) {
+      var Q = state.qs[state.r * 6 + k];
+      card.appendChild(el('div', 'row', '<span>' + formulaHtml(Q.formula) + ', ' + subsText(Q.subs) +
+        '</span><span class="' + (x.ok ? 'tag-right' : 'tag-wrong') + '">' + (x.ok ? 'Correct' : 'You wrote ' + x.given + '. It is ' + Q.answer + '.') + '</span>'));
+    });
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); };
+    app.appendChild(b); b.focus();
+  }
+
+  function final() {
+    clear(); state.screen = 'final';
+    var total = state.results.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'What to practise'));
+    card.appendChild(el('div', 'score', total + ' of 18'));
+    Object.keys(CATS).forEach(function (c) {
+      var rs = state.results.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      if (!rs.length) return;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + rs.length + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / rs.length) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {};
+    state.results.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', 'No mistakes. Every answer was right.'));
+    else {
+      var ul = el('ul', 'tips');
+      tags.forEach(function (t) {
+        var n = counts[t], text = t === 'other' ? 'Some answers did not match a common mistake. Look back at the working shown after each one.' : HABIT[t];
+        ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + text));
+      });
+      tips.appendChild(ul);
+    }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b);
+    b.focus();
+  }
+
+  /* ---------- keyboard: digits, Backspace, Enter ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.screen === 'question') {
+      if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+      else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+      else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+    }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; } };   // read by the test script only
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

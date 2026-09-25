@@ -117,3 +117,12 @@ slide between. British spelling: centre.
 
 The drawing is the You Do. Word bank and a writing line, not a matching task.
 ```
+
+---
+
+## Asking for an assessment
+
+An assessment is not a lesson, so it has its own request block, its own rules
+(black and white, printed, no timer) and three documents rather than a deck and
+a worksheet. See the ASSESSMENT block at the bottom of `ASSESSMENT.md` ("Asking
+for one"): `ASSESSMENT`, `CLASS`, `COVERS`, `NOTES`.

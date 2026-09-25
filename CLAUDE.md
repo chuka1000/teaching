@@ -45,7 +45,14 @@ of it, however it arrives.
 Maths decks use a smaller canvas to match the school's existing Number Revision
 deck. See `examples/maths-deck-10x5.625.js`. **Every numeric answer in a maths
 deck and its worksheet must be checked with sympy before it is written into
-either file, and the two must agree.**
+either file, and the two must agree.** `build/putting-numbers-in-check.py` is a
+worked example: one sympy script that checks every number, then writes the
+game's question bank.
+
+Maths timer geometry (canvas 10 wide): `x 0.20, w 0.34, y 0.20, h H − 0.40`,
+content margin `M = 0.85`. Palette `maths` (Number Revision) is in
+`lib/theme.js` and `lib/docparts.js`. Its coral is a shade lighter than the
+school deck's so navy text on it passes contrast.
 
 ---
 
@@ -193,6 +200,15 @@ one. See `GAMES.md`.
 **Slide 9 (Answers)** holds ten model answers that match worksheet questions
 1–10 **exactly, in order**. Students mark their own. There is no separate
 answers document.
+
+**The same answers go at the end of the worksheet, upside down.** Students who
+use the paper need to check it, and answers printed the right way up can be
+read across a desk. `DP.answersBlock(items)` in `lib/docparts.js` renders them
+to an image rotated 180 degrees, under a right-way-up caption. Keep the list
+in ONE module that both the deck and the worksheet `require`, so the slide and
+the sheet cannot disagree (see `build/putting-numbers-in-answers.js`). This
+applies to every worksheet built from now on; earlier ones are not being
+retrofitted.
 
 **Slide 10 (Plenary)** is dark. Five true/false statements. Every FALSE should
 be a real misconception from the lesson.
@@ -358,7 +374,7 @@ Most lessons follow another one. Units built so far:
 - **Y7 Science, The World of Science** — 4 lessons, all built
 - **Y9 Science, Ecosystems** — 4 lessons, all built (ends on Human Population Growth)
 - **Y10 Science, Motion** — acceleration, motion graphs, equations of motion
-- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify
+- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify, putting numbers in
 - **T3 CLIL, Atoms** — 5 lessons planned, only Lesson 1 built
 
 Before building lesson N, read lesson N−1 from `reference/`. Take from it:
@@ -481,8 +497,10 @@ inspect them before use — a "tree" that is a dot on the horizon will not read 
 
 ## What gets delivered
 
-A deck and a worksheet. **No answers document** (answers are slide 9) and **no
-key-word sheet** (they consume time neither Chuka nor the lesson has).
+A deck and a worksheet. **No answers document** (answers are slide 9, and
+upside down at the end of the worksheet) and **no key-word sheet** (they
+consume time neither Chuka nor the lesson has). A game when asked, see
+`GAMES.md`.
 
 Filenames in plain English: `Into The Lab.pptx`, `Into The Lab worksheet.docx`.
 Never coded names like `Y7_U1_L4`.
@@ -497,6 +515,8 @@ LESSON-REQUEST.md  how Chuka asks for a lesson, and what he gets back
 curriculum/   scheme of work PDFs and their indexes — look up, never read whole
 CLIL.md       the T3 Developing Science exception — read before planning for them
 GAMES.md      when the You Do becomes a game, and how to build one
+ASSESSMENT.md  topic assessments. Printed in black and white and follow different
+              rules from decks: no palette, no media, no timer.
 reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, timer, animate, autoplay-media
 tools/      build-lesson, validate, check-timers, check-contrast, make-timers,
