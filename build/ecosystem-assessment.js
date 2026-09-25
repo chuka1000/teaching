@@ -81,33 +81,30 @@ const qNumPara = (n, marks) => new Paragraph({
 const answerLine = (prefix, unit = '') => new Paragraph({ spacing: { before: 100, after: 60 }, children: [
   new TextRun({ text: prefix, font: FONT, size: 22 }), new TextRun({ text: ' ' + '_'.repeat(22) + (unit ? ' ' : ''), font: FONT, size: 22, color: '444444' }), ...(unit ? [new TextRun({ text: unit, font: FONT, size: 22 })] : [])] });
 
-/**
- * Writing lines. NOT a table: each line is one paragraph with a right tab whose
- * leader is an underscore, so the line is drawn by the tab and needs no border
- * or nested table. (Nested tables with borders did not render in every viewer:
- * students saw empty space where the lines should be.)
- */
-function writeLines(n, width = PAGE_W, o = {}) {
-  return Array.from({ length: n }, (_, i) => new Paragraph({
-    tabStops: [{ type: TabStopType.RIGHT, position: width, leader: LeaderType.UNDERSCORE }],
-    spacing: { before: 0, after: 0, line: 480, lineRule: LineRuleType.EXACT },
-    keepNext: o.keepNext ?? true, keepLines: true,
-    children: [new TextRun({ text: '\t', font: FONT, size: 22, color: '595959' })],
-  }));
-}
+/** Writing lines are pictures (see DP.writeLines): tab leaders and borders vanish in Google Docs and Pages. */
+const writeLines = DP.writeLines;
 
 /**
- * A two-column list with the second column left-justified at a fixed tab stop,
- * used for matching questions. Also not a table: the students draw a line
- * across the gap from each item on the left to its partner on the right.
+ * The matching list as a real table with invisible borders: organisms on the left, the
+ * jobs on the right, left-justified as a second column, with a gap to draw lines across.
+ * It sits at the top level of the page (never inside another table: nested tables are
+ * flattened by some viewers).
  */
-function tabMatch(left, right, o = {}) {
-  const pos = o.pos ?? 6200, size = o.size ?? 22, after = o.after ?? 440;
-  return left.map((l, i) => new Paragraph({
-    tabStops: [{ type: TabStopType.LEFT, position: pos }],
-    spacing: { before: 0, after }, keepNext: true, keepLines: true,
-    children: [new TextRun({ text: l, font: FONT, size }), new TextRun({ text: '\t', font: FONT, size }), new TextRun({ text: right[i], font: FONT, size, bold: true })],
-  }));
+function matchTable(left, right, width = PAGE_W) {
+  const side = Math.floor(width * 0.42), gap = width - 2 * side;
+  const cellP = (text, bold) => new Paragraph({ spacing: { before: 0, after: 0 }, children: [new TextRun({ text, font: FONT, size: 23, bold })] });
+  const tc = (w, text, bold) => new TableCell({ width: { size: w, type: WidthType.DXA }, borders: NONE4, verticalAlign: VerticalAlign.CENTER, margins: { top: 40, bottom: 40, left: 60, right: 60 }, children: [cellP(text, bold)] });
+  return new Table({ columnWidths: [side, gap, side], width: { size: width, type: WidthType.DXA }, borders: { ...NONE4, insideHorizontal: NB, insideVertical: NB },
+    rows: left.map((l, i) => new TableRow({ cantSplit: true, height: { value: 900, rule: HeightRule.ATLEAST }, children: [tc(side, l, false), tc(gap, '', false), tc(side, right[i], true)] })) });
+}
+
+/** the same list in a narrow feedback cell (no nesting allowed): the job on its own line, right-aligned */
+function stackMatch(left, right, o = {}) {
+  const size = o.size ?? 19;
+  return left.flatMap((l, i) => [
+    new Paragraph({ spacing: { before: 60, after: 0 }, keepNext: true, children: [new TextRun({ text: l, font: FONT, size })] }),
+    new Paragraph({ alignment: AlignmentType.RIGHT, spacing: { before: 0, after: 100 }, children: [new TextRun({ text: right[i], font: FONT, size, bold: true })] }),
+  ]);
 }
 
 /** a small two-column data list (year, population) in the same tab-aligned way */
@@ -159,11 +156,14 @@ function paper() {
 
   // ---- the questions ----
   QUESTIONS.forEach((q, qi) => {
+    if (q.n === 2) {                                   // the matching table sits at the top level, not in the wrapper
+      k.push(qNumPara(q.n, q.marks)); k.push(stemPara(q.stem)); k.push(matchTable(MATCH.left, MATCH.right)); k.push(spacer(260));
+      return;
+    }
     const c = [qNumPara(q.n, q.marks)];
     if (q.stem) c.push(stemPara(q.stem));
     if (q.image) c.push(picPara(q.image, q.imageW, { keepNext: true }));
-    if (q.n === 2) c.push(...tabMatch(MATCH.left, MATCH.right));
-    q.parts.forEach((pt) => {
+        q.parts.forEach((pt) => {
       if (pt.kind === 'match') return;
       c.push(partLine(pt.l, pt.t, pt.m));
       if (pt.kind === 'calcA') c.push(answerLine('Energy =', 'kJ'));
@@ -274,7 +274,7 @@ function feedback() {
     if (v.img) kids.push(picPara(v.img, v.imgW || 3.0, { before: 0, after: 60 }));
     if (v.table) kids.push(...tabTable(v.table), new Paragraph({ spacing: { after: 60 }, children: [] }));
     v.t.forEach((x, i) => kids.push(small(x, { italic: /^Box:/.test(x), size: /^Box:/.test(x) ? 18 : 20 })));
-    if (v.match) kids.push(...tabMatch(v.match.left, v.match.right, { pos: 2700, size: 19, after: 200 }));
+    if (v.match) kids.push(...stackMatch(v.match.left, v.match.right));
     return new TableCell({ width: { size: w, type: WidthType.DXA }, borders: BOX4(4, '000000'), margins: { top: 90, bottom: 90, left: 120, right: 120 }, verticalAlign: VerticalAlign.TOP, children: kids });
   };
   const headRow = new TableRow({ tableHeader: true, children: [gc('Q', qw, { fill: 'E6E6E6', bold: true }), gc('S  Support', vw, { fill: 'E6E6E6', bold: true }), gc('C  Consolidate', vw, { fill: 'E6E6E6', bold: true }), gc('E  Extend', last, { fill: 'E6E6E6', bold: true })] });
