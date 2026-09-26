@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Function Machines</title>
+<style>
+  :root {
+    --navy: #2B2350; --coral: #EC6B58; --brick: #C0392B; --lav: #F2F0F8; --lav2: #E1DDEF;
+    --ink: #1E1A3A; --soft: #5E5A70; --green: #1F7A48; --white: #fff; --blue: #1F6FB2;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--white); color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 780px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--navy); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--brick); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--navy); background: var(--white); }
+  .dot.now { background: var(--lav2); }
+  .dot.right { background: var(--green); border-color: var(--green); }
+  .dot.wrong { background: var(--brick); border-color: var(--brick); }
+  .card { background: var(--lav); border-radius: 14px; padding: 16px 16px; margin-bottom: 12px; }
+  .ask { font-size: 20px; color: var(--navy); font-weight: 700; margin: 0 0 12px; line-height: 1.3; }
+  .sub { font-size: 15px; color: var(--soft); margin: 10px 0 0; line-height: 1.35; }
+  .strip { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 4px; margin: 6px 0; }
+  .strip .lab { font-size: 13px; font-weight: 700; color: var(--soft); width: 86px; flex: none; }
+  .chip { min-width: 58px; height: 52px; padding: 0 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 700; white-space: nowrap; }
+  .chip.io { background: var(--coral); color: var(--navy); }
+  .chip.io small { font-size: 12px; letter-spacing: .06em; margin-right: 8px; opacity: .85; }
+  .chip.step { background: var(--navy); color: var(--white); }
+  .chip.step.q { background: var(--white); color: var(--brick); border: 3px dashed var(--brick); }
+  .arr { width: 26px; height: 20px; flex: none; }
+  table.tbl { border-collapse: collapse; margin: 6px 0 4px; font-size: 22px; font-weight: 700; color: var(--navy); }
+  table.tbl th, table.tbl td { border: 2px solid var(--navy); padding: 6px 18px; text-align: center; background: var(--white); }
+  table.tbl th { background: var(--lav2); font-size: 16px; }
+  #answer { height: 64px; border: 3px solid var(--navy); border-radius: 12px; background: var(--white);
+    font-size: 34px; font-weight: 700; color: var(--navy); display: flex; align-items: center; padding: 0 16px;
+    margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9A96AE; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 60px; font-size: 28px; font-weight: 700; color: var(--navy); background: var(--white);
+    border: 2px solid var(--lav2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--lav2); }
+  .key.fn { background: var(--lav); font-size: 22px; }
+  .key.go, .btn { background: var(--navy); color: var(--white); border: 2px solid var(--navy); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--navy); }
+  .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 14px; text-align: left; min-height: 60px; padding: 8px 16px; background: var(--white);
+    border: 2px solid var(--lav2); border-radius: 12px; font-size: 26px; font-weight: 700; color: var(--navy); touch-action: manipulation; }
+  .opt b { width: 34px; height: 34px; border-radius: 50%; background: var(--lav2); display: flex; align-items: center; justify-content: center; font-size: 17px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--brick); background: #FDF0EE; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; }
+  #feedback.wrong { border-color: var(--brick); background: #FDF0EE; }
+  #feedback .head { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--brick); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  #feedback .work { font-size: 19px; font-family: Georgia, serif; color: var(--navy); font-weight: 700; line-height: 1.5; }
+  #feedback .how { font-size: 15px; color: var(--soft); margin: 0 0 4px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--lav2); }
+  .row:last-child { border-bottom: 0; }
+  .row .t { font-size: 15px; line-height: 1.35; }
+  .bar { height: 12px; border-radius: 6px; background: var(--lav2); overflow: hidden; width: 140px; flex: none; }
+  .bar i { display: block; height: 100%; background: var(--green); }
+  .tag-right { color: var(--green); font-weight: 700; white-space: nowrap; } .tag-wrong { color: var(--brick); font-weight: 700; white-space: nowrap; } .tag-skip { color: var(--soft); white-space: nowrap; }
+  .lead { font-size: 18px; line-height: 1.45; }
+  .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--navy); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--navy); }
+  .warn { border: 3px solid var(--brick); background: #FDF0EE; border-radius: 12px; padding: 12px 14px; margin: 12px 0 0; color: var(--brick); font-weight: 700; font-size: 16px; line-height: 1.4; }
+  details.review { border: 2px solid var(--lav2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--navy); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; }
+  details.review > summary::after { content: '▾'; font-size: 18px; flex: none; transition: transform .15s; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  details.review > summary:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--lav2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; }
+  .rq .verdict.ok { color: var(--green); } .rq .verdict.no { color: var(--brick); } .rq .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; }
+  .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--navy); }
+  .rq .how { font-size: 14px; color: var(--soft); margin: 6px 0 2px; }
+  .rq .work { font-size: 17px; font-family: Georgia, serif; color: var(--navy); font-weight: 700; line-height: 1.5; }
+  .hide { display: none !important; }
+  @media (max-width: 480px) {
+    .ask { font-size: 18px; } .chip { min-width: 50px; height: 46px; font-size: 19px; padding: 0 9px; }
+    .strip .lab { width: 100%; } .arr { width: 20px; } .key { height: 56px; } #answer { height: 58px; font-size: 30px; }
+    .bar { width: 80px; } .opt { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * QUESTIONS. Nobody gets the same game.
+   *
+   * Every question is built from a template with random numbers, and the
+   * order within each block is shuffled, all from a six-character game code.
+   * The code is random for each student. Opening the file with #CODE after the
+   * address gives the same game again, so a teacher can see exactly what a
+   * student saw. The SKILLS and their order are the same for everyone, so the
+   * diagnostic at the end means the same thing for every student.
+   *
+   * A machine is a list of steps: {op: 'mul' | 'add' | 'sub' | 'div' | 'rsub', v}.
+   * ('rsub' is "subtract from v", so the input x becomes v − x.) Every question
+   * holds the machine itself, and build/check-function-machines-game.py re-derives
+   * every answer, every mistake and every line of working from it with sympy.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is
+   * the lesson. Round 2 asks for rules and for working backwards. Round 3 goes
+   * far past the lesson: three-step reversals, an input that equals its own
+   * output, missing numbers, rules found from a table, and the last two
+   * questions, which are meant to be almost impossible. A student who fails
+   * them still gets the working, and there is no penalty for slowness.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {                                   // xmur3 hash, then mulberry32
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* ---------- machines ---------- */
+  var SYM = { mul: '×', add: '+', sub: '−', div: '÷' };
+  var NUMTXT = function (x) { return x < 0 ? '−' + (-x) : String(x); };
+  function apply(s, x) {
+    if (x === null) return null;
+    switch (s.op) {
+      case 'mul': return x * s.v; case 'add': return x + s.v; case 'sub': return x - s.v;
+      case 'div': return x % s.v === 0 ? x / s.v : null; case 'rsub': return s.v - x;
+    }
+  }
+  function run(steps, x) { for (var i = 0; i < steps.length; i++) { x = apply(steps[i], x); if (x === null) return null; } return x; }
+  var INV = { mul: 'div', div: 'mul', add: 'sub', sub: 'add', rsub: 'rsub' };
+  function inverse(steps) { return steps.slice().reverse().map(function (s) { return { op: INV[s.op], v: s.v }; }); }
+  function stepLabel(s) { return s.v === null ? SYM[s.op] + ' ?' : (s.op === 'rsub' ? 'subtract from ' + s.v : SYM[s.op] + ' ' + s.v); }
+  // One line of arithmetic for a step, e.g. "6 × 4 = 24" or "50 − 13 = 37".
+  function line(s, x, y) { return s.op === 'rsub' ? s.v + ' − ' + NUMTXT(x) + ' = ' + NUMTXT(y) : NUMTXT(x) + ' ' + SYM[s.op] + ' ' + s.v + ' = ' + NUMTXT(y); }
+  function lines(steps, x) { var out = []; steps.forEach(function (s) { var y = apply(s, x); out.push(line(s, x, y)); x = y; }); return out; }
+  // The sum a student would write for a list of steps, with brackets where a sum is used again: (6 + 3) × 4.
+  function how(steps, x) {
+    var e = NUMTXT(x), compound = x < 0;
+    steps.forEach(function (s) {
+      if (s.op === 'add' || s.op === 'sub') { e = e + ' ' + SYM[s.op] + ' ' + s.v; compound = true; }
+      else if (s.op === 'rsub') { e = s.v + ' − ' + (compound ? '(' + e + ')' : e); compound = true; }
+      else { e = (compound ? '(' + e + ')' : e) + ' ' + SYM[s.op] + ' ' + s.v; compound = true; }
+    });
+    return e;
+  }
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 4000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var S = function (op, v) { return { op: op, v: v }; };
+
+    // A mistake: the value it gives and the sum that gives it (checked with sympy).
+    var W = function (steps, x, tag, msg) { var v = run(steps, x); return v === null ? null : { value: v, tag: tag, how: how(steps, x), msg: msg }; };
+
+    var MSG = {
+      order: 'Follow the boxes in order, from left to right.',
+      skip: 'Do every box. Each step changes the number.',
+      sign: 'Read each box. + adds, − takes away, × multiplies, ÷ divides.',
+      backOrder: 'To work backwards, undo the LAST step first.',
+      backSkip: 'Undo every step. Each one changes the number.',
+      backSign: 'Use the opposite to undo a step: + and −, × and ÷.',
+      forward: 'You put the output through the machine again. Undo the steps instead.',
+      output: 'That is what comes out. The question asks for the input.',
+      rsub: 'Subtract from is its own opposite: 50 − x = y means x = 50 − y.'
+    };
+
+    // wrong answers for "find the output": steps in the wrong order, a step missed, a step misread
+    function outWrongs(steps, x) {
+      var w = [];
+      if (steps.length >= 2) w.push(W([steps[1], steps[0]].concat(steps.slice(2)), x, 'order', MSG.order));
+      w.push(W(steps.slice(0, -1), x, 'skip', MSG.skip));
+      w.push(W(steps.slice(1), x, 'skip', MSG.skip));
+      steps.forEach(function (s, i) {
+        var alt = steps.slice(); alt[i] = { op: INV[s.op], v: s.v };
+        w.push(W(alt, x, 'sign', MSG.sign));
+      });
+      return w;
+    }
+    // wrong answers for "find the input": undoing in the wrong order, missing a step, the wrong opposite, running it forwards
+    function backWrongs(steps, y) {
+      var inv = inverse(steps), w = [];
+      w.push(W(inv.slice().reverse(), y, 'order', MSG.backOrder));
+      w.push(W(steps, y, 'forward', MSG.forward));
+      inv.forEach(function (s, i) {
+        w.push(W(inv.slice(0, i).concat(inv.slice(i + 1)), y, 'skip', MSG.backSkip));
+        var alt = inv.slice(); alt[i] = { op: INV[s.op], v: s.v };
+        w.push(W(alt, y, 'sign', MSG.backSign));
+      });
+      return w;
+    }
+
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+
+    /* ---- Round 1: outputs ---- */
+    var R1 = {
+      one: function () {
+        var t = pick(['mul', 'add', 'sub']), st, x;
+        if (t === 'mul') { st = S('mul', int(6, 9)); x = int(6, 12); }
+        else if (t === 'add') { st = S('add', int(15, 49)); x = int(12, 39); }
+        else { st = S('sub', int(8, 19)); x = int(25, 60); }
+        var steps = [st], a = run(steps, x);
+        return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x),
+          wrong: [W([S(INV[st.op], st.v)], x, 'sign', MSG.sign)] });
+      },
+      timesAdd: function () { var steps = [S('mul', int(3, 9)), S('add', int(2, 9))], x = int(3, 12), a = run(steps, x);
+        return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x), wrong: outWrongs(steps, x) }); },
+      timesSub: function () { var steps = [S('mul', int(3, 9)), S('sub', int(2, 9))], x = int(3, 12), a = run(steps, x);
+        return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x), wrong: outWrongs(steps, x) }); },
+      addTimes: function () { var steps = [S('add', int(2, 9)), S('mul', int(3, 9))], x = int(3, 12), a = run(steps, x);
+        return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x), wrong: outWrongs(steps, x) }); },
+      divAdd: function () { var d = int(2, 6), x = d * int(2, 9), steps = [S('div', d), S('add', int(3, 15))], a = run(steps, x);
+        return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x), wrong: outWrongs(steps, x) }); },
+      three: function () {
+        return until(function () {
+          var steps = pick([
+            [S('mul', int(3, 8)), S('sub', int(2, 9)), S('div', int(2, 5))],
+            [S('add', int(2, 9)), S('mul', int(3, 6)), S('sub', int(2, 12))],
+            [S('mul', int(2, 6)), S('add', int(3, 12)), S('div', int(2, 5))]
+          ]), x = int(3, 15), a = run(steps, x);
+          if (a === null || a < 1) return null;
+          return Q('output', 'output', { steps: steps, input: x, answer: a, worked: lines(steps, x), wrong: outWrongs(steps, x) });
+        });
+      }
+    };
+
+    /* ---- Round 2: rules as formulas (multiple choice), then working backwards ---- */
+    function ruleQ(steps, x) {
+      // formulas: an + b, an − b, a(n + b), a(n − b)
+      var first = steps[0], second = steps[1], a, b, correct, opts;
+      var sg = function (s) { return s.op === 'add' ? '+' : '−'; }, flip = function (s) { return s.op === 'add' ? '−' : '+'; };
+      if (first.op === 'mul') {                                // an ± b
+        a = first.v; b = second.v;
+        correct = a + 'n ' + sg(second) + ' ' + b;
+        opts = [[correct, null],
+          [a + '(n ' + sg(second) + ' ' + b + ')', 'order'],
+          [b + 'n ' + sg(second) + ' ' + a, 'swapped'],
+          [a + 'n ' + flip(second) + ' ' + b, 'sign']];
+      } else {                                                 // a(n ± b)
+        b = first.v; a = second.v;
+        correct = a + '(n ' + sg(first) + ' ' + b + ')';
+        opts = [[correct, null],
+          [a + 'n ' + sg(first) + ' ' + b, 'brackets'],
+          [b + '(n ' + sg(first) + ' ' + a + ')', 'swapped'],
+          [a + '(n ' + flip(first) + ' ' + b + ')', 'sign']];
+      }
+      opts = shuffle(opts).map(function (o) { return { text: o[0], tag: o[1] }; });
+      var ci = opts.map(function (o) { return o.tag === null; }).indexOf(true);
+      var pathX = x;
+      return Q('rule', 'rule', { steps: steps, input: null, output: null, options: opts, correctIndex: ci, answer: ci + 1, formula: correct,
+        worked: lines(steps, pathX), checkInput: pathX, method: 'Do the steps in order to write the rule. The boxes give ' + correct + '.' });
+    }
+    var RULEMSG = {
+      order: 'The steps are the other way round. The first box is the first thing you do to n.',
+      swapped: 'Keep each number with its own box. The first box is not the second.',
+      sign: 'Check the sign in the box: + and − are opposites.',
+      brackets: 'Add first, then multiply, so the adding must go inside brackets.'
+    };
+    var R2 = {
+      rule1: function () { return until(function () { var steps = [S('mul', int(3, 9)), S(pick(['add', 'sub']), int(2, 9))]; return steps[0].v !== steps[1].v ? ruleQ(steps, int(4, 8)) : null; }); },
+      rule2: function () { return until(function () { var steps = [S(pick(['add', 'sub']), int(2, 9)), S('mul', int(3, 9))]; return steps[0].v !== steps[1].v ? ruleQ(steps, int(10, 14)) : null; }); },
+      backTimesAdd: function () { var steps = [S('mul', int(3, 9)), S('add', int(2, 12))], x = int(3, 15), y = run(steps, x);
+        return Q('back', 'back', { steps: steps, output: y, answer: x, worked: lines(inverse(steps), y), wrong: backWrongs(steps, y) }); },
+      backDivAdd: function () { var d = int(2, 6), k = int(2, 9), steps = [S('div', d), S('add', int(3, 15))], x = d * k, y = run(steps, x);
+        return Q('back', 'back', { steps: steps, output: y, answer: x, worked: lines(inverse(steps), y), wrong: backWrongs(steps, y) }); },
+      backAddTimes: function () { var steps = [S('add', int(2, 9)), S('mul', int(3, 9))], x = int(3, 15), y = run(steps, x);
+        return Q('back', 'back', { steps: steps, output: y, answer: x, worked: lines(inverse(steps), y), wrong: backWrongs(steps, y) }); },
+      backThree: function () { var steps = [S('add', int(2, 9)), S('mul', int(3, 6)), S('sub', int(2, 12))], x = int(3, 15), y = run(steps, x);
+        return Q('back', 'back', { steps: steps, output: y, answer: x, worked: lines(inverse(steps), y), wrong: backWrongs(steps, y) }); }
+    };
+
+    /* ---- Round 3: past the lesson ---- */
+    var R3 = {
+      backHard: function () {
+        return until(function () {
+          var steps = [S('mul', int(3, 8)), S('sub', int(2, 12)), S('div', int(2, 5))], x = int(3, 20), y = run(steps, x);
+          if (y === null || y < 2) return null;
+          return Q('back', 'back', { steps: steps, output: y, answer: x, worked: lines(inverse(steps), y), wrong: backWrongs(steps, y) });
+        });
+      },
+      fixed: function () {                                     // a n - b = n  so  (a - 1) n = b
+        var a = int(3, 7), x = int(3, 15), b = x * (a - 1), steps = [S('mul', a), S('sub', b)];
+        return Q('puzzle', 'fixed', { steps: steps, answer: x, worked: lines(steps, x),
+          method: a + 'n − ' + b + ' = n, so ' + (a - 1) + 'n = ' + b + ', so n = ' + x + '.',
+          wrong: [{ value: b, tag: 'skip', how: String(b), msg: 'That is the number taken away. Set the output equal to the input and solve.' },
+                  { value: run(steps, b), tag: 'output', how: how(steps, b), msg: 'Try your answer in the machine. The output must equal the input.' }] });
+      },
+      missing: function () {
+        var x = int(3, 12), b = int(3, 15), a, steps, y, ans;
+        if (rnd() < 0.5) { a = int(3, 9); steps = [S('mul', null), S('add', b)]; y = x * a + b; ans = a; }
+        else { a = int(2, 9); var m = int(2, 6); steps = [S('add', null), S('mul', m)]; y = m * (x + a); ans = a; }
+        var full = steps.map(function (s, i) { return s.v === null ? S(s.op, ans) : s; });
+        var wr = steps[0].op === 'mul'
+          ? [{ value: y - b, tag: 'skip', how: y + ' − ' + b, msg: 'You took away the ' + b + ' but did not divide by the input.' },
+             { value: (y + b) / x, tag: 'sign', how: '(' + y + ' + ' + b + ') ÷ ' + x, msg: 'Undo + ' + b + ' with − ' + b + ', not with + ' + b + '.' }]
+          : [{ value: y / steps[1].v, tag: 'skip', how: y + ' ÷ ' + steps[1].v, msg: 'You undid × ' + steps[1].v + ' but did not take away the input.' },
+             { value: y / steps[1].v + x, tag: 'sign', how: y + ' ÷ ' + steps[1].v + ' + ' + x, msg: 'The missing number is added to the input, so take the input away.' }];
+        return Q('puzzle', 'missing', { steps: steps, input: x, output: y, answer: ans, worked: (steps[0].op === 'mul'
+            ? [y + ' − ' + b + ' = ' + (y - b), (y - b) + ' ÷ ' + x + ' = ' + ans]
+            : [y + ' ÷ ' + steps[1].v + ' = ' + (y / steps[1].v), (y / steps[1].v) + ' − ' + x + ' = ' + ans]), wrong: wr });
+      },
+      table: function () {
+        return until(function () {
+          var a = int(2, 7), b = int(1, 9), xs = shuffle([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).slice(0, 3).sort(function (p, q) { return p - q; }), t = int(14, 25);
+          var steps = pick([[S('mul', a), S('add', b)], [S('add', b), S('mul', a)]]);
+          var rows = xs.map(function (x) { return [x, run(steps, x)]; });
+          // the second form is a(x + b) = ax + ab: the rule is still linear
+          var p1 = rows[0], p2 = rows[2], dy = p2[1] - p1[1], dx = p2[0] - p1[0];
+          if (dy % dx !== 0) return null;
+          var m = dy / dx, k = p1[1] - m * p1[0], ans = m * t + k;
+          if (k < 1 || m < 2) return null;
+          return Q('puzzle', 'table', { steps: steps, table: rows, target: t, answer: ans,
+            worked: [p2[1] + ' − ' + p1[1] + ' = ' + dy, p2[0] + ' − ' + p1[0] + ' = ' + dx, dy + ' ÷ ' + dx + ' = ' + m, m + ' × ' + p1[0] + ' = ' + (m * p1[0]), p1[1] + ' − ' + (m * p1[0]) + ' = ' + k, m + ' × ' + t + ' = ' + (m * t), (m * t) + ' + ' + k + ' = ' + ans],
+            method: 'Each step of 1 in the input changes the output by ' + m + '. So the rule is ' + m + 'n + ' + k + '.',
+            wrong: [{ value: m * t, tag: 'skip', how: m + ' × ' + t, msg: 'The rule has a second step. Use the table to find the number that is added.' },
+                    { value: p2[1] + (t - p2[0]), tag: 'skip', how: p2[1] + ' + ' + (t - p2[0]), msg: 'The output goes up by ' + m + ' for every 1 more in the input, not by 1.' }] });
+        });
+      },
+      equal: function () {                                     // A: x a then - b.  B: + c then x d.  a n - b = d (n + c)
+        return until(function () {
+          var a = int(4, 9), d = int(2, 3), c = int(1, 9), x = int(4, 20), b = (a - d) * x - d * c;
+          if (b < 2 || b > 60) return null;
+          var A = [S('mul', a), S('sub', b)], B = [S('add', c), S('mul', d)], out = run(A, x);
+          return Q('puzzle', 'equal', { steps: A, stepsB: B, answer: x, output: out,
+            worked: lines(A, x).concat(lines(B, x)),
+            method: 'Machine A gives ' + a + 'n − ' + b + '. Machine B gives ' + d + '(n + ' + c + '). Make them equal and solve.',
+            wrong: [{ value: out, tag: 'output', how: how(A, x), msg: 'That is the output they both give. The question asks for the input.' },
+                    { value: b, tag: 'skip', how: String(b), msg: 'Make the two machines equal as formulas, then solve for n.' }] });
+        });
+      },
+      rsub3: function () {                                     // [add a, mul b, rsub c] backwards
+        return until(function () {
+          var a = int(1, 9), b = int(2, 5), x = int(2, 10), out = int(3, 30), c = b * (x + a) + out;
+          var steps = [S('add', a), S('mul', b), S('rsub', c)];
+          return Q('puzzle', 'back', { steps: steps, output: out, answer: x, worked: lines(inverse(steps), out), wrong: backWrongs(steps, out).concat([
+            { value: run([S('add', c), S('div', b), S('sub', a)], out), tag: 'sign', how: how([S('add', c), S('div', b), S('sub', a)], out), msg: MSG.rsub }]) });
+        });
+      },
+      back4: function () {                                     // [add a, mul b, rsub c, div d] backwards
+        return until(function () {
+          var a = int(2, 8), b = int(2, 4), d = int(2, 4), x = int(3, 12), c = b * (x + a) + d * int(2, 15);
+          var steps = [S('add', a), S('mul', b), S('rsub', c), S('div', d)], out = run(steps, x);
+          if (out === null || out < 2) return null;
+          return Q('puzzle', 'back', { steps: steps, output: out, answer: x, worked: lines(inverse(steps), out), wrong: backWrongs(steps, out) });
+        });
+      },
+      fixed3: function () {                                    // (a n - b) / c = n
+        var c = int(2, 4), a = int(c + 2, 9), x = int(3, 15), b = x * (a - c), steps = [S('mul', a), S('sub', b), S('div', c)];
+        return Q('puzzle', 'fixed', { steps: steps, answer: x, worked: lines(steps, x),
+          method: '(' + a + 'n − ' + b + ') ÷ ' + c + ' = n, so ' + a + 'n − ' + b + ' = ' + c + 'n, so ' + (a - c) + 'n = ' + b + ', so n = ' + x + '.',
+          wrong: [{ value: b, tag: 'skip', how: String(b), msg: 'That is the number taken away. Set the output equal to the input and solve.' },
+                  { value: run(steps.slice(0, 2), x), tag: 'skip', how: how(steps.slice(0, 2), x), msg: 'You missed the last step, the divide.' }] });
+      },
+      negative: function () {                                  // [rsub a, mul b, sub c, div d] with negative numbers on the way
+        return until(function () {
+          var a = int(3, 8), x = a + int(4, 12), b = int(2, 4), c = int(2, 9), d = int(2, 5);
+          var steps = [S('rsub', a), S('mul', b), S('sub', c), S('div', d)], out = run(steps, x);
+          if (out === null || out >= 0) return null;
+          var wrongs = [W([S('sub', a), S('mul', b), S('sub', c), S('div', d)], x, 'sign', 'Subtract from ' + a + ' means ' + a + ' − the number, not the number − ' + a + '.'),
+                        W(steps.slice(0, 3), x, 'skip', MSG.skip)];
+          return Q('puzzle', 'output', { steps: steps, input: x, answer: out, worked: lines(steps, x), wrong: wrongs });
+        });
+      }
+    };
+
+    // Round 1: one step, then two-step machines (three kinds, shuffled), a divide, a three-step machine
+    var twoStep = shuffle([R1.timesAdd, R1.timesSub, R1.addTimes]);
+    // Round 2: two rule questions (multiple choice), then working backwards
+    // Round 3: a hard reversal, three puzzles in a shuffled order, then two that are meant to be almost impossible
+    var puzzles = shuffle([R3.fixed, R3.missing, R3.table]);
+    var plan = [
+      { name: 'Machine outputs', qs: [R1.one, twoStep[0], twoStep[1], twoStep[2], R1.divAdd, R1.three] },
+      { name: 'Rules and reverses', qs: [R2.rule1, R2.rule2, R2.backTimesAdd, R2.backDivAdd, R2.backAddTimes, R2.backThree] },
+      { name: 'Beat the machines', qs: [R3.backHard, puzzles[0], puzzles[1], puzzles[2], pick([R3.equal, R3.rsub3]), pick([R3.back4, R3.fixed3, R3.negative])] }
+    ];
+
+    var out = [];
+    plan.forEach(function (r, ri) {
+      r.qs.forEach(function (make, qi) {
+        var q = make();
+        q.round = ri + 1; q.n = qi + 1; q.roundName = r.name;
+        var seen = {}, wrong = {};
+        (q.wrong || []).forEach(function (w) {                  // keep real, distinct mistakes
+          if (w && w.value !== null && w.value === Math.round(w.value) && w.value !== q.answer && Math.abs(w.value) <= 99999 && !seen[w.value]) {
+            seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg };
+          }
+        });
+        q.wrong = wrong;
+        if (q.kind === 'rule') { q.options.forEach(function (o) { if (o.tag) o.msg = RULEMSG[o.tag]; }); q.wrong = {}; }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Machine outputs', 'Rules and reverses', 'Beat the machines'];
+  var CATS = { output: 'Machine outputs', rule: 'Rules as formulas', back: 'Working backwards', puzzle: 'Machine puzzles' };
+  var HABIT = {
+    order: 'You did the steps in the wrong order. Follow the boxes from left to right.',
+    skip: 'You missed a step, or stopped early. Do every box.',
+    sign: 'You used the wrong operation. Read each box, or use the opposite when you go backwards.',
+    forward: 'You put the output through the machine again. To find the input, undo the steps, last one first.',
+    output: 'You gave the output when the question asked for the input.',
+    swapped: 'You mixed up the numbers. Keep each number with its own box.',
+    brackets: 'Add first, then multiply, means the adding goes inside brackets.',
+    rsub: 'Subtract from is its own opposite.'
+  };
+  var GENERIC = 'Write out each step and check the order.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var ARROW = '<svg class="arr" viewBox="0 0 26 20" aria-hidden="true"><path d="M1 10h20M14 3l8 7-8 7" fill="none" stroke="#2B2350" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  function chip(cls, html) { return '<span class="chip ' + cls + '">' + html + '</span>'; }
+  function stepChip(s) { return chip('step' + (s.v === null ? ' q' : ''), stepLabel(s)); }
+  function strip(label, inHtml, steps, outHtml) {
+    var parts = [];
+    if (inHtml !== null) parts.push(chip('io', '<small>IN</small>' + inHtml));
+    steps.forEach(function (s) { parts.push(stepChip(s)); });
+    if (outHtml !== null) parts.push(chip('io', '<small>OUT</small>' + outHtml));
+    return '<div class="strip">' + (label ? '<span class="lab">' + label + '</span>' : '') + parts.join(ARROW) + '</div>';
+  }
+  var val = function (x) { return x === null ? '?' : NUMTXT(x); };
+  // What is on the screen for a question (also read by the test).
+  function display(Q) {
+    var steps = Q.steps.map(stepLabel).join(' | ');
+    switch (Q.kind) {
+      case 'output': return 'IN ' + val(Q.input) + ' | ' + steps + ' | OUT ?';
+      case 'back': return 'IN ? | ' + steps + ' | OUT ' + val(Q.output);
+      case 'rule': return 'IN n | ' + steps + ' | OUT ?';
+      case 'fixed': return 'IN ? | ' + steps + ' | OUT the same';
+      case 'missing': return 'IN ' + val(Q.input) + ' | ' + steps + ' | OUT ' + val(Q.output);
+      case 'table': return 'TABLE ' + Q.table.map(function (r) { return r[0] + '→' + r[1]; }).join(', ') + ' | IN ' + Q.target + ' | OUT ?';
+      case 'equal': return 'A: ' + steps + ' | B: ' + Q.stepsB.map(stepLabel).join(' | ');
+    }
+  }
+  var ASK = {
+    output: 'Find the output.',
+    back: 'Find the input.',
+    rule: 'Which formula is the rule for this machine? n is the input.',
+    fixed: 'Find the input that gives an output equal to the input.',
+    missing: 'Find the missing number.',
+    table: 'The machine has two steps. Find the output when the input is ',
+    equal: 'Find the input that gives the same output from both machines.'
+  };
+  function cardHtml(Q) {
+    var h = '<p class="ask">' + (Q.kind === 'table' ? ASK.table + Q.target + '.' : ASK[Q.kind]) + '</p>';
+    switch (Q.kind) {
+      case 'output': h += strip('', val(Q.input), Q.steps, '?'); break;
+      case 'back': h += strip('', '?', Q.steps, val(Q.output)); break;
+      case 'rule': h += strip('', 'n', Q.steps, '?'); break;
+      case 'fixed': h += strip('', '?', Q.steps, 'the same number'); break;
+      case 'missing': h += strip('', val(Q.input), Q.steps, val(Q.output)); break;
+      case 'table':
+        h += '<table class="tbl"><tr><th>Input</th>' + Q.table.map(function (r) { return '<td>' + r[0] + '</td>'; }).join('') + '<td>' + Q.target + '</td></tr>' +
+             '<tr><th>Output</th>' + Q.table.map(function (r) { return '<td>' + r[1] + '</td>'; }).join('') + '<td>?</td></tr></table>'; break;
+      case 'equal': h += strip('Machine A', null, Q.steps, null) + strip('Machine B', null, Q.stepsB, null) + '<p class="sub">The same input goes into both.</p>'; break;
+    }
+    return h;
+  }
+  function shortText(Q) {
+    var st = 'Machine: ' + Q.steps.map(stepLabel).join(', then ') + '. ';
+    switch (Q.kind) {
+      case 'output': return st + 'Input ' + val(Q.input) + '. Find the output.';
+      case 'back': return st + 'Output ' + val(Q.output) + '. Find the input.';
+      case 'rule': return st + 'Choose the rule.';
+      case 'fixed': return st + 'Find the input that equals the output.';
+      case 'missing': return st + 'Input ' + Q.input + ', output ' + Q.output + '. Find the missing number.';
+      case 'table': return 'Table of inputs and outputs. Find the output when the input is ' + Q.target + '.';
+      case 'equal': return 'Machine A: ' + Q.steps.map(stepLabel).join(', then ') + '. Machine B: ' + Q.stepsB.map(stepLabel).join(', then ') + '. Find the input with the same output.';
+    }
+  }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Function Machines'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b);
+    b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) {
+      var res = state.results[state.r * 6 + k];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : ''))));
+    }
+    h.appendChild(d); return h;
+  }
+
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard'; card.innerHTML = cardHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (Q.kind === 'rule') {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + o.text.replace(/n/g, '<i style="font-style:normal;color:#1F6FB2">n</i>') + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (Q.kind !== 'rule') {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','neg','0','back','go'].forEach(function (k) {
+        var b = el('button', 'key' + (k === 'back' || k === 'neg' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'neg' ? '−' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k;
+        if (k === 'back') b.setAttribute('aria-label', 'Delete'); if (k === 'neg') b.setAttribute('aria-label', 'Minus');
+        b.onclick = function () { press(k); };
+        pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else {
+      var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go);
+    }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px';
+    stop.onclick = final; app.appendChild(stop);
+  }
+
+  function paintAnswer() {
+    var a = document.getElementById('answer'); if (!a) return;
+    a.className = typed ? '' : 'empty'; a.textContent = typed ? typed.replace('-', '−') : 'Type your answer';
+  }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'neg') { if (typed === '') typed = '-'; else if (typed === '-') typed = ''; }
+    else if (k === 'go') { if (typed && typed !== '-') check(parseInt(typed, 10), null); }
+    else if (typed.replace('-', '').length < 5) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question') return; if (locked) return; check(k + 1, k); }
+
+  function feedbackHtml(Q, ok, head, msg) {
+    var work = Q.worked.map(function (l) { return '<div>' + l.replace(/^-/, '−') + '</div>'; }).join('');
+    var how = Q.kind === 'output' ? 'Follow the steps in order:' : Q.kind === 'rule' ? 'Check the rule with n = ' + Q.checkInput + ':' : Q.kind === 'back' ? 'Undo the steps, last one first:' : 'Check it:';
+    return '<div class="head">' + head + '</div>' + (msg ? '<div class="msg">' + msg + '</div>' : '') +
+      (Q.method ? '<p class="how">' + Q.method + '</p>' : '') + '<p class="how">' + how + '</p><div class="work">' + work + '</div>';
+  }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head;
+    if (Q.kind === 'rule') {
+      ok = picked === Q.correctIndex;
+      if (!ok) { tag = Q.options[picked].tag; msg = Q.options[picked].msg; }
+      head = ok ? 'Correct. The rule is ' + Q.formula + '.' : 'Not quite. The rule is ' + Q.formula + '.';
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer;
+      var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other');
+      msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + NUMTXT(Q.answer) + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    var wrote = Q.kind === 'rule' ? Q.options[picked].text : NUMTXT(given);
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong'; fb.innerHTML = feedbackHtml(Q, ok, head, msg);
+    var last = state.i === 5;
+    var label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn');
+    goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  /* ---------- the review: a drop-down for a round, with the time for each question, right or wrong,
+   *            and for a wrong answer what the student wrote and how to get to the right one ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + shortText(Q) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + shortText(Q) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    var right = Q.kind === 'rule' ? Q.formula : NUMTXT(Q.answer);
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + x.wrote + '</b>. The answer is <b>' + right + '</b>.</div>';
+    var how = Q.kind === 'output' ? 'How to get there. Follow the steps in order:' : Q.kind === 'rule' ? 'How to get there. Check the rule with n = ' + Q.checkInput + ':' : Q.kind === 'back' ? 'How to get there. Undo the steps, last one first:' : 'How to get there:';
+    h += (Q.method ? '<p class="how">' + Q.method + '</p>' : '') + '<p class="how">' + how + '</p><div class="work">' + Q.worked.map(function (l) { return '<div>' + l.replace(/^-/, '−') + '</div>'; }).join('') + '</div>';
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6);
+    var right = mine.filter(function (x) { return x && x.ok; }).length;
+    var secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); };
+    app.appendChild(b); b.focus();
+  }
+
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'What to practise'));
+    card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length;
+      var rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {};
+    done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else {
+      var ul = el('ul', 'tips');
+      tags.forEach(function (t) {
+        var n = counts[t], text = t === 'other' ? 'Some answers did not match a common mistake. Look back at the working shown after each one.' : (HABIT[t] || GENERIC);
+        ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + text));
+      });
+      tips.appendChild(ul);
+    }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b);
+    b.focus();
+  }
+
+  /* ---------- keyboard: digits, minus, Backspace, Enter; 1 to 4 for the multiple choice ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.screen !== 'question') return;
+    var Q = q();
+    if (Q.kind === 'rule') {
+      if (/^[1-4]$/.test(e.key) && !locked) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === '-') { e.preventDefault(); press('neg'); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };   // read by the test script only
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

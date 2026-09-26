@@ -133,7 +133,7 @@ accentInk split this check enforces.
 
 ## The lesson archetype
 
-Fixed. Ten slides, one per phase, in this order. Total 50 minutes.
+Fixed. Nine slides, one per phase, in this order. Total 50 minutes.
 
 > **Two exceptions.**
 >
@@ -148,20 +148,27 @@ Fixed. Ten slides, one per phase, in this order. Total 50 minutes.
 | Slide | Phase | Min |
 |---|---|---|
 | 1 | Do Now | 10 |
-| 2 | Today | 1 |
+| 2 | Objectives | 1 |
 | 3 | Hook | 2 |
 | 4 | I Do | 3 |
 | 5 | I Do | 3 |
 | 6 | We Do | 5 |
 | 7 | Cold Call | 6 |
-| 8 | You Do | 14 |
-| 9 | Answers | 3 |
-| 10 | Plenary | 3 |
+| 8 | You Do | 17 |
+| 9 | Plenary | 3 |
+
+**Slide 2 is called Objectives**, in the phase pill and in the title. It was "Today" / "Today's goals" until Chuka changed it; use "Objectives" from now on.
+
+**The Hook (slide 3) has no "Vote! We come back to this at the end." line.** Permanently
+removed. Say it in the speaker notes if you want the class to vote.
 
 **Slide 1 (Do Now)** carries the lesson title and date. Phase pill top-left,
 title centred, date right-aligned, accent rule beneath, then six question cards
 in a 2×3 grid. Each card: number, question, and the **real answer** revealed on
-click. Never "keep your answer for later" — show the answer.
+click. Never "keep your answer for later" — show the answer. **Each question's text sits on the
+same vertical centre as its number**, so a one-line question is level with its number in the
+card (`qGrid` in `build/function-machines.js`; see `reference/Putting Numbers In.pptx`). The
+same goes for the Cold Call.
 
 **The Do Now may draw on the other sciences.** For `10A` this is not a
 flourish — Co-ordinated Sciences is one course covering biology, chemistry and
@@ -195,22 +202,20 @@ Classroom now." Three tier cards: Bronze / Silver / Gold.
 
 **The You Do may be a game instead of the worksheet when asked.** The
 worksheet is still produced every time. Only build a game when Chuka asks for
-one. See `GAMES.md`.
+one. See `GAMES.md`. **A game's last round must be genuinely hard**: the
+questions ramp up to almost impossible, past the lesson's own level (`GAMES.md`,
+"Difficulty ramps, and the top is hard").
 
-**Slide 9 (Answers)** holds ten model answers that match worksheet questions
-1–10 **exactly, in order**. Students mark their own. There is no separate
-answers document.
+**There is no Answers slide.** The You Do takes its 3 minutes (14 became 17). The answers go
+on the worksheet instead, **upside down on its last page**: students who use the paper need
+to check it, and answers printed the right way up can be read across a desk. They match the
+worksheet's questions **exactly, in order**. `DP.answersBlock(items)` in `lib/docparts.js`
+renders them to an image rotated 180 degrees, under a right-way-up caption. Keep the list in
+ONE module (see `build/function-machines-answers.js`), so the worksheet block and the speaker
+notes cannot disagree. This is standing for every lesson built from now on. There is no
+separate answers document. Earlier decks are not being retrofitted.
 
-**The same answers go at the end of the worksheet, upside down.** Students who
-use the paper need to check it, and answers printed the right way up can be
-read across a desk. `DP.answersBlock(items)` in `lib/docparts.js` renders them
-to an image rotated 180 degrees, under a right-way-up caption. Keep the list
-in ONE module that both the deck and the worksheet `require`, so the slide and
-the sheet cannot disagree (see `build/putting-numbers-in-answers.js`). This
-applies to every worksheet built from now on; earlier ones are not being
-retrofitted.
-
-**Slide 10 (Plenary)** is dark. Five true/false statements. Every FALSE should
+**Slide 9 (Plenary)** is dark. Five true/false statements. Every FALSE should
 be a real misconception from the lesson.
 
 No hidden teacher slide. Everything a teacher needs goes in speaker notes, and
@@ -374,7 +379,7 @@ Most lessons follow another one. Units built so far:
 - **Y7 Science, The World of Science** — 4 lessons, all built
 - **Y9 Science, Ecosystems** — 4 lessons, all built (ends on Human Population Growth)
 - **Y10 Science, Motion** — acceleration, motion graphs, equations of motion
-- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify, putting numbers in
+- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify, putting numbers in, function machines
 - **T3 CLIL, Atoms** — 5 lessons planned, only Lesson 1 built
 
 Before building lesson N, read lesson N−1 from `reference/`. Take from it:
@@ -411,7 +416,7 @@ For every reference the scheme gives Cambridge's own wording of the learning
 objective, plus suggested activities — named practicals, PhET simulations,
 Resource Plus packs, and the misconceptions Cambridge expects. **Quote the
 objective wording exactly**; it is what the exam is written against. Tag every
-objective on the Today slide with its code.
+objective on the Objectives slide with its code.
 
 Before building any `10A` lesson, pull the relevant section and read it. It
 often names the exact misconception and the exact demonstration to use, which
@@ -466,12 +471,22 @@ atom, or an abstract property like "tiny".
   needs it, and a source can be found with a reverse image search. Still use
   only public-domain or CC material, and never copyrighted footage; that is a
   question of what is allowed, not of what is shown.
-- **Run `lib/autoplay-media.js` after `lib/animate.js`.** It gives every video
-  on the slide an autoplay node, content video included.
+- **A content video plays ON CLICK, not when the slide opens.** The teacher says the idea first.
+  In the spec use `{ "target": "<the video's objectName>", "effect": "play" }` as its own click
+  (`lib/animate.js`), and give the video an `objectName` in `addMedia`. The phase timer still
+  autoplays.
+- **Run `lib/autoplay-media.js` after `lib/animate.js`.** It gives the phase timer (and any
+  content video not set to play on click) an autoplay node.
+- **A process animation is slow and it pauses.** It stops at every operation (a number reaching
+  a box, a step being performed), lights the box, writes the working under it, and only then
+  changes the number. Twenty seconds for three examples is right; ten seconds for four is too
+  fast. A backward or reverse process is shown under the forward one, boxes lined up, so the
+  reason for the opposite operation is obvious without being told.
 - **Keep the deck under about 25 MB.** If media pushes past that, shorten the
   clips or drop the resolution before dropping the media.
 - `tools/check-timers.py` counts videos per slide, so a content video alongside
-  a timer is fine.
+  a timer is fine. It accepts a content video that autoplays or that plays on click,
+  not both.
 
 ### Where media earns its place
 
@@ -479,7 +494,7 @@ atom, or an abstract property like "tiny".
   sentence.
 - **I Do** — an animation of the process being explained.
 - **Context** — the real thing: the apparatus, the organism, the place.
-- Not the Do Now, the Cold Call or the Answers. Those are text and need to
+- Not the Do Now or the Cold Call. Those are text and need to
   stay scannable.
 
 ---
@@ -497,7 +512,7 @@ inspect them before use — a "tree" that is a dot on the horizon will not read 
 
 ## What gets delivered
 
-A deck and a worksheet. **No answers document** (answers are slide 9, and
+A deck and a worksheet. **No answers document** (and no Answers slide: the answers are
 upside down at the end of the worksheet) and **no key-word sheet** (they
 consume time neither Chuka nor the lesson has). A game when asked, see
 `GAMES.md`.

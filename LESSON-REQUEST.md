@@ -50,7 +50,8 @@ AVOID:      <anything specific — a context, a method, a piece of kit>
 
 A deck and a worksheet, validated and rendered, with the images shown to you.
 
-**No answers document** (answers are slide 9) and **no key-word sheet**.
+**No answers document** and **no Answers slide** (the answers are printed upside down on the
+last page of the worksheet) and **no key-word sheet**.
 
 If it's a double, expect to be asked how you want the 100 minutes split before
 anything gets built.

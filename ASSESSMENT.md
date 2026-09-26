@@ -80,7 +80,7 @@ syllabus and the exam is written against them.
 assessment tests what was taught, in the words it was taught in.
 
 For each deck take: the objectives from the Today slide, the worked examples
-from the I Do slides, the misconceptions from the We Do, and the Answers slide.
+from the I Do slides, the misconceptions from the We Do, and the worksheet's answers (older decks have an Answers slide).
 
 **A question testing something not in the referenced decks is a bug**, not a
 stretch. If the paper feels thin, the topic was thin — say so rather than

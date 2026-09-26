@@ -155,6 +155,48 @@ Then play it in a browser at both viewports
 
 ---
 
+## Difficulty ramps, and the top is hard
+
+**A game must climb, and the last round must be genuinely hard.** Chuka's rule,
+set after a game that the class found too easy: as the difficulty ramps up the
+questions become *insanely challenging*. The lesson's own level is the middle
+of the game, not the top of it.
+
+- **Round 1 is the lesson.** Everyone should finish it with green dots.
+- **Round 2 is the lesson plus one step.** A second skill, a harder form of the
+  first, or the lesson's skill reversed.
+- **Round 3 goes far past the lesson**, and the last two questions are meant to
+  be almost impossible for the strongest student in the room: extra steps,
+  puzzles that use the idea in an unfamiliar way, a template that needs a
+  method nobody was taught (an unknown on both sides, a rule found from a
+  table, an input that equals its own output). Negative numbers, fractions or
+  larger numbers are fair game in the last one or two questions, even if the
+  lesson itself avoided them. Say so in the speaker notes.
+- **Fail informatively at the top too.** A student who cannot do question 17
+  still gets the answer, the working and a named mistake. The working is where
+  the learning is, so it must be there for every question.
+- **Tell the class before they start** that round 3 is meant to be too hard, so
+  nobody reads a red dot as "I am bad at maths". Put the same sentence on the
+  game's start screen.
+- **Let them stop.** Thirteen minutes will not finish eighteen questions like
+  these. A "Stop and see my results" button on every question shows the score,
+  what was not reached and the mistakes so far. No penalty for using it.
+- **Keep the skills and their order fixed** for every student, as above, so the
+  ramp and the diagnostic mean the same thing to everyone. Only the numbers and
+  the choice of template inside a slot vary. When one slot draws from a pool
+  (for example, one of two "almost impossible" questions), every template in the
+  pool must be of the same difficulty and the same skill category.
+- **Test the top.** The sympy checker must cover the hardest templates exactly
+  as it covers the easiest: exact division on every path, the answer unique,
+  every mistake value produced by its stated sum.
+
+Worked example: `build/function-machines-game.html` (Round 3 is a three-step
+reversal, an input equal to its own output, a missing number, a rule from a
+table, then two questions drawn from small pools of very hard templates, with
+negative numbers and "subtract from" in the last).
+
+---
+
 ## What makes a game worth the 14 minutes
 
 **It has to be diagnostic.** At the end it must show what was got wrong, not
