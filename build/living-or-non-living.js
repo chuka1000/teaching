@@ -10,8 +10,8 @@
  * The TPR gestures for the unit's words are fixed HERE and kept all unit (CLIL.md). They are in the notes on slides 3
  * and 4, and in units/T3-Unit-4-Living-Organisms.md.
  *
- * Pictures: assets/pictures/ (Noto emoji in colour, tools/make-pictures.js). Wikimedia was blocked from the build
- * environment, so there are no photographs. No stereomicroscopes, soil, seeds or terrariums: Chuka will not have them.
+ * Pictures: photographs from Wikimedia Commons (assets/photos/, tools/fetch-photos.py), the same ones all unit; the
+ * park scene on slide 8 and the routine icons are colour drawings (assets/pictures/, tools/make-pictures.js). No stereomicroscopes, soil, seeds or terrariums: Chuka will not have them.
  * Every classification comes from build/living-or-non-living-answers.js, which the worksheet reads too.
  */
 const PptxGenJS = require('pptxgenjs');
@@ -26,11 +26,9 @@ const { KIND, WORDS, name, kind } = ANS;
 
 const DATE = 'Thursday 8 October 2026';
 const LESSON = 'Living Or Non-Living';
-const PIC = (n) => {
-  const f = path.join(__dirname, '..', 'assets', 'pictures', `${n}.png`);
-  if (!fs.existsSync(f)) throw new Error(`no picture ${n}: run node tools/make-pictures.js ${n}`);
-  return f;
-};
+// a photograph (assets/photos) when there is one, else the colour drawing (assets/pictures): the unit kit's rule
+const { picFile } = require('./living-things-kit');
+const PIC = (n, o) => picFile(n, o);
 
 const TIMER_X = 0.34, TIMER_W = 0.50, TIMER_Y = 0.34, TIMER_H = H - 0.68;
 const M = 1.28, RIGHT = W - 0.60, CW = RIGHT - M;
@@ -91,8 +89,8 @@ function card(slide, o) {
   });
 }
 /** A square picture, centred on (cx, cy). */
-const pic = (slide, key, cx, cy, size, objName) => slide.addImage({
-  path: PIC(key), x: cx - size / 2, y: cy - size / 2, w: size, h: size, objectName: objName,
+const pic = (slide, key, cx, cy, size, objName, o) => slide.addImage({
+  path: PIC(key, o), x: cx - size / 2, y: cy - size / 2, w: size, h: size, objectName: objName,
 });
 /** The living / non-living chip: the answer, in its colour. */
 function chip(slide, k, x, y, w, h, objName, size = 15) {
@@ -161,7 +159,7 @@ function frame(slide, y = 6.12, pre = '') {
     'TITLE. 1 minute. A NEW UNIT: What is a living organism? This is Lesson 1 of 6, and the last lesson before half-term.\n\n'
     + 'READ THE TITLE slowly, pointing at each word. The class reads it with you, then again without you. Do not explain "living" yet. That is the next slide.\n\n'
     + 'POINT AT THE FOUR PICTURES and name them, the class repeats: "a dog", "a rock", "a tree", "a chair". These are the first examples of the lesson and they come back on slide 5. Then ask one question and do not answer it: "Dog... rock... the same? Different?" Let them point and guess.\n\n'
-    + 'NEW PICTURES THIS UNIT. Every picture is a colour drawing, and the same drawing is used for the same thing on every slide and on the worksheet, so a dog is always this dog.\n\n'
+    + 'NEW PICTURES THIS UNIT. Real photographs, and the same photograph is used for the same thing on every slide, on the worksheet and in every later lesson, so a dog is always this dog. That is what makes the pictures work for retrieval after half-term.\n\n'
     + 'THE GESTURES for this unit are agreed in the next two slides and kept for all six lessons. The Atoms gestures (atom, tiny, part, made of) are not used in this unit.'
   );
 }
@@ -441,7 +439,7 @@ wordSlide({
   SCENE.forEach(([ka, ax, ay, as], i) => SCENE.slice(i + 1).forEach(([kb, bx, by, bs]) => {
     if (Math.hypot(ax - bx, ay - by) < as / 2 + bs / 2 + 0.2) throw new Error(`scene: the rings round ${ka} and ${kb} overlap`);
   }));
-  SCENE.forEach(([k, cx, cy, size]) => pic(s, k, sx + cx, sy + cy, size, `sc_${k}`));
+  SCENE.forEach(([k, cx, cy, size]) => pic(s, k, sx + cx, sy + cy, size, `sc_${k}`, { drawing: true }));
   SCENE.forEach(([k, cx, cy, size]) => {
     const r = size / 2 + 0.1;
     s.addShape(S.ellipse, {

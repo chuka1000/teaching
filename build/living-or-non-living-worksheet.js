@@ -18,11 +18,12 @@ const LESSON = 'Living Or Non-Living';
 const OUT = path.join(__dirname, '..', 'out', LESSON);
 fs.mkdirSync(OUT, { recursive: true });
 const A4 = { size: { width: 11906, height: 16838 }, margin: { top: 1000, bottom: 1000, left: 964, right: 964 } };
-const PIC = (n) => path.join(__dirname, '..', 'assets', 'pictures', `${n}.png`);
+const { picFile } = require('./living-things-kit');   // the photograph if there is one, else the drawing
+const PIC = (n) => picFile(n);
 const LIVE_FILL = '237D38', STONE_FILL = '5E6B78';
 
-/** A picture as an inline image. `type: 'png'` is required or Word shows nothing. The pictures are square. */
-const pic = (k, px) => new ImageRun({ type: 'png', data: fs.readFileSync(PIC(k)), transformation: { width: px, height: px } });
+/** A picture as an inline image. `type` is required or Word shows nothing. The pictures are square. */
+const pic = (k, px) => new ImageRun({ type: PIC(k).endsWith('.jpg') ? 'jpg' : 'png', data: fs.readFileSync(PIC(k)), transformation: { width: px, height: px } });
 const picPara = (keys, px, o = {}) => new Paragraph({
   alignment: AlignmentType.CENTER, spacing: { before: o.before ?? 40, after: o.after ?? 20 },
   children: keys.flatMap((k, i) => (i ? [new TextRun({ text: '   ' }), pic(k, px)] : [pic(k, px)])),
@@ -71,7 +72,7 @@ function sectionB() {
   const rows = [0, 1].map((r) => new TableRow({
     cantSplit: true,
     children: SHEET_B.slice(r * 6, r * 6 + 6).map((k) => cell([
-      picPara([k], 40, { before: 10, after: 0 }),
+      picPara([k], 40, { before: 10, after: 30 }),
       p(name(k), { size: 12, bold: true, align: AlignmentType.CENTER, after: 0 }),
     ], { w })),
   }));

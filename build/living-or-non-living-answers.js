@@ -4,20 +4,8 @@
  * read KIND, so a picture cannot be "living" on a slide and "non-living" on the sheet.
  */
 
-/** Every thing pictured in the lesson: what it is, and its group if it is living. Picture files: assets/pictures/<key>.png */
-const KIND = {
-  dog: ['dog', 'living', 'animal'], cat: ['cat', 'living', 'animal'], bird: ['bird', 'living', 'animal'],
-  fish: ['fish', 'living', 'animal'], frog: ['frog', 'living', 'animal'], horse: ['horse', 'living', 'animal'],
-  snail: ['snail', 'living', 'animal'], butterfly: ['butterfly', 'living', 'animal'],
-  girl: ['girl', 'living', 'animal'], walker: ['person', 'living', 'animal'],
-  tree: ['tree', 'living', 'plant'], flower: ['flower', 'living', 'plant'], cactus: ['cactus', 'living', 'plant'],
-  rock: ['rock', 'non-living'], chair: ['chair', 'non-living'], ball: ['ball', 'non-living'], car: ['car', 'non-living'],
-  phone: ['phone', 'non-living'], book: ['book', 'non-living'], robot: ['robot', 'non-living'],
-  teddy: ['teddy', 'non-living'], bicycle: ['bicycle', 'non-living'], clock: ['clock', 'non-living'],
-  kite: ['kite', 'non-living'], sun: ['sun', 'non-living'], cloud: ['cloud', 'non-living'],
-};
-const name = (k) => KIND[k][0];
-const kind = (k) => KIND[k][1];
+/** What every pictured thing is: the unit's one list (build/living-things-words.js). */
+const { KIND, name, kind } = require('./living-things-words');
 
 /** The four new words, each with the three pictures that show it (the same three on the slide and the sheet). */
 const WORDS = {
@@ -58,9 +46,8 @@ module.exports = ANSWERS;
 Object.assign(module.exports, { KIND, WORDS, SHEET_A, SHEET_B, SHEET_C, name, kind });
 
 if (require.main === module) {
-  // sanity: every key has a picture, and both groups in the sort are the same size
-  const fs = require('fs'), path = require('path');
-  const missing = Object.keys(KIND).filter((k) => !fs.existsSync(path.join(__dirname, '..', 'assets', 'pictures', `${k}.png`)));
-  if (missing.length) { console.error('no picture for:', missing.join(', ')); process.exit(1); }
+  // sanity: every picture the sheet needs exists
+  const { picFile } = require('./living-things-kit');
+  [...Object.values(WORDS).flat(), ...SHEET_B, ...SHEET_C.map((r) => r.key)].forEach((k) => picFile(k));
   ANSWERS.forEach(([n, a]) => console.log(n.padEnd(3), a));
 }

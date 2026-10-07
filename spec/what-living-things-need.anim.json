@@ -1,0 +1,654 @@
+{
+  "deck": "out/What Living Things Need/What Living Things Need.pptx",
+  "output": "out/What Living Things Need/What Living Things Need.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_num",
+            "o0_img0",
+            "o0_img1",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_num",
+            "o1_img0",
+            "o1_img1",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_num",
+            "o2_img0",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rm0_word",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm1_word",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm2_word",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm3_word",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "sa0_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "sa1_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sa2_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "sa3_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sa4_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "sa5_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "sa6_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "sa7_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        },
+        {
+          "name": "wr2",
+          "members": [
+            "w2_word",
+            "w2_say",
+            "w2_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            },
+            {
+              "target": "wr2",
+              "effect": "exit",
+              "delay": 300
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "md0_t",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md1_t",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md2_t",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "yn0_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yn1_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yn2_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yn3_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yn4_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yn5_chip",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "eo0_ring",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo1_ring",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo2_ring",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo3_ring",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo4_ring",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo5_ring",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "opa0",
+          "members": [
+            "op0_n0",
+            "op0_n1",
+            "op0_n2"
+          ]
+        },
+        {
+          "name": "opa1",
+          "members": [
+            "op1_n0",
+            "op1_n1",
+            "op1_n2"
+          ]
+        },
+        {
+          "name": "opa2",
+          "members": [
+            "op2_n0",
+            "op2_n1",
+            "op2_n2"
+          ]
+        },
+        {
+          "name": "opa3",
+          "members": [
+            "op3_n0"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "opa0",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opa1",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opa2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opa3",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_img0",
+            "t0_k",
+            "t0_h",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_img0",
+            "t1_img1",
+            "t1_k",
+            "t1_h",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_img0",
+            "t2_k",
+            "t2_h",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "ta0",
+          "members": [
+            "tl0_chip",
+            "tl0_tick"
+          ]
+        },
+        {
+          "name": "ta1",
+          "members": [
+            "tl1_chip",
+            "tl1_tick"
+          ]
+        },
+        {
+          "name": "ta2",
+          "members": [
+            "tl2_chip",
+            "tl2_tick"
+          ]
+        },
+        {
+          "name": "ta3",
+          "members": [
+            "tl3_chip",
+            "tl3_tick"
+          ]
+        },
+        {
+          "name": "ta4",
+          "members": [
+            "tl4_chip",
+            "tl4_tick"
+          ]
+        },
+        {
+          "name": "ta5",
+          "members": [
+            "tl5_chip",
+            "tl5_tick"
+          ]
+        },
+        {
+          "name": "ta6",
+          "members": [
+            "tl6_chip",
+            "tl6_tick"
+          ]
+        },
+        {
+          "name": "ta7",
+          "members": [
+            "tl7_chip",
+            "tl7_tick"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ta0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta6",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta7",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

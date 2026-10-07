@@ -375,7 +375,7 @@ Most lessons follow another one. Units built so far:
 - **Y8 Science, Natural Selection** — Natural Selection, How Darwin Got There, Natural Selection In Action, Fossils And The Fossil Record, More Evidence, Small Changes Big Changes, Shuffling The Gene Pool, The Greatest Show On Earth (speciation by geographic isolation; Sequencer game), Deep Time (the geologic time scale, eras, mass extinctions; Number line game; dates in build/deep-time.data.json) (Galapagos palette)
 - **Y9 Science, Water** (Catchment palette) — Lesson 1 built (How Much Water Can We Actually Use, deployed as How Much Water Is Available), then Finite Freshwater (uses, groundwater used up, where and when; lesson number not written down); Lesson 4 is eutrophication, set up by the two jars at the end of Lesson 1
 - **T3 CLIL, Atoms** — 5 lessons planned, only Lesson 1 built
-- **T3 CLIL, Unit 4 What is a living organism?** (Meadow palette; 6 hours including the assessment; plan, gestures and lesson prompts in `units/T3-Unit-4-Living-Organisms.md`) — Lesson 1 built (Living Or Non-Living: living, non-living, plant, animal; colour pictures from `tools/make-pictures.js`)
+- **T3 CLIL, Unit 4 What is a living organism?** (Meadow palette; 6 hours including the assessment; plan, gestures and dates in `units/T3-Unit-4-Living-Organisms.md`) — all built: Living Or Non-Living (living, non-living, plant, animal), What Living Things Need (need, food, water, air), Living Things Grow (grow, change; seed animation), Why Is It Living (the Tuesday double: eat, because; the living-things hunt; SDG 15), and the Living Things assessment. Shared code: `build/living-things-words.js` (what every pictured thing is), `-kit.js` (slides), `-sheet.js` (worksheets). Photographs from `tools/fetch-photos.py`
 
 Before building lesson N, read lesson N−1 from `reference/`. Take from it:
 
@@ -545,7 +545,8 @@ reference/    DEPLOYED lessons, teacher-edited. INDEX.md (from MANIFEST.tsv) say
               came before for each class: read it before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, timer, animate, autoplay-media
 tools/      build-lesson, validate, check-timers, check-contrast, make-timers,
-            make-icons, make-pictures (colour pictures for CLIL when no photo can be had),
+            make-icons, fetch-photos (CC photographs from Commons and Openverse, with sources),
+            make-pictures (colour drawings when no photo fits),
             make-preview, syllabus, record-lesson, index-reference
 assets/     pre-built timer videos, Google Classroom logo
 examples/   complete working builds — read these before writing a new one

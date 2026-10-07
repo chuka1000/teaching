@@ -1,16 +1,23 @@
 # T3 — Unit 4: What is a living organism?
 
 **Class:** `T3` Developing Science (CLIL). **Six hours, including the assessment.**
-Palette `meadow` (new for this unit). Pictures: `assets/pictures/` (Noto colour
-emoji, made by `tools/make-pictures.js`). Wikimedia was blocked from the build
-environment, so there are no photographs yet. If Chuka allows
-`upload.wikimedia.org` and `commons.wikimedia.org` in the environment's network
-settings, swap in photographs where a photograph shows the word better.
+Palette `meadow` (new for this unit). Pictures: real photographs from Wikimedia Commons
+and Openverse (Flickr), all CC or public domain, fetched by `tools/fetch-photos.py`
+into `assets/photos/` (the list is `PHOTOS.tsv`, the sources and licences
+`SOURCES.tsv`). The same photograph is used for the same thing in every lesson, so the
+pictures work for retrieval. Colour drawings (`tools/make-pictures.js`) only where no
+photo fits: the park scene, routine icons, the "why?" mark.
 
 **Not available, and not to be planned for:** stereomicroscopes, soil, seeds,
 terrariums. The unit plan's two practicals (soil sorting, seed terrarium) are
-replaced by picture sorting, a classroom "look around" sort, and a generated
+replaced by picture sorting, a classroom living-things hunt, and a generated
 seed-growth animation.
+
+**Shared code.** `build/living-things-words.js` says what every pictured thing is
+(living or not, plant or animal) and holds the gestures; `build/living-things-kit.js`
+is the slide furniture; `build/living-things-sheet.js` the worksheet furniture. A new
+lesson in this unit uses all three, so it looks like the others and a thing cannot
+change sides between lessons.
 
 ---
 
@@ -59,26 +66,21 @@ then keep it:
 
 ---
 
-## Timetable: one question still open
+## Timetable (confirmed: the cycle continues after half-term)
 
-Lesson 1 is Thursday 8 October (Week 1 Thursday P3). Half-term is 12 to 16
-October. That leaves five hours after half-term, and they depend on whether the
-two-week cycle **continues** (19 October is Week 2) or **restarts** (19 October
-is Week 1):
+| Lesson | Date | Slot | Deck |
+|---|---|---|---|
+| 1 | Thu 8 Oct | W1 Thu P3 | `Living Or Non-Living` |
+| (half-term) | 12 to 16 Oct | | |
+| 2 | Thu 22 Oct | W2 Thu P3 | `What Living Things Need` |
+| 3 | Fri 23 Oct | W2 Fri P7, last of the week | `Living Things Grow` |
+| 4 and 5 | Tue 27 Oct | W1 Tue P3 to P4, the double | `Why Is It Living` (one deck: 50 + 5 + 45) |
+| 6 | Thu 29 Oct | W1 Thu P3 | `Living Things assessment` (paper, mark scheme, feedback sheet) |
 
-| | Continues | Restarts |
-|---|---|---|
-| L2 | Thu 22 Oct, W2 Thu P3 | Tue 20 Oct, W1 double (L2 + L3) |
-| L3 | Fri 23 Oct, W2 Fri P7 | (second half of the double) |
-| L4 | Tue 27 Oct, W1 double (L4 + L5) | Thu 22 Oct, W1 Thu P3 |
-| L5 | (second half of the double) | Thu 29 Oct, W2 Thu P3: **assessment** |
-| L6 | Thu 29 Oct, W1 Thu P3: **assessment** | Fri 30 Oct, W2 Fri P7: feedback and a game |
-
-The assessment never goes on Friday P7 (CLIL.md). Either way, the first lesson
-after half-term comes after a gap of 12 days or more, so it opens with heavy
-retrieval of the Lesson 1 words, pictures and gestures before anything new.
-
----
+The assessment is not on Friday P7 (CLIL.md). Lesson 2 comes after a two-week gap, so
+it opens with 15 minutes of retrieval of the Lesson 1 words, photographs and gestures.
+Chuka said he thinks the cycle continues; if it turns out to restart, the dates move
+but the order stays (the double would then fall on Tue 20 Oct and come first).
 
 ## Lesson 1 (built)
 
@@ -110,83 +112,74 @@ things that look like animals are living (teddy).
 
 ---
 
-## Lessons 2 to 6 (to build once the timetable is confirmed)
+## Lessons 2 to 6 (built)
 
-The content below holds whichever way the timetable goes. The SLOT lines are
-filled in from the table above.
-
-### Lesson 2: What living things need
+### Lesson 2: What Living Things Need
 
 ```
 CLASS:      T3
-SLOT:       <first slot after half-term>
+SLOT:       single, Week 2 Thursday P3, Thursday 22 October 2026
 TOPIC:      What Living Things Need
-
 OBJECTIVES:
   1. Sort things: living or non-living. (Lesson 1, again)
   2. Say what living things need: food, water, air.
-  3. Write: Living things need water.
-
-PREVIOUS:   reference/Living Or Non-Living.pptx (open it and read it)
+  3. Write: Plants need water.
+PREVIOUS:   reference/Living Or Non-Living.pptx
 THEY FOUND HARD: <fill in after Thursday 8 October>
-AVOID:      More than four new words. Starting with new language: the first
-            15 minutes are retrieval (pictures, gestures, the Lesson 1 frame).
 ```
 
-New words: need, food, water, air. Plants need water and air too (and light,
-which is not a unit word: do not add it). Misconception: plants do not need
-food. Keep to the unit's three needs; if light comes up, say "yes, and light"
-without drilling it.
+New words: need, food, water, air. Frame: "Living things need ___." 50 minutes: Title 1,
+Today 2, Remember 5, Sort again 5, New words 5, Sentence 5, You say 5 (yes/no) + 6
+(either/or, pairs) + 5 (open), You do 8, Together 3. "Plants need food" is never said
+(plants make their own); the notes say what to do if it comes up.
 
-### Lesson 3: Living things grow and change
+### Lesson 3: Living Things Grow
 
 ```
 CLASS:      T3
-SLOT:       <second slot>
+SLOT:       single, Week 2 Friday P7, Friday 23 October 2026 (last lesson of the week)
 TOPIC:      Living Things Grow
-
 OBJECTIVES:
-  1. Say: living things grow.
-  2. Put pictures in order: seed, seedling, plant; egg, chick, chicken; baby, child, adult.
-  3. Write: A [seed] grows into a [plant].
-
+  1. Say: grow, change.
+  2. Put the pictures in order.
+  3. Write: A puppy grows into a dog.
 PREVIOUS:   reference/What Living Things Need.pptx
-AVOID:      Seeds and terrariums (not available). Life cycles by name.
 ```
 
-New words: grow, change. A generated animation of a seed growing (PIL frames,
-ffmpeg, plays on click), and a rock that does not change, side by side. If this
-is the Friday P7 slot, the You say is a standing-up ordering game.
+New words: grow, change. Frame: "A ___ grows into a ___." The I Do is a generated
+animation (`build/media/living-things-grow-media.py`): a seed grows over 20 days beside
+a rock that does not, pausing at every stage, played on click. Friday P7, so two
+stand-up games (crouch for small, stand for big; stand up if it grows) and a short
+worksheet.
 
-### Lesson 4: Because
+### Lessons 4 and 5: Why Is It Living? (the double)
 
 ```
 CLASS:      T3
-SLOT:       <the double, first half, or a single>
-TOPIC:      Living Because
-
+SLOT:       DOUBLE, Week 1 Tuesday P3 to P4, Tuesday 27 October 2026, one deck
+TOPIC:      Why Is It Living?
 OBJECTIVES:
   1. Say why a thing is living: A dog is living because it grows.
   2. Say why a thing is non-living: A rock is non-living because it does not eat.
-  3. Sort and say: a living / non-living chart with a because sentence for each.
-
+  3. Find living and non-living things around me.
 PREVIOUS:   reference/Living Things Grow.pptx
 ```
 
-No new content words: the new thing is the structure "because it ___" and
-"does not". This is the unit assessment's task, rehearsed. If it is the double,
-the second half is the hands-on part: a classroom sort (everything they can see
-or hold) onto a big Living / Non-living chart, with SDG 15 (Life on Land) as the
-close: living things on land need food, water and air, so we look after them.
-
-### Lesson 5: Say it all
-
-Retrieval of all ten words and both structures, as a game or an active sort.
-Rehearses the assessment's format exactly (point, wait, they answer). Not the
-assessment slot itself.
+New words: eat, because (and "does not"). Gestures: eat = fingers to the mouth, then
+chew; because = hook the two index fingers together. First half (50): the because
+frame, right or wrong, grows or does not grow, open "why?", worksheet part 1. Break (5):
+the slide carries all twelve gestures. Second half (45): the living-things hunt round
+the room (the unit plan's sorting chart, filled from the room), sharing, Life on Land
+(SDG 15, ATL Thinking: "What can we do?"), and a rehearsal of Thursday's paper in its
+own formats. "It moves" is never a reason (the car, robot, kite and bicycle all move).
 
 ### Lesson 6: Assessment
 
-Per ASSESSMENT.md, adapted for CLIL: picture-led, black and white, questions
-only from the decks of Lessons 1 to 5. Because sentences and the Specimen
-Sorting Chart (pictures, not specimens). Not on Friday P7.
+`build/living-things-assessment.js` (content in `living-things-assessment-content.js`,
+greyscale pictures from `living-things-assessment-pictures.js`). 45 marks, 45 minutes,
+black and white, per ASSESSMENT.md. Ten questions, every one from Lessons 1 to 5:
+yes/no, either/or, the three needs, the sorting chart, putting pictures in order, the
+needs sentences, because sentences, a wrong "because it moves" to correct, a goat and an
+umbrella never seen in class, and sentences from pictures. Mark scheme (TEACHER ONLY)
+with the language-marking rules and the likely wrong answer for each question, and a
+feedback sheet with Support, Consolidate and Extend variants of every question.

@@ -38,10 +38,13 @@ const PICTURES = {
   cloud: '2601', clock: '23F0', key: '1F511', scissors: '2702', bicycle: '1F6B2', kite: '1FA81',
   // what living things need, and growing (Unit 4, later lessons)
   water: '1F4A7', apple: '1F34E', bread: '1F35E', wind: '1F32C', lungs: '1FAC1', egg: '1F95A', chick: '1F424',
+  watering: '1FAB4', grazing: '1F404', breathing: '1F32C',
+  goat: '1F410', umbrella: '2602', tadpole: '1F438', chicken: '1F414', sunflower: '1F33B', seedling: '1F331', grass: '1F33F', balloon: '1F388', cup: '1F964', pencil: '270F', bag: '1F392', ant: '1F41C', cow: '1F404',
+  food: '1F957', air: '1F32C', puppy: '1F436', kitten: '1F431', caterpillar: '1F41B', seed: '1F330', forest: '1F3DE',
   hatching: '1F423', earth: '1F30D',
   // classroom routines
   eyes: '1F440', speech: '1F4AC', writing: '270D', tick: '2705', cross: '274C', question: '2753', ear: '1F442',
-  pair: '1F46B', hand: '270B', point: '1F449', sort: '1F5C2', target: '1F3AF', star: '2B50',
+  pair: '1F46B', hand: '270B', point: '1F449', sort: '1F5C2', target: '1F3AF', star: '2B50', magnifier: '1F50D', link: '1F517',
 };
 
 /** One emoji's <svg> out of the sprite. The sprite nests one 128 x 128 svg per emoji, each with its own ids. */
