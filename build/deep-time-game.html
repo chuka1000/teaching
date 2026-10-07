@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Time: Place It In Time</title>
+<style>
+  :root {
+    --forest: #1F3D2B; --amber: #DE9A4C; --amberink: #A8651F; --teal: #3E93A3; --rust: #C1442D; --cream: #F5F1E6; --cream2: #E8E0CC;
+    --ink: #1B2A20; --soft: #5C6B5E; --green: #2E8B57; --white: #fff;
+    --pre: #8C7356; --pal: #3E93A3; --mes: #3A5F44; --cen: #DE9A4C;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 8px; line-height: 1.35; }
+  .tag { font-size: 15px; color: var(--soft); margin: 0; line-height: 1.4; }
+  button { font: inherit; cursor: pointer; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  .btn.small:not(.ghost) { color: var(--white); }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible, .track:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  /* the timeline */
+  .linewrap { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 34px 18px 58px; margin-bottom: 12px; }
+  .ends { display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); font-weight: 700; margin: -24px 0 30px; }
+  .track { position: relative; height: 64px; border: 2px solid var(--forest); border-radius: 6px; background: var(--white); touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+  .band { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--white); font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .tick { position: absolute; top: 100%; width: 2px; height: 10px; background: var(--forest); transform: translateX(-1px); }
+  .tick.minor { height: 6px; background: var(--soft); }
+  .tlab { position: absolute; top: calc(100% + 14px); font-size: 13px; font-weight: 700; color: var(--forest); transform: translateX(-50%); white-space: nowrap; }
+  .tlab.first { transform: none; } .tlab.last { transform: translateX(-100%); }
+  .unit { position: absolute; top: calc(100% + 34px); left: 0; right: 0; text-align: center; font-size: 13px; color: var(--soft); font-style: italic; }
+  .pin { position: absolute; top: -16px; bottom: -6px; width: 4px; margin-left: -2px; background: var(--ink); border-radius: 2px; pointer-events: none; }
+  .pin::before { content: ''; position: absolute; top: -10px; left: -7px; width: 18px; height: 18px; border-radius: 50%; background: inherit; }
+  .pin.right { background: var(--green); } .pin.wrong { background: var(--rust); }
+  .truth { position: absolute; top: -16px; bottom: -6px; width: 4px; margin-left: -2px; background: var(--green); pointer-events: none; }
+  .ok-band { position: absolute; top: 0; bottom: 0; background: rgba(46, 139, 87, .28); border-left: 2px dashed var(--green); border-right: 2px dashed var(--green); pointer-events: none; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 56px; margin-bottom: -40px; font-size: 13px; font-weight: 700; color: var(--forest); }
+  .legend i { display: inline-block; width: 14px; height: 14px; border-radius: 3px; margin-right: 6px; vertical-align: -2px; }
+  .hint { font-size: 15px; color: var(--soft); margin: 4px 0 12px; }
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #E7F4EC; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 16px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 4px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * PLACE IT IN TIME (Deep Time, 8I). A Number line game. Nobody gets the same game.
+   *
+   * Each question names an event and its date; the student taps the timeline where it goes, drags to adjust, then checks. A placement is right
+   * if it is inside the band [answer - tolerance, answer + tolerance]. The dates are build/deep-time.data.json, written into DATA below by
+   * build/deep-time-game.py when the game is copied to the lesson folder, so the game, the deck and the worksheet share one copy.
+   *
+   * THE SCALE CHANGES, AND THE TOP IS MEANT TO BE HARD (GAMES.md). Round 1 is the lesson: the whole 4,600 million years, eras shown, the brief's
+   * five events (first life, first land plants, first dinosaurs, the asteroid, first humans) and one more. Round 2 zooms in to the last 600, 650
+   * or 700 million years. Round 3 goes far past it: the whole line with no eras, the last 10 million years (last lesson's Panama and finches),
+   * Earth as one day, its last hour, its last minute, and "halfway between an event and now" on the clock. The skill in every slot is the same for
+   * everyone; only the event, its order and the zoom change. Where a slot draws from a pool, every event in it is the same skill.
+   *
+   * MISTAKES ARE NAMED WITH THE SUM THAT PRODUCES THEM: counting forwards from Earth's formation instead of back from now (the mirror image),
+   * millions for billions, the wrong era, after midnight for before, and the event itself for the halfway point. A mistake is only offered if its
+   * band does not touch the right answer's band. build/check-deep-time-game.py re-derives every answer, band and mistake over 300 games.
+   * ================================================================== */
+  var DATA = /*DATA*/null/*END*/;
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  /* ---------------- the facts ---------------- */
+  var AGE = DATA.earth_age;
+  var ERAS = DATA.eras;                                   // [name, from, to] in million years ago
+  var EV = {};
+  Object.keys(DATA.events).forEach(function (k) { EV[k] = { key: k, label: DATA.events[k][0], mya: DATA.events[k][1] }; });
+  EV.permian = { key: 'permian', label: 'The worst mass extinction (end-Permian)', mya: DATA.extinctions[2][1] };
+  var ERA_COL = { Precambrian: 'var(--pre)', Palaeozoic: 'var(--pal)', Mesozoic: 'var(--mes)', Cenozoic: 'var(--cen)' };
+  function eraOf(t) { for (var i = 0; i < ERAS.length; i++) if (t <= ERAS[i][1] && t > ERAS[i][2]) return ERAS[i]; return ERAS[ERAS.length - 1]; }
+
+  /* ---------------- formatting ---------------- */
+  var nf = function (x) { return x.toLocaleString('en-GB'); };
+  function fmtMya(x, step) { var r = step >= 1 && x >= step ? Math.round(x / step) * step : Math.round(x * 10) / 10; return (r < 1 && r > 0 ? r : nf(r)) + ' million years ago'; }
+  function hhmm(min) { var m = Math.round(min); if (m >= 1440) return '24:00'; return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + m % 60).slice(-2); }
+  function hhmmss(sec) { var s = Math.round(sec); if (s >= 86400) return '24:00:00'; return ('0' + Math.floor(s / 3600)).slice(-2) + ':' + ('0' + Math.floor(s % 3600 / 60)).slice(-2) + ':' + ('0' + s % 60).slice(-2); }
+  function r1(x) { return Math.round(x * 10) / 10; }
+  function r2(x) { return Math.round(x * 100) / 100; }
+
+  /* ---------------- the scales: left value L, right value R; a placement p (0 to 1) is the value L + p (R - L) ---------------- */
+  function myaScale(from, bands, tolFrac, step, ticks) {
+    return { kind: 'mya', L: from, R: 0, tol: from * tolFrac, step: step, bands: bands, unit: 'million years ago', ticks: ticks,
+      left: nf(from) + ' million years ago', right: 'now', fmt: function (x) { return fmtMya(x, step); } };
+  }
+  var FULL_TICKS = [[4600, '4,600'], [3000, '3,000'], [2000, '2,000'], [1000, '1,000'], [0, 'now']];   // no 4,000: it collides with 4,600 on a phone
+  function zoomTicks(Z) { var t = [[Z, String(Z)]]; for (var v = Math.floor((Z - 1) / 100) * 100; v > 0; v -= 100) t.push([v, String(v)]); t.push([0, 'now']); return t; }
+  var CLOCK = { kind: 'clock', L: 0, R: 1440, tol: 30, step: 1, bands: false, unit: 'the time of day', ticks: [[0, '00:00'], [360, '06:00'], [720, '12:00'], [1080, '18:00'], [1440, '24:00']],
+    minor: [180, 540, 900, 1260], left: 'midnight: Earth forms', right: 'midnight: now', fmt: hhmm };
+  var LASTHOUR = { kind: 'hour', L: 0, R: 60, tol: 3, step: 1, bands: false, unit: 'the last hour of the day', ticks: [[0, '23:00'], [20, '23:20'], [40, '23:40'], [60, '24:00']],
+    minor: [10, 30, 50], left: '23:00', right: 'midnight: now', fmt: function (x) { return hhmm(1380 + x); } };
+  var LASTMIN = { kind: 'minute', L: 0, R: 60, tol: 3, step: 1, bands: false, unit: 'the last minute of the day', ticks: [[0, '23:59:00'], [20, ':20'], [40, ':40'], [60, '24:00:00']],
+    minor: [10, 30, 50], left: '23:59:00', right: 'midnight: now', fmt: function (x) { return hhmmss(86340 + x); } };
+  var RECENT = { kind: 'mya', L: 10, R: 0, tol: 0.4, step: 0.1, bands: false, unit: 'million years ago', ticks: [[10, '10'], [8, '8'], [6, '6'], [4, '4'], [2, '2'], [0, 'now']],
+    left: '10 million years ago', right: 'now', fmt: function (x) { return fmtMya(x, 0.1); } };
+
+  /* minutes before midnight on the one-day clock, for an event t million years ago */
+  function minsBefore(t) { return t / AGE * 1440; }
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+
+    // A mistake is offered only if it is inside the scale and its band (value +- tol) touches neither the right answer's band nor an earlier mistake's.
+    function addMistake(list, sc, value, tag, msg, how) {
+      var lo = Math.min(sc.L, sc.R), hi = Math.max(sc.L, sc.R);
+      if (value < lo || value > hi) return;
+      if (Math.abs(value - list.value) <= 2 * sc.tol) return;
+      if (list.mistakes.some(function (m) { return Math.abs(value - m.value) <= 2 * sc.tol; })) return;   // two mistakes that overlap cannot be told apart
+      list.mistakes.push({ tag: tag, value: value, msg: msg, how: how });
+    }
+
+    function onLine(slot, cat, ev, sc, eraScaffold) {
+      var v = ev.mya, Q = { slot: slot, cat: cat, kind: 'mya', key: ev.key, label: ev.label, mya: v, scale: sc, value: v, mistakes: [], bands: eraScaffold };
+      Q.prompt = 'Place it: ' + ev.label + ', ' + (v < 1 ? v : nf(v)) + ' million years ago.';
+      var frac = (sc.L - v) / sc.L;
+      Q.explain = ['It is ' + (v < 1 ? v : nf(v)) + ' million years ago. The left end is ' + nf(sc.L) + ' million years ago and the right end is now.',
+        'So it goes (' + nf(sc.L) + ' − ' + (v < 1 ? v : nf(v)) + ') ÷ ' + nf(sc.L) + ' = ' + Math.round(frac * 100) + '% of the way from the left end.'];
+      if (eraScaffold) { var e = eraOf(v); Q.explain.push('That is in the ' + e[0] + ' (' + nf(e[1]) + ' to ' + (e[2] === 0 ? 'now' : nf(e[2])) + ').'); }
+      if (sc.L === AGE && v < 300) Q.explain.push('At this scale the last 300 million years are a sliver at the right-hand end: dinosaurs, the asteroid and humans are all squeezed in there.');
+      addMistake(Q, sc, sc.L - v, 'forward', 'You counted forwards from the left end. "Years ago" counts back from now, the right-hand end.',
+        (v < 1 ? v : nf(v)) + ' million years from the left end is ' + nf(sc.L) + ' − ' + (v < 1 ? v : nf(v)) + ' = ' + nf(r1(sc.L - v)) + ' million years ago.');
+      if (v >= 1000) addMistake(Q, sc, v / 1000, 'units', 'You read millions as billions: ' + nf(v) + ' million years is ' + (v / 1000) + ' billion years.',
+        nf(v) + ' ÷ 1,000 = ' + (v / 1000) + ': you placed it at ' + (v / 1000) + ' million years ago.');
+      return Q;
+    }
+    function onClock(slot, cat, ev, sc) {
+      var b = minsBefore(ev.mya), Q = { slot: slot, cat: cat, kind: sc.kind, key: ev.key, label: ev.label, mya: ev.mya, scale: sc, mistakes: [], bands: false };
+      var hrs = ev.mya / AGE * 24;
+      if (sc.kind === 'clock') {
+        Q.value = 1440 - b;
+        Q.prompt = 'Earth as one day, from midnight to midnight. Place it: ' + ev.label + ', ' + nf(ev.mya) + ' million years ago.';
+        Q.explain = [nf(ev.mya) + ' ÷ ' + nf(AGE) + ' × 24 = ' + r2(hrs) + ' hours BEFORE midnight.', '24:00 − ' + r2(hrs) + ' hours = ' + hhmm(Q.value) + '.'];
+        addMistake(Q, sc, b, 'after', 'You placed it ' + r2(hrs) + ' hours AFTER midnight. It is ' + r2(hrs) + ' hours BEFORE the end of the day.',
+          nf(ev.mya) + ' ÷ ' + nf(AGE) + ' × 24 = ' + r2(hrs) + ' hours, and you counted them from 00:00: ' + hhmm(b) + '.');
+      } else if (sc.kind === 'hour') {
+        Q.value = 60 - b;
+        Q.prompt = 'The LAST HOUR of the one-day clock, 23:00 to midnight. Place it: ' + ev.label + ', ' + nf(ev.mya) + ' million years ago.';
+        Q.explain = [nf(ev.mya) + ' ÷ ' + nf(AGE) + ' × 24 × 60 = ' + r1(b) + ' minutes before midnight.', '24:00 − ' + r1(b) + ' minutes = ' + hhmm(1380 + Q.value) + '.'];
+        addMistake(Q, sc, b, 'after', 'You placed it ' + r1(b) + ' minutes after 23:00. It is ' + r1(b) + ' minutes BEFORE midnight.',
+          nf(ev.mya) + ' ÷ ' + nf(AGE) + ' × 24 × 60 = ' + r1(b) + ' minutes, counted from 23:00 instead of back from 24:00.');
+      } else {
+        var s = ev.mya / AGE * 86400;
+        Q.value = 60 - s;
+        Q.prompt = 'The LAST MINUTE of the one-day clock, 23:59:00 to midnight. Place it: ' + ev.label + ', ' + (ev.mya < 1 ? ev.mya : nf(ev.mya)) + ' million years ago.';
+        Q.explain = [(ev.mya < 1 ? ev.mya : nf(ev.mya)) + ' ÷ ' + nf(AGE) + ' × 24 × 60 × 60 = ' + r1(s) + ' seconds before midnight.', '24:00:00 − ' + r1(s) + ' seconds = ' + hhmmss(86340 + Q.value) + '.'];
+        addMistake(Q, sc, s, 'after', 'You placed it ' + r1(s) + ' seconds after 23:59:00. It is ' + r1(s) + ' seconds BEFORE midnight.',
+          (ev.mya < 1 ? ev.mya : nf(ev.mya)) + ' ÷ ' + nf(AGE) + ' × 86,400 = ' + r1(s) + ' seconds, counted from 23:59:00 instead of back from midnight.');
+      }
+      return Q;
+    }
+    function halfway(slot, cat, ev) {
+      var sc = LASTHOUR, half = ev.mya / 2, b = minsBefore(half), Q = { slot: slot, cat: cat, kind: 'half', key: ev.key, label: ev.label, mya: ev.mya, scale: sc, mistakes: [], bands: false };
+      Q.value = 60 - b;
+      var name = { dinosaurs: 'the first dinosaurs', birds: 'the first birds', flowers: 'the first flowering plants', asteroid: 'the asteroid' }[ev.key];
+      Q.prompt = 'The LAST HOUR of the one-day clock. Place the moment exactly HALFWAY between ' + name + ' (' + nf(ev.mya) + ' million years ago) and now.';
+      Q.explain = ['Halfway between ' + nf(ev.mya) + ' million years ago and now is ' + nf(ev.mya) + ' ÷ 2 = ' + nf(half) + ' million years ago.',
+        nf(half) + ' ÷ ' + nf(AGE) + ' × 24 × 60 = ' + r1(b) + ' minutes before midnight, so ' + hhmm(1380 + Q.value) + '.'];
+      var own = 60 - minsBefore(ev.mya);
+      addMistake(Q, sc, own, 'nohalf', 'You placed the event itself, not the halfway point.', 'The event is ' + r1(minsBefore(ev.mya)) + ' minutes before midnight; halfway is half of that, ' + r1(b) + ' minutes.');
+      addMistake(Q, sc, b, 'after', 'You counted the minutes from 23:00 instead of back from midnight.', r1(b) + ' minutes before midnight is ' + hhmm(1380 + Q.value) + ', not ' + hhmm(1380 + b) + '.');
+      return Q;
+    }
+
+    var out = [];
+    // Round 1: the whole timeline, eras shown. The brief's five events and one more, in a shuffled order.
+    var r1ev = shuffle(['life', 'plants', 'dinosaurs', 'asteroid', 'humans', pick(['oxygen', 'animals', 'fish'])]);
+    var FULL = myaScale(AGE, true, 0.05, 10, FULL_TICKS);
+    r1ev.forEach(function (k, i) { out.push(onLine(i + 1, 'full', EV[k], FULL, true)); });
+    // Round 2: zoom in to the last 600, 650 or 700 million years, eras shown, a tighter band.
+    var Z = pick([600, 650, 700]);
+    var ZOOM = myaScale(Z, true, 0.04, 1, zoomTicks(Z));
+    shuffle(['fish', 'plants', 'tetrapods', 'permian', 'dinosaurs', 'mammals', 'birds', 'flowers', 'asteroid']).slice(0, 6).forEach(function (k, i) { out.push(onLine(7 + i, 'zoom', EV[k], ZOOM, true)); });
+    // Round 3: far past the lesson. Fixed skills in a fixed order; each slot draws from a pool of the same skill.
+    out.push(onLine(13, 'full', EV[pick(['life', 'oxygen', 'animals', 'plants', 'fish'])], myaScale(AGE, false, 0.03, 10, FULL_TICKS), false));
+    var rec = pick(['panama', 'finches']);
+    out.push(onLine(14, 'zoom', EV[rec], RECENT, false));
+    out.push(onClock(15, 'clock', EV[pick(['life', 'oxygen', 'animals', 'plants', 'dinosaurs'])], CLOCK));
+    out.push(onClock(16, 'clock', EV[pick(['birds', 'flowers', 'asteroid'])], LASTHOUR));
+    out.push(onClock(17, 'hard', EV[pick(['humans', 'panama', 'finches'].filter(function (k) { return k !== rec; }))], LASTMIN));
+    out.push(halfway(18, 'hard', EV[pick(['dinosaurs', 'birds', 'flowers', 'asteroid'])]));
+    out.forEach(function (q, i) { q.round = Math.floor(i / 6) + 1; q.n = i % 6 + 1; });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['The whole timeline', 'Zoom in', 'Beat the game'];
+  var CATS = { full: 'The whole timeline', zoom: 'Zoomed timelines', clock: 'Earth as one day', hard: 'Hard puzzles' };
+  var HABIT = {
+    forward: '"Years ago" counts back from NOW. Start at the "now" end and count back.',
+    units: '1 billion = 1,000 million. 3,500 million years is 3.5 billion.',
+    era: 'Find the era whose start and end the date sits between.',
+    off: 'Find the two ticks the date sits between, then place it between them.',
+    after: 'On the one-day clock, work out how long BEFORE midnight, then count back from midnight.',
+    nohalf: 'Halfway between a date and now is half the date.'
+  };
+  var app = document.getElementById('app');
+  var state, placed, locked, roundStart, qStart, dragging;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; placed = null; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  function pos(sc, x) { return (x - sc.L) / (sc.R - sc.L); }
+  function val(sc, p) { return sc.L + p * (sc.R - sc.L); }
+  function pct(p) { return (Math.max(0, Math.min(1, p)) * 100).toFixed(3) + '%'; }
+  // the answer, exactly: a date as given (never rounded to the scale's step); a clock time to the minute, or the second on the last minute
+  function answerText(Q) { return Q.kind === 'mya' ? (Q.mya < 1 ? Q.mya : nf(Q.mya)) + ' million years ago' : Q.scale.fmt(Q.value); }
+  function display(Q) { return Q.prompt + ' | ' + Q.scale.left + ' to ' + Q.scale.right; }   // never the answer: it sits in the page's HTML
+  function gapText(Q, x) {
+    var d = Math.abs(x - Q.value), k = Q.scale.kind;
+    if (k === 'mya') return (d >= 10 ? nf(Math.round(d)) : r1(d)) + ' million years out';
+    if (k === 'minute') return Math.round(d) + ' seconds out';
+    if (k === 'clock' && d >= 60) return Math.floor(d / 60) + ' h ' + Math.round(d % 60) + ' min out';
+    return Math.round(d) + ' minutes out';
+  }
+
+  function start() {
+    app.innerHTML = ''; state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Place It In Time'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six. Each question gives an event and its date. Tap the timeline where it goes, drag to adjust, then press Check.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer shows where it really goes and the working. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'You can also use the arrow keys to move your marker (hold Shift for big steps) and Enter to check. Your questions are different from everyone else\'s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  function drawLine(Q) {
+    var sc = Q.scale, wrap = el('div', 'linewrap');
+    wrap.appendChild(el('div', 'ends', '<span>' + esc(sc.left) + '</span><span>' + esc(sc.right) + '</span>'));
+    var tr = el('div', 'track'); tr.id = 'track'; tr.tabIndex = 0; tr.setAttribute('role', 'slider');
+    tr.setAttribute('aria-label', 'Timeline from ' + sc.left + ' to ' + sc.right + '. Tap where the event goes.');
+    if (Q.bands) ERAS.forEach(function (e) {
+      var a = Math.max(0, pos(sc, Math.min(e[1], sc.L))), b = pos(sc, e[2]);
+      if (b <= 0) return;
+      var band = el('div', 'band', (b - a) > 0.3 ? esc(e[0]) : ''); band.style.left = pct(a); band.style.width = pct(b - a); band.style.background = ERA_COL[e[0]]; band.dataset.era = e[0];
+      tr.appendChild(band);
+    });
+    sc.ticks.forEach(function (t, i) {
+      var p = pos(sc, t[0]), tk = el('div', 'tick'); tk.style.left = pct(p); tr.appendChild(tk);
+      var lb = el('div', 'tlab' + (i === 0 ? ' first' : i === sc.ticks.length - 1 ? ' last' : ''), esc(t[1])); lb.style.left = pct(p); tr.appendChild(lb);
+    });
+    (sc.minor || []).forEach(function (m) { var tk = el('div', 'tick minor'); tk.style.left = pct(pos(sc, m)); tr.appendChild(tk); });
+    tr.appendChild(el('div', 'unit', esc(sc.unit)));
+    var pin = el('div', 'pin hide'); pin.id = 'pin'; tr.appendChild(pin);
+    wrap.appendChild(tr);
+    if (Q.bands) {   // the key: narrow eras cannot hold their own names on a phone
+      var key = el('div', 'legend'); key.id = 'legend';
+      ERAS.forEach(function (e) { if (pos(sc, e[2]) > 0) key.insertAdjacentHTML('beforeend', '<span><i style="background:' + ERA_COL[e[0]] + '"></i>' + esc(e[0]) + '</span>'); });
+      wrap.appendChild(key);
+    }
+    // tap and drag
+    function setFromEvent(ev) { var r = tr.getBoundingClientRect(); setPlaced((ev.clientX - r.left) / r.width); }
+    tr.addEventListener('pointerdown', function (ev) { if (locked) return; dragging = true; try { tr.setPointerCapture(ev.pointerId); } catch (e) {} setFromEvent(ev); ev.preventDefault(); });
+    tr.addEventListener('pointermove', function (ev) { if (dragging && !locked) setFromEvent(ev); });
+    tr.addEventListener('pointerup', function () { dragging = false; });
+    tr.addEventListener('pointercancel', function () { dragging = false; });
+    return wrap;
+  }
+  function setPlaced(p) {
+    if (locked) return;
+    placed = Math.max(0, Math.min(1, p));
+    var pin = document.getElementById('pin'); pin.classList.remove('hide'); pin.style.left = pct(placed);
+    document.getElementById('check').disabled = false;
+    document.getElementById('hint').textContent = 'Drag or use the arrow keys to adjust, then Check.';
+  }
+  function question() {
+    app.innerHTML = ''; state.screen = 'question'; placed = null; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.innerHTML = '<p class="ask">' + esc(Q.prompt) + '</p>' + (Q.bands ? '<p class="tag">The coloured bands are the eras.</p>' : '');
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    app.appendChild(drawLine(Q));
+    var hint = el('p', 'hint', 'Tap the timeline where it goes.'); hint.id = 'hint'; app.appendChild(hint);
+    var tools = el('div', 'tools');
+    var go = el('button', 'btn small', 'Check'); go.id = 'check'; go.type = 'button'; go.disabled = true; go.onclick = check; tools.appendChild(go);
+    app.appendChild(tools);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var nx = el('button', 'btn hide', 'Next'); nx.id = 'nextbtn'; nx.type = 'button'; nx.onclick = next; app.appendChild(nx);
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function diagnose(Q, x) {
+    var sc = Q.scale;
+    for (var i = 0; i < Q.mistakes.length; i++) { var m = Q.mistakes[i]; if (Math.abs(x - m.value) <= sc.tol) return m; }
+    if (Q.bands) {
+      var got = eraOf(x), want = eraOf(Q.value);
+      if (got[0] !== want[0]) return { tag: 'era', msg: 'You put it in the ' + got[0] + '. ' + nf(Q.value) + ' million years ago is in the ' + want[0] + '.',
+        how: 'The ' + want[0] + ' ran from ' + nf(want[1]) + ' to ' + (want[2] === 0 ? 'now' : nf(want[2])) + ' million years ago, and ' + nf(Q.value) + ' is between them.' };
+    }
+    return { tag: 'off', msg: 'Not close enough: ' + gapText(Q, x) + '.', how: '' };
+  }
+  function check() {
+    if (state.screen !== 'question' || locked || placed === null) return;
+    var Q = q(), sc = Q.scale, x = val(sc, placed), ok = Math.abs(x - Q.value) <= sc.tol, m = ok ? null : diagnose(Q, x);
+    locked = true;
+    state.results[idx()] = { ok: ok, tag: ok ? null : m.tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: sc.fmt(x), placed: x };
+    var tr = document.getElementById('track');
+    var band = el('div', 'ok-band'); var a = pos(sc, Q.value - sc.tol), b = pos(sc, Q.value + sc.tol);
+    var lo = Math.max(0, Math.min(a, b)), hi = Math.min(1, Math.max(a, b)); band.style.left = pct(lo); band.style.width = pct(hi - lo); tr.appendChild(band);
+    var truth = el('div', 'truth'); truth.style.left = pct(pos(sc, Q.value)); tr.appendChild(truth);
+    var pin = document.getElementById('pin'); pin.classList.add(ok ? 'right' : 'wrong');
+    document.getElementById('check').disabled = true;
+    document.getElementById('hint').textContent = 'The green band is close enough. The green line is the answer.';
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    var gap = gapText(Q, x), spot = /^0(\.0)? /.test(gap);
+    var head = ok ? 'Correct.' + (spot ? ' Spot on.' : ' ' + gap.replace(' out', ' from the answer') + '.') : 'Not quite. The answer is ' + answerText(Q) + '.';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (m ? '<div class="msg">' + esc(m.msg) + (m.how ? ' ' + esc(m.how) : '') + '</div>' : '') +
+      '<p class="how">You placed it at ' + esc(sc.fmt(x)) + '. The working:</p>' + workHtml(Q);
+    var last = state.i === 5; var nx = document.getElementById('nextbtn'); nx.textContent = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next'; nx.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function workHtml(Q) { return '<div class="work">' + Q.explain.map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('') + '</div>'; }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(Q.prompt) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(Q.prompt) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You placed it at <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(answerText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    app.innerHTML = ''; state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and the working for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    app.innerHTML = ''; state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, where you placed it and the working for each answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t]))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (locked) { if (!document.getElementById('nextbtn').classList.contains('hide')) next(); return; }
+      check(); return;
+    }
+    if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !locked) {
+      e.preventDefault();
+      var step = e.shiftKey ? 0.05 : 0.005;
+      setPlaced(placed === null ? 0.5 : placed + (e.key === 'ArrowRight' ? step : -step));
+    }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display, answerText: answerText, results: function () { return state.results; },
+    place: function (p) { setPlaced(p); }, data: DATA };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>
