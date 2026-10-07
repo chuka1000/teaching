@@ -197,6 +197,67 @@ negative numbers and "subtract from" in the last).
 
 ---
 
+## The review: a drop-down for every round
+
+**At the end of each round, and again on the last screen, every game shows a
+drop-down for each round.** Chuka's request, set after the Function Machines game
+and now standard. Each drop-down lists the questions with:
+
+- **how long it took** to answer (in seconds, or minutes and seconds);
+- **whether it was right or wrong**;
+- for a wrong one, **what the student wrote** and **how to get to the right
+  answer**: the working, line by line, or the reasoning in sentences, and the
+  method in one line;
+- for a question not reached (the student stopped early), "Not reached".
+
+Times are information, not marks: say "the time does not count for anything" on
+the round screen. The drop-downs start closed and are native `<details>`
+elements, so they work by keyboard and touch with no script. Worked examples:
+`build/function-machines-game.html` (numbers) and
+`build/fossils-and-the-fossil-record-game.html` (multiple choice and numbers, with
+a picture for each question). The Playwright test opens every drop-down in an
+all-correct game and an all-wrong game and checks the text.
+
+---
+
+## A science game that has no numbers to vary
+
+The rule above ("conceptual items cannot be numerically varied") does not mean
+a science game must be a fixed quiz. `build/fossils-and-the-fossil-record-game.html`
+(Dig Site) varies the content itself: every rock-layer picture is generated from a
+list of layers, so the question, the picture and the answer come from the same
+data. A checker recomputes each answer from that data (which layer is oldest,
+which layers match at two sites, how many stages are missing). Where a question
+can be built from attributes (hard parts, quick burial), generate four options
+from attribute combinations, so that exactly one is right by construction. Use
+invented fossils and an invented order when the puzzle is about the reasoning, and
+say so on the start screen, so that no puzzle contradicts real chronology.
+
+`build/more-evidence-game.html` (Family Tree) does the same with tables and
+trees. A tree is kept as data (leaves and branch lengths), drawn to SVG from that
+data, and the checker recomputes distances and sisters from it independently. Where
+a table must imply a family tree (closest relative, most recent common ancestor),
+build it from a clock-like tree (differences = twice the height of the common
+ancestor) so the table cannot contradict any tree. The checker asserts that
+property for every table.
+
+---
+
+## Pull questions from more than today
+
+A game is retrieval practice with a scoreboard, so the rules in `PEDAGOGY.md`
+apply to it.
+
+- **Span lessons.** Roughly half the items on today's content, the rest from
+  earlier in the unit. Retrieving something half-forgotten is worth more than
+  retrieving something fresh.
+- **Interleave within a round.** Mixing the types forces them to work out which
+  method applies, which is the skill. A round of six identical items tests the
+  method once.
+- **Make them produce, not recognise, where you can.** Typing or placing an
+  answer beats picking from four. Multiple choice is fine when speed matters;
+  it is the weaker test.
+
 ## What makes a game worth the 14 minutes
 
 **It has to be diagnostic.** At the end it must show what was got wrong, not

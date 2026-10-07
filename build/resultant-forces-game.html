@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Net Force</title>
+<style>
+  :root {
+    --forest: #17203F; --amber: #FF8A3D; --amberink: #C25A16; --teal: #1FB6BC; --rust: #E03D6B; --cream: #F2F4FA; --cream2: #DDE2F0;
+    --ink: #141A30; --soft: #5A6480; --green: #1E8E5A; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  /* rock layers */
+  table.chart { border-collapse: collapse; margin: 6px 0; font-size: 14px; width: 100%; }
+  .chartwrap { overflow-x: auto; max-width: 100%; }
+  table.chart th, table.chart td { border: 1px solid #6F5F4B; padding: 4px 3px; text-align: center; min-width: 26px; }
+  table.chart th { background: var(--cream2); font-size: 13px; }
+  table.chart td.on { background: var(--amber); } table.chart td.off { background: var(--white); }
+  table.chart td.name { text-align: left; white-space: nowrap; font-weight: 700; }
+  #answer { height: 64px; border: 3px solid var(--forest); border-radius: 12px; background: var(--white); font-size: 34px; font-weight: 700; color: var(--forest); display: flex; align-items: center; padding: 0 16px; margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9AA59D; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 58px; font-size: 28px; font-weight: 700; color: var(--forest); background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--cream2); } .key.fn { background: var(--cream); font-size: 22px; }
+  .key.go, .btn { background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+  .treefig { margin: 6px 0 10px; } .treefig svg { width: 100%; max-width: 360px; height: auto; display: block; }
+  .treefig text { font-family: Arial, Helvetica, sans-serif; fill: #182B1E; } .treefig .leaf { font-weight: 700; font-size: 16px; } .treefig .len { font-size: 13px; fill: #A8651F; font-weight: 700; }
+  .treefig line { stroke: #1F3D2B; stroke-width: 2.5; stroke-linecap: round; }
+  table.chart td.num { min-width: 34px; } table.chart td.blank { background: var(--cream2); }
+  caption { caption-side: bottom; font-size: 13px; color: var(--soft); padding-top: 4px; text-align: left; }
+
+  .fbdfig { margin: 6px 0 10px; } .fbdfig svg { width: 100%; max-width: 560px; height: auto; display: block; background: #fff; border: 2px solid var(--cream2); border-radius: 12px; }
+  .fbdfig text { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 15px; }
+  .legend { font-size: 14px; color: var(--soft); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * NET FORCE (Resultant Forces). Nobody gets the same game.
+   *
+   * Every question is built from a template with random forces, names, directions and
+   * numbers, from a six-character game code that is random for each student. Opening the
+   * file with #CODE on the end of the address gives the same game again, so a teacher can
+   * see exactly what a student saw. The SKILLS and their order are the same for everyone, so
+   * the diagnostic at the end means the same thing for every student.
+   *
+   * ALL FORCES ARE ALONG ONE STRAIGHT LINE (the lesson's own limit): left and right, or up and
+   * down. A resultant never mixes the two. The picture of each free-body diagram is drawn from
+   * the data the question keeps (the arrows are to scale), and build/check-resultant-forces-game.py
+   * re-derives every resultant, every mistake value and every line of working from that data.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson. Round 2 is three or
+   * more forces, balanced or not, and a missing force. Round 3 goes far past it: a diagram with
+   * distractors, the odd one out, a steady speed, a missing force, and then two questions drawn
+   * from small pools of very hard puzzles (a hanging mass with g, a tug of war, a parachutist, a
+   * missing force from a resultant). A student who fails them still gets the working.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var DRIVE = ['Push', 'Pull', 'Thrust', 'Driving force'], RESIST = ['Friction', 'Air resistance', 'Drag', 'Water resistance'];
+  var CONTACT1 = [
+    { id: 'friction', bin: 'contact', text: 'the friction on a box sliding along the floor', why: 'The surfaces touch and rub, so friction is a contact force.' },
+    { id: 'tension', bin: 'contact', text: 'the tension in a rope pulling a sledge', why: 'The rope touches the sledge and pulls it, so tension is a contact force.' },
+    { id: 'weight', bin: 'non', text: 'the weight of a book', why: 'Gravity pulls without touching, so weight is a non-contact force.' },
+    { id: 'magnet', bin: 'non', text: 'the force between two magnets', why: 'Magnets pull or push across a gap, so the magnetic force is a non-contact force.' }
+  ];
+  var CONTACT2 = [
+    { id: 'air', bin: 'contact', text: 'the air resistance on a falling parachutist', why: 'Air is made of particles that touch the parachutist and push, so air resistance is a contact force.' },
+    { id: 'reaction', bin: 'contact', text: 'the reaction force from a table on a book', why: 'The table touches the book and pushes up, so the reaction force is a contact force.' },
+    { id: 'upthrust', bin: 'contact', text: 'the upthrust on a boat floating on water', why: 'The water touches the boat and pushes up, so upthrust is a contact force.' },
+    { id: 'thrust', bin: 'contact', text: 'the thrust of a rocket engine', why: 'The hot gases push on the rocket, so thrust is a contact force.' },
+    { id: 'balloon', bin: 'non', text: 'the force between a rubbed balloon and a wall', why: 'Charges pull across a small gap, so the electrostatic force is a non-contact force.' },
+    { id: 'fall', bin: 'non', text: 'the weight of a falling ball', why: 'Gravity pulls without touching, so weight is a non-contact force.' }
+  ];
+  var CONTACT_NAMES = ['Friction', 'Tension', 'Air resistance', 'Reaction force', 'Upthrust', 'Thrust'], NON_NAMES = ['Weight', 'Magnetic force', 'Electrostatic force'];
+  var NAMEQ = [
+    { id: 'book', text: 'A book rests on a table. Which force acts UPWARDS on the book?', right: 'Reaction force', wrong: ['Weight', 'Friction', 'Air resistance', 'Tension'], why: 'The table pushes up on the book. That is the reaction force.' },
+    { id: 'ball', text: 'A ball falls through the air. Which force pulls it DOWNWARDS?', right: 'Weight', wrong: ['Reaction force', 'Friction', 'Upthrust', 'Tension'], why: 'Gravity pulls the ball down. That is its weight.' },
+    { id: 'box', text: 'A box is pushed to the right along the floor. Which force acts to the LEFT on the box?', right: 'Friction', wrong: ['Weight', 'Reaction force', 'Upthrust', 'Tension'], why: 'The floor rubs against the box and opposes the push. That is friction.' },
+    { id: 'chute', text: 'A parachutist falls. Which force acts UPWARDS on the parachutist?', right: 'Air resistance', wrong: ['Weight', 'Reaction force', 'Friction', 'Tension'], why: 'The air pushes up against the parachute. That is air resistance.' },
+    { id: 'boat', text: 'A boat floats on water. Which force from the water acts UPWARDS on the boat?', right: 'Upthrust', wrong: ['Weight', 'Friction', 'Air resistance', 'Tension'], why: 'The water pushes up on the boat. That is upthrust.' },
+    { id: 'bucket', text: 'A bucket hangs from a rope. Which force acts UPWARDS on the bucket?', right: 'Tension', wrong: ['Weight', 'Reaction force', 'Friction', 'Upthrust'], why: 'The rope pulls up on the bucket. That is tension.' }
+  ];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 20000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg }; };
+    var five = function (a, b) { return 5 * int(a / 5, b / 5); };
+    var sum = function (a) { return a.reduce(function (x, y) { return x + y; }, 0); };
+    var joinSum = function (a) { return a.join(' + '); };
+    function arrange(correct, wrongs) { var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) }; }
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    var dirText = function (d) { return d > 0 ? 'to the right' : 'to the left'; };
+
+    /* a horizontal line of forces: nR forces to the right, nL to the left, sizes in newtons, distinct names */
+    function makeForces(nR, nL, flip) {
+      var drive = shuffle(DRIVE), resist = shuffle(RESIST), forces = [];
+      for (var i = 0; i < nR; i++) forces.push({ name: (flip ? resist : drive)[i], dir: 'right', n: five(10, 150) });
+      for (var j = 0; j < nL; j++) forces.push({ name: (flip ? drive : resist)[j], dir: 'left', n: five(10, 150) });
+      return forces;
+    }
+    var rightSum = function (f) { return sum(f.filter(function (x) { return x.dir === 'right'; }).map(function (x) { return x.n; })); };
+    var leftSum = function (f) { return sum(f.filter(function (x) { return x.dir === 'left'; }).map(function (x) { return x.n; })); };
+    var listN = function (f, d) { return f.filter(function (x) { return x.dir === d; }).map(function (x) { return x.n; }); };
+    function workLines(forces) {
+      var r = listN(forces, 'right'), l = listN(forces, 'left'), R = sum(r) - sum(l), lines = [];
+      if (r.length > 1) lines.push(joinSum(r) + ' = ' + sum(r)); if (l.length > 1) lines.push(joinSum(l) + ' = ' + sum(l));
+      lines.push(Math.max(sum(r), sum(l)) + ' − ' + Math.min(sum(r), sum(l)) + ' = ' + Math.abs(R));
+      return lines;
+    }
+    var resText = function (R) { return R === 0 ? 'Balanced: the resultant is 0 N' : Math.abs(R) + ' N ' + dirText(R); };
+
+    /* ---------------- contact and non-contact ---------------- */
+    function contactQ(item) {
+      var opts = shuffle([{ text: 'Contact', bin: 'contact' }, { text: 'Non-contact', bin: 'non' }]);
+      opts.forEach(function (o) { if (o.bin === item.bin) o.tag = null; else { o.tag = item.bin === 'contact' ? 'contactasnon' : 'nonascontact'; o.msg = item.id === 'air' ? 'Air is invisible, but it is made of particles that touch the object. Air resistance is a contact force.' : item.bin === 'contact' ? 'The two things touch each other here. It is a contact force.' : 'The two things do not need to touch. It is a non-contact force.'; } });
+      return Q('contact', 'contact', { prompt: 'Is ' + item.text + ' a contact force or a non-contact force?', item: item, bin: item.bin, options: opts, correctIndex: opts.map(function (o) { return o.tag === null; }).indexOf(true), explain: [item.why, 'Test: do the two things need to touch? If they do, it is a contact force.'] });
+    }
+    function oddOne() {
+      var cn = shuffle(CONTACT_NAMES).slice(0, 3), non = pick(NON_NAMES);
+      var wr = cn.map(function (n) { return { text: n, tag: 'contactchosen', msg: n + ' is a contact force: the objects touch.' }; });
+      var a = arrange({ text: non, tag: null }, wr);
+      return Q('contact', 'oddOne', { prompt: 'Three of these are contact forces. Which one is NOT a contact force?', names: cn.concat([non]), odd: non, options: a.options, correctIndex: a.correctIndex, explain: [non + ' acts without the objects touching, so it is a non-contact force.', 'The other three need the objects to touch.'] });
+    }
+
+    /* ---------------- the resultant, as a choice ---------------- */
+    function resMCQ(nR, nL, flip) {
+      return until(function () {
+        var f = makeForces(nR, nL, flip), R = rightSum(f) - leftSum(f); if (R === 0) return null;
+        var correct = { text: resText(R), tag: null };
+        var cand = [];
+        var total = rightSum(f) + leftSum(f), dirR = R > 0 ? 1 : -1;
+        if (nL > 0 && nR > 0) {
+          cand.push({ text: total + ' N ' + dirText(dirR), tag: 'addedall', msg: 'You added all the forces. Forces that point opposite ways subtract.' });
+          cand.push({ text: Math.abs(R) + ' N ' + dirText(-dirR), tag: 'wrongway', msg: 'The size is right, but the resultant points the way of the BIGGER total, not the smaller.' });
+          cand.push({ text: 'Balanced: the resultant is 0 N', tag: 'zero', msg: 'The forces are not equal, so they do not cancel.' });
+          var big = Math.max.apply(null, f.map(function (x) { return x.n; })); cand.push({ text: big + ' N ' + dirText(f.filter(function (x) { return x.n === big; })[0].dir === 'right' ? 1 : -1), tag: 'biggest', msg: 'You used only the biggest force. The resultant uses all of them.' });
+          if (f.length > 2) { var sm = f.slice().sort(function (a, b) { return a.n - b.n; })[0], RR = R - (sm.dir === 'right' ? sm.n : -sm.n); if (RR !== 0) cand.push({ text: Math.abs(RR) + ' N ' + dirText(RR > 0 ? 1 : -1), tag: 'forgot', msg: 'You left out the ' + sm.name.toLowerCase() + '. Every force on the diagram counts.' }); }
+        } else {
+          cand.push({ text: Math.abs(R) + ' N ' + dirText(-dirR), tag: 'wrongway', msg: 'The size is right, but the forces point ' + dirText(dirR) + ', so the resultant does too.' });
+          cand.push({ text: Math.abs(R) + ' N', tag: 'nodir', msg: 'A resultant needs a direction as well as a size.' });
+          cand.push({ text: 'Balanced: the resultant is 0 N', tag: 'zero', msg: 'Forces that point the same way add. They do not cancel.' });
+          var mx = Math.max.apply(null, f.map(function (x) { return x.n; })); cand.push({ text: mx + ' N ' + dirText(dirR), tag: 'biggest', msg: 'You used only the biggest force. Forces that point the same way add.' });
+        }
+        var seen = {}; seen[correct.text] = 1; var wr = [];
+        shuffle(cand).forEach(function (c) { if (!seen[c.text] && wr.length < 3) { seen[c.text] = 1; wr.push(c); } });
+        if (wr.length < 3) return null;
+        var a = arrange(correct, wr);
+        return Q('resultant', 'resMCQ', { prompt: 'All the forces act along one straight line. What is the resultant force?', figure: { type: 'fbd', forces: f }, forces: f, R: R, options: a.options, correctIndex: a.correctIndex,
+          explain: workLines(f).concat([sameWay(f, R)]) });
+      });
+    }
+    function sameWay(f, R) { return 'The resultant is ' + resText(R).replace('Balanced: the resultant is ', '') + '.'; }
+
+    function balancedQ() {
+      return until(function () {
+        var bal = rnd() < 0.5, nR = int(1, 2), nL = int(1, 2), f = makeForces(nR, nL, rnd() < 0.5);
+        if (bal) { // make the left total equal the right total by adjusting the last left force
+          var need = rightSum(f) - (leftSum(f) - f.filter(function (x) { return x.dir === 'left'; }).slice(-1)[0].n); if (need < 5) return null;
+          f.filter(function (x) { return x.dir === 'left'; }).slice(-1)[0].n = need;
+        }
+        var R = rightSum(f) - leftSum(f); if ((R === 0) !== bal) return null; if (bal && f.some(function (x) { return x.n > 300; })) return null;
+        var texts = ['Balanced: the resultant is 0 N', 'Not balanced: the resultant is to the right', 'Not balanced: the resultant is to the left'];
+        var right = R === 0 ? 0 : R > 0 ? 1 : 2;
+        var opts = texts.map(function (t, i) { return { text: t, tag: i === right ? null : (R === 0 ? 'unbal' : (i === 0 ? 'zero' : 'wrongway')), msg: i === right ? '' : (R === 0 ? 'The two totals are equal, so the forces cancel: balanced.' : (i === 0 ? 'The totals are not equal, so the forces do not cancel.' : 'The resultant points the way of the BIGGER total.')) }; });
+        opts = shuffle(opts);
+        return Q('resultant', 'balanced', { prompt: 'All the forces act along one straight line. Are the forces balanced?', figure: { type: 'fbd', forces: f }, forces: f, R: R, options: opts, correctIndex: opts.map(function (o) { return o.tag === null; }).indexOf(true),
+          explain: workLines(f).concat([R === 0 ? 'The forces are balanced.' : 'The forces are not balanced.']) });
+      });
+    }
+
+    /* ---------------- the resultant, as a number ---------------- */
+    function numWrongs(f, R) {
+      var r = listN(f, 'right'), l = listN(f, 'left'), w = [];
+      w.push(W(sum(r) + sum(l), 'addedall', joinSum(r.concat(l)), 'You added all the forces. Forces that point opposite ways subtract.'));
+      var sm = f.slice().sort(function (a, b) { return a.n - b.n; })[0];
+      var rr2 = sum(r) - (sm.dir === 'right' ? sm.n : 0), ll2 = sum(l) - (sm.dir === 'left' ? sm.n : 0), RR = Math.abs(rr2 - ll2); w.push(W(RR, 'forgot', '|' + rr2 + ' - ' + ll2 + '|', 'You left out the ' + sm.name.toLowerCase() + '. Every force counts.'));
+      w.push(W(Math.max(sum(r), sum(l)), 'biggesttotal', String(Math.max(sum(r), sum(l))), 'That is the bigger total. Take the smaller total away from it.'));
+      return w;
+    }
+    function resNum(nR, nL, o) {
+      o = o || {};
+      return until(function () {
+        var f = makeForces(nR, nL, rnd() < 0.5), R = rightSum(f) - leftSum(f); if (R === 0) return null;
+        var forces = f;
+        if (o.distract) { var Wn = five(40, 150); forces = f.concat([{ name: 'Weight', dir: 'down', n: Wn }, { name: 'Reaction force', dir: 'up', n: Wn }]); }
+        var wr = o.distract ? [W(sum(forces.map(function (x) { return x.n; })), 'addedall', joinSum(forces.map(function (x) { return x.n; })), 'You added every arrow, including the vertical ones. Left and right forces never combine with up and down forces.')] : [];
+        var r = listN(f, 'right'), l = listN(f, 'left');
+        wr = wr.concat(numWrongs(f, R));
+        var ok = true; wr.forEach(function (w) { if (!(w.value > 0)) ok = false; }); if (!ok) return null;
+        return Q('resultant', 'resNum', { prompt: o.distract ? 'The diagram has horizontal and vertical forces. Find the size of the resultant force along the HORIZONTAL line.' : 'All the forces act along one straight line. Find the size of the resultant force.', figure: { type: 'fbd', forces: forces }, forces: forces, R: R, unit: 'N', answer: Math.abs(R),
+          worked: workLines(f), method: o.distract ? 'Ignore the vertical forces: they act along a different line. Add the forces that point the same way, then subtract the smaller total from the bigger.' : 'Add the forces that point the same way, then subtract the smaller total from the bigger.', wrong: wr });
+      });
+    }
+
+    /* ---------------- which force? ---------------- */
+    function nameQ() {
+      var it = pick(NAMEQ), wr = shuffle(it.wrong).slice(0, 3).map(function (n) { return { text: n, tag: 'wrongforce', msg: it.right === 'Reaction force' ? 'That is not the force a surface exerts on an object.' : 'That is not the force described here: look at where it acts and what is touching.' }; });
+      var a = arrange({ text: it.right, tag: null }, wr);
+      return Q('fbd', 'nameForce', { prompt: it.text, item: it, options: a.options, correctIndex: a.correctIndex, explain: [it.why] });
+    }
+    function steadyQ() {
+      var Wn = five(200, 900), opts = [
+        { text: 'The air resistance is ' + Wn + ' N. The forces are balanced and the resultant is 0 N.', tag: null },
+        { text: 'The air resistance is less than ' + Wn + ' N, because the skydiver is moving.', tag: 'moving', msg: 'A steady speed does not need a leftover force. If the air resistance were smaller, there would be a resultant force downwards.' },
+        { text: 'The air resistance is more than ' + Wn + ' N, so the skydiver is pushed upwards.', tag: 'toomuch', msg: 'If the air resistance were bigger, the resultant would point upwards. At a steady speed the two are equal.' },
+        { text: 'There is no air resistance and no weight, because the speed is steady.', tag: 'noforces', msg: 'The forces have not gone. Weight and air resistance are both there: they are equal and opposite, so they cancel.' }
+      ];
+      var arr = shuffle(opts);
+      return Q('fbd', 'steady', { prompt: 'A skydiver falls at a steady speed. The weight is ' + Wn + ' N. Which statement is correct?', W: Wn, options: arr, correctIndex: arr.map(function (o) { return o.tag === null; }).indexOf(true), explain: ['At a steady speed the forces are balanced: the upward force equals the downward force.', 'Weight ' + Wn + ' N down, air resistance ' + Wn + ' N up: ' + Wn + ' − ' + Wn + ' = 0.'] });
+    }
+
+    /* ---------------- missing forces ---------------- */
+    function missingBalanced() {
+      return until(function () {
+        var a = five(20, 150), b = five(20, 100), c = five(20, 150), X = a + b - c; if (X < 10 || X > 250) return null;
+        return Q('missing', 'missingBalanced', { prompt: 'Two forces act to the right: ' + a + ' N and ' + b + ' N. Two forces act to the left: ' + c + ' N and a missing force. The forces are balanced. Find the missing force.', a: a, b: b, c: c, unit: 'N', answer: X,
+          worked: [a + ' + ' + b + ' = ' + (a + b), (a + b) + ' − ' + c + ' = ' + X], method: 'Balanced means the left total equals the right total. Subtract the force you know from the right total.',
+          wrong: [W(a + b + c, 'addedall', a + ' + ' + b + ' + ' + c, 'You added all three. Balanced means the two totals are equal.'), W(a + b, 'rightonly', a + ' + ' + b, 'That is the right-hand total. The left total must equal it, and it already includes ' + c + ' N.'), W(Math.abs(a - c), 'skipped', Math.max(a, c) + ' − ' + Math.min(a, c), 'You left out the ' + b + ' N.')] });
+      });
+    }
+    function missingResultant() {
+      return until(function () {
+        var A = five(60, 200), B = five(10, 80), R = five(10, 60), X = A - B - R; if (X < 10) return null;
+        return Q('missing', 'missingResultant', { prompt: 'A force of ' + A + ' N acts to the right. Two forces act to the left: ' + B + ' N and a missing force. The resultant is ' + R + ' N to the right. Find the missing force.', A: A, B: B, R: R, unit: 'N', answer: X,
+          worked: [A + ' − ' + R + ' = ' + (A - R), (A - R) + ' − ' + B + ' = ' + X], method: 'The two forces on the left together are the right force minus the resultant. Then take away the one you know.',
+          wrong: [W(A - R, 'bothleft', A + ' - ' + R, 'That is the TOTAL of the two left forces. The ' + B + ' N is part of it.'), W(A - B, 'noresultant', A + ' - ' + B, 'You left out the resultant. Some of the right force is NOT cancelled.'), W(A + R - B, 'resultantadded', A + ' + ' + R + ' - ' + B, 'The resultant is what is left over after the left forces take some away, so subtract it.')] });
+      });
+    }
+
+    /* ---------------- the very hard pools ---------------- */
+    function liftG() {
+      return until(function () {
+        var m = pick([5, 10, 15, 20]), Wt = Math.round(m * 98) / 10, T = five(20, 300); if (T === Wt) return null; var ans = Math.abs(T - Wt); if (!Number.isInteger(ans)) return null;
+        var dir = T > Wt ? 'upwards' : 'downwards';
+        var wr = [W(T + Wt, 'addedlift', T + ' + ' + Wt, 'You added the rope force and the weight. They point opposite ways, so subtract.'), W(Math.abs(T - 10 * m), 'tengrav', '|' + T + ' - ' + 10 * m + '|', 'You used g = 10. Use g = 9.8 N/kg, so the weight is ' + m + ' × 9.8 = ' + Wt + ' N.'), W(Wt, 'weightonly', String(Wt), 'That is only the weight. The rope pulls as well.')];
+        return Q('puzzle', 'liftG', { prompt: 'A ' + m + ' kg box hangs from a rope. The rope pulls upwards with a force of ' + T + ' N. Use g = 9.8 N/kg. Find the size of the resultant force on the box.', m: m, T: T, Wt: Wt, dir: dir, unit: 'N', answer: ans,
+          worked: [m + ' × 9.8 = ' + Wt, Math.max(T, Wt) + ' − ' + Math.min(T, Wt) + ' = ' + ans], method: 'Find the weight (mass × g), then subtract the smaller force from the bigger. They act in opposite directions.', wrong: wr.filter(function (w) { return w.value > 0 && w.value !== ans; }) });
+      });
+    }
+    function tugOfWar() {
+      return until(function () {
+        var a = int(4, 9), b = int(4, 9), p = pick([250, 300, 350, 400, 450, 500]), q = pick([250, 300, 350, 400, 450, 500]); if (a * p === b * q || Math.abs(a * p - b * q) < 100) return null;
+        var A = a * p, B = b * q, ans = Math.abs(A - B), who = A > B ? 'team A' : 'team B';
+        var wr = [W(A + B, 'addedall', A + ' + ' + B, 'You added the two teams. They pull in opposite directions, so subtract.'), W(Math.abs(a - b) * p, 'peopledif', Math.abs(a - b) + ' × ' + p, 'You only compared the numbers of people. The two teams pull with different forces each.'), W(Math.abs(p - q), 'onepull', Math.abs(p - q), 'You compared one person from each team. Find each team\'s total force first.')];
+        return Q('puzzle', 'tug', { prompt: 'Team A has ' + a + ' people, each pulling with ' + p + ' N. Team B has ' + b + ' people, each pulling with ' + q + ' N. They pull a rope in opposite directions. Find the size of the resultant force on the rope.', a: a, b: b, p: p, q: q, unit: 'N', answer: ans,
+          worked: [a + ' × ' + p + ' = ' + A, b + ' × ' + q + ' = ' + B, Math.max(A, B) + ' − ' + Math.min(A, B) + ' = ' + ans], method: 'Find the total force for each team, then subtract the smaller from the bigger.', wrong: wr.filter(function (w) { return w.value > 0 && w.value !== ans; }) });
+      });
+    }
+    function parachute() {
+      return until(function () {
+        var Wt = five(300, 900), R1 = five(50, Wt - 100), ans = Wt - R1; if (ans < 50) return null;
+        return Q('puzzle', 'parachute', { prompt: 'A parachutist has a weight of ' + Wt + ' N. When the parachute opens, the air resistance is ' + R1 + ' N and the parachutist is still speeding up. By how many newtons must the air resistance increase before the forces are balanced?', Wt: Wt, R1: R1, unit: 'N', answer: ans,
+          worked: ['Balanced: air resistance = ' + Wt + ' N', Wt + ' − ' + R1 + ' = ' + ans], method: 'When the forces are balanced the air resistance equals the weight. Then work out how much more it needs.',
+          wrong: [W(Wt + R1, 'addedpara', Wt + ' + ' + R1, 'You added the two forces. They are opposite, and the question asks how much MORE is needed.'), W(R1, 'startvalue', String(R1), 'That is the air resistance now. The question asks how much it must INCREASE by.'), W(Wt, 'weightonly', String(Wt), 'That is the air resistance needed in total, not the increase.')].filter(function (w) { return w.value > 0 && w.value !== ans; }) });
+      });
+    }
+    function missing3() {
+      return until(function () {
+        var A = five(60, 200), B = five(10, 60), C = five(10, 60), R = five(10, 40), X = A - B - C - R; if (X < 10) return null;
+        return Q('puzzle', 'missing3', { prompt: 'An object has a force of ' + A + ' N to the right. Three forces act to the left: ' + B + ' N, ' + C + ' N and a missing force. The resultant is ' + R + ' N to the right. Find the missing force.', A: A, B: B, C: C, R: R, unit: 'N', answer: X,
+          worked: [B + ' + ' + C + ' = ' + (B + C), A + ' − ' + R + ' = ' + (A - R), (A - R) + ' − ' + (B + C) + ' = ' + X], method: 'The left total is the right force minus the resultant. Take the two known left forces away from it.',
+          wrong: [W(A - R, 'bothleft', A + ' - ' + R, 'That is the total of ALL the left forces. Two of them are known: take them away.'), W(A - B - C, 'noresultant', A + ' - ' + B + ' - ' + C, 'You left out the resultant. Some of the right force is not cancelled.'), W(A - R - B, 'forgotC', A + ' - ' + R + ' - ' + B, 'You took away only one of the two known left forces.')].filter(function (w) { return w.value > 0 && w.value !== X; }) });
+      });
+    }
+
+    var plan = [
+      [function () { return contactQ(pick(CONTACT1.filter(function (c) { return c.bin === 'contact'; }))); }, function () { return resMCQ(2, 0, false); },
+       function () { return contactQ(pick(CONTACT1.filter(function (c) { return c.bin === 'non'; }))); }, function () { return resMCQ(1, 1, rnd() < 0.5); }, nameQ, function () { return resNum(1, 1); }],
+      [function () { return resMCQ(1, 2, false); }, balancedQ, function () { return contactQ(pick(CONTACT2)); }, function () { return resNum(2, 1); }, nameQ, missingBalanced],
+      [function () { return resNum(1, 2, { distract: true }); }, oddOne, steadyQ, missingResultant, function () { return rnd() < 0.5 ? liftG() : tugOfWar(); }, function () { return rnd() < 0.5 ? parachute() : missing3(); }]
+    ];
+    var out = [], used = {};
+    plan.forEach(function (r, ri) {
+      r.forEach(function (make, qi2) {
+        var q = make();
+        // never the same scenario twice in one game
+        var key = q.kind === 'nameForce' ? q.item.id : q.kind === 'contact' ? q.item.id : null;
+        for (var tries = 0; key && used[key] && tries < 50; tries++) { q = make(); key = q.kind === 'nameForce' ? q.item.id : q.kind === 'contact' ? q.item.id : null; }
+        if (key) used[key] = 1;
+        q.round = ri + 1; q.n = qi2 + 1;
+        if (q.wrong) {
+          var seen = {}, wrong = {};
+          q.wrong.forEach(function (w) { if (w && w.value === Math.round(w.value) && w.value > 0 && w.value !== q.answer && w.value <= 999999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; } });
+          q.wrong = wrong;
+        }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Forces and arrows', 'Add them up', 'Beat the game'];
+  var CATS = { contact: 'Contact and non-contact', resultant: 'Finding the resultant', fbd: 'Forces on an object', missing: 'Missing forces', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    contactasnon: 'If the two things touch, it is a contact force. Air resistance counts: air is made of particles.', nonascontact: 'Weight, magnetic and electrostatic forces act across a gap. They are non-contact forces.', contactchosen: 'Friction, tension, air resistance, reaction force, upthrust and thrust all need contact.',
+    addedall: 'Forces that point opposite ways SUBTRACT. Only add forces that point the same way.', wrongway: 'The resultant points the way of the bigger total.', zero: 'Forces cancel only when the two totals are equal.', biggest: 'Use every force, not just the biggest.', forgot: 'Every arrow on the diagram counts. Do not leave one out.', nodir: 'A resultant needs a direction as well as a size.', unbal: 'When the two totals are equal the forces are balanced.',
+    biggesttotal: 'Subtract the smaller total from the bigger one.', wrongforce: 'Check where the force acts and what is touching.', moving: 'A steady speed means balanced forces, not a leftover force.', toomuch: 'At a steady speed the forces are equal and opposite.', noforces: 'The forces have not gone: they cancel. A resultant of 0 N is not the same as no forces.',
+    rightonly: 'Balanced means the two totals are equal.', skipped: 'Use every force you are given.', bothleft: 'Take the known forces away from the total of the left forces.', noresultant: 'The resultant is what is left after the forces cancel. Include it.', resultantadded: 'Subtract the resultant from the right force, do not add it.',
+    addedlift: 'The rope pulls up and the weight pulls down. Subtract.', tengrav: 'Use g = 9.8 N/kg, as in the lesson.', weightonly: 'Use both forces, the weight and the pull.', peopledif: 'Find each team\'s total force first.', onepull: 'Find each team\'s total force first.', addedpara: 'The two forces are opposite. The question asks how much MORE is needed.', startvalue: 'The question asks how much it must increase BY.', forgotC: 'Take away both known forces.'
+  };
+  var GENERIC = 'Read the question again. Add forces that point the same way, subtract forces that point opposite ways, and give a direction.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  /* ---------- the free-body diagram, drawn from its data (arrows to scale) ---------- */
+  function fbdSvg(fig) {
+    var f = fig.forces, maxN = Math.max.apply(null, f.map(function (x) { return x.n; })), sc = 110 / maxN, bw = 120, bh = 70, cx = 300, cy = 150, parts = [];
+    parts.push('<rect x="' + (cx - bw / 2) + '" y="' + (cy - bh / 2) + '" width="' + bw + '" height="' + bh + '" rx="8" fill="#F2F4FA" stroke="#17203F" stroke-width="4"/>');
+    var COL = { right: '#1E8E5A', left: '#E03D6B', up: '#1FB6BC', down: '#C25A16' };
+    function arrow(x0, y0, x1, y1, col) {
+      var dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L, px = -uy, py = ux, h = 13;
+      return '<line x1="' + x0 + '" y1="' + y0 + '" x2="' + (x1 - ux * h) + '" y2="' + (y1 - uy * h) + '" stroke="' + col + '" stroke-width="6" stroke-linecap="round"/><polygon points="' + x1 + ',' + y1 + ' ' + (x1 - ux * h + px * 8) + ',' + (y1 - uy * h + py * 8) + ' ' + (x1 - ux * h - px * 8) + ',' + (y1 - uy * h - py * 8) + '" fill="' + col + '"/>';
+    }
+    ['right', 'left'].forEach(function (side) {
+      var fs = f.filter(function (x) { return x.dir === side; }), offs = { 1: [0], 2: [-22, 22], 3: [-34, 0, 34] }[fs.length] || [];
+      fs.forEach(function (x, i) {
+        var L = Math.max(18, x.n * sc), y = cy + offs[i], x0 = side === 'right' ? cx + bw / 2 : cx - bw / 2, x1 = side === 'right' ? x0 + L : x0 - L;
+        parts.push(arrow(x0, y, x1, y, COL[side]));
+        parts.push('<text class="fl" data-n="' + x.n + '" data-dir="' + side + '" x="' + (side === 'right' ? x0 + 6 : x0 - 6) + '" y="' + (y - 11) + '" text-anchor="' + (side === 'right' ? 'start' : 'end') + '" fill="' + COL[side] + '">' + esc(x.name) + ' ' + x.n + ' N</text>');
+      });
+    });
+    ['up', 'down'].forEach(function (side) {
+      f.filter(function (x) { return x.dir === side; }).forEach(function (x) {
+        var L = Math.max(18, x.n * sc), x0 = cx, y0 = side === 'up' ? cy - bh / 2 : cy + bh / 2, y1 = side === 'up' ? y0 - L : y0 + L;
+        parts.push(arrow(x0, y0, x0, y1, COL[side]));
+        parts.push('<text class="fl" data-n="' + x.n + '" data-dir="' + side + '" x="' + (x0 + 14) + '" y="' + ((y0 + y1) / 2 + 5) + '" text-anchor="start" fill="' + COL[side] + '">' + esc(x.name) + ' ' + x.n + ' N</text>');
+      });
+    });
+    return '<div class="fbdfig"><svg viewBox="0 0 600 300" role="img" aria-label="Free-body diagram">' + parts.join('') + '</svg></div>';
+  }
+  function figureHtml(Q) { return Q.figure ? fbdSvg(Q.figure) : ''; }
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.figure) d += ' | ' + Q.figure.forces.map(function (x) { return x.name + ' ' + x.n + ' N ' + x.dir; }).join(' ; ');
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Net Force'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before. Every force is along ONE straight line.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'The arrows on each diagram are drawn to scale. Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.innerHTML = '<p class="ask">' + esc(Q.prompt) + '</p>' + figureHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isMCQ(Q)) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+      if (Q.unit) app.appendChild(el('p', 'unit', 'Give your answer in ' + Q.unit + '.'));
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (!isMCQ(Q)) {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','', '0','back','go'].forEach(function (k) {
+        if (k === '') { pad.appendChild(el('span')); return; }
+        var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k; if (k === 'back') b.setAttribute('aria-label', 'Delete'); b.onclick = function () { press(k); }; pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else { var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go); }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function paintAnswer() { var a = document.getElementById('answer'); if (!a) return; a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer'; }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(parseInt(typed, 10), null); }
+    else if (typed.length < 6) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k + 1, k); }
+
+  function workHtml(Q) {
+    var lines = (Q.worked || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return (Q.method ? '<p class="how">' + esc(Q.method) + '</p>' : '') + (expl ? '<div class="work">' + expl + '</div>' : '') + (lines ? '<p class="how">Working:</p><div class="work">' + lines + '</div>' : '');
+  }
+  function correctText(Q) { return isMCQ(Q) ? Q.options[Q.correctIndex].text : String(Q.answer) + (Q.unit ? ' ' + Q.unit : ''); }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head, wrote;
+    if (isMCQ(Q)) {
+      ok = picked === Q.correctIndex; wrote = Q.options[picked].text;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer; wrote = String(given); var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + (Q.unit ? ' ' + Q.unit : '') + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (isMCQ(Q)) {
+      if (/^[1-4]$/.test(e.key) && !locked) { var k = parseInt(e.key, 10) - 1; if (k < Q.options.length) { e.preventDefault(); pressOpt(k); } }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

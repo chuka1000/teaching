@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dig Site</title>
+<style>
+  :root {
+    --forest: #1F3D2B; --amber: #DE9A4C; --amberink: #A8651F; --teal: #3E93A3; --rust: #C1442D; --cream: #F5F1E6; --cream2: #E8E0CC;
+    --ink: #182B1E; --soft: #52685A; --green: #1F7A48; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  .ico { width: 30px; height: 30px; flex: none; color: var(--forest); }
+  .ico.big { width: 36px; height: 36px; }
+  /* rock layers */
+  .sites { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 620px) { .sites.two { grid-template-columns: 1fr 1fr; } }
+  .site h3 { margin: 0 0 6px; font-size: 14px; color: var(--soft); letter-spacing: .06em; text-transform: uppercase; }
+  .strata { border: 2px solid #6F5F4B; border-radius: 6px; overflow: hidden; }
+  .layer { display: flex; align-items: center; gap: 10px; padding: 4px 10px 4px 0; border-top: 1px solid #6F5F4B; min-height: 46px; }
+  .layer:first-child { border-top: 0; }
+  .layer:nth-child(odd) { background: #D8C7A3; } .layer:nth-child(even) { background: #CDB98F; }
+  .layer .lab { background: var(--forest); color: var(--cream); font-weight: 700; font-size: 17px; min-width: 62px; align-self: stretch; display: flex; align-items: center; justify-content: center; }
+  .layer .fos { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 14px; font-weight: 700; }
+  .layer .fos span { display: inline-flex; align-items: center; gap: 4px; }
+  .layer .thick { margin-left: auto; font-size: 14px; font-weight: 700; color: #4b3f2e; white-space: nowrap; }
+  .refs { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; margin: 4px 0 10px; }
+  .chip { background: var(--cream2); border-radius: 10px; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; }
+  .arrow { color: var(--amberink); font-weight: 700; }
+  table.chart { border-collapse: collapse; margin: 6px 0; font-size: 14px; width: 100%; }
+  .chartwrap { overflow-x: auto; max-width: 100%; }
+  table.chart th, table.chart td { border: 1px solid #6F5F4B; padding: 4px 3px; text-align: center; min-width: 26px; }
+  table.chart th { background: var(--cream2); font-size: 13px; }
+  table.chart td.on { background: var(--amber); } table.chart td.off { background: var(--white); }
+  table.chart td.name { text-align: left; white-space: nowrap; font-weight: 700; }
+  #answer { height: 64px; border: 3px solid var(--forest); border-radius: 12px; background: var(--white); font-size: 34px; font-weight: 700; color: var(--forest); display: flex; align-items: center; padding: 0 16px; margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9AA59D; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 58px; font-size: 28px; font-weight: 700; color: var(--forest); background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--cream2); } .key.fn { background: var(--cream); font-size: 22px; }
+  .key.go, .btn { background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+  @media (max-width: 480px) { table.chart { font-size: 12px; } table.chart td.name { white-space: normal; } .ico { width: 24px; height: 24px; } .layer .lab { min-width: 54px; font-size: 15px; } .ask { font-size: 17px; } .key { height: 54px; } #answer { height: 58px; font-size: 30px; } .bar { width: 80px; } .opt { font-size: 16px; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="sp-spiral" viewBox="0 0 40 40"><path d="M20 20 a2.5 2.5 0 1 1 2.5 2.5 a5 5 0 1 1 -5 -5 a8 8 0 1 1 8 8 a11 11 0 1 1 -11 -11 a14 14 0 1 1 14 14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+    <symbol id="sp-trilo" viewBox="0 0 40 40"><ellipse cx="20" cy="20" rx="11" ry="16" fill="currentColor"/><path d="M11 13h18M10 19h20M10 25h20M12 31h16" stroke="#fff" stroke-width="2" fill="none"/></symbol>
+    <symbol id="sp-fish" viewBox="0 0 40 40"><ellipse cx="17" cy="20" rx="13" ry="8" fill="currentColor"/><path d="M28 20 L38 11 L38 29 Z" fill="currentColor"/><circle cx="10" cy="18" r="2" fill="#fff"/></symbol>
+    <symbol id="sp-fan" viewBox="0 0 40 40"><path d="M20 34 L4 18 A19 19 0 0 1 36 18 Z" fill="currentColor"/><path d="M20 33 L10 14M20 33 L20 11M20 33 L30 14" stroke="#fff" stroke-width="2" fill="none"/></symbol>
+    <symbol id="sp-leaf" viewBox="0 0 40 40"><path d="M6 34 C6 14 20 5 35 5 C35 22 26 35 6 34Z" fill="currentColor"/><path d="M8 33 L30 10" stroke="#fff" stroke-width="2" fill="none"/></symbol>
+    <symbol id="sp-tooth" viewBox="0 0 40 40"><path d="M9 6 h22 v12 c0 10 -5 17 -7 17 c-2 0 -2 -9 -4 -9 s-2 9 -4 9 c-2 0 -7 -7 -7 -17 z" fill="currentColor"/></symbol>
+    <symbol id="sp-star" viewBox="0 0 40 40"><polygon points="20,3 25,15 38,16 28,25 31,38 20,31 9,38 12,25 2,16 15,15" fill="currentColor"/></symbol>
+    <symbol id="sp-bone" viewBox="0 0 40 40"><circle cx="8" cy="13" r="5" fill="currentColor"/><circle cx="8" cy="27" r="5" fill="currentColor"/><circle cx="32" cy="13" r="5" fill="currentColor"/><circle cx="32" cy="27" r="5" fill="currentColor"/><rect x="8" y="15" width="24" height="10" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * DIG SITE. Nobody gets the same game.
+   *
+   * Every question is built from a template with random organisms, rock
+   * layers and numbers, and the order inside each round is shuffled, all from
+   * a six-character game code. The code is random for each student. Opening
+   * the file with #CODE after the address gives the same game again, so a
+   * teacher can see exactly what a student saw. The SKILLS and their order are
+   * the same for everyone, so the diagnostic at the end means the same thing.
+   *
+   * Every question keeps the DATA it was built from (the layers, the ranges,
+   * the numbers), and build/check-fossils-game.py re-derives every answer from
+   * that data with sympy. A picture of rock layers is always drawn from a list
+   * of layers, so the picture and the answer cannot disagree.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is how a fossil
+   * forms. Round 2 is reading rock layers. Round 3 goes far past the lesson:
+   * matching layers at two sites by their fossils, which layer holds X and Z
+   * but not Y, rock that has been turned upside down, how many stages of time
+   * are missing, and two questions drawn from small pools of very hard
+   * templates. A student who fails them still gets the working.
+   *
+   * These rock puzzles use invented fossils in an invented order. They are
+   * about the reasoning, not about real chronology.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var SPECIES = [
+    { id: 'spiral', name: 'spiral shell' }, { id: 'trilo', name: 'trilobite' }, { id: 'fish', name: 'fish' }, { id: 'fan', name: 'fan shell' },
+    { id: 'leaf', name: 'leaf' }, { id: 'tooth', name: 'tooth' }, { id: 'star', name: 'sea star' }, { id: 'bone', name: 'bone' }
+  ];
+  var SP = {}; SPECIES.forEach(function (s) { SP[s.id] = s; });
+  var spName = function (id) { return SP[id].name; };
+  var STEPS = ['The animal dies.', 'Mud and sand bury it quickly.', 'The soft parts rot away.', 'More layers build up on top.', 'Minerals seep in and the sediment turns to rock.', 'The rock is worn away and the fossil is found.'];
+  var ORG_HARD = [
+    { n: 'clam', art: 'A clam', part: 'shell' }, { n: 'snail', art: 'A snail', part: 'shell' }, { n: 'crab', art: 'A crab', part: 'shell' },
+    { n: 'fish', art: 'A fish', part: 'bones' }, { n: 'shark', art: 'A shark', part: 'teeth' }, { n: 'sea urchin', art: 'A sea urchin', part: 'spiny shell' }
+  ];
+  var ORG_SOFT = [{ n: 'jellyfish', art: 'A jellyfish' }, { n: 'worm', art: 'A worm' }, { n: 'slug', art: 'A slug' }, { n: 'sea anemone', art: 'A sea anemone' }, { n: 'caterpillar', art: 'A caterpillar' }];
+  var SIT_BURIED = ['dies on the sea floor and is quickly covered in mud', 'dies in a river and is quickly covered by sand', 'dies in a lake and is quickly covered by mud', 'is quickly covered by ash from a volcano'];
+  var SIT_OPEN = ['dies on a beach and is left in the sun', 'dies on dry land and is left on the surface', 'dies in a field and is left uncovered', 'dies on rocks by the shore and is left uncovered'];
+  var SOFT_PARTS = ['the skin', 'the muscles', 'the eyes', 'the blood', 'the brain', 'the stomach'];
+  var NUMTXT = function (x) { return String(x); };
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 6000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg }; };
+    var lower = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    var MCQ = function (opts, correctIdx) { return { options: opts, correctIndex: correctIdx }; };
+    // put the correct option among the wrong ones in a random place
+    function arrange(correct, wrongs) {
+      var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) };
+    }
+    function letters(n) { return shuffle('ABCDEFGH'.split('')).slice(0, n); }
+    // rock layers: DISPLAY ORDER is top to bottom. In undisturbed rock the top is the youngest.
+    function makeSite(n, o) {
+      o = o || {};
+      var ids = shuffle(SPECIES.map(function (s) { return s.id; })).slice(0, n);      // ids[0] is the OLDEST
+      var labs = letters(n), layers = [];
+      for (var i = n - 1; i >= 0; i--) layers.push({ label: labs[n - 1 - i], species: [ids[i]], thick: o.thick ? o.thick[i] : null });   // top first
+      return { layers: layers, ageOrder: ids };
+    }
+    var fossilsOf = function (ly) { return ly.species.map(spName).join(' and '); };
+
+    /* ---------------- Round 1: how a fossil forms ---------------- */
+    var R1 = {
+      likely: function () {
+        var combos = [[true, true], [false, true], [true, false], [false, false]];
+        var hard = shuffle(ORG_HARD), soft = shuffle(ORG_SOFT), sb = shuffle(SIT_BURIED), so = shuffle(SIT_OPEN);
+        var opts = combos.map(function (c) {
+          var org = c[0] ? hard.pop() : soft.pop(), sit = c[1] ? sb.pop() : so.pop();
+          var o = { text: org.art + ' that ' + sit + '.', hard: c[0], buried: c[1], name: org.n };
+          if (c[0] && c[1]) o.tag = null;
+          else if (!c[0] && c[1]) { o.tag = 'nohard'; o.msg = 'A ' + org.n + ' has no hard parts. It rots away before minerals can turn it to stone.'; }
+          else if (c[0] && !c[1]) { o.tag = 'unburied'; o.msg = 'A ' + org.n + ' has a hard shell or bones, but it is left uncovered. Scavengers, air and weather destroy it.'; }
+          else { o.tag = 'neither'; o.msg = 'No hard parts and not buried: the least likely of all.'; }
+          return o;
+        });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.hard && o.buried; }).indexOf(true);
+        return Q('form', 'likely', { prompt: 'Which of these is most likely to become a fossil?', options: arr, correctIndex: ci,
+          explain: ['A fossil needs two things: hard parts, and quick burial.', 'Only the ' + arr[ci].name + ' has both.'] });
+      },
+      part: function () {
+        var org = pick(ORG_HARD), soft = shuffle(SOFT_PARTS).slice(0, 3);
+        var correct = { text: 'The ' + org.part, hard: true, tag: null };
+        var wr = soft.map(function (p) { return { text: p.charAt(0).toUpperCase() + p.slice(1), hard: false, tag: 'soft', msg: 'That is a soft part. It rots away long before it can be buried.' }; });
+        var a = arrange(correct, wr);
+        return Q('form', 'part', { prompt: 'A ' + org.n + ' dies and is quickly buried. Which part is most likely to become a fossil?', organism: org.n, options: a.options, correctIndex: a.correctIndex,
+          explain: ['Hard parts last long enough to be buried and turned to stone.', 'The ' + org.part + ' is the hard part of a ' + org.n + '.'] });
+      },
+      next: function () {
+        var k = int(0, 4), nextIdx = k + 1;
+        var others = [0, 1, 2, 3, 4, 5].filter(function (i) { return i !== k && i !== nextIdx; });
+        var wr = shuffle(others).slice(0, 3).map(function (i) {
+          return { text: STEPS[i], idx: i, tag: i < k ? 'earlier' : 'later', msg: i < k ? 'That step happens earlier.' : 'That step comes later, not straight after.' };
+        });
+        var correct = { text: STEPS[nextIdx], idx: nextIdx, tag: null };
+        var a = arrange(correct, wr);
+        return Q('form', 'next', { prompt: 'These are the steps in how a fossil forms. Which step comes straight after this one?', shown: k, showText: STEPS[k], options: a.options, correctIndex: a.correctIndex,
+          explain: ['The order is: ' + STEPS.map(function (s, i) { return (i + 1) + ' ' + s.replace(/\.$/, ''); }).join('; ') + '.'] });
+      },
+      missing: function () {
+        var hardMissing = rnd() < 0.5, org, sit;
+        if (hardMissing) { org = pick(ORG_SOFT); sit = pick(SIT_BURIED); } else { org = pick(ORG_HARD); sit = pick(SIT_OPEN); }
+        var opts = [
+          { text: 'It has no hard parts.', code: 'hard' }, { text: 'It was not buried quickly.', code: 'burial' },
+          { text: 'It was too small.', code: 'irrelevant' }, { text: 'It was the wrong colour.', code: 'irrelevant' }
+        ].map(function (o) { o.tag = o.code === (hardMissing ? 'hard' : 'burial') ? null : (o.code === 'irrelevant' ? 'irrelevant' : 'other'); o.msg = o.tag === 'irrelevant' ? 'Size and colour do not decide whether a body becomes a fossil.' : (o.tag ? (hardMissing ? 'It WAS buried quickly, so that was not the problem.' : 'It has hard parts, so that was not the problem.') : ''); return o; });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('form', 'missing', { prompt: org.art + ' ' + sit + '. It never becomes a fossil. Which needed condition was missing?', hard: !hardMissing, buried: hardMissing, options: arr, correctIndex: ci,
+          explain: ['A fossil needs hard parts AND quick burial.', hardMissing ? 'The ' + org.n + ' was buried quickly but has no hard parts.' : 'The ' + org.n + ' has hard parts but was left uncovered.'] });
+      },
+      compare: function () {
+        var differ = pick(['buried', 'hard']), other = differ === 'buried' ? 'hard' : 'buried';
+        var oh = pick(ORG_HARD), os = pick(ORG_SOFT), winner = pick(['X', 'Y']), loser = winner === 'X' ? 'Y' : 'X', animals = {};
+        animals[winner] = { name: oh.n, hard: true, buried: true };
+        animals[loser] = differ === 'buried' ? { name: oh.n, hard: true, buried: false } : { name: os.n, hard: false, buried: true };
+        var say = function (w) { var an = animals[w]; return 'Animal ' + w + ' is a ' + an.name + '. It dies and ' + (an.buried ? 'is quickly covered in mud.' : 'is left on the surface.'); };
+        var reasonText = { hard: 'it has hard parts', buried: 'it was buried quickly' };
+        var opts = [];
+        ['X', 'Y'].forEach(function (who) { [differ, other].forEach(function (r) { opts.push({ who: who, reason: r, text: 'Animal ' + who + ', because ' + reasonText[r] + '.' }); }); });
+        opts.forEach(function (o) {
+          if (o.who === winner && o.reason === differ) o.tag = null;
+          else if (o.who === winner) { o.tag = 'samereason'; o.msg = 'Both animals ' + (other === 'hard' ? 'have hard parts' : 'were buried quickly') + '. That is not what makes the difference.'; }
+          else { o.tag = 'loser'; o.msg = 'Animal ' + o.who + ' is the less likely one.'; }
+        });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('form', 'compare', { prompt: 'Two animals die at the same time. ' + say('X') + ' ' + say('Y') + ' Which is more likely to become a fossil, and why?', X: animals.X, Y: animals.Y, differ: differ, options: arr, correctIndex: ci,
+          explain: ['The two animals are the same except for one thing: ' + (differ === 'buried' ? 'one was buried quickly and one was not.' : 'one has hard parts and one does not.'), 'That difference decides it. Animal ' + winner + ' wins.'] });
+      },
+      rate: function () {
+        if (rnd() < 0.5) {                                                 // thickness from a rate in mm a year
+          var r = int(2, 5), y = pick([20, 30, 40, 50, 60, 80, 100]);
+          if ((r * y) % 10 !== 0) { r = 5; }
+          var mm = r * y, ans = mm / 10;
+          return Q('form', 'rate', { form: 'thickness', rate: r, years: y, prompt: 'Sediment builds up at ' + r + ' mm every year. How many centimetres of sediment build up in ' + y + ' years?', unit: 'cm', answer: ans,
+            worked: [r + ' × ' + y + ' = ' + mm, mm + ' ÷ 10 = ' + ans], method: 'Find the millimetres, then change to centimetres (10 mm = 1 cm).',
+            wrong: [W(mm, 'unit', r + ' × ' + y, 'That is in millimetres. The question asks for centimetres.'), W(mm / 100, 'unit', r + ' × ' + y + ' ÷ 100', 'Divide by 10, not 100: there are 10 mm in 1 cm.'), W(y / r, 'invert', y + ' ÷ ' + r, 'Multiply the rate by the years. Do not divide.')] });
+        }
+        var rr = int(2, 5), m = int(2, 9), t = rr * m, ans2 = m * 1000;
+        return Q('form', 'rate', { form: 'years', rate: rr, thickness: t, prompt: 'Sediment builds up at ' + rr + ' cm every 1000 years. How many years does it take to build ' + t + ' cm?', unit: 'years', answer: ans2,
+          worked: [t + ' ÷ ' + rr + ' = ' + m, m + ' × 1000 = ' + ans2], method: 'Find how many lots of ' + rr + ' cm there are, then multiply by 1000 years.',
+          wrong: [W(m, 'skip', t + ' ÷ ' + rr, 'That is the number of 1000-year lots. Multiply by 1000 to get years.'), W(t * rr * 1000, 'invert', t + ' × ' + rr + ' × 1000', 'Divide the thickness by the rate. Do not multiply.'), W(t * 1000, 'skip', t + ' × 1000', 'The rate matters: each 1000 years builds only ' + rr + ' cm.')] });
+      }
+    };
+
+    /* ---------------- Round 2: reading rock layers ---------------- */
+    var R2 = {
+      oldest: function () {
+        var s = makeSite(5), ly = s.layers, bottom = ly[ly.length - 1];
+        var wrongs = shuffle(ly.slice(0, ly.length - 1)).slice(0, 3);
+        var mk = function (l) { return { text: 'Layer ' + l.label, label: l.label, tag: l === ly[0] ? 'top' : 'above', msg: l === ly[0] ? 'That is the top layer. It was laid down last, so it is the youngest.' : 'That layer is above the bottom layer, so it is younger.' }; };
+        var correct = { text: 'Layer ' + bottom.label, label: bottom.label, tag: null };
+        var a = arrange(correct, wrongs.map(mk));
+        return Q('layers', 'oldest', { prompt: 'Which layer is the oldest?', figure: { type: 'site', sites: [{ title: '', layers: ly }] }, layers: ly, options: a.options, correctIndex: a.correctIndex,
+          explain: ['Each layer is laid down on top of the ones before it.', 'So the bottom layer is the oldest. Here it is Layer ' + bottom.label + '.'] });
+      },
+      olderOf: function () {
+        var s = makeSite(5), ly = s.layers, n = ly.length;
+        var i = int(0, n - 1), j; do { j = int(0, n - 1); } while (j === i);
+        var older = i > j ? ly[i] : ly[j], younger = i > j ? ly[j] : ly[i];       // larger display index = deeper
+        var X = ly[i].species[0], Y = ly[j].species[0], oldSp = older.species[0];
+        var opts = [
+          { text: 'The ' + spName(X), code: 'X', sp: X }, { text: 'The ' + spName(Y), code: 'Y', sp: Y },
+          { text: 'They are the same age.', code: 'same' }, { text: 'You cannot tell.', code: 'unknown' }
+        ].map(function (o) {
+          if (o.sp === oldSp) o.tag = null;
+          else if (o.sp) { o.tag = 'younger'; o.msg = 'That fossil is in a higher layer, so it is younger.'; }
+          else if (o.code === 'same') { o.tag = 'same'; o.msg = 'They are in different layers, so they were not laid down at the same time.'; }
+          else { o.tag = 'unknown'; o.msg = 'You can tell. The layers have not been disturbed, so deeper is older.'; }
+          return o;
+        });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('layers', 'olderOf', { prompt: 'Which fossil is older, the ' + spName(X) + ' or the ' + spName(Y) + '?', figure: { type: 'site', sites: [{ title: '', layers: ly }] }, layers: ly, pair: [X, Y], options: arr, correctIndex: ci,
+          explain: ['The ' + spName(X) + ' is in Layer ' + ly[i].label + ' and the ' + spName(Y) + ' is in Layer ' + ly[j].label + '.', 'Layer ' + older.label + ' is deeper, so it was laid down first. The ' + spName(oldSp) + ' is older.'] });
+      },
+      countBelow: function () {
+        var s = makeSite(6), ly = s.layers, n = ly.length, pos = int(2, 4);              // pos = layers below it
+        var idx = n - 1 - pos, sp = ly[idx].species[0];
+        return Q('layers', 'countBelow', { prompt: 'How many layers were laid down before the layer with the ' + spName(sp) + '?', figure: { type: 'site', sites: [{ title: '', layers: ly }] }, layers: ly, species: sp, unit: 'layers', answer: pos,
+          worked: [(pos + 1) + ' − 1 = ' + pos], method: 'The ' + spName(sp) + ' is in the ' + (pos + 1) + (pos + 1 === 3 ? 'rd' : 'th') + ' layer from the bottom. The layers before it are the ones below it.',
+          wrong: [W(pos + 1, 'self', String(pos + 1), 'You counted the layer with the fossil in it. Count only the layers below it.'), W(n - pos - 1, 'above', String(n - pos - 1), 'You counted the layers above it. Those were laid down later.'), W(n - pos, 'above', String(n - pos), 'You counted the layers above it, and its own. Count the ones below.')] });
+      },
+      sameTime: function () {
+        return until(function () {
+          var stages = 7, ids = shuffle(SPECIES.map(function (s) { return s.id; })).slice(0, 5), rows = [];
+          ids.forEach(function (id) { var a = int(1, stages), b = int(a, Math.min(stages, a + 2)); rows.push({ id: id, from: a, to: b }); });
+          var X = rows[0], over = rows.slice(1).filter(function (r) { return r.from <= X.to && r.to >= X.from; });
+          if (over.length !== 1) return null;
+          var winner = over[0], wr = rows.slice(1).filter(function (r) { return r !== winner; });
+          var mk = function (r) { var o = { text: 'The ' + spName(r.id), id: r.id }; if (r.to < X.from) { o.tag = 'before'; o.msg = 'The ' + spName(r.id) + ' had died out before the ' + spName(X.id) + ' appeared.'; } else { o.tag = 'after'; o.msg = 'The ' + spName(r.id) + ' only appeared after the ' + spName(X.id) + ' had died out.'; } return o; };
+          var a = arrange({ text: 'The ' + spName(winner.id), id: winner.id, tag: null }, wr.map(mk));
+          return Q('layers', 'sameTime', { prompt: 'The chart shows the layers each fossil is found in. Which fossil lived at the same time as the ' + spName(X.id) + '?', figure: { type: 'chart', stages: stages, rows: rows, header: 'Layer' }, chart: { stages: stages, rows: rows }, target: X.id, options: a.options, correctIndex: a.correctIndex,
+            explain: ['The ' + spName(X.id) + ' is found in layers ' + X.from + ' to ' + X.to + '.', 'The ' + spName(winner.id) + ' is found in layers ' + winner.from + ' to ' + winner.to + ', so they share ' + (Math.max(X.from, winner.from) === Math.min(X.to, winner.to) ? 'layer ' + Math.max(X.from, winner.from) : 'layers ' + Math.max(X.from, winner.from) + ' to ' + Math.min(X.to, winner.to)) + '. That is the only fossil that overlaps.'] });
+        });
+      },
+      between: function () {
+        var s = makeSite(5), ly = s.layers, n = ly.length, p = int(0, 2);                // bottom-based positions p and p+2
+        var lowIdx = n - 1 - p, highIdx = n - 1 - (p + 2), midIdx = n - 1 - (p + 1);
+        var lowSp = ly[lowIdx].species[0], highSp = ly[highIdx].species[0], mid = ly[midIdx];
+        var others = ly.filter(function (l, i) { return i !== midIdx; }), wr = shuffle(others).slice(0, 3).map(function (l) {
+          var i = ly.indexOf(l);
+          return { text: 'Layer ' + l.label, label: l.label, tag: i > lowIdx ? 'below' : (i < highIdx ? 'above' : 'edge'), msg: (i === lowIdx || i === highIdx) ? 'That is one of the two layers named in the question. It is not between them.' : (i > lowIdx ? 'That layer is below both of them.' : 'That layer is above both of them.') };
+        });
+        var a = arrange({ text: 'Layer ' + mid.label, label: mid.label, tag: null }, wr);
+        return Q('layers', 'between', { prompt: 'Which layer lies between the layer with the ' + spName(lowSp) + ' and the layer with the ' + spName(highSp) + '?', figure: { type: 'site', sites: [{ title: '', layers: ly }] }, layers: ly, pair: [lowSp, highSp], options: a.options, correctIndex: a.correctIndex,
+          explain: ['The ' + spName(lowSp) + ' is in Layer ' + ly[lowIdx].label + ' and the ' + spName(highSp) + ' is in Layer ' + ly[highIdx].label + '.', 'The one between them is Layer ' + mid.label + '.'] });
+      },
+      years: function () {
+        var r = int(1, 4), m = int(2, 9), d = r * m, ans = m * 1000, a = pick(SPECIES), b; do { b = pick(SPECIES); } while (b.id === a.id);
+        return Q('layers', 'years', { prompt: 'There are ' + d + ' cm of rock between the layer with the ' + a.name + ' and the layer with the ' + b.name + '. The rock formed at ' + r + ' cm every 1000 years. How many years passed between them?', unit: 'years', answer: ans, rate: r, thickness: d,
+          worked: [d + ' ÷ ' + r + ' = ' + m, m + ' × 1000 = ' + ans], method: 'Find how many lots of ' + r + ' cm there are, then multiply by 1000 years.',
+          wrong: [W(m, 'skip', d + ' ÷ ' + r, 'That is the number of 1000-year lots. Multiply by 1000 to get years.'), W(d * 1000, 'skip', d + ' × 1000', 'The rate matters: each 1000 years builds only ' + r + ' cm.'), W(d * r * 1000, 'invert', d + ' × ' + r + ' × 1000', 'Divide the thickness by the rate. Do not multiply.')] });
+      }
+    };
+
+    /* ---------------- Round 3: past the lesson ---------------- */
+    // a world of species with ranges over stages, such that every stage has a different set of fossils
+    function makeWorld(stages) {
+      return until(function () {
+        var ids = shuffle(SPECIES.map(function (s) { return s.id; })).slice(0, 5), rows = [];
+        ids.forEach(function (id) { var a = int(1, stages), b = int(a, Math.min(stages, a + 3)); rows.push({ id: id, from: a, to: b }); });
+        var sets = []; for (var s = 1; s <= stages; s++) sets.push(rows.filter(function (r) { return r.from <= s && r.to >= s; }).map(function (r) { return r.id; }).sort());
+        var seen = {};
+        for (var i = 0; i < sets.length; i++) { if (!sets[i].length) return null; var k = sets[i].join(','); if (seen[k]) return null; seen[k] = 1; }
+        return { stages: stages, rows: rows, sets: sets };
+      });
+    }
+    function siteFromStages(world, stageList, labels, flip) {
+      // stageList ascending (oldest first). Display top to bottom: youngest first, unless flipped (turned over).
+      var ly = stageList.map(function (s, i) { return { label: labels[i], species: world.sets[s - 1], stage: s }; });
+      return flip ? ly : ly.slice().reverse();
+    }
+    var sameSet = function (a, b) { return a.slice().sort().join(',') === b.slice().sort().join(','); };
+    function correlateQ(flip) {
+      return until(function () {
+        var world = makeWorld(7), present = rnd() < 0.7;
+        var st1 = shuffle([1, 2, 3, 4, 5, 6, 7]).slice(0, 5).sort(function (a, b) { return a - b; });
+        var target = st1[int(0, 4)];
+        var pool = [1, 2, 3, 4, 5, 6, 7].filter(function (x) { return x !== target; });
+        var st2 = shuffle(pool).slice(0, 4);
+        if (present) st2 = shuffle(st2.slice(0, 3).concat([target]));
+        st2 = st2.sort(function (a, b) { return a - b; });
+        if (st2.length !== 4) return null;
+        var l1 = siteFromStages(world, st1, letters(5), false), l2 = siteFromStages(world, st2, shuffle(['1', '2', '3', '4']), flip);
+        var t1 = l1.filter(function (l) { return l.stage === target; })[0];
+        var match = l2.filter(function (l) { return sameSet(l.species, t1.species); });
+        var wrongs = l2.filter(function (l) { return !sameSet(l.species, t1.species); });
+        var mkw = function (l) { return { text: 'Layer ' + l.label + ' at Site 2', label: l.label, tag: 'differentset', msg: 'Layer ' + l.label + ' holds the ' + fossilsOf(l) + '. Layers of the same age hold exactly the same fossils, and this is a different set.' }; };
+        var correct, wr;
+        if (present) { if (match.length !== 1) return null; correct = { text: 'Layer ' + match[0].label + ' at Site 2', label: match[0].label, tag: null }; wr = shuffle(wrongs).slice(0, 2).map(mkw).concat([{ text: 'None of them', label: null, tag: 'none', msg: 'One layer at Site 2 does hold the same fossils. Look again.' }]); }
+        else { if (match.length !== 0) return null; correct = { text: 'None of them', label: null, tag: null }; wr = shuffle(wrongs).slice(0, 3).map(mkw); }
+        var a = arrange(correct, wr);
+        return Q('puzzle', flip ? 'correlateFlip' : 'correlate', { prompt: 'Layer ' + t1.label + ' at Site 1 holds the ' + fossilsOf(t1) + '. Which layer at Site 2 is the same age?' + (flip ? '' : ''), figure: { type: 'site', sites: [{ title: 'Site 1', layers: l1 }, { title: 'Site 2', layers: l2 }] },
+          site1: l1, site2: l2, targetLabel: t1.label, options: a.options, correctIndex: a.correctIndex,
+          explain: ['Layers of the same age hold the same set of fossils.', 'Layer ' + t1.label + ' at Site 1 holds the ' + fossilsOf(t1) + '.', present ? 'At Site 2, only Layer ' + match[0].label + ' holds exactly that set. It is the same age.' : 'No layer at Site 2 holds that set, so that time is missing from the rock at Site 2.'] });
+      });
+    }
+    var R3 = {
+      correlate: function () { return correlateQ(false); },
+      ranges: function () {
+        return until(function () {
+          var stages = 9, ids = shuffle(SPECIES.map(function (s) { return s.id; })).slice(0, 3), rows = [];
+          ids.forEach(function (id) { var a = int(1, 7), b = int(a + 2, Math.min(stages, a + 5)); rows.push({ id: id, from: a, to: b }); });
+          var X = rows[0], Y = rows[1], Z = rows[2], ok = [], both = [], one = [];
+          for (var s = 1; s <= stages; s++) {
+            var x = X.from <= s && s <= X.to, y = Y.from <= s && s <= Y.to, z = Z.from <= s && s <= Z.to;
+            if (x && z && !y) ok.push(s); else if (x && z && y) both.push(s); else if ((x || z) && !y) one.push(s);
+          }
+          if (ok.length !== 1) return null;
+          var ans = ok[0];
+          var wrong = [];
+          both.forEach(function (s) { wrong.push(W(s, 'ignoredY', String(s), 'That layer has X and Z, but it also has Y. The rock has no Y.')); });
+          one.forEach(function (s) { wrong.push(W(s, 'onlyone', String(s), 'That layer has only one of X and Z. The rock has both.')); });
+          return Q('puzzle', 'ranges', { prompt: 'The chart shows the layers each fossil is found in. A rock holds the ' + spName(X.id) + ' (X) and the ' + spName(Z.id) + ' (Z) but not the ' + spName(Y.id) + ' (Y). Which layer number is it from?', figure: { type: 'chart', stages: stages, rows: rows, header: 'Layer', tagXYZ: true }, chart: { stages: stages, rows: rows }, roles: { X: X.id, Y: Y.id, Z: Z.id }, unit: '', answer: ans,
+            worked: ['X is in layers ' + X.from + ' to ' + X.to, 'Z is in layers ' + Z.from + ' to ' + Z.to, 'Y is in layers ' + Y.from + ' to ' + Y.to], method: 'Find the layers that have both X and Z, then remove any that also have Y. That leaves layer ' + ans + '.', wrong: wrong.slice(0, 4), noArith: true });
+        });
+      },
+      overturned: function () {
+        var s = makeSite(4), ref = s.ageOrder, flip = rnd() < 0.5;
+        var ly = s.layers;                                                              // youngest first (normal)
+        if (flip) ly = ly.slice().reverse().map(function (l, i) { return { label: s.layers[i].label, species: l.species }; });   // oldest first: turned upside down
+        var oldestLayer = ly.filter(function (l) { return l.species[0] === ref[0]; })[0];
+        var wr = ly.filter(function (l) { return l !== oldestLayer; }).map(function (l) {
+          var i = ly.indexOf(l);
+          return { text: 'Layer ' + l.label, label: l.label, tag: (flip && i === ly.length - 1) ? 'assumedbottom' : (!flip && i === 0 ? 'top' : 'younger'),
+            msg: (flip && i === ly.length - 1) ? 'The bottom layer is usually the oldest, but here the fossils show the rock has been turned upside down.' : 'The fossil in this layer appears later in the known order, so this layer is younger.' };
+        });
+        var a = arrange({ text: 'Layer ' + oldestLayer.label, label: oldestLayer.label, tag: null }, wr);
+        return Q('puzzle', 'overturned', { prompt: 'Scientists already know the order in which these fossils appeared, oldest first. Which layer of this rock is the oldest?', figure: { type: 'site', sites: [{ title: '', layers: ly }], ref: ref }, ref: ref, layers: ly, options: a.options, correctIndex: a.correctIndex, flipped: flip,
+          explain: ['In the known order, the ' + spName(ref[0]) + ' is the oldest.', 'It is in Layer ' + oldestLayer.label + (flip ? ', at the top, so the rock has been turned upside down.' : ', at the bottom, as usual.')] });
+      },
+      missingCount: function () { return missingQ(false); },
+      pool17: function () { return rnd() < 0.5 ? missingQ(true) : probQ(); },
+      pool18: function () { return rnd() < 0.5 ? correlateQ(true) : thickQ(); }
+    };
+    function missingBase() {
+      return until(function () {
+        var ref = shuffle(SPECIES.map(function (s) { return s.id; })), idx = shuffle([0, 1, 2, 3, 4, 5, 6, 7]).slice(0, 4).sort(function (a, b) { return a - b; });
+        var missing = idx[3] - idx[0] + 1 - 4;
+        if (missing < 1 || missing > 3) return null;
+        var labs = letters(4);
+        var ly = idx.map(function (i, k) { return { label: labs[k], species: [ref[i]] }; }).reverse();      // youngest first
+        return { ref: ref, idx: idx, missing: missing, layers: ly };
+      });
+    }
+    function missingQ(withYears) {
+      var b = missingBase(), span = b.idx[3] - b.idx[0], total = span + 1;
+      if (!withYears) {
+        return Q('gaps', 'missingCount', { prompt: 'Scientists know these eight fossils appeared one after another in this order, oldest first. This rock has four layers. How many of the eight are missing from the rock, between its oldest and its youngest fossil?', figure: { type: 'site', sites: [{ title: '', layers: b.layers }], ref: b.ref }, ref: b.ref, layers: b.layers, unit: '', answer: b.missing,
+          worked: [total + ' − 4 = ' + b.missing], method: 'The oldest fossil is number ' + (b.idx[0] + 1) + ' in the list and the youngest is number ' + (b.idx[3] + 1) + '. That is ' + total + ' fossils from oldest to youngest. The rock has 4 of them.',
+          wrong: [W(span, 'fence', (b.idx[3] + 1) + ' − ' + (b.idx[0] + 1), 'Subtracting the two places misses one: count both ends.'), W(8 - 4, 'allothers', '8 − 4', 'Only the fossils between the oldest and the youngest in the rock count as missing.')] });
+      }
+      var T = pick([2, 3, 4, 5]), ans = b.missing * T;
+      return Q('gaps', 'yearsMissing', { prompt: 'Scientists know these eight fossils appeared one after another in this order, oldest first, and that each lasted ' + T + ' thousand years. This rock has four layers. How many thousand years are missing from the rock, between its oldest and its youngest fossil?', figure: { type: 'site', sites: [{ title: '', layers: b.layers }], ref: b.ref }, ref: b.ref, layers: b.layers, unit: 'thousand years', T: T, answer: ans,
+        worked: [total + ' − 4 = ' + b.missing, b.missing + ' × ' + T + ' = ' + ans], method: 'The oldest fossil in the rock is number ' + (b.idx[0] + 1) + ' and the youngest is number ' + (b.idx[3] + 1) + '. That is ' + total + ' fossils. The rock has 4 of them.',
+        wrong: [W(b.missing, 'skip', String(b.missing), 'That is the number of missing fossils. Each lasted ' + T + ' thousand years.'), W(total * T, 'total', total + ' × ' + T, 'That counts all ' + total + ' fossils. Only the missing ones are missing time.'), W(span * T, 'fence', span + ' × ' + T, 'Subtracting the two places misses one: count both ends.')] });
+    }
+    function probQ() {
+      var A = pick([100, 200, 500, 1000]), C = pick([2, 4, 5, 10]), k = int(2, 5), N = A * 2 * C * k, buried = N / A, left = buried / 2, found = left / C;
+      return Q('gaps', 'probChain', { prompt: 'In one sea, ' + N.toLocaleString('en-GB').replace(/,/g, ' ') + ' animals with shells died. 1 in ' + A + ' of them was buried quickly enough to become a fossil. Half of those fossils were then destroyed by movements of the rock. Of the fossils left, 1 in ' + C + ' has been found. How many fossils have been found?', unit: 'fossils', N: N, A: A, C: C, answer: found,
+        worked: [N + ' ÷ ' + A + ' = ' + buried, buried + ' ÷ 2 = ' + left, left + ' ÷ ' + C + ' = ' + found], method: 'Take each step in turn: the ones buried, then the ones not destroyed, then the ones found.',
+        wrong: [W(left, 'skip', String(buried) + ' ÷ 2', 'That is how many are left before you find any. Only 1 in ' + C + ' of them has been found.'), W(buried / C, 'skip', buried + ' ÷ ' + C, 'You missed the destroyed half.'), W(buried, 'skip', String(N) + ' ÷ ' + A, 'That is only the first step. Half were destroyed and only some were found.')] });
+    }
+    function thickQ() {
+      return until(function () {
+        var R = pick([1, 2, 3, 4]), ms = []; for (var i = 0; i < 5; i++) ms.push(int(1, 6));
+        var thick = ms.map(function (m) { return m * R; });                              // thick[i]: layer i counted from the OLDEST
+        var s = makeSite(5, { thick: thick }), ly = s.layers, n = 5;                      // ly is youngest first; layer at ly[n-1-i] has thick[i]
+        var a = int(0, 2), b = int(a + 2, 4);                                            // oldest-based positions
+        var lowSp = s.ageOrder[a], highSp = s.ageOrder[b];
+        var ans = 0, sum0 = 0; for (var q = a + 1; q <= b; q++) { ans += ms[q]; sum0 += thick[q]; }
+        var wr = [];
+        var withA = ans + ms[a], noB = ans - ms[b], all = ms.reduce(function (x, y) { return x + y; }, 0);
+        wr.push(W(withA, 'includeA', '(' + (sum0 + thick[a]) + ') ÷ ' + R, 'You included the layer with the ' + spName(lowSp) + '. Only the layers above it count.'));
+        wr.push(W(noB, 'excludeB', '(' + (sum0 - thick[b]) + ') ÷ ' + R, 'You left out the layer with the ' + spName(highSp) + '. It counts.'));
+        wr.push(W(all, 'all', '(' + thick.join(' + ') + ') ÷ ' + R, 'That counts every layer. Only some of them lie between the two fossils.'));
+        var th = []; for (var q2 = a + 1; q2 <= b; q2++) th.push(thick[q2]);
+        var sum = th.reduce(function (x, y) { return x + y; }, 0);
+        return Q('puzzle', 'thickSum', { prompt: 'The rock formed at ' + R + ' cm every 1000 years. How many thousand years passed while the layers above the ' + spName(lowSp) + ' layer, up to and including the ' + spName(highSp) + ' layer, were laid down?', figure: { type: 'site', sites: [{ title: '', layers: ly }] }, layers: ly, rate: R, lowSp: lowSp, highSp: highSp, unit: 'thousand years', answer: ans,
+          worked: [th.join(' + ') + ' = ' + sum, sum + ' ÷ ' + R + ' = ' + ans], method: 'Add the thickness of every layer above the ' + spName(lowSp) + ' layer, up to and including the ' + spName(highSp) + ' layer. Then divide by the rate.', wrong: wr });
+      });
+    }
+
+    var plan = [
+      { name: 'How fossils form', qs: [R1.likely, R1.part, R1.next, R1.missing, R1.compare, R1.rate] },
+      { name: 'Reading the layers', qs: [R2.oldest, R2.olderOf, R2.countBelow, R2.sameTime, R2.between, R2.years] },
+      { name: 'Beat the rock', qs: [R3.correlate, R3.ranges, R3.overturned, R3.missingCount, R3.pool17, R3.pool18] }
+    ];
+    var out = [];
+    plan.forEach(function (r, ri) {
+      r.qs.forEach(function (make, qi) {
+        var q = make();
+        q.round = ri + 1; q.n = qi + 1; q.roundName = r.name;
+        if (q.wrong) {
+          var seen = {}, wrong = {};
+          q.wrong.forEach(function (w) { if (w && w.value === Math.round(w.value) && w.value > 0 && w.value !== q.answer && w.value <= 999999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; } });
+          q.wrong = wrong;
+        }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['How fossils form', 'Reading the layers', 'Beat the rock'];
+  var CATS = { form: 'How fossils form', layers: 'Reading the layers', gaps: 'Gaps in the record', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    nohard: 'You chose something with no hard parts. Soft bodies rot away before they can be buried.', unburied: 'You chose something left uncovered. It needs to be buried quickly.', neither: 'Look for hard parts AND quick burial.',
+    soft: 'You chose a soft part. Only hard parts (bones, teeth, shells) last.', irrelevant: 'Size and colour do not decide whether something becomes a fossil.', samereason: 'Look for the one thing that is different between the two.', loser: 'You picked the animal that is less likely to fossilise.',
+    earlier: 'You picked a step that comes earlier. Follow the order.', later: 'You picked a step that comes later. Follow the order.', other: 'Read the question again and use the picture.',
+    top: 'The top layer is usually the youngest, not the oldest.', above: 'A layer above another is younger.', younger: 'You picked a younger layer.', same: 'Different layers are different ages.', unknown: 'You can tell: deeper is older.',
+    below: 'You picked a layer below both fossils.', edge: 'You picked one of the two named layers, not the one between.', before: 'Check the ranges: that fossil had died out before.', after: 'Check the ranges: that fossil appeared later.',
+    self: 'You counted the layer with the fossil in it.', unit: 'You mixed up millimetres and centimetres.', invert: 'You multiplied when you should divide.', skip: 'You missed a step. Do every step.',
+    total: 'You counted every fossil, not only the missing ones.', fence: 'Count both ends: it is one more than the difference.', allothers: 'Only the fossils between the oldest and the youngest count.',
+    ignoredY: 'You forgot that the rock has no Y.', onlyone: 'The layer must have BOTH X and Z.', differentset: 'Layers of the same age hold exactly the same fossils.', none: 'A matching layer does exist.', assumedbottom: 'The rock has been turned upside down: use the fossils, not the position.',
+    includeA: 'You included a layer that is not above the lower fossil.', excludeB: 'You left out the top layer that counts.', all: 'You counted every layer.'
+  };
+  var GENERIC = 'Read the question again and use the picture.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  var icon = function (id, big) { return '<svg class="ico' + (big ? ' big' : '') + '" aria-hidden="true"><use href="#sp-' + id + '"/></svg>'; };
+  var spanFos = function (id) { return '<span>' + icon(id) + '<span>' + SP[id].name + '</span></span>'; };
+
+  /* ---------- pictures ---------- */
+  function siteHtml(site) {
+    var h = '<div class="site">' + (site.title ? '<h3>' + site.title + '</h3>' : '') + '<div class="strata">';
+    site.layers.forEach(function (l) {
+      var minh = l.thick ? Math.max(46, l.thick * 8) : 46;
+      h += '<div class="layer" data-label="' + l.label + '" style="min-height:' + minh + 'px"><div class="lab">Layer ' + l.label + '</div><div class="fos">' + l.species.map(spanFos).join('') + '</div>' + (l.thick ? '<div class="thick">' + l.thick + ' cm</div>' : '') + '</div>';
+    });
+    return h + '</div></div>';
+  }
+  function chartHtml(f) {
+    var h = '<div class="chartwrap"><table class="chart"><tr><th>' + f.header + '</th>'; for (var s = 1; s <= f.stages; s++) h += '<th>' + s + '</th>'; h += '</tr>';
+    f.rows.forEach(function (r, i) {
+      var tag = f.tagXYZ ? ' (' + ['X', 'Y', 'Z'][i] + ')' : '';
+      h += '<tr><td class="name">' + icon(r.id) + ' ' + SP[r.id].name + tag + '</td>';
+      for (var s2 = 1; s2 <= f.stages; s2++) h += '<td class="' + (s2 >= r.from && s2 <= r.to ? 'on' : 'off') + '"></td>';
+      h += '</tr>';
+    });
+    return h + '</table></div>';
+  }
+  function figureHtml(Q) {
+    var f = Q.figure; if (!f) return '';
+    if (f.type === 'chart') return chartHtml(f);
+    var h = '';
+    if (f.ref) h += '<div class="refs"><span class="small">Known order, oldest first:</span>' + f.ref.map(function (id, i) { return (i ? '<span class="arrow">→</span>' : '') + '<span class="chip">' + icon(id) + SP[id].name + '</span>'; }).join('') + '</div>';
+    h += '<div class="sites' + (f.sites.length > 1 ? ' two' : '') + '">' + f.sites.map(siteHtml).join('') + '</div>';
+    return h;
+  }
+  // What is on the screen (also read by the test): the prompt plus the layers, top to bottom.
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.kind === 'next') d += ' | ' + Q.showText;
+    if (Q.figure && Q.figure.type === 'site') Q.figure.sites.forEach(function (s) { d += ' | ' + (s.title ? s.title + ': ' : '') + s.layers.map(function (l) { return 'Layer ' + l.label + '=' + l.species.map(spName).join('+') + (l.thick ? '(' + l.thick + ')' : ''); }).join(', '); });
+    if (Q.figure && Q.figure.ref) d += ' | ref ' + Q.figure.ref.map(spName).join(', ');
+    if (Q.figure && Q.figure.type === 'chart') d += ' | ' + Q.figure.rows.map(function (r) { return spName(r.id) + ' ' + r.from + '-' + r.to; }).join(', ');
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Dig Site'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'The fossils in the rock puzzles are invented, and so is their order. The puzzles are about the reasoning. Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    var promptHtml = Q.kind === 'next' ? esc(Q.prompt) + '<small>' + esc(Q.showText) + '</small>' : esc(Q.prompt);
+    card.innerHTML = '<p class="ask">' + promptHtml + '</p>' + figureHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isMCQ(Q)) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+      if (Q.unit) app.appendChild(el('p', 'unit', 'Give your answer in ' + Q.unit + '.'));
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (!isMCQ(Q)) {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','', '0','back','go'].forEach(function (k) {
+        if (k === '') { pad.appendChild(el('span')); return; }
+        var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k; if (k === 'back') b.setAttribute('aria-label', 'Delete'); b.onclick = function () { press(k); }; pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else { var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go); }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function paintAnswer() { var a = document.getElementById('answer'); if (!a) return; a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer'; }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(parseInt(typed, 10), null); }
+    else if (typed.length < 6) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k + 1, k); }
+
+  function workHtml(Q) {
+    var lines = (Q.worked || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return (Q.method ? '<p class="how">' + esc(Q.method) + '</p>' : '') + (expl ? '<div class="work">' + expl + '</div>' : '') + (lines ? '<p class="how">Working:</p><div class="work">' + lines + '</div>' : '');
+  }
+  function correctText(Q) { return isMCQ(Q) ? Q.options[Q.correctIndex].text : String(Q.answer) + (Q.unit ? ' ' + Q.unit : ''); }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head, wrote;
+    if (isMCQ(Q)) {
+      ok = picked === Q.correctIndex; wrote = Q.options[picked].text;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer; wrote = String(given); var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + (Q.unit ? ' ' + Q.unit : '') + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  /* ---------- the review: a drop-down per round; time, right or wrong, what was written and how to get there ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (isMCQ(Q)) {
+      if (/^[1-4]$/.test(e.key) && !locked) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Out</title>
+<style>
+  :root {
+    --earth: #3D2B1F; --gold: #C99A3D; --goldink: #8F6D2A; --slate: #6A8C9A; --terra: #B5482E; --sand: #F2EBDD; --sand2: #E4D8BE;
+    --ink: #2A1D14; --soft: #6B5A48; --green: #1F7A48; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--sand); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--earth); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--earth); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--terra); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--earth); background: var(--white); }
+  .dot.now { background: var(--sand2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--terra); border-color: var(--terra); }
+  .card { background: var(--white); border: 2px solid var(--sand2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--earth); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  button { font: inherit; cursor: pointer; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--earth); color: var(--white); border: 2px solid var(--earth); }
+  .btn.ghost { background: var(--white); color: var(--earth); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--sand2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--earth); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--sand2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--terra); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--terra); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--terra); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--earth); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--earth); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--sand2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--sand2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--earth); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--earth); }
+  details.review { border: 2px solid var(--sand2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--earth); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--sand2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--earth); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--terra); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--earth); }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * RUNNING OUT. Nobody gets the same game.
+   *
+   * Every question is built from a template with random stocks, rates and amounts, from a game
+   * code that is different for each student. Opening the file with #CODE after the address gives
+   * the same game again, so a teacher can see exactly what a student saw. The SKILLS and their
+   * order are the same for everyone, so the diagnostic at the end means the same thing for every
+   * student.
+   *
+   * Round 1 is the lesson's new skill: a resource store, and a fraction lost each period, repeated
+   * over several periods. Round 2 is last lesson's sustainable-yield classification, reframed
+   * around depletion: given a stock, a growth rate and what was actually taken, decide whether the
+   * resource is being depleted, is sustainable and unchanged, or is growing. EVERY OUTCOME IS
+   * CONSTRUCTED, not threshold-checked after the fact. Round 3 mixes two harder question types:
+   * matching a real, verified case (helium, the Aral Sea, bluefin tuna, bison) to what really
+   * happened, and choosing the right management method to prevent depletion. The last two
+   * questions are drawn from a small pool: a harder four-period decline calculation, and one more
+   * management scenario. A student who fails them still gets the working.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var RESOURCES = [
+    { name: 'a fish stock', unit: 'tonnes' }, { name: 'a forest', unit: 'hectares' }, { name: 'a deer herd', unit: 'deer' },
+    { name: 'a seal colony', unit: 'seals' }, { name: 'a timber plantation', unit: 'hectares' }, { name: 'a lobster population', unit: 'tonnes' },
+  ];
+  var VERB = { 'tonnes': 'taken', 'hectares': 'cut', 'deer': 'hunted', 'seals': 'taken' };
+  var GSS_TEXT = ['This resource is being depleted', 'This resource is not being depleted; it stays the same', 'This resource is not being depleted; it is growing', 'Not enough information'];
+
+  /* HALF: loses half every period. S must divide by 2^n. THIRD: loses a third, keeps 2/3; n=2, S divides by 9. */
+  var HALF2 = [40000, 80000, 120000, 160000, 200000, 240000, 280000, 320000];
+  var HALF3 = [80000, 160000, 240000, 320000, 400000, 480000];
+  var HALF4 = [160000, 320000, 480000, 640000, 800000];
+  var THIRD2 = [90000, 180000, 270000, 360000, 450000, 540000];
+
+  var CASES = [
+    { name: 'helium', case: 'Helium is non-renewable, and global demand has outpaced supply for years.', consequence: 'Prices rose sharply, and many hospitals began rationing it for MRI scanners.' },
+    { name: 'aral', case: "Rivers feeding Central Asia's Aral Sea were diverted for irrigation, starting in the 1960s.", consequence: 'The sea lost over 90% of its volume, and the entire commercial fishing industry collapsed.' },
+    { name: 'tuna', case: 'Atlantic bluefin tuna were fished far faster than they could breed, for decades.', consequence: 'Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.' },
+    { name: 'bison', case: 'American bison numbered tens of millions in the 1850s, and only a few hundred by 1889.', consequence: 'Indigenous Plains nations, who had depended on bison for survival, lost their main resource almost overnight.' },
+  ];
+  var PREVENT = [
+    { text: 'A fish stock is being caught faster than it can breed, and numbers are falling.', correct: 'Introduce a catch quota below the sustainable yield.',
+      options: ['Introduce a catch quota below the sustainable yield.', 'Fish more boats at once, before the stock disappears completely.', 'Recycle fishing nets.', 'Build more fish processing factories.'],
+      msgFor: { 'Fish more boats at once, before the stock disappears completely.': 'That makes depletion worse: it increases how much is taken, not less.', 'Recycle fishing nets.': 'That does not change how many fish are caught.', 'Build more fish processing factories.': 'That increases how fast fish can be processed, not how many are left to catch.' } },
+    { text: 'A non-renewable material is running low, and demand keeps rising.', correct: 'Recycle what has already been extracted.',
+      options: ['Recycle what has already been extracted.', 'Introduce a closed season.', 'Start a breeding programme.', 'Reduce the sustainable yield to zero.'],
+      msgFor: { 'Introduce a closed season.': 'That is for a living resource that can breed back. A non-renewable material does not regrow.', 'Start a breeding programme.': 'That is for animal populations, not a mined material.', 'Reduce the sustainable yield to zero.': 'A non-renewable material has no sustainable yield to begin with.' } },
+    { text: 'A forest is being cut faster than it regrows, and the total area is shrinking.', correct: 'Replant trees at least as fast as they are cut.',
+      options: ['Replant trees at least as fast as they are cut.', 'Recycle wood products.', 'Introduce a fishing quota.', 'Start a captive breeding programme.'],
+      msgFor: { 'Recycle wood products.': 'That reduces the need for NEW wood. It does not replace a shrinking forest.', 'Introduce a fishing quota.': 'That manages a fish stock, not a forest.', 'Start a captive breeding programme.': 'That is for animal populations, not a forest.' } },
+    { text: 'A wild species has fallen to a very small number, too few to find mates easily.', correct: 'Start a breeding programme to raise young and release them.',
+      options: ['Start a breeding programme to raise young and release them.', 'Introduce a catch quota.', 'Recycle materials made from the species.', 'Replant the species like a crop.'],
+      msgFor: { 'Introduce a catch quota.': 'A quota limits how much is taken. This population is already too low; it needs active help to recover.', 'Recycle materials made from the species.': 'That does not help a population that is struggling to breed.', 'Replant the species like a crop.': 'A wild animal population cannot be replanted like a forest.' } },
+  ];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var sample = function (arr, n) { return shuffle(arr).slice(0, n); };
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    var comma = function (n) { return n.toLocaleString(); };
+
+    /* ---------------- Round 1 / pool: how much is left after repeated decline ---------------- */
+    function declineQ(hard) {
+      var family = hard ? 'half4' : pick(['half', 'third']);
+      var S, n, kept;
+      if (family === 'half4') { S = pick(HALF4); n = 4; kept = 0.5; }
+      else if (family === 'half') { n = pick([2, 3]); S = pick(n === 2 ? HALF2 : HALF3); kept = 0.5; }
+      else { n = 2; S = pick(THIRD2); kept = 2 / 3; }
+      var remaining = S;
+      for (var i = 0; i < n; i++) remaining = Math.round(remaining * kept);
+      var r = pick(RESOURCES);
+      var fracText = kept === 0.5 ? 'half' : 'a third';
+      var lossText = kept === 0.5 ? 'every year' : 'every 5 years';
+      var after = kept === 0.5 ? (n + ' year' + (n === 1 ? '' : 's')) : ((n * 5) + ' years');
+      var once = Math.round(S * kept);
+      var oneTooMany = Math.round(remaining * kept);
+      var amountLost = S - remaining;
+      var opts = [remaining, once, oneTooMany, amountLost];
+      var seen = {}; opts = opts.filter(function (o) { if (seen[o]) return false; seen[o] = 1; return true; });
+      while (opts.length < 4) opts.push(remaining + opts.length * 333);
+      var options = shuffle(opts).map(function (o) { return { text: comma(o) + ' ' + r.unit, tag: o === remaining ? null : 'decline', msg: o === remaining ? '' : 'Apply the fraction once for EACH period, in turn: do not stop early, go one period too far, or report the amount lost instead of the amount left.' }; });
+      var ci = options.map(function (o) { return o.tag === null; }).indexOf(true);
+      return Q(hard ? 'hard' : 'yield', hard ? 'poolDecline' : 'decline', {
+        prompt: comma(S) + ' ' + r.unit + ' of ' + r.name.replace('a ', '') + ' loses ' + fracText + ' of what remains ' + lossText + '. Calculate how much is left after ' + after + '.',
+        S: S, periods: n, kept: kept, unit: r.unit, options: options, correctIndex: ci,
+        explain: ['Apply the fraction ' + n + ' time' + (n === 1 ? '' : 's') + ', in turn: ' + comma(remaining) + ' ' + r.unit + ' left.'] });
+    }
+
+    /* ---------------- Round 2 / part of Round 3: being depleted, or sustainable? ---------------- */
+    function gssQ(category, hard) {
+      var r = pick(RESOURCES);
+      var stock = pick(hard ? [220, 260, 340, 380, 420, 460] : [80, 100, 120, 150, 180, 200]) * 1000;
+      var rate = pick([2, 4, 5, 6, 8, 10]);
+      var yld = Math.round(stock * rate / 100);
+      var taken, correct, tag;
+      if (category === 'depleted') { taken = yld + pick([500, 1000, 1500, 2000]); correct = GSS_TEXT[0]; tag = 'above'; }
+      else if (category === 'same') { taken = yld; correct = GSS_TEXT[1]; tag = 'equal'; }
+      else { taken = yld - pick([500, 1000, 1500, 2000]); correct = GSS_TEXT[2]; tag = 'below'; }
+      var msgFor = function (opt) {
+        if (opt === GSS_TEXT[3]) return 'The sustainable yield is ' + comma(yld) + ' ' + r.unit + ', and ' + comma(taken) + ' ' + r.unit + ' are ' + VERB[r.unit] + '. That is enough to decide.';
+        return 'The sustainable yield is ' + comma(yld) + ' ' + r.unit + ' (' + comma(stock) + ' × ' + rate + ' ÷ 100). ' + comma(taken) + ' ' + r.unit + ' are ' + VERB[r.unit] + ', which is ' + (taken > yld ? 'MORE than' : taken < yld ? 'LESS than' : 'EXACTLY') + ' that.';
+      };
+      var order = shuffle(GSS_TEXT);
+      var options = order.map(function (text) { return { text: text, tag: text === correct ? null : tag, msg: text === correct ? '' : msgFor(text) }; });
+      var ci = options.map(function (o) { return o.tag === null; }).indexOf(true);
+      return Q(hard ? 'hard' : 'gss', 'gss', { prompt: comma(stock) + ' ' + r.unit + ' of ' + r.name.replace('a ', '') + ', growing by ' + rate + '% a year. ' + comma(taken) + ' ' + r.unit + ' are ' + VERB[r.unit] + ' this year. Decide what is happening to it.',
+        stock: stock, rate: rate, taken: taken, yield: yld, unit: r.unit, options: options, correctIndex: ci,
+        explain: ['Sustainable yield: ' + comma(stock) + ' × ' + rate + ' ÷ 100 = ' + comma(yld) + ' ' + r.unit + '.', comma(taken) + ' ' + r.unit + ' are ' + VERB[r.unit] + ', which is ' + (taken > yld ? 'more than the yield: it is being depleted.' : taken < yld ? 'less than the yield: it is growing.' : 'exactly the yield: it stays the same.')] });
+    }
+
+    /* ---------------- Round 3: real cases ---------------- */
+    function caseQ(subject) {
+      var others = CASES.filter(function (c) { return c.name !== subject.name; });
+      var opts = shuffle([subject].concat(others)).map(function (c) {
+        return { text: c.consequence, tag: c.name === subject.name ? null : 'mismatch', msg: c.name === subject.name ? '' : ('That is what really happened with ' + (c.name === 'aral' ? 'the Aral Sea' : c.name === 'tuna' ? 'bluefin tuna' : c.name === 'bison' ? 'bison' : 'helium') + ', not this case.') };
+      });
+      var ci = opts.map(function (o) { return o.tag === null; }).indexOf(true);
+      return Q('hard', 'case', { prompt: subject.case + ' Choose what really happened.', caseName: subject.name, options: opts, correctIndex: ci, explain: [subject.consequence] });
+    }
+
+    /* ---------------- Round 3 / pool: prevent depletion ---------------- */
+    function preventQ(sc) {
+      var options = sc.options.map(function (o) { return { text: o, tag: o === sc.correct ? null : 'prevent', msg: o === sc.correct ? '' : (sc.msgFor[o] || 'That is not the best method for this situation.') }; });
+      var order = shuffle(options);
+      var ci = order.map(function (o) { return o.tag === null; }).indexOf(true);
+      return Q('hard', 'prevent', { prompt: sc.text + ' Choose the method that would best prevent depletion here.', options: order, correctIndex: ci, explain: [sc.correct + ' is the best fit for this situation.'] });
+    }
+
+    var r1 = [declineQ(false), declineQ(false), declineQ(false), declineQ(false), declineQ(false), declineQ(false)];
+    var cats2 = shuffle(['depleted', 'depleted', 'same', 'same', 'growing', 'growing']);
+    var r2 = cats2.map(function (c) { return gssQ(c, false); });
+    var casesUsed = sample(CASES, 2);
+    var preventUsed = sample(PREVENT, 2);
+    var r3fixed = shuffle(casesUsed.map(function (c) { return caseQ(c); }).concat(preventUsed.map(function (p) { return preventQ(p); })));
+    var preventRemaining = PREVENT.filter(function (p) { return preventUsed.indexOf(p) === -1; });
+    var Q17 = rnd() < 0.5 ? declineQ(true) : preventQ(pick(preventRemaining));
+    var Q18 = Q17.kind === 'poolDecline' ? preventQ(pick(preventRemaining)) : declineQ(true);
+
+    var out = r1.concat(r2, r3fixed, [Q17, Q18]);
+    out.forEach(function (q, i) { q.round = Math.floor(i / 6) + 1; q.n = (i % 6) + 1; });
+    out.forEach(function (q) { q.cat = q.round === 1 ? 'yield' : q.round === 2 ? 'gss' : 'hard'; });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['How much is left?', 'Being depleted, or sustainable?', 'Real cases'];
+  var CATS = { yield: 'How much is left', gss: 'Being depleted, or sustainable', hard: 'Real cases' };
+  var HABIT = {
+    decline: 'Apply the fraction once for EACH period, in turn. Do not stop early, go one period too far, or report the amount lost instead of the amount left.',
+    above: 'Work out the sustainable yield first, then compare what was actually taken to it.',
+    equal: 'Work out the sustainable yield first, then compare what was actually taken to it.',
+    below: 'Work out the sustainable yield first, then compare what was actually taken to it.',
+    mismatch: 'Match the consequence to the resource it actually happened to, not just a plausible-sounding one.',
+    prevent: 'Match the prevention method to the kind of resource: quotas and closed seasons for animals that breed, replanting for forests, recycling for materials that do not regrow, breeding programmes for populations that have fallen very low.',
+    other: 'Read the question again, and check the working below.'
+  };
+  var GENERIC = 'Read the question again, and check the working below.';
+
+  var app = document.getElementById('app');
+  var state, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  function display(Q) { return Q.prompt + ' | ' + Q.options.map(function (o) { return o.text; }).join(' / '); }
+  function shortText(Q) { return Q.prompt; }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Running Out'));
+    card.appendChild(el('p', 'lead', 'Every question gives you a resource, and either a rate at which it is shrinking or what is being taken from it. Work out how much is left, or what is really happening to it.'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before. Round 3 goes past the lesson: the last two questions are drawn from a hard pool. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.innerHTML = '<p class="ask">' + esc(Q.prompt) + '</p>';
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    var opts = el('div', 'opts'); opts.id = 'opts';
+    Q.options.forEach(function (o, k) {
+      var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+      b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+      b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+    });
+    app.appendChild(opts);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go);
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k); }
+
+  function workHtml(Q) {
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return expl ? '<p class="how">Working:</p><div class="work">' + expl + '</div>' : '';
+  }
+  function correctText(Q) { return Q.options[Q.correctIndex].text; }
+  function check(picked) {
+    var Q = q(), ok = picked === Q.correctIndex, wrote = Q.options[picked].text, tag = null, msg = '';
+    if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+    var head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+    document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    state.results[idx()] = { ok: ok, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    document.getElementById('nextbtn').textContent = label; document.getElementById('nextbtn').classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  /* ---------- the review: a drop-down per round; time, right or wrong, what was written and how to get there ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    if (/^[1-4]$/.test(e.key) && !locked) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+    else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

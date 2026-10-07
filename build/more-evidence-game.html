@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dig Site</title>
+<title>Family Tree</title>
+<style>
+  :root {
+    --forest: #1F3D2B; --amber: #DE9A4C; --amberink: #A8651F; --teal: #3E93A3; --rust: #C1442D; --cream: #F5F1E6; --cream2: #E8E0CC;
+    --ink: #182B1E; --soft: #52685A; --green: #1F7A48; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  /* rock layers */
+  table.chart { border-collapse: collapse; margin: 6px 0; font-size: 14px; width: 100%; }
+  .chartwrap { overflow-x: auto; max-width: 100%; }
+  table.chart th, table.chart td { border: 1px solid #6F5F4B; padding: 4px 3px; text-align: center; min-width: 26px; }
+  table.chart th { background: var(--cream2); font-size: 13px; }
+  table.chart td.on { background: var(--amber); } table.chart td.off { background: var(--white); }
+  table.chart td.name { text-align: left; white-space: nowrap; font-weight: 700; }
+  #answer { height: 64px; border: 3px solid var(--forest); border-radius: 12px; background: var(--white); font-size: 34px; font-weight: 700; color: var(--forest); display: flex; align-items: center; padding: 0 16px; margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9AA59D; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 58px; font-size: 28px; font-weight: 700; color: var(--forest); background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--cream2); } .key.fn { background: var(--cream); font-size: 22px; }
+  .key.go, .btn { background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+  .treefig { margin: 6px 0 10px; } .treefig svg { width: 100%; max-width: 360px; height: auto; display: block; }
+  .treefig text { font-family: Arial, Helvetica, sans-serif; fill: #182B1E; } .treefig .leaf { font-weight: 700; font-size: 16px; } .treefig .len { font-size: 13px; fill: #A8651F; font-weight: 700; }
+  .treefig line { stroke: #1F3D2B; stroke-width: 2.5; stroke-linecap: round; }
+  table.chart td.num { min-width: 34px; } table.chart td.blank { background: var(--cream2); }
+  caption { caption-side: bottom; font-size: 13px; color: var(--soft); padding-top: 4px; text-align: left; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * FAMILY TREE. Nobody gets the same game.
+   *
+   * Every question is built from a template with random structures, embryo
+   * tables, DNA numbers and trees, and the order inside each round is
+   * shuffled, all from a six-character game code. The code is random for each
+   * student. Opening the file with #CODE after the address gives the same game
+   * again, so a teacher can see exactly what a student saw. The SKILLS and their
+   * order are the same for everyone, so the diagnostic at the end means the same
+   * thing for every student.
+   *
+   * Every question keeps the DATA it was built from (the structures, the score
+   * tables, the trees with their branch lengths), and build/check-more-evidence-game.py
+   * re-derives every answer from that data with sympy.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is bones. Round 2
+   * is embryos. Round 3 is DNA and family trees, and goes far past the lesson:
+   * percentages, the closest relative from a table, the most recent common
+   * ancestor, reading a tree, and then two questions drawn from small pools of very
+   * hard templates (adding branch lengths, finding a branch from three DNA
+   * differences, and using DNA differences as a clock). A student who fails them
+   * still gets the working.
+   *
+   * The species in round 3 are invented and so are their numbers, and so are the
+   * embryo scores in round 2. The puzzles are about the reasoning, not the facts.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var FORELIMBS = [
+    { n: 'human arm', job: 'grasping', b: [1, 2, 8, 5] }, { n: 'cat foreleg', job: 'walking', b: [1, 2, 7, 4] }, { n: 'whale flipper', job: 'swimming', b: [1, 2, 6, 5] },
+    { n: 'bat wing', job: 'flying', b: [1, 2, 8, 5] }, { n: 'horse foreleg', job: 'running', b: [1, 2, 6, 1] }, { n: 'bird wing', job: 'flying', b: [1, 2, 4, 3] }
+  ];
+  var FL = {}; FORELIMBS.forEach(function (f) { FL[f.n] = f; });
+  var ANALOGOUS = [['bird wing', 'butterfly wing', 'flying'], ['bat wing', 'butterfly wing', 'flying'], ['whale flipper', 'shark fin', 'swimming'], ['bird wing', 'dragonfly wing', 'flying'], ['bat wing', 'dragonfly wing', 'flying']];
+  var NEITHER = [['human arm', 'shark fin'], ['cat foreleg', 'butterfly wing'], ['horse foreleg', 'dragonfly wing'], ['human arm', 'butterfly wing']];
+  var WINGS = ['butterfly wing', 'dragonfly wing'];
+  var BONE_ORDER = ['the upper-arm bone', 'the two lower-arm bones', 'the wrist bones', 'the hand bones', 'the finger bones'];
+  var EMB_SPECIES = ['chimpanzee', 'mouse', 'chicken', 'fish', 'frog', 'dog', 'lizard'];
+  var KINDS = ['Bones', 'Embryos', 'DNA', 'Fossils'];
+  var EVIDENCE = {
+    Bones: ['Scientists compare the arm bones of a bat and a cat.', 'Scientists count the bones in a whale flipper and a human hand.', 'Scientists study the bones in the wing of a bird.'],
+    Embryos: ['Scientists watch a fish embryo and a chicken embryo grow.', 'Scientists compare the tails of very young embryos.', 'Scientists look for pharyngeal arches in a human embryo.'],
+    DNA: ['Scientists compare the DNA letters of a human and a mouse.', 'Scientists count the differences in the DNA of two species.', 'Scientists read the DNA of a bacterium.'],
+    Fossils: ['Scientists dig a shell out of a layer of rock.', 'Scientists compare the ages of two layers of rock.', 'Scientists study a fossil bone found in a cliff.']
+  };
+  var MISCON = [
+    { s: 'A human embryo turns into a fish and then into a human.', r: 'Nothing turns into another animal. Early embryos share features because of a shared ancestor.' },
+    { s: 'Fish, chicken and human embryos look alike because they are the same species.', r: 'They are different species. They look alike early on because they share an ancestor.' },
+    { s: 'Human embryos have gills, so humans are fish.', r: 'Human embryos have pharyngeal arches, not working gills. They show a shared ancestor, not that humans are fish.' }
+  ];
+  var MISCON_WRONG = ['Embryos look alike by coincidence.', 'Embryos look alike because each animal needs the same features.'];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 8000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg }; };
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    function arrange(correct, wrongs) { var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) }; }
+    var cap = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+    var pairText = function (a, b) { return 'The ' + a + ' and the ' + b; };
+    function twoForelimbs() { return until(function () { var a = pick(FORELIMBS), b = pick(FORELIMBS); return a.n !== b.n && a.job !== b.job ? [a, b] : null; }); }
+
+    /* ---------------- Round 1: bones ---------------- */
+    var R1 = {
+      homPair: function () {
+        var ab = twoForelimbs(), a = ab[0], b = ab[1];
+        var an = shuffle(ANALOGOUS).slice(0, 3).map(function (p) {
+          return { text: pairText(p[0], p[1]), pair: [p[0], p[1]], hom: false, tag: 'samejob', msg: pairText(p[0], p[1]) + ' both do the same job (' + p[2] + '), but they do not have the same bones. They are analogous, not homologous.' };
+        });
+        var correct = { text: pairText(a.n, b.n), pair: [a.n, b.n], hom: true, tag: null };
+        var arr = arrange(correct, an);
+        return Q('bones', 'homPair', { prompt: 'Which pair of structures is homologous?', options: arr.options, correctIndex: arr.correctIndex,
+          explain: ['Homologous structures have the same bones, in the same order, but do different jobs.', pairText(a.n, b.n) + ' are both limbs of a vertebrate, so they have the same bones. One is for ' + a.job + ' and one is for ' + b.job + '.'] });
+      },
+      term: function () {
+        var opts = [
+          { text: 'Homologous structures', word: 'homologous', tag: null },
+          { text: 'Analogous structures', word: 'analogous', tag: 'analogous', msg: 'Analogous structures do the same job but have different structures inside.' },
+          { text: 'Identical structures', word: 'identical', tag: 'other', msg: 'They are not identical. The bones can be very different in size and shape.' },
+          { text: 'Extinct structures', word: 'extinct', tag: 'other', msg: 'Extinct means a kind of living thing has died out. It does not describe a structure.' }
+        ];
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('bones', 'term', { prompt: 'What do we call structures that have the same bones but do different jobs?', options: arr, correctIndex: ci, explain: ['Same bones, different jobs: homologous.', 'Same job, different structures: analogous.'] });
+      },
+      classify: function () {
+        var kind = pick(['hom', 'ana', 'neither']), a, b;
+        if (kind === 'hom') { var ab = twoForelimbs(); a = ab[0].n; b = ab[1].n; }
+        else if (kind === 'ana') { var an = pick(ANALOGOUS); a = an[0]; b = an[1]; }
+        else { var nn = pick(NEITHER); a = nn[0]; b = nn[1]; }
+        var want = { hom: 'Homologous', ana: 'Analogous', neither: 'Neither' }[kind];
+        var opts = ['Homologous', 'Analogous', 'Neither', 'Both'].map(function (w) {
+          var o = { text: w, word: w };
+          if (w === want) o.tag = null;
+          else { o.tag = w === 'Both' ? 'both' : 'mixed'; o.msg = kind === 'hom' ? 'Both are limbs with the same bones but different jobs. That is homologous.' : kind === 'ana' ? 'They do the same job but do not have the same bones. That is analogous.' : 'They do not have the same bones and they do not do the same job, so neither word fits.'; }
+          return o;
+        });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('bones', 'classify', { prompt: pairText(a, b) + '. Which word describes them best?', pair: [a, b], structureKind: kind, options: arr, correctIndex: ci,
+          explain: kind === 'hom' ? ['Both are vertebrate limbs: the same bones, different jobs.'] : kind === 'ana' ? ['They do the same job, but one has bones and the other does not (or the structures are different).'] : ['Different bones and different jobs: they are not linked.'] });
+      },
+      order: function () {
+        var swaps = shuffle([0, 1, 2, 3]).slice(0, 3), wr = swaps.map(function (i) { var o = BONE_ORDER.slice(); var t = o[i]; o[i] = o[i + 1]; o[i + 1] = t; return { text: o.join(' → '), order: o, tag: 'swap', msg: 'Two of these are the wrong way round. From the shoulder: ' + BONE_ORDER.join(', then ') + '.' }; });
+        var correct = { text: BONE_ORDER.join(' → '), order: BONE_ORDER.slice(), tag: null };
+        var a = arrange(correct, wr);
+        return Q('bones', 'order', { prompt: 'Which list puts the bones of a limb in order, starting at the shoulder?', options: a.options, correctIndex: a.correctIndex, explain: ['One upper bone, two lower bones, then the wrist, then the hand, then the fingers.'] });
+      },
+      suggests: function () {
+        var ab = twoForelimbs();
+        var opts = [
+          { text: 'They share a common ancestor.', tag: null },
+          { text: 'Each animal needed the same bones.', tag: 'purpose', msg: 'Nothing needs bones and nothing grows them on purpose. The bones were inherited.' },
+          { text: 'One of the animals evolved from the other.', tag: 'oneevolved', msg: 'Neither came from the other. They share an ancestor that lived long before both.' },
+          { text: 'They do the same job.', tag: 'samejobanswer', msg: 'Their jobs are different. That is what makes the same bones remarkable.' }
+        ];
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('bones', 'suggests', { prompt: pairText(ab[0].n, ab[1].n) + ' have the same bones. What does this suggest?', pair: [ab[0].n, ab[1].n], options: arr, correctIndex: ci,
+          explain: ['The same bones in animals with different jobs are best explained by a shared ancestor that had those bones.'] });
+      },
+      oddOne: function () {
+        var limbs = shuffle(FORELIMBS).slice(0, 3), odd = pick(WINGS);
+        var rows = limbs.map(function (f) { return { n: f.n, b: f.b, job: f.job }; }).concat([{ n: odd, b: [0, 0, 0, 0], job: 'flying' }]);
+        rows = shuffle(rows);
+        var wr = rows.filter(function (r) { return r.n !== odd; }).map(function (r) { return { text: cap(r.n), name: r.n, tag: 'limb', msg: 'The ' + r.n + ' has one upper bone, two lower bones, wrist bones and finger bones, like the others in the table. It is homologous with them.' }; });
+        var a = arrange({ text: cap(odd), name: odd, tag: null }, wr);
+        return Q('bones', 'oddOne', { prompt: 'The table counts the bones in four structures. Which one is the odd one out, not homologous with the other three?', figure: { type: 'table', headers: ['Structure', 'Upper bones', 'Lower bones', 'Wrist bones', 'Finger bones'], rows: rows.map(function (r) { return [cap(r.n), r.b[0], r.b[1], r.b[2], r.b[3]]; }) },
+          rows: rows, options: a.options, correctIndex: a.correctIndex, explain: ['Three of them have one upper bone, two lower bones, wrist bones and finger bones.', 'The ' + odd + ' has no bones at all, so it does not share that plan.'] });
+      }
+    };
+
+    /* ---------------- Round 2: early development ---------------- */
+    var R2 = {
+      features: function () {
+        var pool = [['wings and feathers'], ['fur and a beak'], ['legs and lungs'], ['scales and teeth'], ['eyes and claws']];
+        var wr = shuffle(pool).slice(0, 3).map(function (p) { return { text: cap(p[0]) + '.', tag: 'notshared', msg: 'That is not shared by all early vertebrate embryos. They share a tail and pharyngeal arches.' }; });
+        var a = arrange({ text: 'A tail and pharyngeal arches.', tag: null }, wr);
+        return Q('embryos', 'features', { prompt: 'Which two features do early vertebrate embryos share?', options: a.options, correctIndex: a.correctIndex, explain: ['Early embryos of fish, chickens and humans all have a tail and pharyngeal arches.'] });
+      },
+      closest: function () {
+        var sp = shuffle(EMB_SPECIES).slice(0, 4), scores = shuffle([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 4);
+        var rows = sp.map(function (n, i) { return { n: n, s: scores[i] }; });
+        var best = rows.reduce(function (m, r) { return r.s > m.s ? r : m; }, rows[0]);
+        var wr = rows.filter(function (r) { return r !== best; }).map(function (r) { return { text: cap(r.n), name: r.n, tag: 'lower', msg: 'The ' + r.n + ' scores ' + r.s + ', lower than the ' + best.n + ' (' + best.s + '). Its early embryo is less like a human\'s.' }; });
+        var a = arrange({ text: cap(best.n), name: best.n, tag: null }, wr);
+        return Q('embryos', 'closest', { prompt: 'The table scores how alike each animal\'s early embryo is to a human embryo (out of 10). The scores are invented. Which animal is most likely the closest relative of humans?', figure: { type: 'table', headers: ['Animal', 'Score'], rows: rows.map(function (r) { return [cap(r.n), r.s]; }) },
+          rows: rows, options: a.options, correctIndex: a.correctIndex, explain: ['The more alike two early embryos are, the more likely the animals share a recent ancestor.', 'The ' + best.n + ' has the highest score, ' + best.s + '.'] });
+      },
+      miscon: function () {
+        var i = int(0, MISCON.length - 1), st = MISCON[i];
+        var others = MISCON.filter(function (m, k) { return k !== i; }).map(function (m) { return m.r; }).concat(MISCON_WRONG);
+        var wr = shuffle(others).slice(0, 3).map(function (t) { return { text: t, tag: 'wrongrebuttal', msg: 'That does not answer this statement.' }; });
+        var a = arrange({ text: st.r, tag: null }, wr);
+        return Q('embryos', 'miscon', { prompt: 'A student says: “' + st.s + '” What is wrong with this?', statement: i, options: a.options, correctIndex: a.correctIndex, explain: ['The statement is a common mistake.', st.r] });
+      },
+      whyAlike: function () {
+        var pairs = [['fish', 'human'], ['chicken', 'human'], ['fish', 'chicken'], ['frog', 'human'], ['lizard', 'chicken']], pr = pick(pairs);
+        var opts = [
+          { text: 'They share a common ancestor.', tag: null },
+          { text: 'The ' + pr[1] + ' embryo is a ' + pr[0] + ' at first.', tag: 'turns', msg: 'Nothing turns into another animal. The features are shared, not swapped.' },
+          { text: 'They are the same species.', tag: 'samespecies', msg: 'They are different species. That is why the similarity needs explaining.' },
+          { text: 'They need the same features.', tag: 'purpose', msg: 'Nothing needs its features. The features were inherited from a shared ancestor.' }
+        ];
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('embryos', 'whyAlike', { prompt: 'Why do a ' + pr[0] + ' embryo and a ' + pr[1] + ' embryo look alike early on?', pair: pr, options: arr, correctIndex: ci, explain: ['Similar early development suggests a shared ancestor.'] });
+      },
+      diff: function () {
+        var sp = shuffle(EMB_SPECIES).slice(0, 3), sc = shuffle([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 3).sort(function (a, b) { return b - a; });
+        var rows = sp.map(function (n, i) { return { n: n, s: sc[i] }; });
+        var ans = sc[0] - sc[2];
+        return Q('embryos', 'diff', { prompt: 'The table scores how alike each animal\'s early embryo is to a human embryo (out of 10). The scores are invented. How many points more alike is the ' + rows[0].n + ' than the ' + rows[2].n + '?', figure: { type: 'table', headers: ['Animal', 'Score'], rows: rows.map(function (r) { return [cap(r.n), r.s]; }) },
+          rows: rows, unit: 'points', answer: ans, worked: [sc[0] + ' − ' + sc[2] + ' = ' + ans], method: 'Take the lower score away from the higher score.',
+          wrong: [W(sc[0] + sc[2], 'sum', sc[0] + ' + ' + sc[2], 'You added. To find how many more, take one score away from the other.'), W(sc[0] - sc[1], 'wrongpair', sc[0] + ' − ' + sc[1], 'You used the middle animal. The question compares the ' + rows[0].n + ' with the ' + rows[2].n + '.'), W(sc[1] - sc[2], 'wrongpair', sc[1] + ' − ' + sc[2], 'You used the middle animal. The question compares the ' + rows[0].n + ' with the ' + rows[2].n + '.')] });
+      },
+      evidence: function () {
+        var kind = pick(KINDS), st = pick(EVIDENCE[kind]);
+        var opts = KINDS.map(function (k) { return { text: k, kind: k, tag: k === kind ? null : 'kind', msg: k === kind ? '' : 'That statement is about ' + kind.toLowerCase() + '.' }; });
+        var arr = shuffle(opts), ci = arr.map(function (o) { return o.tag === null; }).indexOf(true);
+        return Q('embryos', 'evidence', { prompt: 'Which kind of evidence is this? ' + st, statement: st, options: arr, correctIndex: ci, explain: ['Bones: limbs and skeletons. Embryos: early development. DNA: the letters of the genetic code. Fossils: remains in rock.'] });
+      }
+    };
+
+    /* ---------------- Round 3: DNA and family trees ---------------- */
+    var LET = 'ABCDEFGH';
+    function leafNames(n) { return shuffle(LET.split('')).slice(0, n); }
+    function randomTree(names, maxLen) {
+      var nodes = names.map(function (n) { return { n: n }; });
+      while (nodes.length > 1) {
+        var i = int(0, nodes.length - 1), j; do { j = int(0, nodes.length - 1); } while (j === i);
+        var a = nodes[i], b = nodes[j]; nodes = nodes.filter(function (x, k) { return k !== i && k !== j; });
+        nodes.push({ k: [a, b], l: [int(1, maxLen), int(1, maxLen)] });
+      }
+      return nodes[0];
+    }
+    var isLeaf = function (t) { return t.n !== undefined; };
+    var leaves = function (t) { return isLeaf(t) ? [t.n] : t.k.reduce(function (a, k) { return a.concat(leaves(k)); }, []); };
+    var contains = function (t, x) { return leaves(t).indexOf(x) >= 0; };
+    function fromNode(t, x) { if (isLeaf(t)) return t.n === x ? 0 : null; for (var i = 0; i < t.k.length; i++) { var r = fromNode(t.k[i], x); if (r !== null) return r + t.l[i]; } return null; }
+    function dist(t, a, b) {
+      if (isLeaf(t)) return null;
+      for (var i = 0; i < t.k.length; i++) if (contains(t.k[i], a) && contains(t.k[i], b)) return dist(t.k[i], a, b);
+      return fromNode(t, a) + fromNode(t, b);
+    }
+    // A tree where every merge is later than the ones below it (a steady clock). Differences between two
+    // species are twice the height of their common ancestor, so the table and the ancestors always agree.
+    function ultraTable(names) {
+      var nodes = names.map(function (n) { return { n: n, h: 0 }; }), h = 0;
+      while (nodes.length > 1) {
+        var i = int(0, nodes.length - 1), j; do { j = int(0, nodes.length - 1); } while (j === i);
+        var a = nodes[i], b = nodes[j]; nodes = nodes.filter(function (x, k) { return k !== i && k !== j; });
+        h += int(1, 5); nodes.push({ k: [a, b], h: h });
+      }
+      var root = nodes[0];
+      function mrcaH(t, a, b) { if (isLeaf(t)) return null; for (var i = 0; i < 2; i++) if (contains(t.k[i], a) && contains(t.k[i], b)) return mrcaH(t.k[i], a, b); return t.h; }
+      var m = {}; names.forEach(function (a) { m[a] = {}; names.forEach(function (b) { m[a][b] = a === b ? 0 : 2 * mrcaH(root, a, b); }); });
+      return m;
+    }
+    function matrixFigure(names, m) {
+      var rows = names.map(function (a) { return [a].concat(names.map(function (b) { return a === b ? '' : m[a][b]; })); });
+      return { type: 'table', headers: [''].concat(names), rows: rows, caption: 'Number of DNA letters that differ (out of 1000)' };
+    }
+    function sisterOf(t, x) { if (isLeaf(t)) return null; for (var i = 0; i < 2; i++) { if (isLeaf(t.k[i]) && t.k[i].n === x) return isLeaf(t.k[1 - i]) ? t.k[1 - i].n : null; var r = sisterOf(t.k[i], x); if (r) return r; } return null; }
+
+    var R3 = {
+      percentSame: function () {
+        var T = pick([200, 500, 1000]), unit = T / 100, k = int(1, 12), N = unit * k, ans = 100 - k, names = leafNames(2);
+        return Q('dna', 'percentSame', { prompt: 'Species ' + names[0] + ' and species ' + names[1] + ' differ at ' + N + ' of ' + T + ' DNA letters. What percentage of the letters is the same?', unit: '%', N: N, T: T, answer: ans,
+          worked: [T + ' − ' + N + ' = ' + (T - N), (T - N) + ' ÷ ' + T + ' × 100 = ' + ans], method: 'Find how many letters are the same, then turn it into a percentage of the total.',
+          wrong: [W(k, 'differences', N + ' ÷ ' + T + ' × 100', 'That is the percentage that is DIFFERENT. The question asks for the percentage that is the same.'), W(T - N, 'count', T + ' − ' + N, 'That is the number of letters that are the same. Turn it into a percentage of ' + T + '.'), W(N, 'count', String(N), 'That is the number of letters that differ.')] });
+      },
+      closestRel: function () {
+        return until(function () {
+          var names = leafNames(5), m = ultraTable(names), x = names[0];
+          var others = names.filter(function (n) { return n !== x; }), ds = others.map(function (o) { return m[x][o]; }), mn = Math.min.apply(null, ds);
+          if (ds.filter(function (d) { return d === mn; }).length !== 1) return null;
+          var best = others[ds.indexOf(mn)];
+          var wr = others.filter(function (o) { return o !== best; }).map(function (o) { return { text: 'Species ' + o, name: o, tag: 'moredifferent', msg: 'Species ' + o + ' differs from ' + x + ' at ' + m[x][o] + ' letters. Species ' + best + ' differs at only ' + mn + '.' }; });
+          var a = arrange({ text: 'Species ' + best, name: best, tag: null }, wr);
+          return Q('dna', 'closestRel', { prompt: 'The table shows how many DNA letters differ between species. Which species is the closest relative of species ' + x + '?', figure: matrixFigure(names, m), names: names, matrix: m, target: x, options: a.options, correctIndex: a.correctIndex,
+            explain: ['The fewer the differences, the more closely related the species.', 'Species ' + x + ' differs from species ' + best + ' at only ' + mn + ' letters, the fewest.'] });
+        });
+      },
+      pairMRCA: function () {
+        return until(function () {
+          var names = leafNames(5), m = ultraTable(names), pairs = [];
+          for (var i = 0; i < 5; i++) for (var j = i + 1; j < 5; j++) pairs.push([names[i], names[j], m[names[i]][names[j]]]);
+          var mn = Math.min.apply(null, pairs.map(function (p) { return p[2]; }));
+          var best = pairs.filter(function (p) { return p[2] === mn; }); if (best.length !== 1) return null;
+          var wr = shuffle(pairs.filter(function (p) { return p !== best[0]; })).slice(0, 3).map(function (p) { return { text: 'Species ' + p[0] + ' and species ' + p[1], pair: [p[0], p[1]], tag: 'moredifferent', msg: 'Species ' + p[0] + ' and ' + p[1] + ' differ at ' + p[2] + ' letters. Another pair differs at only ' + mn + '.' }; });
+          var a = arrange({ text: 'Species ' + best[0][0] + ' and species ' + best[0][1], pair: [best[0][0], best[0][1]], tag: null }, wr);
+          return Q('dna', 'pairMRCA', { prompt: 'Which two species share the most recent common ancestor?', figure: matrixFigure(names, m), names: names, matrix: m, options: a.options, correctIndex: a.correctIndex,
+            explain: ['The pair with the fewest DNA differences shares the most recent common ancestor.', 'Species ' + best[0][0] + ' and ' + best[0][1] + ' differ at only ' + mn + ' letters.'] });
+        });
+      },
+      treeSister: function () {
+        return until(function () {
+          var names = leafNames(5), tree = randomTree(names, 6), x = pick(names), sis = sisterOf(tree, x);
+          if (!sis) return null;
+          var wr = names.filter(function (n) { return n !== x && n !== sis; }).map(function (n) { return { text: 'Species ' + n, name: n, tag: 'branchedlater', msg: 'Species ' + n + ' joins the branch later, further from ' + x + '. Species ' + sis + ' branches from the same point as ' + x + '.' }; });
+          var a = arrange({ text: 'Species ' + sis, name: sis, tag: null }, wr);
+          return Q('trees', 'treeSister', { prompt: 'The tree shows how five species are related. Which species is the closest relative of species ' + x + '?', figure: { type: 'tree', tree: tree, showLen: false }, tree: tree, target: x, options: a.options, correctIndex: a.correctIndex,
+            explain: ['Look for the species that branches from the same point as ' + x + '.', 'Species ' + sis + ' and species ' + x + ' share the most recent ancestor.'] });
+        });
+      },
+      pathSum: function () {
+        return until(function () {
+          var names = leafNames(5), tree = randomTree(names, 6), a = names[0], b = names[1], d = dist(tree, a, b);
+          if (d < 6) return null;
+          var terms = pathTerms(tree, a, b);
+          if (terms.length < 3) return null;
+          var wr = [W(fromNode(tree, a), 'oneside', String(fromNode(tree, a)), 'That is only the path from ' + a + ' up to the top of the tree. Add the path down to ' + b + ' as well.')];
+          var lastTerm = terms[terms.length - 1];
+          return Q('puzzle', 'pathSum', { prompt: 'The numbers on the tree are the DNA differences that built up along each branch. How many DNA differences are there between species ' + a + ' and species ' + b + '?', figure: { type: 'tree', tree: tree, showLen: true }, tree: tree, pair: [a, b], unit: 'differences', answer: d,
+            worked: [terms.join(' + ') + ' = ' + d], method: 'Follow the branches from ' + a + ' up to the point where the paths meet, then down to ' + b + '. Add every number on the way.',
+            wrong: wr.concat([W(d - lastTerm, 'missedbranch', terms.slice(0, -1).join(' + '), 'You missed a branch on the way. Follow the path all the way to ' + b + '.')]) });
+        });
+      },
+      threePoint: function () {
+        return until(function () {
+          var p = int(1, 6), m = int(1, 6), b = int(1, 6), c = int(1, 6), names = leafNames(3), A = names[0], B = names[1], C = names[2];
+          var x = p + m + b, y = p + m + c, z = b + c, ans = p + m;
+          var tree = { k: [{ k: [{ n: B }, { n: C }], l: [b, c] }, { n: A }], l: [m, p] };
+          return Q('puzzle', 'threePoint', { prompt: 'Species ' + A + ', ' + B + ' and ' + C + ' are related as in the tree. Species ' + A + ' and ' + B + ' differ at ' + x + ' DNA letters. Species ' + A + ' and ' + C + ' differ at ' + y + '. Species ' + B + ' and ' + C + ' differ at ' + z + '. How many differences separate species ' + A + ' from the common ancestor of ' + B + ' and ' + C + '?', figure: { type: 'tree', tree: tree, showLen: false },
+            tree3: { A: A, B: B, C: C, x: x, y: y, z: z }, unit: 'differences', answer: ans,
+            worked: [x + ' + ' + y + ' = ' + (x + y), (x + y) + ' − ' + z + ' = ' + (x + y - z), (x + y - z) + ' ÷ 2 = ' + ans], method: 'Add the two differences that include ' + A + ', take away the difference between ' + B + ' and ' + C + ', then halve it.',
+            wrong: [W(x + y - z, 'nohalve', x + ' + ' + y + ' − ' + z, 'That is double the answer. The two paths from ' + A + ' were both counted.'), W(x + y, 'nosub', x + ' + ' + y, 'That counts the ' + B + ' branch and the ' + C + ' branch as well. Take away the difference between ' + B + ' and ' + C + ', then halve.'), W((x + y + z) / 2, 'plusz', '(' + x + ' + ' + y + ' + ' + z + ') ÷ 2', 'You added the difference between ' + B + ' and ' + C + '. It must be taken away.')] });
+        });
+      },
+      clock: function () {
+        var R = pick([2, 3, 4, 5]), D = pick([8, 10, 12, 14, 16, 18, 20, 24]), names = leafNames(2), ans = D * R / 2;
+        return Q('puzzle', 'clock', { prompt: 'DNA differences build up at a steady rate: 1 difference in every 1000 letters every ' + R + ' million years, in each species separately. Species ' + names[0] + ' and species ' + names[1] + ' differ at ' + D + ' of 1000 letters. How many million years ago did their common ancestor live?', unit: 'million years', D: D, R: R, answer: ans,
+          worked: [D + ' ÷ 2 = ' + (D / 2), (D / 2) + ' × ' + R + ' = ' + ans], method: 'The differences built up in BOTH species since they split, so only half of them belong to one species. Then multiply by the time for one difference.',
+          wrong: [W(D * R, 'oneline', D + ' × ' + R, 'You counted all the differences as if they built up in one species. They built up in both, so halve them first.'), W(D / 2, 'norate', D + ' ÷ 2', 'That is the number of differences in one species. Multiply by ' + R + ' million years each.'), W(D * R * 2, 'wayup', D + ' × ' + R + ' × 2', 'You doubled instead of halving. The differences are shared between two species.')] });
+      },
+      clockGap: function () {
+        var R = pick([2, 3, 4, 5]), T1 = int(4, 10), T2 = int(1, T1 - 2), names = leafNames(3), A = names[0], B = names[1], C = names[2];
+        var x = 2 * T1, z = 2 * T2, ans = (T1 - T2) * R;
+        return Q('puzzle', 'clockGap', { prompt: 'DNA differences build up at a steady rate: 1 difference in every 1000 letters every ' + R + ' million years, in each species separately. Species ' + A + ' differs from species ' + B + ' and from species ' + C + ' at ' + x + ' of 1000 letters. Species ' + B + ' and species ' + C + ' differ at ' + z + '. The ancestor of ' + B + ' and ' + C + ' lived after the ancestor of all three. How many million years passed between those two ancestors?', unit: 'million years', A: A, B: B, C: C, x: x, z: z, R: R, answer: ans,
+          worked: [x + ' − ' + z + ' = ' + (x - z), (x - z) + ' ÷ 2 = ' + ((x - z) / 2), ((x - z) / 2) + ' × ' + R + ' = ' + ans], method: 'The oldest ancestor is ' + x + ' ÷ 2 differences back and the younger is ' + z + ' ÷ 2 differences back. Take one from the other, then multiply by ' + R + ' million years.',
+          wrong: [W((x - z) * R, 'nohalve', '(' + x + ' − ' + z + ') × ' + R, 'You forgot that the differences built up in both species, so halve them.'), W((x - z) / 2, 'norate', '(' + x + ' − ' + z + ') ÷ 2', 'That is a number of differences. Multiply by ' + R + ' million years each.'), W(x * R / 2, 'oneancestor', x + ' × ' + R + ' ÷ 2', 'That is only how long ago the oldest ancestor lived. The question asks for the time between the two.'), W(z * R / 2, 'oneancestor', z + ' × ' + R + ' ÷ 2', 'That is only how long ago the younger ancestor lived. The question asks for the time between the two.')] });
+      }
+    };
+    // the terms of the path between two leaves, from a up to the meeting point and down to b
+    function pathTerms(t, a, b) {
+      if (isLeaf(t)) return [];
+      for (var i = 0; i < t.k.length; i++) if (contains(t.k[i], a) && contains(t.k[i], b)) return pathTerms(t.k[i], a, b);
+      var up = function (x) { var out = [], node = t; while (!isLeaf(node)) { for (var i = 0; i < 2; i++) if (contains(node.k[i], x)) { out.push(node.l[i]); node = node.k[i]; break; } } return out; };
+      return up(a).reverse().concat(up(b));
+    }
+    R3.pool17 = function () { return rnd() < 0.5 ? R3.pathSum() : R3.threePoint(); };
+    R3.pool18 = function () { return rnd() < 0.5 ? R3.clock() : R3.clockGap(); };
+
+    var plan = [
+      { name: 'Bones', qs: [R1.homPair, R1.term, R1.classify, R1.order, R1.suggests, R1.oddOne] },
+      { name: 'Embryos', qs: [R2.features, R2.closest, R2.miscon, R2.whyAlike, R2.diff, R2.evidence] },
+      { name: 'Family trees', qs: [R3.percentSame, R3.closestRel, R3.pairMRCA, R3.treeSister, R3.pool17, R3.pool18] }
+    ];
+    var out = [];
+    plan.forEach(function (r, ri) {
+      r.qs.forEach(function (make, qi) {
+        var q = make();
+        q.round = ri + 1; q.n = qi + 1; q.roundName = r.name;
+        if (q.wrong) {
+          var seen = {}, wrong = {};
+          q.wrong.forEach(function (w) { if (w && w.value === Math.round(w.value) && w.value > 0 && w.value !== q.answer && w.value <= 999999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; } });
+          q.wrong = wrong;
+        }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Bones', 'Early development', 'DNA and family trees'];
+  var CATS = { bones: 'Homologous structures', embryos: 'Early development', dna: 'DNA', trees: 'Reading family trees', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    analogous: 'Analogous means the same job with a different structure inside. Homologous means the same bones with different jobs.', other: 'Read the question again and use the picture or the table.', samejob: 'Doing the same job does not make structures homologous. Look at the bones.',
+    swap: 'Learn the order of the bones from the shoulder outwards.', purpose: 'Nothing grows a feature because it needs it. Features are inherited from ancestors.', oneevolved: 'Neither animal evolved from the other. They share an ancestor.', samejobanswer: 'Homologous structures often do DIFFERENT jobs.',
+    limb: 'That structure has the same bones as the others in the table. Look for the one with none.', notshared: 'Early vertebrate embryos share a tail and pharyngeal arches.', lower: 'Pick the highest score. The more alike the embryos, the closer the relatives.',
+    wrongrebuttal: 'Use the idea of a shared ancestor to answer the mistake.', turns: 'Nothing turns into another animal. Similar early stages show a shared ancestor.', samespecies: 'Different species can look alike early on because of a shared ancestor.', kind: 'Match the evidence to what is being studied: limbs, embryos, DNA letters or rock.',
+    sum: 'To find how many more, take one number away from the other.', wrongpair: 'Use the two animals the question names.', both: 'Analogous and homologous are different ideas. It cannot be both.', mixed: 'Check both the bones and the jobs.',
+    differences: 'You found the percentage that is different. The question asks for the percentage that is the same.', count: 'Turn the number of letters into a percentage of the total.',
+    moredifferent: 'The fewer the DNA differences, the closer the relationship.', branchedlater: 'The closest relative branches from the same point.', oneside: 'You added only one side of the path. Add the way down as well.', missedbranch: 'Follow the path all the way and add every branch.',
+    nohalve: 'The differences built up in both species, so halve them.', nosub: 'Take away the difference between the other two species before halving.', plusz: 'The difference between the other two species must be taken away, not added.',
+    oneline: 'Differences build up in BOTH species since they split, so halve them first.', norate: 'Turn the number of differences into time using the rate.', wayup: 'Halve the differences, do not double them.', oneancestor: 'The question asks for the time BETWEEN the two ancestors.'
+  };
+  var GENERIC = 'Read the question again and use the picture or the table.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  /* ---------- pictures ---------- */
+  function tHeight(t) { return t.n !== undefined ? 0 : 1 + Math.max(tHeight(t.k[0]), tHeight(t.k[1])); }
+  function tLeaves(t) { return t.n !== undefined ? 1 : tLeaves(t.k[0]) + tLeaves(t.k[1]); }
+  function treeStr(t, showLen) { return t.n !== undefined ? t.n : '(' + treeStr(t.k[0], showLen) + (showLen ? ':' + t.l[0] : '') + ',' + treeStr(t.k[1], showLen) + (showLen ? ':' + t.l[1] : '') + ')'; }
+  function treeSvg(fig) {
+    var t = fig.tree, H = tHeight(t), n = tLeaves(t), step = 62, row = 36, left = 10, W = left + H * step + 34, HT = n * row + 8, nextRow = 0, parts = [];
+    function place(node) {
+      if (node.n !== undefined) { var yy = 20 + (nextRow++) * row; return { x: left + H * step, y: yy, node: node }; }
+      var a = place(node.k[0]), b = place(node.k[1]), x = left + (H - tHeight(node)) * step, y = (a.y + b.y) / 2;
+      parts.push('<line x1="' + x + '" y1="' + a.y + '" x2="' + x + '" y2="' + b.y + '"/>');
+      [a, b].forEach(function (c, i) {
+        parts.push('<line x1="' + x + '" y1="' + c.y + '" x2="' + c.x + '" y2="' + c.y + '"/>');
+        if (fig.showLen) parts.push('<text class="len" x="' + ((x + c.x) / 2) + '" y="' + (c.y - 6) + '" text-anchor="middle">' + node.l[i] + '</text>');
+        if (c.node.n !== undefined) parts.push('<text class="leaf" x="' + (c.x + 8) + '" y="' + (c.y + 5) + '">' + c.node.n + '</text>');
+      });
+      return { x: x, y: y, node: node };
+    }
+    place(t);
+    return '<div class="treefig"><svg viewBox="0 0 ' + W + ' ' + HT + '" role="img" aria-label="Family tree of species ' + tNames(t).join(', ') + '">' + parts.join('') + '</svg></div>';
+  }
+  function tNames(t) { return t.n !== undefined ? [t.n] : tNames(t.k[0]).concat(tNames(t.k[1])); }
+  function tableHtml(f) {
+    var h = '<div class="chartwrap"><table class="chart"><tr>' + f.headers.map(function (x) { return '<th>' + esc(x) + '</th>'; }).join('') + '</tr>';
+    f.rows.forEach(function (r) { h += '<tr>' + r.map(function (c, i) { return '<' + (i === 0 ? 'td class="name"' : 'td class="' + (c === '' ? 'blank' : 'num') + '"') + '>' + esc(c) + '</td>'; }).join('') + '</tr>'; });
+    return h + (f.caption ? '<caption>' + esc(f.caption) + '</caption>' : '') + '</table></div>';
+  }
+  function figureHtml(Q) {
+    var f = Q.figure; if (!f) return '';
+    return f.type === 'tree' ? treeSvg(f) : tableHtml(f);
+  }
+  // What is on the screen (also read by the test).
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.figure && Q.figure.type === 'table') d += ' | ' + Q.figure.rows.map(function (r) { return r.join(','); }).join(' ; ');
+    if (Q.figure && Q.figure.type === 'tree') d += ' | tree ' + treeStr(Q.figure.tree, Q.figure.showLen);
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Family Tree'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'The species in the DNA puzzles are invented, and so are the numbers in the tables. The puzzles are about the reasoning. Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    var promptHtml = esc(Q.prompt);
+    card.innerHTML = '<p class="ask">' + promptHtml + '</p>' + figureHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isMCQ(Q)) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+      if (Q.unit) app.appendChild(el('p', 'unit', 'Give your answer in ' + Q.unit + '.'));
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (!isMCQ(Q)) {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','', '0','back','go'].forEach(function (k) {
+        if (k === '') { pad.appendChild(el('span')); return; }
+        var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k; if (k === 'back') b.setAttribute('aria-label', 'Delete'); b.onclick = function () { press(k); }; pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else { var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go); }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function paintAnswer() { var a = document.getElementById('answer'); if (!a) return; a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer'; }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(parseInt(typed, 10), null); }
+    else if (typed.length < 6) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k + 1, k); }
+
+  function workHtml(Q) {
+    var lines = (Q.worked || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return (Q.method ? '<p class="how">' + esc(Q.method) + '</p>' : '') + (expl ? '<div class="work">' + expl + '</div>' : '') + (lines ? '<p class="how">Working:</p><div class="work">' + lines + '</div>' : '');
+  }
+  function correctText(Q) { return isMCQ(Q) ? Q.options[Q.correctIndex].text : String(Q.answer) + (Q.unit ? ' ' + Q.unit : ''); }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head, wrote;
+    if (isMCQ(Q)) {
+      ok = picked === Q.correctIndex; wrote = Q.options[picked].text;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer; wrote = String(given); var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + (Q.unit ? ' ' + Q.unit : '') + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  /* ---------- the review: a drop-down per round; time, right or wrong, what was written and how to get there ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (isMCQ(Q)) {
+      if (/^[1-4]$/.test(e.key) && !locked) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

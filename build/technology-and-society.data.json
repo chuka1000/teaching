@@ -1,0 +1,242 @@
+{
+  "note": "Design briefs (each with a correct need, a decoy that hides the FIX inside the need, and a decoy that is too vague, all the same shape), constraints and society items for Technology And Society. ONE source: the game HTML gets this injected by build/technology-and-society-game.py, and the worksheet reads it. All examples are global. Checked by build/check-technology-and-society-game.py.",
+  "constraints": {
+    "cheap": "It must be made from things you could find at home, so it costs almost nothing.",
+    "noelec": "It must work without electricity or batteries.",
+    "recycled": "It must be made mostly from recycled materials.",
+    "pocket": "It must be small enough to fit in a school bag.",
+    "rain": "It must still work when it is wet.",
+    "child": "A young child must be able to use it."
+  },
+  "briefs": [
+    {
+      "id": "farmer",
+      "user": "A farmer in a dry region",
+      "need": "know when the crops need water",
+      "reason": "watering too early or too late wastes water and harms the crop",
+      "measure": "how many of 10 dry-soil tests it warns about correctly",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "rain"
+      ],
+      "solutionNeed": "a soil sensor that beeps when the crops are dry",
+      "vagueNeed": "a way to farm better when water is short"
+    },
+    {
+      "id": "bag",
+      "user": "A student with a heavy school bag",
+      "need": "carry books to school without hurting their back",
+      "reason": "a heavy bag strains the back and shoulders",
+      "measure": "how tired the carrier feels, from 1 to 5, after a 100 m walk",
+      "allowed": [
+        "cheap",
+        "recycled",
+        "rain",
+        "child"
+      ],
+      "solutionNeed": "a school bag with wheels and a long handle",
+      "vagueNeed": "a way to make the school day much easier"
+    },
+    {
+      "id": "medicine",
+      "user": "An older person who forgets their medicine",
+      "need": "remember to take medicine at the right time",
+      "reason": "missing doses can stop the medicine working properly",
+      "measure": "how many of 10 doses are taken at the right time",
+      "allowed": [
+        "cheap",
+        "recycled",
+        "pocket",
+        "child"
+      ],
+      "solutionNeed": "a simple pill box with a loud alarm",
+      "vagueNeed": "a way to look after their health at home"
+    },
+    {
+      "id": "light",
+      "user": "A family in a village with no mains electricity",
+      "need": "light a room in the evening",
+      "reason": "children cannot read or do homework when it is dark",
+      "measure": "how many minutes the light lasts after a day outside",
+      "allowed": [
+        "cheap",
+        "recycled",
+        "pocket",
+        "rain",
+        "child"
+      ],
+      "solutionNeed": "a solar-powered lamp",
+      "vagueNeed": "a way to make evenings easier for the family"
+    },
+    {
+      "id": "cyclist",
+      "user": "A cyclist who rides at night",
+      "need": "be seen by drivers in the dark",
+      "reason": "drivers who cannot see a cyclist may not stop in time",
+      "measure": "the distance, in metres, at which a driver can see the cyclist",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "pocket",
+        "rain"
+      ],
+      "solutionNeed": "a simple jacket with bright reflective strips",
+      "vagueNeed": "a way to ride more safely on the roads"
+    },
+    {
+      "id": "vaccine",
+      "user": "A nurse carrying vaccines on a long journey",
+      "need": "keep vaccines cold",
+      "reason": "vaccines stop working if they get too warm",
+      "measure": "how many hours the inside stays below 8 °C",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "rain"
+      ],
+      "solutionNeed": "a cool box with ice packs",
+      "vagueNeed": "a way to travel safely"
+    },
+    {
+      "id": "canteen",
+      "user": "A school canteen that throws away a lot of food",
+      "need": "waste less food",
+      "reason": "wasted food costs money and growing it harms the environment",
+      "measure": "the mass of food thrown away each day, in kg",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "child"
+      ],
+      "solutionNeed": "a compost bin beside the canteen bins",
+      "vagueNeed": "a way to run the canteen in a better way"
+    },
+    {
+      "id": "hot",
+      "user": "A family whose home gets very hot in summer",
+      "need": "keep a room cooler",
+      "reason": "a hot room is uncomfortable and makes it hard to sleep or study",
+      "measure": "the room temperature at 3 pm, in °C",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled"
+      ],
+      "solutionNeed": "an air conditioner in every room",
+      "vagueNeed": "a way to feel more comfortable at home"
+    },
+    {
+      "id": "door",
+      "user": "A wheelchair user",
+      "need": "open heavy doors without help",
+      "reason": "needing help to open a door takes away independence",
+      "measure": "the force needed to open the door, in newtons",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled"
+      ],
+      "solutionNeed": "an automatic opener on every door",
+      "vagueNeed": "a way to get around buildings more easily"
+    },
+    {
+      "id": "runner",
+      "user": "A runner",
+      "need": "carry water without holding a bottle",
+      "reason": "holding a bottle tires the arm and spoils the running",
+      "measure": "how far the bottle moves while running, in cm",
+      "allowed": [
+        "cheap",
+        "recycled",
+        "rain",
+        "pocket"
+      ],
+      "solutionNeed": "a waist belt that holds a water bottle",
+      "vagueNeed": "a way to run more comfortably in races"
+    },
+    {
+      "id": "water",
+      "user": "A community whose river water is dirty",
+      "need": "get clean drinking water",
+      "reason": "dirty water can carry germs that make people ill",
+      "measure": "how clear the water is, on a scale from 1 to 5",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "rain"
+      ],
+      "solutionNeed": "a sand and charcoal filter by the river",
+      "vagueNeed": "a way to improve the river"
+    },
+    {
+      "id": "flood",
+      "user": "A resident of a town with a flooded street",
+      "need": "cross the street safely",
+      "reason": "deep or fast water can knock people over and hide hazards",
+      "measure": "how many of 10 people cross without slipping",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "rain"
+      ],
+      "solutionNeed": "a raised walkway built over the street",
+      "vagueNeed": "a way to cope with the flooding in town"
+    },
+    {
+      "id": "hall",
+      "user": "A teacher in a noisy hall",
+      "need": "be heard at the back of the room",
+      "reason": "students who cannot hear cannot learn",
+      "measure": "how many students at the back repeat a sentence correctly, out of 10",
+      "allowed": [
+        "cheap",
+        "noelec",
+        "recycled",
+        "pocket"
+      ],
+      "solutionNeed": "a microphone and loud speakers",
+      "vagueNeed": "a way to teach more effectively in the hall"
+    }
+  ],
+  "society": [
+    {
+      "text": "People wanted to talk while away from home, so companies developed mobile phones.",
+      "dir": "society"
+    },
+    {
+      "text": "A new law banned the gases that damage the ozone layer, so fridge makers changed the gas inside fridges.",
+      "dir": "society"
+    },
+    {
+      "text": "Laws and safety campaigns pushed car makers to add seat belts and air bags.",
+      "dir": "society"
+    },
+    {
+      "text": "Mobile phones let people read the news and send money from almost anywhere.",
+      "dir": "tech"
+    },
+    {
+      "text": "Fridges let families keep food fresh, so people began to shop less often.",
+      "dir": "tech"
+    },
+    {
+      "text": "The printing press made books cheaper, so more people could learn to read.",
+      "dir": "tech"
+    },
+    {
+      "text": "Fridges changed how families shop. Later a law changed the gas inside them.",
+      "dir": "both"
+    },
+    {
+      "text": "Mobile phones changed how people bank. Governments then wrote new rules for mobile banking.",
+      "dir": "both"
+    }
+  ]
+}

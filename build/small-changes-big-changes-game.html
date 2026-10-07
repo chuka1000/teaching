@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small Changes, Big Changes: the Sorter</title>
+<style>
+  :root {
+    --forest: #1F3D2B; --amber: #DE9A4C; --amberink: #A8651F; --teal: #3E93A3; --rust: #C1442D; --cream: #F5F1E6; --cream2: #E8E0CC;
+    --ink: #182B1E; --soft: #52685A; --green: #1F7A48; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  /* rock layers */
+  table.chart { border-collapse: collapse; margin: 6px 0; font-size: 14px; width: 100%; }
+  .chartwrap { overflow-x: auto; max-width: 100%; }
+  table.chart th, table.chart td { border: 1px solid #6F5F4B; padding: 4px 3px; text-align: center; min-width: 26px; }
+  table.chart th { background: var(--cream2); font-size: 13px; }
+  table.chart td.on { background: var(--amber); } table.chart td.off { background: var(--white); }
+  table.chart td.name { text-align: left; white-space: nowrap; font-weight: 700; }
+  #answer { height: 64px; border: 3px solid var(--forest); border-radius: 12px; background: var(--white); font-size: 34px; font-weight: 700; color: var(--forest); display: flex; align-items: center; padding: 0 16px; margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9AA59D; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 58px; font-size: 28px; font-weight: 700; color: var(--forest); background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--cream2); } .key.fn { background: var(--cream); font-size: 22px; }
+  .key.go, .btn { background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+  .treefig { margin: 6px 0 10px; } .treefig svg { width: 100%; max-width: 360px; height: auto; display: block; }
+  .treefig text { font-family: Arial, Helvetica, sans-serif; fill: #182B1E; } .treefig .leaf { font-weight: 700; font-size: 16px; } .treefig .len { font-size: 13px; fill: #A8651F; font-weight: 700; }
+  .treefig line { stroke: #1F3D2B; stroke-width: 2.5; stroke-linecap: round; }
+  table.chart td.num { min-width: 34px; } table.chart td.blank { background: var(--cream2); }
+  caption { caption-side: bottom; font-size: 13px; color: var(--soft); padding-top: 4px; text-align: left; }
+
+  .item { background: #FBF6E8; border: 2px solid var(--amber); border-radius: 12px; padding: 14px 16px; font-size: 19px; line-height: 1.4; color: var(--ink); margin: 0 0 12px; font-weight: 700; }
+  .binq { font-size: 15px; color: var(--soft); margin: 0 0 6px; }
+  .opt span small { display: block; font-weight: 400; font-size: 14px; color: var(--soft); margin-top: 2px; }
+  .beadfig { margin: 6px 0 10px; } .beadfig svg { width: 100%; max-width: 380px; height: auto; display: block; }
+  .legend { font-size: 14px; color: var(--soft); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * THE SORTER (Small Changes, Big Changes). Nobody gets the same game.
+   *
+   * Two bins: microevolution (a change in allele frequencies within a population)
+   * or macroevolution (large changes over long periods, above the species level).
+   * Every game is built from a six-character code, random for each student.
+   * Opening the file with #CODE after the address gives the same game again, so a
+   * teacher can see exactly what a student saw. The SKILLS and their order are the
+   * same for everyone, so the diagnostic at the end means the same thing for every
+   * student. What varies: which cases are drawn from a bigger pool, the numbers in
+   * the generated cases, which bin is on which side, and the order inside a round.
+   *
+   * Every sort item keeps the DATA it was built from (its scope, its trap, its
+   * numbers), and build/check-small-changes-big-changes-game.py re-derives the right
+   * bin and every number independently.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson (obvious
+   * cases). Round 2 adds counting alleles in a picture and trickier cases. Round 3 goes
+   * far past the lesson: cases where the obvious cue is WRONG (a dramatic change in a
+   * few generations is still micro; a very long change inside one species is still micro;
+   * a small-sounding step that made a new group is macro), a pool where each animal has
+   * TWO alleles, and two questions drawn from small pools of very hard puzzles.
+   *
+   * THE RULE FOR THE BINS is the lesson's own: within one population, a change in how
+   * common an allele is = micro; above the species level = macro. One species becoming
+   * two is on the boundary and is left out on purpose, so no answer is arguable.
+   * Some animals in round 3 are invented. The puzzles are about the reasoning.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var BIN_TEXT = { micro: 'Microevolution', macro: 'Macroevolution' };
+  var BIN_DESC = { micro: 'A change in allele frequencies within a population', macro: 'Large changes over long periods, above the species level' };
+  var SPECIES = ['desert mice', 'river snails', 'cave beetles', 'island lizards', 'meadow voles', 'hill foxes'];
+  var COLOURS = [['pale', 'dark'], ['striped', 'plain'], ['brown', 'grey'], ['green', 'yellow']];
+  var TRAITS = ['dark fur', 'a long tail', 'thick shells', 'a short beak'];
+  var ANIMALS = ['mice', 'snails', 'beetles', 'lizards'];
+
+  /* fixed cases, by tier. scope: 'population' (a change inside one population or species) or 'above' (new groups, above the species level). */
+  var FIXED = {
+    micro1: [
+      { id: 'hospital', text: 'In one hospital, the percentage of bacteria carrying an antibiotic-resistance allele rises from 5% to 40% in six months.', why: 'It is a change in how common an allele is, inside one population of bacteria, over a few months.' },
+      { id: 'daphne', text: 'On Daphne Major, after the 1977 drought, the alleles for deeper beaks became more common among the medium ground finches.', why: 'The alleles for deeper beaks became more common in one population of finches, in one generation.' },
+      { id: 'mosquito', text: 'Over about ten years, the allele for resistance goes from rare to common in a mosquito population that is sprayed with a pesticide.', why: 'The frequency of one allele changed in one population, over about ten years.' }
+    ],
+    macro1: [
+      { id: 'whales', text: 'Over about 50 million years, the descendants of small four-legged land mammals included whales, with flippers and no back legs.', why: 'A new group of animals, the whales, arose from land mammals. That is a large change, over a very long time, above the species level.' },
+      { id: 'tiktaalik', text: 'Some fish-like animals gave rise, over millions of years, to the first four-limbed animals that could walk on land. The fossil Tiktaalik is a step on the way.', why: 'Animals with limbs arose from fish. That is a new group, above the species level, over millions of years.' },
+      { id: 'birds', text: 'Small feathered dinosaurs gave rise to the birds over tens of millions of years. The fossil Archaeopteryx had feathers and teeth.', why: 'Birds are a new group that arose from dinosaurs, over tens of millions of years. That is above the species level.' },
+      { id: 'snakes', text: 'A group of four-legged, lizard-like animals gave rise to snakes, which have no legs, over tens of millions of years.', why: 'A whole new group of animals arose over tens of millions of years. That is above the species level.' }
+    ],
+    micro2: [
+      { id: 'moth', text: 'In Manchester, the dark form of the peppered moth went from rare in 1848 to 98% of the moths by 1895.', why: 'The dark form became common in one population of moths, in about 50 years. The moths stayed one species.' },
+      { id: 'rats', text: 'Within a few decades, resistance to rat poison became common among the rats on some farms.', why: 'An allele for resistance became more common in a population of rats. That is a change within one population.' },
+      { id: 'flies', text: 'In a lab, a group of fruit flies is sprayed with insecticide in every generation. After 20 generations nearly all of the flies are resistant.', why: 'The resistance allele became common in one group of flies over 20 generations. That is microevolution.' }
+    ],
+    macro2: [
+      { id: 'embryo', text: 'Fish, chickens and humans all start life with a tail and pharyngeal arches, because an ancestor of all vertebrates, which lived over 500 million years ago, had them.', why: 'The shared features come from an ancestor of whole groups of animals, over 500 million years ago. That is above the species level.' },
+      { id: 'mammals', text: 'After the dinosaurs died out, small early mammals gave rise to many new groups over tens of millions of years, including bats, whales and primates.', why: 'Many new groups of mammals arose over tens of millions of years. That is above the species level.' },
+      { id: 'plants', text: 'In water, green algae gave rise over hundreds of millions of years to the first land plants, and later to trees.', why: 'Whole new groups of plants arose over hundreds of millions of years. That is above the species level.' },
+      { id: 'flowers', text: 'In the fossil record, the first flowering plants appear about 130 million years ago. Their descendants now include grasses, roses and oak trees.', why: 'A large new group of plants arose, and its descendants spread into many groups. That is above the species level.' }
+    ],
+    micro3: [
+      { id: 'bact', text: 'Bacteria that survive an antibiotic spread to hospitals in many countries over 20 years. They are still the same species of bacterium.', why: 'It spread widely, but the bacteria are still one species and what changed is how common resistance is. That is microevolution, however far it spreads.', trap: 'dramatic' },
+      { id: 'foxes', text: 'Over 5 million years of cold climate, the average coat thickness of one group of foxes slowly increases. The foxes remain one species.', why: 'It took a very long time, but the foxes remained one species. A change inside one species is microevolution, however long it takes.', trap: 'longtime' }
+    ],
+    macro3: [
+      { id: 'backbone', text: 'A new group of animals with a backbone first appears in the fossil record. Its descendants go on to include all later fish, reptiles, birds and mammals.', why: 'It sounds like one event, but a whole new group appeared and gave rise to many more. That is above the species level.', trap: 'smallsound' },
+      { id: 'arthropods', text: 'Over hundreds of millions of years, the ancestors of insects, spiders and crabs split into several large groups with different body plans.', why: 'Large groups with different body plans arose over hundreds of millions of years. That is above the species level.', trap: 'smallsound' },
+      { id: 'ear', text: 'Fossils show that two of the three tiny bones in the human ear started as jaw bones in reptile-like ancestors, many millions of years ago.', why: 'It sounds like a small detail, but it is part of the origin of a whole new group, the mammals. Look at the scale, not at the size of the feature.', trap: 'smallsound' }
+    ]
+  };
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 20000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg }; };
+    var cap = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+    function take(pool, n) { return shuffle(pool).slice(0, n); }
+
+    /* ---- generated sort items (the numbers and animals vary) ---- */
+    function genFreq(animalsLabel) {
+      var a = int(2, 10) * 5, g = int(5, 20), b = a + int(3, 9) * 5; if (b > 95) b = 95;
+      var tr = pick(TRAITS), an = animalsLabel || pick(ANIMALS);
+      var alt = rnd() < 0.5; return { id: 'gen-freq', gen: 'freq', from: a, to: b, gens: g, text: alt ? 'Over ' + g + ' generations, the allele for ' + tr + ' in a population of ' + an + ' goes from ' + a + '% of the gene pool to ' + b + '%.' : 'In a population of ' + an + ', the allele for ' + tr + ' goes from ' + a + '% of the gene pool to ' + b + '% in ' + g + ' generations.', why: 'The allele frequency changed from ' + a + '% to ' + b + '%, inside one population. That is microevolution.' };
+    }
+    function genTable() {
+      var an = pick(ANIMALS), tr = pick(TRAITS), rise = rnd() < 0.5, v1 = int(2, 4) * 5, d1 = int(2, 5) * 5, d2 = int(2, 5) * 5;
+      var vals = rise ? [v1, v1 + d1, v1 + d1 + d2] : [v1 + d1 + d2, v1 + d1, v1];
+      return { id: 'gen-table', gen: 'table', animals: an, trait: tr, gens: [1, 10, 20], values: vals, text: 'The table shows the frequency of the allele for ' + tr + ' in a population of ' + an + '. Which kind of evolution does it show?',
+        figure: { type: 'table', headers: ['Generation', 'Allele frequency'], rows: [[1, vals[0] + '%'], [10, vals[1] + '%'], [20, vals[2] + '%']] },
+        why: 'The allele frequency changed from ' + vals[0] + '% to ' + vals[2] + '% in 20 generations, inside one population. That is microevolution.' };
+    }
+    function genLong() {
+      var T = int(2, 9), sp = pick(SPECIES);
+      return { id: 'gen-long', gen: 'long', years: T, species: sp, trap: 'longtime', text: 'Over ' + T + ' million years, a group of ' + sp + ' on an island slowly gets bigger. They can all still breed with each other.', why: 'It took ' + T + ' million years, but the ' + sp + ' are still one species. A change inside one species is microevolution, however long it takes.' };
+    }
+    function genFast() {
+      var g = int(8, 30), sp = pick(SPECIES), cc = pick(COLOURS);
+      return { id: 'gen-fast', gen: 'fast', gens: g, species: sp, from: cc[0], to: cc[1], trap: 'dramatic', text: 'In just ' + g + ' generations, almost all the ' + sp + ' in a polluted valley change from ' + cc[0] + ' to ' + cc[1] + '. They can all still breed with each other.', why: 'It looks like a big change, but it happened in ' + g + ' generations and they are still one species. A big-looking change inside one species is microevolution.' };
+    }
+    function sortQ(item, bin, round, tier) {
+      var micro = { text: BIN_TEXT.micro, desc: BIN_DESC.micro, bin: 'micro' }, macro = { text: BIN_TEXT.macro, desc: BIN_DESC.macro, bin: 'macro' };
+      var correct = bin === 'micro' ? micro : macro, wrong = bin === 'micro' ? macro : micro;
+      correct.tag = null;
+      var tag, msg;
+      if (bin === 'micro') {
+        tag = item.trap === 'dramatic' ? 'looksbig' : item.trap === 'longtime' ? 'longtime' : 'scale';
+        msg = item.trap === 'dramatic' ? 'It looks like a big change, but it stays inside one group of animals that are still one species. Do not sort by how big the change looks.' : item.trap === 'longtime' ? 'It took a very long time, but the animals stay one species. Do not sort by how long it took: ask whether it stays inside one population.' : 'This stays inside one population. What changes is how common an allele is. That is microevolution.';
+      } else {
+        tag = item.trap === 'smallsound' ? 'smallsound' : 'scale';
+        msg = item.trap === 'smallsound' ? 'It sounds small, but it is part of the origin of whole new groups of animals. Look at the scale, not at how small the detail sounds.' : 'This is above the species level: whole new groups of living things appeared over a very long time. That is macroevolution.';
+      }
+      wrong.tag = tag; wrong.msg = msg;
+      var opts = shuffle([micro, macro]);
+      return { cat: bin, kind: 'sort', tier: tier, round: round, prompt: 'Microevolution or macroevolution? ' + item.text, item: item, bin: bin, scope: bin === 'micro' ? 'population' : 'above',
+        figure: item.figure || null, options: opts, correctIndex: opts.indexOf(correct), explain: [item.why, 'Microevolution: a change in allele frequencies within a population. Macroevolution: large changes over long periods, above the species level.'] };
+    }
+
+    /* ---- numeric items ---- */
+    var POOLS = [20, 25, 40, 50];
+    function pctOk(k, T) { return (100 * k) % T === 0; }
+    function beadFreq() {
+      return until(function () {
+        var T = pick(POOLS), k = int(3, T - 3); if (!pctOk(k, T)) return null;
+        var p = 100 * k / T; if (p === 50 || 100 - p === k || p === k) return null;
+        var order = []; for (var i = 0; i < T; i++) order.push(i < k ? 1 : 0); order = shuffle(order);
+        return { cat: 'count', kind: 'beadFreq', prompt: 'The picture is the gene pool of a beetle population. Each dot is one allele: green or brown. What percentage of the alleles are brown?', figure: { type: 'beads', t: T, k: k, order: order }, unit: '%', T: T, k: k, answer: p,
+          worked: [k + ' brown out of ' + T + ' alleles', k + ' ÷ ' + T + ' × 100 = ' + p], method: 'Count the brown dots, divide by the total number of dots, and turn it into a percentage.',
+          wrong: [W(100 - p, 'otherallele', '100 - ' + p, 'You found the percentage that is GREEN. The question asks for brown.'), W(k, 'count', String(k), 'That is the number of brown alleles. Divide it by the total number of alleles and turn it into a percentage.')] };
+      });
+    }
+    function changePoints() {
+      return until(function () {
+        var T = pick(POOLS), k1 = int(3, T - 3), k2 = int(3, T - 3); if (k1 === k2 || !pctOk(k1, T) || !pctOk(k2, T)) return null;
+        var p1 = 100 * k1 / T, p2 = 100 * k2 / T, ans = Math.abs(p2 - p1), cd = Math.abs(k2 - k1); if (cd === ans || p2 === ans || cd === p2) return null;
+        return { cat: 'count', kind: 'changePoints', prompt: 'A gene pool has ' + T + ' alleles. In generation 1, ' + k1 + ' of them are brown. In generation 5, ' + k2 + ' of them are brown. By how many percentage points did the frequency of brown change?', unit: 'percentage points', T: T, k1: k1, k2: k2, answer: ans,
+          worked: [k1 + ' ÷ ' + T + ' × 100 = ' + p1, k2 + ' ÷ ' + T + ' × 100 = ' + p2, Math.max(p1, p2) + ' − ' + Math.min(p1, p2) + ' = ' + ans], method: 'Turn each count into a percentage of the pool, then take one away from the other.',
+          wrong: [W(cd, 'countchange', Math.max(k1, k2) + ' - ' + Math.min(k1, k2), 'That is the change in the NUMBER of brown alleles. Turn each count into a percentage first.'), W(p2, 'finalonly', String(p2), 'That is the frequency in generation 5. The question asks how much it CHANGED.')] };
+      });
+    }
+    function twoAlleles() {
+      return until(function () {
+        var N = pick([10, 20, 25, 50]), T = 2 * N, k = int(4, T - 4); if (!pctOk(k, T)) return null;
+        var p = 100 * k / T, ind = 100 * k / N; if (p === 50 || ind > 999 || ind === 100 - p || ind === k || 100 - p === k) return null;
+        return { cat: 'count', kind: 'twoAlleles', prompt: 'A population has ' + N + ' beetles. Each beetle has two alleles for shell colour. In the gene pool, ' + k + ' of the alleles are brown. What is the allele frequency of brown, as a percentage?', unit: '%', N: N, T: T, k: k, answer: p,
+          worked: [N + ' × 2 = ' + T + ' alleles in the pool', k + ' ÷ ' + T + ' × 100 = ' + p], method: 'Each beetle has TWO alleles, so the pool is twice the number of beetles. Divide the brown alleles by the total number of alleles.',
+          wrong: [W(ind, 'beetles', k + ' ÷ ' + N + ' × 100', 'You divided by the number of beetles. Each beetle has two alleles, so the gene pool is ' + T + ' alleles.'), W(100 - p, 'otherallele', '100 - ' + p, 'You found the percentage that is NOT brown.'), W(k, 'count', String(k), 'That is the number of brown alleles. Turn it into a percentage of the whole pool.')] };
+      });
+    }
+    function twoGen() {
+      return until(function () {
+        var N1 = pick([10, 20, 25, 50]), N2 = pick([10, 20, 25, 50]), T1 = 2 * N1, T2 = 2 * N2, k1 = int(4, T1 - 4), k2 = int(4, T2 - 4);
+        if (!pctOk(k1, T1) || !pctOk(k2, T2)) return null;
+        var p1 = 100 * k1 / T1, p2 = 100 * k2 / T2, ans = Math.abs(p1 - p2); if (ans < 10 || ans > 60) return null;
+        var rise = p2 > p1, i1 = 100 * k1 / N1, i2 = 100 * k2 / N2, indd = Math.abs(i1 - i2), cd = Math.abs(k1 - k2);
+        var wr = [];
+        if (Number.isInteger(indd) && indd > 0 && indd !== ans) wr.push(W(indd, 'beetles', '|100 × ' + k2 + ' ÷ ' + N2 + ' - 100 × ' + k1 + ' ÷ ' + N1 + '|', 'You divided by the number of beetles. Each beetle has two alleles, so each pool is twice the number of beetles.'));
+        if (cd > 0 && cd !== ans) wr.push(W(cd, 'countchange', Math.max(k1, k2) + ' - ' + Math.min(k1, k2), 'That is the change in the NUMBER of brown alleles. The pools are different sizes, so turn each count into a percentage first.'));
+        if (wr.length < 2 || wr[0].value === wr[1].value) return null;
+        return { cat: 'puzzle', kind: 'twoGen', prompt: 'A population has ' + N1 + ' beetles, each with two alleles for shell colour. In its gene pool, ' + k1 + ' of the alleles are brown. A few generations later the population has ' + N2 + ' beetles and ' + k2 + ' brown alleles in the pool. By how many percentage points did the frequency of brown ' + (rise ? 'rise' : 'fall') + '?', unit: 'percentage points', N1: N1, N2: N2, k1: k1, k2: k2, rise: rise, answer: ans,
+          worked: [N1 + ' × 2 = ' + T1 + ' alleles in the first pool', k1 + ' ÷ ' + T1 + ' × 100 = ' + p1, N2 + ' × 2 = ' + T2 + ' alleles in the second pool', k2 + ' ÷ ' + T2 + ' × 100 = ' + p2, Math.max(p1, p2) + ' − ' + Math.min(p1, p2) + ' = ' + ans], method: 'Double the number of beetles to get the alleles in each pool, turn each brown count into a percentage of its own pool, then take one from the other.', wrong: wr };
+      });
+    }
+    function shrinkOnce() {
+      return until(function () {
+        var T = pick([40, 50, 60, 80, 100]), p = int(2, 9) * 5, k = T * p / 100; if (!Number.isInteger(k) || k < 6) return null; var r = int(2, k - 2);
+        var newT = T - r, num = k - r, ans = 100 * num / newT; if (!Number.isInteger(ans) || ans === p) return null;
+        var wr = [], o1 = 100 * num / T, o2 = p - 100 * r / T;
+        if (Number.isInteger(o1) && o1 > 0 && o1 !== ans) wr.push(W(o1, 'oldpool', num + ' ÷ ' + T + ' × 100', 'You divided by the OLD pool size. The pool shrank by ' + r + ', so divide by ' + newT + '.'));
+        if (Number.isInteger(o2) && o2 > 0 && o2 !== ans && o2 !== o1) wr.push(W(o2, 'subtractpercent', p + ' - ' + r + ' ÷ ' + T + ' × 100', 'You took the lost alleles off the percentage as if the pool had stayed the same size. The pool shrank too.'));
+        wr.push(W(num, 'count', String(num), 'That is the number of brown alleles left. Turn it into a percentage of the pool that is left.'));
+        wr = wr.filter(function (w) { return w.value !== ans && w.value > 0; }); var uq = {}; wr.forEach(function (w) { uq[w.value] = 1; }); if (Object.keys(uq).length < 2) return null;
+        return { cat: 'puzzle', kind: 'shrinkOnce', prompt: 'A gene pool has ' + T + ' alleles, and ' + p + '% of them are brown. Birds eat some beetles, and ' + r + ' brown alleles are lost. No other alleles are lost and none are added, so the pool gets smaller. What percentage of the new pool is brown?', unit: '%', T: T, p: p, k: k, r: r, answer: ans,
+          worked: [T + ' × ' + p + ' ÷ 100 = ' + k + ' brown alleles', k + ' − ' + r + ' = ' + num + ' brown alleles left', T + ' − ' + r + ' = ' + newT + ' alleles in the pool', num + ' ÷ ' + newT + ' × 100 = ' + ans], method: 'Find the number of brown alleles, take the lost ones off BOTH the brown count and the pool, then divide.', wrong: wr };
+      });
+    }
+    function reverseShrink() {
+      return until(function () {
+        var T = pick([40, 50, 60, 80, 100]), r = int(3, 12), newT = T - r, p2 = int(2, 9) * 5;
+        var brown2 = p2 * newT / 100; if (!Number.isInteger(brown2)) return null;
+        var k = brown2 + r, ans = 100 * k / T; if (!Number.isInteger(ans) || ans <= p2 || ans >= 100) return null;
+        var wr = [], o1 = p2 + 100 * r / T, o2 = p2 + r;
+        if (Number.isInteger(o1) && o1 !== ans) wr.push(W(o1, 'forgotshrink', p2 + ' + ' + r + ' ÷ ' + T + ' × 100', 'You added the lost alleles as a percentage of the OLD pool, but ' + p2 + '% was a percentage of the SMALLER pool.'));
+        if (o2 !== ans && o2 !== o1) wr.push(W(o2, 'addpercent', p2 + ' + ' + r, 'You added a number of alleles to a percentage. Change the percentage into a number of alleles first.'));
+        wr.push(W(brown2, 'count', String(brown2), 'That is the number of brown alleles after the loss. Add the lost ones back, then find the percentage of the ORIGINAL pool.'));
+        wr = wr.filter(function (w) { return w.value !== ans && w.value > 0; }); var uq = {}; wr.forEach(function (w) { uq[w.value] = 1; }); if (Object.keys(uq).length < 2) return null;
+        return { cat: 'puzzle', kind: 'reverseShrink', prompt: 'A gene pool had ' + T + ' alleles. Birds ate some beetles and ' + r + ' brown alleles were lost. No other alleles were lost and none were added. Brown is now ' + p2 + '% of the pool that is left. What percentage of the ORIGINAL pool was brown?', unit: '%', T: T, r: r, p2: p2, answer: ans,
+          worked: [T + ' − ' + r + ' = ' + newT + ' alleles left', newT + ' × ' + p2 + ' ÷ 100 = ' + brown2 + ' brown alleles left', brown2 + ' + ' + r + ' = ' + k + ' brown alleles at the start', k + ' ÷ ' + T + ' × 100 = ' + ans], method: 'Work backwards: find how many brown alleles are left, add back the ones that were lost, and divide by the ORIGINAL pool.', wrong: wr };
+      });
+    }
+    function shrinkTwice() {
+      return until(function () {
+        var T = pick([50, 60, 80, 100]), p = int(2, 8) * 5, k = T * p / 100; if (!Number.isInteger(k)) return null;
+        var r1 = int(2, 8), r2 = int(2, 8); if (k - r1 - r2 < 2) return null;
+        var left = k - r1 - r2, newT = T - r1 - r2, ans = 100 * left / newT; if (!Number.isInteger(ans) || ans === p) return null;
+        var wr = [], o1 = 100 * (k - r1) / (T - r1), o2 = 100 * left / T;
+        if (Number.isInteger(o1) && o1 !== ans && o1 > 0) wr.push(W(o1, 'oneround', (k - r1) + ' ÷ ' + (T - r1) + ' × 100', 'That is the frequency after only the first loss. There was a second loss of ' + r2 + ' brown alleles.'));
+        if (Number.isInteger(o2) && o2 !== ans && o2 !== o1 && o2 > 0) wr.push(W(o2, 'oldpool', left + ' ÷ ' + T + ' × 100', 'You divided by the ORIGINAL pool size. The pool shrank by ' + (r1 + r2) + ', so divide by ' + newT + '.'));
+        wr.push(W(left, 'count', String(left), 'That is the number of brown alleles left. Turn it into a percentage of the pool that is left.'));
+        wr = wr.filter(function (w) { return w.value !== ans && w.value > 0; }); var uq = {}; wr.forEach(function (w) { uq[w.value] = 1; }); if (Object.keys(uq).length < 2) return null;
+        return { cat: 'puzzle', kind: 'shrinkTwice', prompt: 'A gene pool has ' + T + ' alleles, and ' + p + '% of them are brown. In one generation, ' + r1 + ' brown alleles are lost. In the next generation, ' + r2 + ' more brown alleles are lost. No other alleles are lost and none are added. What percentage of the pool that is left is brown?', unit: '%', T: T, p: p, k: k, r1: r1, r2: r2, answer: ans,
+          worked: [T + ' × ' + p + ' ÷ 100 = ' + k + ' brown alleles', k + ' − ' + r1 + ' − ' + r2 + ' = ' + left + ' brown alleles left', T + ' − ' + r1 + ' − ' + r2 + ' = ' + newT + ' alleles in the pool', left + ' ÷ ' + newT + ' × 100 = ' + ans], method: 'Take BOTH losses off the brown count and off the whole pool, then divide.', wrong: wr };
+      });
+    }
+
+    /* ---- the plan: skills and their order are the same for everyone ---- */
+    var m1 = take(FIXED.micro1, 2).concat([genFreq()]), a1 = take(FIXED.macro1, 3);
+    var R1 = shuffle(m1.map(function (it) { return sortQ(it, 'micro', 1, 1); }).concat(a1.map(function (it) { return sortQ(it, 'macro', 1, 1); })));
+    var m2 = [pick([FIXED.micro2[0], FIXED.micro2[1], FIXED.micro2[2]]), genTable()], a2 = take(FIXED.macro2, 2);
+    var S2 = shuffle(m2.map(function (it) { return sortQ(it, 'micro', 2, 2); }).concat(a2.map(function (it) { return sortQ(it, 'macro', 2, 2); })));
+    var R2 = [S2[0], S2[1], beadFreq(), S2[2], S2[3], changePoints()];
+    var m3 = take([FIXED.micro3[0], FIXED.micro3[1], genLong(), genFast()], 2), a3 = take(FIXED.macro3, 1);
+    var S3 = shuffle(m3.map(function (it) { return sortQ(it, 'micro', 3, 3); }).concat(a3.map(function (it) { return sortQ(it, 'macro', 3, 3); })));
+    var R3 = [S3[0], S3[1], S3[2], twoAlleles(), rnd() < 0.5 ? twoGen() : shrinkOnce(), rnd() < 0.5 ? reverseShrink() : shrinkTwice()];
+
+    var out = [];
+    [R1, R2, R3].forEach(function (r, ri) {
+      r.forEach(function (q, qi) {
+        q.round = ri + 1; q.n = qi + 1;
+        if (q.wrong) {
+          var seen = {}, wrong = {};
+          q.wrong.forEach(function (w) { if (w && w.value === Math.round(w.value) && w.value > 0 && w.value !== q.answer && w.value <= 999999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; } });
+          q.wrong = wrong;
+        }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Two bins', 'Count and sort', 'Beat the sorter'];
+  var CATS = { micro: 'Spotting microevolution', macro: 'Spotting macroevolution', count: 'Counting alleles', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    scale: 'Sort by scale: inside one population (micro), or above the species level, in new groups (macro).',
+    looksbig: 'Do not sort by how big the change looks. A change inside one species is micro, even if it looks dramatic.',
+    longtime: 'Do not sort by how long it took. A change inside one species is micro, however long it takes.',
+    smallsound: 'Do not sort by how small the detail sounds. If it is part of the origin of a whole new group, it is macro.',
+    otherallele: 'Check which allele the question asks about. The two frequencies add up to 100%.',
+    count: 'A count is not a frequency. Divide by the total number of alleles in the pool, then turn it into a percentage.',
+    countchange: 'Turn each count into a percentage of ITS pool before you compare them.',
+    finalonly: 'Find how much the frequency CHANGED: take one percentage from the other.',
+    beetles: 'Each beetle has TWO alleles, so the gene pool is twice the number of beetles.',
+    oldpool: 'When alleles are lost and not replaced, the pool shrinks. Divide by the pool that is LEFT.',
+    subtractpercent: 'Do not take a number of alleles off a percentage. Work in alleles, then turn the result into a percentage.',
+    oneround: 'Take every loss off, in every generation, before you divide.',
+    forgotshrink: 'A percentage is a share of the pool it was measured in. Change it into a number of alleles first.',
+    addpercent: 'Do not add a number of alleles to a percentage. Change the percentage into a number of alleles first.'
+  };
+  var GENERIC = 'Read the question again. Micro is a change in allele frequencies inside one population; macro is large changes above the species level.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  /* ---------- pictures ---------- */
+  function beadSvg(fig) {
+    var T = fig.t, cols = T <= 25 ? 5 : 10, rows = Math.ceil(T / cols), gap = 34, r = 13, w = cols * gap + 8, h = rows * gap + 8, parts = [];
+    for (var i = 0; i < T; i++) {
+      var cx = 4 + gap / 2 + (i % cols) * gap, cy = 4 + gap / 2 + Math.floor(i / cols) * gap;
+      parts.push('<circle class="' + (fig.order[i] ? 'brown' : 'green') + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + (fig.order[i] ? '#8A5A2B' : '#4C9A5B') + '" stroke="#1F3D2B" stroke-width="2"/>');
+    }
+    return '<div class="beadfig"><svg viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="A gene pool of ' + T + ' alleles, green and brown dots">' + parts.join('') + '</svg><div class="legend">Each dot is one allele. Green or brown.</div></div>';
+  }
+  function tableHtml(f) {
+    var h = '<div class="chartwrap"><table class="chart"><tr>' + f.headers.map(function (x) { return '<th>' + esc(x) + '</th>'; }).join('') + '</tr>';
+    f.rows.forEach(function (r) { h += '<tr>' + r.map(function (c, i) { return '<' + (i === 0 ? 'td class="name"' : 'td class="num"') + '>' + esc(c) + '</td>'; }).join('') + '</tr>'; });
+    return h + '</table></div>';
+  }
+  function figureHtml(Q) { var f = Q.figure; if (!f) return ''; return f.type === 'beads' ? beadSvg(f) : tableHtml(f); }
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.figure && Q.figure.type === 'table') d += ' | ' + Q.figure.rows.map(function (r) { return r.join(','); }).join(' ; ');
+    if (Q.figure && Q.figure.type === 'beads') d += ' | beads ' + Q.figure.t + ' brown ' + Q.figure.k;
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'The Sorter'));
+    card.appendChild(el('p', 'lead', 'Two bins: <b>microevolution</b> (a change in allele frequencies within a population) and <b>macroevolution</b> (large changes over long periods, above the species level). Three rounds of six. Each round is harder than the one before.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'Some of the animals in round 3 are invented. The puzzles are about the reasoning. Your questions are different from everyone else’s, and the bins change sides, so read the label. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    if (Q.kind === 'sort') {
+      card.innerHTML = '<p class="binq">Which bin does this go in?</p><div class="item">' + esc(Q.item.text) + '</div>' + (Q.figure ? '<p class="ask">' + esc('Which kind of evolution does it show?') + '</p>' + figureHtml(Q) : '');
+    } else card.innerHTML = '<p class="ask">' + esc(Q.prompt) + '</p>' + figureHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isMCQ(Q)) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + (o.desc ? '<small>' + esc(o.desc) + '</small>' : '') + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.dataset.bin = o.bin || ''; b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+      if (Q.unit) app.appendChild(el('p', 'unit', 'Give your answer in ' + Q.unit + '.'));
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (!isMCQ(Q)) {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','', '0','back','go'].forEach(function (k) {
+        if (k === '') { pad.appendChild(el('span')); return; }
+        var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k; if (k === 'back') b.setAttribute('aria-label', 'Delete'); b.onclick = function () { press(k); }; pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else { var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go); }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function paintAnswer() { var a = document.getElementById('answer'); if (!a) return; a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer'; }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(parseInt(typed, 10), null); }
+    else if (typed.length < 6) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k + 1, k); }
+
+  function workHtml(Q) {
+    var lines = (Q.worked || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return (Q.method ? '<p class="how">' + esc(Q.method) + '</p>' : '') + (expl ? '<div class="work">' + expl + '</div>' : '') + (lines ? '<p class="how">Working:</p><div class="work">' + lines + '</div>' : '');
+  }
+  function correctText(Q) { return isMCQ(Q) ? Q.options[Q.correctIndex].text : String(Q.answer) + (Q.unit ? ' ' + Q.unit : ''); }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head, wrote;
+    if (isMCQ(Q)) {
+      ok = picked === Q.correctIndex; wrote = Q.options[picked].text;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer; wrote = String(given); var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + (Q.unit ? ' ' + Q.unit : '') + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide'); goBtn.disabled = false;
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  /* ---------- the review: a drop-down per round ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (isMCQ(Q)) {
+      if (/^[1-2]$/.test(e.key) && !locked) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

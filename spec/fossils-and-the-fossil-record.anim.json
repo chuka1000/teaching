@@ -1,0 +1,672 @@
+{
+  "deck": "out/Fossils And The Fossil Record/Fossils And The Fossil Record.pptx",
+  "output": "out/Fossils And The Fossil Record/Fossils And The Fossil Record.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "d0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "d5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_badge",
+            "o0_num",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_badge",
+            "o1_num",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_badge",
+            "o2_num",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "obj_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "h0",
+          "members": [
+            "h0_bg",
+            "h0_k",
+            "h0_icon",
+            "h0_t"
+          ]
+        },
+        {
+          "name": "h1",
+          "members": [
+            "h1_bg",
+            "h1_k",
+            "h1_icon",
+            "h1_t"
+          ]
+        },
+        {
+          "name": "h2",
+          "members": [
+            "h2_bg",
+            "h2_k",
+            "h2_icon",
+            "h2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "h0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "h1",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "h2",
+              "effect": "fade",
+              "delay": 300
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "fs0",
+          "members": [
+            "fs0_bg",
+            "fs0_badge",
+            "fs0_num",
+            "fs0_t"
+          ]
+        },
+        {
+          "name": "fs1",
+          "members": [
+            "fs1_bg",
+            "fs1_badge",
+            "fs1_num",
+            "fs1_t"
+          ]
+        },
+        {
+          "name": "fs2",
+          "members": [
+            "fs2_bg",
+            "fs2_badge",
+            "fs2_num",
+            "fs2_t"
+          ]
+        },
+        {
+          "name": "fs3",
+          "members": [
+            "fs3_bg",
+            "fs3_badge",
+            "fs3_num",
+            "fs3_t"
+          ]
+        },
+        {
+          "name": "fs4",
+          "members": [
+            "fs4_bg",
+            "fs4_badge",
+            "fs4_num",
+            "fs4_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "vid_formation",
+              "effect": "play"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fs0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fs1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fs2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fs3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fs4",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "form_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "ordg",
+          "members": [
+            "ord_bg",
+            "ord_h",
+            "ord_t"
+          ]
+        },
+        {
+          "name": "gapg",
+          "members": [
+            "gap_bg",
+            "gap_h",
+            "gap_s"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "vid_layers",
+              "effect": "play"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ordg",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gapg",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gp0",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gp1",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "gp2",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wd0_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd1_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd2_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wd3_a",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "c0_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c1_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c2_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c3_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c4_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "c5_a",
+              "effect": "wipe",
+              "dir": "left"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_h",
+            "t0_s",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_h",
+            "t1_s",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_h",
+            "t2_s",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_note",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "p0_stmt",
+          "members": [
+            "p0_bg",
+            "p0_q"
+          ]
+        },
+        {
+          "name": "p1_stmt",
+          "members": [
+            "p1_bg",
+            "p1_q"
+          ]
+        },
+        {
+          "name": "p2_stmt",
+          "members": [
+            "p2_bg",
+            "p2_q"
+          ]
+        },
+        {
+          "name": "p3_stmt",
+          "members": [
+            "p3_bg",
+            "p3_q"
+          ]
+        },
+        {
+          "name": "p4_stmt",
+          "members": [
+            "p4_bg",
+            "p4_q"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "p0_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p0_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p1_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p1_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p2_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p3_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p3_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p4_stmt",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "p4_v",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pl_next",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

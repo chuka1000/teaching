@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speciation Sequencer</title>
+<style>
+  :root {
+    --forest: #1F3D2B; --amber: #DE9A4C; --amberink: #A8651F; --teal: #3E93A3; --rust: #C1442D; --cream: #F5F1E6; --cream2: #E8E0CC;
+    --ink: #1B2A20; --soft: #5C6B5E; --green: #2E8B57; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .tag { font-size: 14px; color: var(--soft); margin: 0 0 10px; font-style: italic; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  ol.shown { margin: 6px 0 4px; padding-left: 26px; } ol.shown li { font-size: 16px; font-weight: 700; color: var(--forest); margin: 5px 0; line-height: 1.35; } ol.shown li.gap { color: var(--rust); }
+  button { font: inherit; cursor: pointer; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #E7F4EC; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  /* the sequencer */
+  .pick { display: grid; gap: 8px; margin-bottom: 10px; }
+  .cardstep { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 56px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 16px; font-weight: 700; color: var(--forest); line-height: 1.3; touch-action: manipulation; }
+  .cardstep b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .cardstep.on { border-color: var(--forest); background: #EAF0E6; } .cardstep.on b { background: var(--forest); color: var(--white); }
+  .cardstep.ok { border-color: var(--green); background: #E7F4EC; } .cardstep.bad { border-color: var(--rust); background: #FBEAE6; }
+  .tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #E7F4EC; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 16px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 4px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * SPECIATION SEQUENCER (The Greatest Show On Earth). Nobody gets the same game.
+   *
+   * Every question is built from a template with a different EXAMPLE of the same process (Darwin's finches, snapping shrimp, and invented
+   * beetles, mice, frogs, fish, snails, flowers), different distractor cards, and shuffled cards and options, from a six-character
+   * game code that is random for each student. Opening the file with #CODE on the end of the address gives the same game again, so a
+   * teacher can see exactly what a student saw. The SKILLS and their order are the same for everyone.
+   *
+   * THE PROCESS BEING SEQUENCED (the brief): one population, a barrier forms, different conditions, different selection, changes build
+   * up, can no longer interbreed. Every step carries the reason it must come after the one before, and every wrong order names the
+   * mistake it was (selection before a barrier, speciation in one step, and so on).
+   * build/check-the-greatest-show-on-earth-game.py re-derives every correct order, every right option and every message tag from
+   * the data each question keeps, over hundreds of generated games.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson. Round 2 adds cards that do not belong and a step in the wrong
+   * place. Round 3 goes far past it: eight steps, a barrier that disappears too soon, the "one generation" trap, the breeding test for a species,
+   * and then two questions from small pools of very hard puzzles.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  /* ---------------- the examples: the same six steps in different places ---------------- */
+  var SCEN = [
+    { id: 'finches', name: 'Darwin’s finches (a model of what happened)', real: true, org: 'finches', place: 'on one island of the Galápagos', bar: 'some finches cross the sea to a new island, and the sea keeps the two groups apart', cond: 'big, hard seeds on one island and small, soft seeds on the other', sel: 'deep beaks survive on one island and slim beaks on the other' },
+    { id: 'shrimp', name: 'Snapping shrimp and the Isthmus of Panama (real, simplified)', real: true, org: 'snapping shrimp', place: 'in the sea along the coast of Central America', bar: 'the land of Panama rises out of the sea, and the sea no longer connects the two coasts', cond: 'warm, clear water on one side and cooler, richer water on the other', sel: 'different alleles help the shrimp survive in each kind of water' },
+    { id: 'beetles', name: 'An invented example: beetles', real: false, org: 'beetles', place: 'in one valley', bar: 'a lava flow splits the valley in two', cond: 'hot and dry on one side and cool and damp on the other', sel: 'dark shells survive on the dry side and pale shells on the damp side' },
+    { id: 'mice', name: 'An invented example: mice', real: false, org: 'mice', place: 'on a long peninsula', bar: 'the sea rises and cuts the peninsula into two islands', cond: 'cold and windy on one island and mild and sheltered on the other', sel: 'thick fur helps on the cold island and thin fur on the mild one' },
+    { id: 'frogs', name: 'An invented example: frogs', real: false, org: 'frogs', place: 'in one rainforest', bar: 'a river changes course and splits the forest', cond: 'deep shade on one bank and bright sun on the other', sel: 'green skin survives in the shade and yellow-brown skin in the sun' },
+    { id: 'fish', name: 'An invented example: fish', real: false, org: 'fish', place: 'in one large lake', bar: 'the water level falls and the lake dries into two ponds', cond: 'salty water in one pond and fresh water in the other', sel: 'alleles for coping with salt survive in one pond and alleles for fresh water in the other' },
+    { id: 'snails', name: 'An invented example: snails', real: false, org: 'snails', place: 'on one wide hillside', bar: 'a new mountain ridge rises across the hillside', cond: 'bare, windy rock on one side and thick grass on the other', sel: 'thick shells survive on the rock and thin shells in the grass' },
+    { id: 'flowers', name: 'An invented example: flowers', real: false, org: 'flowering plants', place: 'across one meadow', bar: 'a wide new road is built across the meadow', cond: 'many bees on one side and many moths on the other', sel: 'bright petals are pollinated on one side and pale, scented petals on the other' }
+  ];
+  var ROLES6 = ['one', 'barrier', 'cond', 'sel', 'build', 'split'];
+  var ROLES8 = ['one', 'barrier', 'geneflow', 'cond', 'sel', 'build', 'differ', 'split'];
+  function stepText(role, sc) {
+    switch (role) {
+      case 'one': return 'One population of ' + sc.org + ' lives ' + sc.place + ' and breeds together.';
+      case 'barrier': return 'A barrier forms: ' + sc.bar + '. The population is split into two groups that cannot meet.';
+      case 'geneflow': return 'Gene flow between the two groups stops.';
+      case 'cond': return 'The two groups live in different conditions: ' + sc.cond + '.';
+      case 'sel': return 'Natural selection works differently in each group: ' + sc.sel + '.';
+      case 'build': return 'Over many generations the differences build up in the two gene pools.';
+      case 'differ': return 'The groups now differ in looks, behaviour, breeding time or genes.';
+      case 'split': return 'The two groups can no longer interbreed: they are two species.';
+    }
+  }
+  var LABEL = { one: 'One population, one gene pool', barrier: 'A barrier splits it in two', geneflow: 'Gene flow stops', cond: 'Different conditions on each side', sel: 'Different natural selection in each group', build: 'Differences build up over many generations', differ: 'The groups differ in looks, behaviour, breeding time or genes', split: 'They can no longer interbreed' };
+  var WHY = {
+    one: 'Speciation starts with ONE population that breeds together.',
+    barrier: 'Without a population there is nothing to split. The barrier keeps the groups apart.',
+    geneflow: 'The barrier is what stops animals moving between the groups, so gene flow stops once it forms.',
+    cond: 'Only once the groups are apart can they live in different conditions.',
+    sel: 'Selection depends on the conditions: what helps survival is different on each side.',
+    build: 'Each generation changes a gene pool only a little, so the differences need many generations to build up.',
+    differ: 'Many small changes add up to differences in looks, behaviour, breeding time or genes.',
+    split: 'Only when the differences are big enough can the groups no longer interbreed.'
+  };
+  /* cards that do NOT belong to the process: each is a known mistake */
+  var DIS = [
+    { id: 'x_lamarck', text: 'Each animal changes its own body during its life to suit its place, and passes the change on.', tag: 'lamarck', msg: 'Animals do not change themselves to suit a place. Selection acts on variation that is already there.' },
+    { id: 'x_onegen', text: 'A single mutation turns one animal into a new species.', tag: 'onegen', msg: 'One mutation is one new allele in one gene pool. A new species needs many differences, and that takes many generations.' },
+    { id: 'x_choose', text: 'The two groups decide to stop breeding together.', tag: 'choose', msg: 'Animals do not choose to become separate species. They stop interbreeding because of the differences that built up.' },
+    { id: 'x_stillbreed', text: 'The two groups keep breeding together all the time.', tag: 'stillbreed', msg: 'If the groups keep interbreeding, alleles keep mixing (gene flow) and they stay one species.' },
+    { id: 'x_needs', text: 'The animals change because they need to, and then they cannot breed together.', tag: 'lamarck', msg: 'Need does not cause change. The alleles that already help in a place become more common.' },
+    { id: 'x_instant', text: 'The barrier forms and the two groups are two species at once.', tag: 'instant', msg: 'A barrier only keeps the groups apart. Becoming two species takes many generations of different selection.' }
+  ];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    var scPool = shuffle(SCEN);
+    var nextScen = function () { return scPool.shift(); };
+    var disPool = shuffle(DIS);
+    var nextDis = function (n) { var out = []; for (var i = 0; i < n; i++) out.push(disPool.shift()); return out; };
+    function arrange(correct, wrongs) { var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) }; }
+    var W = function (text, tag, msg) { return { text: text, tag: tag, msg: msg }; };
+    var R = function (text) { return { text: text, tag: null, msg: '' }; };
+    function mcq(cat, kind, prompt, right, wrongs, explain, extra) {
+      var a = arrange(R(right), wrongs.map(function (w) { return W(w[0], w[1], w[2]); }));
+      var o = { prompt: prompt, options: a.options, correctIndex: a.correctIndex, explain: explain };
+      if (extra) Object.keys(extra).forEach(function (k) { o[k] = extra[k]; });
+      return Q(cat, kind, o);
+    }
+
+    /* ---------------- sequencing: tap the cards in order ---------------- */
+    function orderQ(kind, roles, sc, nDis, prompt, hint) {
+      var dis = nextDis(nDis);
+      var cards = roles.map(function (r) { return { id: r, text: stepText(r, sc), label: LABEL[r] }; }).concat(dis.map(function (d) { return { id: d.id, text: d.text, label: d.text }; }));
+      return Q('order', kind, {
+        prompt: prompt, hint: hint, scen: sc.id, scenName: sc.name, real: sc.real, roles: roles.slice(), cards: shuffle(cards), correct: roles.slice(), distract: dis.map(function (d) { return d.id; }),
+        explain: roles.map(function (r, i) { return (i + 1) + '. ' + LABEL[r] + '. ' + WHY[r]; })
+      });
+    }
+    var tapIn = 'Tap the steps in the order they happen. Tap Undo to take the last one back.';
+    var tapLeave = function (n, what) { return 'Tap the steps in the order they happen, and leave out ' + what + '. Tap Undo to take the last one back.'; };
+
+    /* ---------------- definitions ---------------- */
+    function speciesDef() {
+      if (rnd() < 0.5) {
+        return mcq('species', 'speciesDef', pick(['Which is the best definition of a species?', 'A student writes a definition of a species. Which one would a scientist accept?']),
+          'A group of living things that can breed together and produce fertile offspring.',
+          [['A group of living things that look the same.', 'lookalike', 'Looks do not decide it. All dogs are one species and they look very different.'], ['A group of living things that live in the same place.', 'sameplace', 'Living in the same place does not decide it. Two different species can share a place.'], ['A group of living things that can breed together.', 'nofertile', 'The young must be fertile too. A horse and a donkey can breed, but the mule is almost always sterile.']],
+          ['A species is a group that can breed together AND produce fertile offspring.', 'Fertile: the young can have young.']);
+      }
+      return mcq('species', 'speciationDef', pick(['What is speciation?', 'Which statement defines speciation?']),
+        'The formation of a new species from an existing one.',
+        [['The change in one animal during its own life.', 'lifetime', 'Speciation is about populations over many generations, not about one animal changing.'], ['The death of every member of a species.', 'extinct', 'That is extinction. Speciation makes a NEW species.'], ['Two different species breeding together.', 'hybrid', 'Speciation is the formation of a new species from an existing one.']],
+        ['Speciation is the formation of a new species from an existing one.']);
+    }
+    var RIGHT_PAIRS = ['a poodle and a labrador, whose puppies can have puppies', 'two groups of oak trees whose seeds grow into oaks that can make seeds', 'a collie and a spaniel, whose puppies can breed', 'a tabby cat and a Siamese cat, whose kittens can breed'];
+    var WRONG_PAIRS = [['a horse and a donkey, whose young, a mule, cannot have young', 'sterile'], ['a cat and a dog, which cannot have young together at all', 'noyoung'], ['two groups of beetles that mate, but whose eggs never hatch', 'nohatch'], ['two groups of fish that mate, but whose young are all sterile', 'sterile']];
+    function speciesPair() {
+      var right = pick(RIGHT_PAIRS), wr = shuffle(WRONG_PAIRS).slice(0, 3).map(function (w) { return [w[0], w[1], w[1] === 'sterile' ? 'They can breed, but the young cannot have young, so they are not the same species.' : w[1] === 'noyoung' ? 'They cannot even produce young together, so they are different species.' : 'The eggs never hatch: no fertile young, so they are different species.']; });
+      return mcq('species', 'speciesPair', pick(['Which pair are the SAME species?', 'Which pair belong to ONE species?']), right.charAt(0).toUpperCase() + right.slice(1) + '.', wr.map(function (w) { return [w[0].charAt(0).toUpperCase() + w[0].slice(1) + '.', w[1], w[2]]; }),
+        ['The same species can breed together and the young are fertile.'], { right: right });
+    }
+
+    /* ---------------- which step? ---------------- */
+    function nextStep(sc) {
+      var k = int(2, 4), shown = ROLES6.slice(0, k), nextRole = ROLES6[k];
+      var wr = ROLES6.filter(function (r) { return r !== nextRole && shown.indexOf(r) < 0 || shown.indexOf(r) >= 0; }).filter(function (r) { return r !== nextRole; });
+      var picks = shuffle(wr.filter(function (r) { return shown.indexOf(r) >= 0; })).slice(0, 1).concat(shuffle(wr.filter(function (r) { return shown.indexOf(r) < 0; })).slice(0, 2));
+      var o = mcq('steps', 'nextStep', 'What happens NEXT?', LABEL[nextRole],
+        picks.map(function (r) { return shown.indexOf(r) >= 0 ? [LABEL[r], 'repeat', 'That has already happened. Look at the steps so far.'] : [LABEL[r], 'skip', 'That comes later. Something has to happen first: ' + WHY[nextRole]]; }),
+        ['Next: ' + LABEL[nextRole] + '.', WHY[nextRole]], { shown: shown.map(function (r) { return stepText(r, sc); }), shownRoles: shown, nextRole: nextRole, scen: sc.id, scenName: sc.name, real: sc.real });
+      return o;
+    }
+    function missingStep(sc) {
+      var gap = int(1, 4), roles = ROLES6.slice(), removed = roles[gap], dis = nextDis(3);
+      var shown = roles.map(function (r, i) { return i === gap ? null : stepText(r, sc); });
+      var o = mcq('steps', 'missingStep', 'One step is missing. Which step goes in the gap?', stepText(removed, sc),
+        dis.map(function (d) { return [d.text, d.tag, d.msg]; }), ['The missing step is: ' + LABEL[removed] + '.', WHY[removed]],
+        { shown: shown, gap: gap, removedRole: removed, scen: sc.id, scenName: sc.name, real: sc.real });
+      return o;
+    }
+    function wrongPlace(sc) {
+      for (var tries = 0; tries < 500; tries++) {
+        var m = int(0, 5), p = int(0, 5); if (Math.abs(m - p) < 2) continue;
+        var seq = ROLES6.slice(); seq.splice(m, 1); seq.splice(p, 0, ROLES6[m]);
+        var fixers = 0; for (var e = 0; e < 6; e++) { var t = seq.slice(); var x = t.splice(e, 1)[0]; var ok = false; for (var q = 0; q < 6 && !ok; q++) { var u = t.slice(); u.splice(q, 0, x); if (u.join() === ROLES6.join()) ok = true; } if (ok) fixers++; }
+        if (fixers !== 1) continue;
+        var role = ROLES6[m], others = shuffle(ROLES6.filter(function (r) { return r !== role; })).slice(0, 3);
+        return mcq('steps', 'wrongPlace', 'These steps are in order EXCEPT one. Which step is in the wrong place?', LABEL[role],
+          others.map(function (r) { return [LABEL[r], 'notmoved', 'That step is in the right place. Check where "' + LABEL[role] + '" should go.']; }),
+          ['"' + LABEL[role] + '" is in the wrong place.', WHY[role]], { shown: seq.map(function (r) { return LABEL[r]; }), seqRoles: seq, movedRole: role, scen: sc.id, scenName: sc.name, real: sc.real });
+      }
+      throw new Error('wrongPlace stuck');
+    }
+
+    /* ---------------- why, how long, the test for a species ---------------- */
+    function whyNoInterbreed() {
+      return mcq('reasons', 'whyNoInterbreed', pick(['After many generations the two isolated groups can no longer interbreed. Why?', 'Why can two groups that were isolated for a very long time no longer interbreed?']),
+        'Differences built up (in looks, song, breeding time or genes), so they no longer mate, or any young are sterile.',
+        [['They live too far apart to meet.', 'distance', 'Distance began it. Groups that meet again still do not interbreed once the differences have built up.'], ['They decided not to breed together.', 'choose', 'Animals do not choose to become separate species.'], ['One mutation made them different species.', 'onegen', 'One mutation is one new allele, not enough to stop two groups interbreeding.']],
+        ['The groups changed in different ways over many generations.', 'The differences (looks, behaviour, breeding time, genes) mean they no longer recognise each other as mates, or the young are sterile.']);
+    }
+    function arches() {
+      return mcq('ancestors', 'arches', pick(['Fish, chicken and human embryos all have pharyngeal arches. Which explanation fits speciation?', 'Why do fish, chickens and humans all build pharyngeal arches as embryos?']),
+        'They share an ancestor that had pharyngeal arches, and every split in the family tree kept them.',
+        [['A human embryo turns into a fish first.', 'turnfish', 'No animal turns into another. The arches are inherited from an ancestor they share.'], ['It is a coincidence: the arches evolved three times.', 'coincidence', 'The same structure in the same place is far more likely to be inherited from a common ancestor.'], ['Every embryo needs gills to breathe.', 'gills', 'Human embryos do not breathe through gills. The arches become the jaw and the ear.']],
+        ['Each split in the family tree keeps what the ancestor had.', 'The ancestor of the vertebrates had pharyngeal arches, so fish, chickens and humans all still build them.']);
+    }
+
+    /* ---------------- round 3 ---------------- */
+    function barrierGone() {
+      return mcq('reasons', 'barrierGone', 'A barrier splits one population into two groups. Before they have changed much, the barrier disappears and the groups meet again. What happens?',
+        'They interbreed again and stay one species, because their gene pools mix.',
+        [['They are now two species, because they were separated.', 'sepisspecies', 'Being separated is not enough. Without many generations of different selection they are still one species.'], ['They cannot interbreed, because they were once apart.', 'sepnobreed', 'They can still breed together and have fertile young, so they interbreed.'], ['They become two species anyway, a little later.', 'anyway', 'Once the gene pools mix again, nothing keeps them different.']],
+        ['The groups had not changed enough, so they still breed together and the young are fertile.', 'Speciation needs a barrier that lasts long enough for the differences to build up.']);
+    }
+    function timeTrap() {
+      return mcq('reasons', 'timeTrap', pick(['Which statement about the time speciation takes is correct?', 'How long does speciation take?']),
+        'Many generations, because each generation changes a gene pool only a little.',
+        [['One generation: a single mutation makes a new species.', 'onegen', 'A mutation is one new allele in one gene pool. It cannot make a new species alone.'], ['A few generations, once the barrier forms.', 'few', 'A few generations is far too few for the differences to build up.'], ['It happens as soon as the two groups look different.', 'lookdiff', 'Looking different is not enough. The test is whether they can still interbreed and have fertile young.']],
+        ['Speciation is a process over many thousands of generations, not an event.']);
+    }
+    function squirrels() {
+      var yrs = pick(['10,000', '20,000', '50,000']), trait = pick(['tail colour', 'belly colour', 'body size']);
+      return mcq('species', 'squirrels', 'Two groups of squirrels have been apart for ' + yrs + ' years and differ in ' + trait + '. When they meet, they breed and their young are fertile. How many species are there?',
+        'One species: they can still breed together and have fertile young.',
+        [['Two species, because they look different.', 'lookdiff', 'Looks do not decide it. The test is whether they breed and have fertile young.'], ['Two species, because they were apart for a very long time.', 'timeisall', 'Time apart helps, but the test is whether they can still breed and have fertile young.'], ['It cannot be known until their DNA is tested.', 'dna', 'The breeding test already answers it: fertile young means one species.']],
+        ['They breed and the young are fertile, so they are still one species.', 'Speciation has started (steps 1 to 5) but step 6, no longer interbreeding, has not happened.'], { yrs: yrs, trait: trait });
+    }
+    function whichIsSpeciation() {
+      var t = pick(['a million years', 'about 500,000 years', 'a hundred thousand years']);
+      var right = 'Apart for ' + t + '. They now mate, but all the young are sterile.';
+      return mcq('puzzle', 'whichIsSpeciation', 'Which pair of groups has COMPLETED speciation?', right,
+        [['Apart for ' + pick(['10,000 years', '20,000 years']) + '. They sing different songs, but they breed when put together and the young are fertile.', 'notyet', 'They still breed and have fertile young, so they are one species. Speciation has not finished.'], ['Apart for a million years. They look very different, but they breed when put together and the young are fertile.', 'lookdiff', 'Time and looks do not decide it. Fertile young means one species.'], ['Apart for ' + pick(['5,000 years', '8,000 years']) + '. They have different colours, but they mate and all the young are fertile.', 'notyet', 'Different colours are not enough. They still interbreed with fertile young.']],
+        ['Speciation is complete when the groups can no longer produce fertile young together.'], { time: t });
+    }
+    function founderDrift() {
+      return mcq('puzzle', 'founderDrift', 'A few finches reach a new island and found a small population. Why might chance (genetic drift) matter more for them than for the large population they left?',
+        'A small group is a small random sample, so its allele frequencies can be far from the original mix.',
+        [['Drift only happens on islands.', 'islandonly', 'Drift happens in any population. It matters most when the population is small.'], ['Drift is natural selection working faster.', 'driftsel', 'Drift is chance. Natural selection is not random: the trait decides who survives.'], ['Small groups cannot have mutations.', 'nomut', 'Small groups can have mutations. The point is that chance changes the alleles they inherit.']],
+        ['A small founding group is a small random sample of the gene pool, so chance has a bigger effect (Lesson 7).']);
+    }
+    function arches2() {
+      return mcq('puzzle', 'arches2', 'Fish, chickens and humans all build pharyngeal arches, but only fish use them for gills. Which statement is correct?',
+        'Their shared ancestor had arches. Each line kept them and changed what they become.',
+        [['Humans lost the arches and grew new ones by chance.', 'regrow', 'Nothing was lost and regrown. The arches were inherited and then used differently.'], ['Chickens and humans came from today’s fish.', 'fromfish', 'They share an ancestor with fish. They did not come from the fish alive today.'], ['The arches evolved separately in each animal.', 'coincidence', 'The same structure in the same place points to inheritance from one ancestor.']],
+        ['Every split in the family tree keeps what the ancestor had; each line then changes how it is used.']);
+    }
+    function secondSplit() {
+      var L = shuffle(['X', 'Y', 'Z', 'P', 'Q', 'R', 'S', 'T']).slice(0, 3), x = L[0], y = L[1];
+      var x1 = x + '1', x2 = x + '2';
+      return mcq('puzzle', 'secondSplit', 'A species splits into ' + x + ' and ' + y + '. Later ' + x + ' is split by a barrier into ' + x1 + ' and ' + x2 + '. Which statement is true?',
+        x1 + ' and ' + x2 + ' share a more recent common ancestor with each other than either does with ' + y + '.',
+        [[x1 + ', ' + x2 + ' and ' + y + ' are all equally closely related.', 'equal', 'The ' + x + ' line split later, so ' + x1 + ' and ' + x2 + ' are the closer pair.'], [y + ' is the ancestor of ' + x1 + ' and ' + x2 + '.', 'ancestor', y + ' is a separate branch that split off earlier. It is not their ancestor.'], [x1 + ' and ' + y + ' share a more recent common ancestor than ' + x1 + ' and ' + x2 + '.', 'backwards', 'The later split makes ' + x1 + ' and ' + x2 + ' the closer pair.']],
+        ['Each split makes two branches. ' + x1 + ' and ' + x2 + ' split from each other after ' + x + ' split from ' + y + '.'], { x: x, y: y });
+    }
+
+    var poolA = [function () { return orderQ('orderHard2', ROLES8, nextScen(), 2, 'Two cards do not belong. Put the eight steps in order and leave out both cards that do not belong.', tapLeave(2, 'the two cards that do not belong')); }, whichIsSpeciation, founderDrift];
+    var poolB = [arches2, secondSplit];
+    var plan = [
+      [function () { var st = int(0, 2); return orderQ('order4', ROLES6.slice(st, st + 4), nextScen(), 0, 'Put these four steps of speciation in the order they happen.', tapIn); }, speciesDef, function () { return orderQ('order6', ROLES6, nextScen(), 0, 'Put the six steps of speciation in the order they happen.', tapIn); }, speciesPair, function () { return nextStep(nextScen()); }, function () { return orderQ('order6', ROLES6, nextScen(), 0, 'Put the six steps of speciation in the order they happen.', tapIn); }],
+      [function () { return missingStep(nextScen()); }, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, 'One card does not belong. Put the six steps in order and leave out the card that does not belong.', tapLeave(1, 'the card that does not belong')); }, whyNoInterbreed, function () { return wrongPlace(nextScen()); }, arches, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, 'One card does not belong. Put the six steps in order and leave out the card that does not belong.', tapLeave(1, 'the card that does not belong')); }],
+      [function () { return orderQ('order8', ROLES8, nextScen(), 0, 'Put the eight steps in order.', tapIn); }, barrierGone, timeTrap, squirrels, function () { return pick(poolA)(); }, function () { return pick(poolB)(); }]
+    ];
+    var out = [];
+    plan.forEach(function (r, ri) { r.forEach(function (make, qi) { var q = make(); q.round = ri + 1; q.n = qi + 1; out.push(q); }); });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Put it in order', 'Why that order?', 'Beat the game'];
+  var CATS = { order: 'Putting the steps in order', species: 'Species and speciation', steps: 'Which step?', reasons: 'Why and how long', ancestors: 'Evidence and ancestors', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    nobarrier: 'The barrier comes FIRST. While the groups can still interbreed, alleles keep mixing and they stay one species.', selbeforecond: 'Selection works on the conditions, so the conditions must differ first.', instant: 'Speciation is not instant. The groups can only stop interbreeding after the differences have built up over many generations.',
+    notfirst: 'The story starts with ONE population that breeds together.', buildfirst: 'The differences can only build up after selection has started to work differently in each group.', order: 'Ask what has to be true before each step can happen.',
+    lamarck: 'Animals do not change themselves to suit a place. Selection acts on variation that is already there.', onegen: 'One mutation cannot make a new species. It takes many generations.', choose: 'Animals do not choose to become separate species.', stillbreed: 'Groups that keep interbreeding stay one species.',
+    lookalike: 'Looks do not decide a species.', sameplace: 'Living in the same place does not decide a species.', nofertile: 'The young must be fertile too.', lifetime: 'Speciation is about populations over many generations.', extinct: 'Extinction is not speciation.', hybrid: 'Speciation forms a NEW species from an existing one.',
+    sterile: 'Fertile young are the test: sterile young mean two species.', noyoung: 'No young at all means two species.', nohatch: 'No fertile young means two species.',
+    repeat: 'Look at the steps already done.', skip: 'Something has to happen first.', notmoved: 'Check each step against the reason it comes after the one before.',
+    distance: 'Distance begins it. The differences that build up finish it.', turnfish: 'No animal turns into another. They share an ancestor.', coincidence: 'The same structure inherited from one ancestor is likelier than a coincidence.', gills: 'Human embryos do not breathe through gills.',
+    sepisspecies: 'Being separated is not enough. The differences must build up.', sepnobreed: 'Groups that did not change enough still interbreed.', anyway: 'Once the gene pools mix again, nothing keeps them different.', few: 'A few generations is far too few.', lookdiff: 'Looking different is not the test. Breeding with fertile young is.',
+    timeisall: 'Time apart helps, but the test is fertile young.', dna: 'The breeding test already answers it.', notyet: 'If they still have fertile young together, speciation is not complete.',
+    islandonly: 'Drift happens in any population, and matters most when it is small.', driftsel: 'Drift is chance. Selection is not.', nomut: 'Small groups can have mutations.', regrow: 'The arches were inherited, not lost and regrown.', fromfish: 'They share an ancestor with fish. They did not come from today’s fish.',
+    equal: 'The later split makes the closer pair.', ancestor: 'A separate branch is not the ancestor.', backwards: 'The later split makes the closer pair.'
+  };
+  var GENERIC = 'Read the question again. Ask what has to be true before each step can happen. Speciation needs a barrier, different selection and many generations.';
+
+  var app = document.getElementById('app');
+  var state, chosen, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; chosen = []; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  var isOrder = function (Q) { return Q.cat === 'order'; };
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  var cardById = function (Q, id) { for (var i = 0; i < Q.cards.length; i++) if (Q.cards[i].id === id) return Q.cards[i]; return null; };
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.shown) d += ' | ' + Q.shown.map(function (s) { return s === null ? '?' : s; }).join(' ; ');
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    if (Q.cards) d += ' | ' + Q.cards.map(function (c) { return c.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Speciation Sequencer'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before. Put the steps of speciation in order, and say why.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the reasons.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'Some examples are real (Darwin’s finches, the snapping shrimp of Panama) and some are invented. Each example says which. Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  function question() {
+    clear(); state.screen = 'question'; chosen = []; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    var html = '<p class="ask">' + esc(Q.prompt) + '</p>';
+    if (Q.scenName) html += '<p class="tag">' + esc(Q.scenName) + '</p>';
+    if (Q.shown) html += '<ol class="shown">' + Q.shown.map(function (s) { return s === null ? '<li class="gap">? (the missing step)</li>' : '<li>' + esc(s) + '</li>'; }).join('') + '</ol>';
+    if (isOrder(Q)) html += '<p class="sub">' + esc(Q.hint) + '</p>';
+    card.innerHTML = html; card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isOrder(Q)) {
+      var pick = el('div', 'pick'); pick.id = 'pick';
+      Q.cards.forEach(function (c, k) {
+        var b = el('button', 'cardstep', '<b>·</b><span>' + esc(c.text) + '</span>');
+        b.type = 'button'; b.dataset.id = c.id; b.dataset.k = String(k + 1); b.onclick = function () { tapCard(c.id); }; pick.appendChild(b);
+      });
+      app.appendChild(pick);
+      var tools = el('div', 'tools');
+      var undo = el('button', 'btn ghost small', 'Undo'); undo.id = 'undo'; undo.type = 'button'; undo.onclick = undoLast; tools.appendChild(undo);
+      var go = el('button', 'btn small', 'Check'); go.id = 'check'; go.type = 'button'; go.disabled = true; go.onclick = checkOrder; tools.appendChild(go);
+      app.appendChild(tools);
+    } else {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var go2 = el('button', 'btn hide', 'Next'); go2.id = 'nextbtn'; go2.type = 'button'; go2.onclick = next; app.appendChild(go2);
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function need(Q) { return Q.correct.length; }
+  function paintOrder() {
+    var Q = q();
+    document.querySelectorAll('.cardstep').forEach(function (b) {
+      var pos = chosen.indexOf(b.dataset.id);
+      b.classList.toggle('on', pos >= 0); b.querySelector('b').textContent = pos >= 0 ? String(pos + 1) : '·';
+      b.disabled = locked || (pos < 0 && chosen.length >= need(Q));
+    });
+    var go = document.getElementById('check'); if (go) go.disabled = locked || chosen.length !== need(Q);
+    var u = document.getElementById('undo'); if (u) u.disabled = locked || !chosen.length;
+  }
+  function tapCard(id) { if (state.screen !== 'question' || locked) return; var Q = q(); var pos = chosen.indexOf(id); if (pos >= 0) { if (pos === chosen.length - 1) chosen.pop(); } else if (chosen.length < need(Q)) chosen.push(id); paintOrder(); }
+  function undoLast() { if (state.screen !== 'question' || locked) return; chosen.pop(); paintOrder(); }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; checkMCQ(k); }
+
+  function workHtml(Q) {
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return expl ? '<div class="work">' + expl + '</div>' : '';
+  }
+  function labelOf(Q, id) { var c = cardById(Q, id); return c ? (Q.cards && c.label ? c.label : c.text) : id; }
+  function correctText(Q) { return isOrder(Q) ? Q.correct.map(function (r, i) { return (i + 1) + '. ' + LABEL[r]; }).join('  ') : Q.options[Q.correctIndex].text; }
+  function orderMistake(Q, seq) {
+    for (var i = 0; i < seq.length; i++) if (Q.distract.indexOf(seq[i]) >= 0) { for (var d = 0; d < DIS.length; d++) if (DIS[d].id === seq[i]) return { tag: DIS[d].tag, msg: '"' + DIS[d].text + '" does not belong. ' + DIS[d].msg }; }
+    var pos = -1; for (var j = 0; j < Q.correct.length; j++) if (seq[j] !== Q.correct[j]) { pos = j; break; }
+    if (pos < 0) return { tag: null, msg: '' };
+    var placed = seq[pos], needed = Q.correct[pos], tag = 'order', msg;
+    var later = Q.correct.indexOf(placed), nowDue = pos;
+    if (pos === 0) { tag = 'notfirst'; msg = 'You started with "' + LABEL[placed] + '". ' + WHY.one; }
+    else if (placed === 'split') { tag = 'instant'; msg = 'You put "They can no longer interbreed" too early. ' + HABIT.instant; }
+    else if (needed === 'barrier') { tag = 'nobarrier'; msg = 'You put "' + LABEL[placed] + '" before the barrier. ' + HABIT.nobarrier; }
+    else if (placed === 'sel' && needed === 'cond') { tag = 'selbeforecond'; msg = 'You put selection before the different conditions. ' + HABIT.selbeforecond; }
+    else if (placed === 'build' && (needed === 'sel' || needed === 'cond')) { tag = 'buildfirst'; msg = 'You put "Differences build up" too early. ' + HABIT.buildfirst; }
+    else msg = 'Step ' + (pos + 1) + ' should be "' + LABEL[needed] + '", not "' + LABEL[placed] + '". ' + WHY[needed];
+    return { tag: tag, msg: msg };
+  }
+  function finishCheck(ok, tag, msg, head, wrote) {
+    var Q = q();
+    state.results[idx()] = { ok: ok, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + '<p class="how">' + (isOrder(Q) ? 'The right order, and why:' : 'Why:') + '</p>' + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function checkMCQ(picked) {
+    var Q = q(), ok = picked === Q.correctIndex, tag = null, msg = '';
+    if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+    document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    finishCheck(ok, tag, msg, ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text, Q.options[picked].text);
+  }
+  function checkOrder() {
+    var Q = q(); if (state.screen !== 'question' || locked || chosen.length !== need(Q)) return;
+    var seq = chosen.slice(), ok = seq.join() === Q.correct.join(), tag = null, msg = '';
+    if (!ok) { var m = orderMistake(Q, seq); tag = m.tag || 'order'; msg = m.msg || GENERIC; }
+    locked = true;
+    document.querySelectorAll('.cardstep').forEach(function (b) { b.disabled = true; var pos = seq.indexOf(b.dataset.id); if (pos >= 0) b.classList.add(seq[pos] === Q.correct[pos] ? 'ok' : 'bad'); });
+    locked = false;
+    finishCheck(ok, tag, msg, ok ? 'Correct.' : 'Not quite.', seq.map(function (id, i) { return (i + 1) + '. ' + labelOf(Q, id); }).join('  '));
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (locked || document.getElementById('nextbtn') && !document.getElementById('nextbtn').classList.contains('hide')) { if (!document.getElementById('nextbtn').classList.contains('hide')) next(); return; }
+      if (isOrder(Q)) checkOrder();
+      return;
+    }
+    if (isOrder(Q)) {
+      if (e.key === 'Backspace') { e.preventDefault(); undoLast(); return; }
+      if (/^[0-9]$/.test(e.key) && !locked) { var k = e.key === '0' ? 10 : parseInt(e.key, 10); var c = Q.cards[k - 1]; if (c) { e.preventDefault(); tapCard(c.id); } }
+      return;
+    }
+    if (/^[1-4]$/.test(e.key) && !locked) { var k2 = parseInt(e.key, 10) - 1; if (k2 < Q.options.length) { e.preventDefault(); pressOpt(k2); } }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

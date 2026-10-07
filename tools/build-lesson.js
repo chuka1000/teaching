@@ -9,6 +9,9 @@
  *   lib/animate.js             writes <p:timing> into the deck
  *   lib/autoplay-media.js      makes the timer video its own clock
  *   tools/validate.js          structural + speaker-notes check
+ *   tools/check-builds.py      every click build and transition the spec asks for is in the deck
+ *   tools/check-timers.py      a timer on every slide, running outside the click sequence
+ *   tools/record-lesson.py     records class, unit, lesson in reference/MANIFEST.tsv
  *
  * then renders it so it can actually be looked at:
  *
@@ -44,14 +47,15 @@ function which(cmd) {
 function step(label, cmd, args) {
   console.log(`\n▶ ${label}`);
   console.log(`  $ ${cmd} ${args.join(' ')}`);
-  const r = spawnSync(cmd, args, { cwd: ROOT, stdio: 'inherit' });
+  const r = spawnSync(cmd, args, { cwd: ROOT, stdio: 'inherit', env: { ...process.env, LESSON_PIPELINE: '1' } });
   if (r.error) fail(`${label} could not be run — ${r.error.message}`);
   if (r.status !== 0) fail(`${label} failed (exit code ${r.status})`);
 }
 
 const slug = process.argv[2];
+const extra = process.argv.slice(3);   // optional: --class C --unit U --lesson N, passed to record-lesson.py
 if (!slug) {
-  console.error('usage: node tools/build-lesson.js <lesson-slug>');
+  console.error('usage: node tools/build-lesson.js <lesson-slug> [--class C] [--unit U] [--lesson N]');
   console.error('       npm run lesson -- <lesson-slug>');
   process.exit(1);
 }
@@ -97,6 +101,19 @@ step('autoplay injector', 'node', ['lib/autoplay-media.js', deckRel]);
 /* ---- 5. validate ---------------------------------------------------- */
 step('validator', 'node', ['tools/validate.js', deckRel]);
 
+/* ---- 5a. the deck must really be animated --------------------------------
+ * A deck with no builds renders fine and passes validate.js, but its Do Now answers all show at
+ * once. These two checks fail the build if the animations or the timers are not there. */
+step('builds and transitions match the spec', 'python3', ['tools/check-builds.py', deckRel]);
+step('timers', 'python3', ['tools/check-timers.py', deckRel]);
+
+/* ---- 5b. record ------------------------------------------------------
+ * Written to reference/MANIFEST.tsv from the deck's OWN dc:title and dc:subject, while it is
+ * still exactly as built. Re-saving a deck later in Keynote or PowerPoint cannot touch this.
+ * The subject is '<Year> <Subject> · <Unit> · Lesson <N> · <class code>' (see CLAUDE.md). A deck
+ * whose class cannot be worked out stops the build: an unrecorded lesson is how the index went wrong. */
+step('record in reference/MANIFEST.tsv', 'python3', ['tools/record-lesson.py', '--deck', deckRel, ...extra]);
+
 /* ---- 6. render: PDF, then one PNG per slide ------------------------ */
 if (!which('python3')) fail('python3 not found on PATH — needed for tools/make-preview.py');
 if (!which('soffice')) fail('LibreOffice (soffice) not found on PATH — brew install --cask libreoffice');
@@ -122,6 +139,17 @@ step('render PNGs', 'pdftoppm', ['-png', '-r', '110', previewPdfRel, path.join(c
 
 const pngs = fs.readdirSync(checkDir).filter((f) => f.endsWith('.png')).sort();
 if (!pngs.length) fail(`pdftoppm produced no PNGs in ${checkDirRel}/`);
+
+/* phase minutes, read from the finished deck, in SLIDE order: no need to re-run build/<slug>.js to see them */
+{
+  const names = (spawnSync('unzip', ['-Z1', deckPath], { encoding: 'utf8' }).stdout || '').split('\n')
+    .filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b) => parseInt(a.match(/\d+/)[0], 10) - parseInt(b.match(/\d+/)[0], 10));
+  const mins = names.map((n) => {
+    const x = spawnSync('unzip', ['-p', deckPath, n], { encoding: 'utf8', maxBuffer: 1 << 26 }).stdout || '';
+    const m = x.match(/<a:t>[A-Z][A-Z ]+ · (\d+) MIN<\/a:t>/); return m ? +m[1] : 0;
+  });
+  console.log(`\nphase minutes: ${mins.join(', ')} = ${mins.reduce((a, b) => a + b, 0)} min`);
+}
 
 console.log(`\n✓ ${lessonName} built, validated and rendered`);
 console.log(`  deck:   ${deckRel}`);

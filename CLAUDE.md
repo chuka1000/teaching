@@ -10,20 +10,47 @@ changing anything in `lib/`.
 
 ---
 
+## Work out what you can't do before you start, not after
+
+- **Before building, say what you are going to produce.** If something cannot be
+  done (a missing file, an unresolvable fact, a dependency that is not there), say
+  so then and stop. A question before costs one message; a half-built lesson costs a
+  rebuild.
+- **Never ship a deck that references a file that does not exist.** A slide pointing
+  at a missing game is broken, not incomplete. (`tools/check-builds.py` fails the
+  build if a slide names "<Lesson> game" and the file is not there.)
+- **If a spec file you need is absent, stop and ask.** Do not fall back to an older
+  shape: that produces work that has to be redone.
+- **Verification scripts are part of the build, not an extra.** If numbers go in a
+  deck, the script that checked them is in the repo (`build/<slug>-check.py`) and has
+  been run. "Checked by hand" is not checked.
+
+This is not about hiding uncertainty. Keep flagging what genuinely cannot be
+resolved (which of two classes, a lesson number that is not written down). The rule
+is about not deferring work you could have done, or asked about, first.
+
+---
+
 ## Before you build anything
 
 Work through this every time. Skipping it is how errors get made.
 
 1. **Which class?** `7B` `8I` `8CN` `9G` `9I` `10A` `T3` — see `TIMETABLE.md`.
-   There are two Year 9 Science classes; if Chuka says "Year 9" without a code,
-   **ask which**.
+   `9G` and `9I` are always at the same point, so they are one group, **Y9**:
+   one deck serves both, and "Year 9" without a code needs no question.
 2. **Which track?** Science, Maths or CLIL. They are genuinely different builds
    — see "The three tracks" below.
 3. **Is it a single or a double?** Four slots a fortnight are 100-minute
    doubles. Check `TIMETABLE.md`. A double is **not** two 50-minute decks.
-4. **Does a previous lesson exist?** Look in `reference/`. If it does,
-   **open it and read it** — runtime, phases, vocabulary introduced, what the
-   plenary promised. **Never infer any of that.** See `reference/README.md`.
+4. **Does a previous lesson exist?** Before building, consult
+   `reference/INDEX.md` to find what came before for this class, then **open
+   that deck and read it** — runtime, phases, vocabulary introduced, what the
+   plenary promised. **Never infer any of that.** The index is built from
+   `reference/MANIFEST.tsv`, which every build writes itself into (see "Build a
+   lesson"); regenerate it with `python3 tools/index-reference.py` after a deck
+   is added to `reference/`. **Only ask Chuka for a `PREVIOUS:` line if the index
+   cannot resolve it** (a class, unit or lesson number it has no row for). See
+   `reference/README.md`.
 5. **For `T3`, read `CLIL.md`** before planning. The archetype does not apply.
 
 If any of 1–5 is unclear, ask. One question costs less than a rebuilt lesson.
@@ -69,6 +96,27 @@ node tools/validate.js "out/<Lesson Name>/<Lesson Name>.pptx"
 Order matters. `animate.js` writes `<p:timing>`; `autoplay-media.js` merges
 into it. Run autoplay **after** animate, never before.
 
+**Never run `build/<slug>.js` on its own once a deck exists.** That script writes
+the RAW deck: no click builds, no slide transitions, no timer autoplay. Only
+`node tools/build-lesson.js <slug>` adds them. Re-running the raw builder "just to
+see the phase minutes" once silently stripped every reveal from a deck that was
+then sent, and the Do Now answers all appeared at once. `lib/guard-raw-write.js`
+now makes a raw builder refuse to overwrite an animated deck, and `build-lesson.js`
+prints the phase minutes itself, so there is never a reason to. Chuka should not
+have to add a single reveal by hand.
+
+**Always set `dc:title` and `dc:subject` on a new deck** (`pptx.title` and
+`pptx.subject` in pptxgenjs), with the class code in the subject. The title is
+the lesson name. The subject is
+`<Year> <Subject> · <Unit> · Lesson <N> · <class code>`, for example
+`Y8 Maths · Algebra · Lesson 5 · 8CN` or
+`Y9 Science · Ecosystems · Lesson 2 · 9G and 9I`. `tools/build-lesson.js` reads
+that subject from the freshly built deck and records class, unit and lesson in
+`reference/MANIFEST.tsv` through `tools/record-lesson.py`, so the index never has
+to recover it from a re-saved file. A build whose class cannot be worked out
+stops; a missing unit or lesson number only warns (pass `--unit` and `--lesson`
+to `build-lesson.js` to set them). Y9 builds are recorded as class `Y9`.
+
 `node tools/build-lesson.js <lesson-slug>` runs the build, spec, animate,
 autoplay and validate steps in that order, then renders the deck to PDF and
 PNG in `_check/`. It builds the deck only; the worksheet has its own script.
@@ -112,8 +160,13 @@ node tools/validate.js "$L"
 # 2. Timer present on every slide, and outside the click sequence
 python3 tools/check-timers.py "$L"
 
+# 2b. Every click build and transition in the spec is really in the deck.
+#     Run this on the exact file you are about to send, as the LAST command
+#     before sending. A deck with no builds looks fine in a render.
+python3 tools/check-builds.py "$L"
+
 # 3. Phase minutes total 50 (single) or 95 (double)
-#    The build script prints this. Check it.
+#    build-lesson.js prints this. Check it.
 
 # 4. Render and LOOK at every slide
 
@@ -133,95 +186,33 @@ accentInk split this check enforces.
 
 ## The lesson archetype
 
-Fixed. Nine slides, one per phase, in this order. Total 50 minutes.
+**The spec is `TEMPLATE.md`**: ten slides, You Do 14, Mark 3, 50 minutes, and what
+goes inside each phase. Read it before building any lesson. It is the only copy
+of the slide table and the per-slide rules: do not restate them here, that is how
+the two drifted apart before. `PEDAGOGY.md` is the reasoning behind it, and is
+referenced from `TEMPLATE.md`; nothing else enforces it.
 
-> **Two exceptions.**
->
-> **`T3` Developing Science (CLIL)** — this archetype does NOT apply. Read
-> `CLIL.md` first. Beginner EAL, different lesson shape entirely.
->
-> **Doubles** — four slots a fortnight run 100 minutes with no bell in the
-> middle (`8CN` twice, `9I` once, `T3` once). A double is one deck of about 95
-> minutes with a 5-minute break slide between the halves, not two decks. Ask
-> Chuka how he wants the time split before building. See `TIMETABLE.md`.
+Exceptions: `T3` (see `CLIL.md`) and doubles (one deck of about 95 minutes with a
+5-minute break slide, not two decks; ask Chuka how to split the time; see
+`TIMETABLE.md`).
 
-| Slide | Phase | Min |
-|---|---|---|
-| 1 | Do Now | 10 |
-| 2 | Objectives | 1 |
-| 3 | Hook | 2 |
-| 4 | I Do | 3 |
-| 5 | I Do | 3 |
-| 6 | We Do | 5 |
-| 7 | Cold Call | 6 |
-| 8 | You Do | 17 |
-| 9 | Plenary | 3 |
+**Standing conventions that are NOT in `TEMPLATE.md` yet.** They still apply.
+Move each into `TEMPLATE.md`, or delete it here, once it is decided:
 
-**Slide 2 is called Objectives**, in the phase pill and in the title. It was "Today" / "Today's goals" until Chuka changed it; use "Objectives" from now on.
-
-**The Hook (slide 3) has no "Vote! We come back to this at the end." line.** Permanently
-removed. Say it in the speaker notes if you want the class to vote.
-
-**Slide 1 (Do Now)** carries the lesson title and date. Phase pill top-left,
-title centred, date right-aligned, accent rule beneath, then six question cards
-in a 2×3 grid. Each card: number, question, and the **real answer** revealed on
-click. Never "keep your answer for later" — show the answer. **Each question's text sits on the
-same vertical centre as its number**, so a one-line question is level with its number in the
-card (`qGrid` in `build/function-machines.js`; see `reference/Putting Numbers In.pptx`). The
-same goes for the Cold Call.
-
-**The Do Now may draw on the other sciences.** For `10A` this is not a
-flourish — Co-ordinated Sciences is one course covering biology, chemistry and
-physics, and the syllabus expects links across it. A physics Do Now can
-legitimately carry a chemistry or biology retrieval question where the idea
-connects. **How many is flexible:** two, one, or none. Let the topic decide;
-never force a link that is not there. `curriculum/0654-INDEX.md` lists the
-worked links. The same applies loosely at KS3, where science is taught as one
-subject anyway.
-
-**The Do Now must vary.** Test a range of skills across the six: recall, a
-definition, a short calculation, spotting an error, a link back to an earlier
-lesson, a link across the sciences. And do not repeat what the class has just
-answered. Before writing a Do Now, open the last three lessons' Do Nows in
-`reference/` (or `out/`) and check each new question against them. The same
-question or the same fact turning up three or four lessons running has
-happened, and students notice. Retrieval means coming back to an idea in a new
-shape, not asking it again.
-
-**Slide 6 (We Do)** is always "What should be the correct answer?" with the
-subtitle "Spot the mistake." A wrong statement on the left, the correction in a
-box on the right. No explanation column. 16 pt.
-
-**Slide 7 (Cold Call)** has no title, just the pill. Six questions in a 2×3
-grid, 16 pt. The teacher names a student and then asks. **Students have no mini
-whiteboards** — never write an instruction that needs one.
-
-**Slide 8 (You Do)** shows `assets/classroom.png` at 62% transparency, top
-right. Title is `"<Lesson Name> worksheet"`. Red subtitle: "Open Google
-Classroom now." Three tier cards: Bronze / Silver / Gold.
-
-**The You Do may be a game instead of the worksheet when asked.** The
-worksheet is still produced every time. Only build a game when Chuka asks for
-one. See `GAMES.md`. **A game's last round must be genuinely hard**: the
-questions ramp up to almost impossible, past the lesson's own level (`GAMES.md`,
-"Difficulty ramps, and the top is hard").
-
-**There is no Answers slide.** The You Do takes its 3 minutes (14 became 17). The answers go
-on the worksheet instead, **upside down on its last page**: students who use the paper need
-to check it, and answers printed the right way up can be read across a desk. They match the
-worksheet's questions **exactly, in order**. `DP.answersBlock(items)` in `lib/docparts.js`
-renders them to an image rotated 180 degrees, under a right-way-up caption. Keep the list in
-ONE module (see `build/function-machines-answers.js`), so the worksheet block and the speaker
-notes cannot disagree. This is standing for every lesson built from now on. There is no
-separate answers document. Earlier decks are not being retrofitted.
-
-**Slide 9 (Plenary)** is dark. Five true/false statements. Every FALSE should
-be a real misconception from the lesson.
-
-No hidden teacher slide. Everything a teacher needs goes in speaker notes, and
-**every slide must have them** — `validate.js` checks this.
-
----
+- **Speaker notes on every slide**, written to the teacher (`tools/validate.js`
+  checks). No hidden teacher slide.
+- **Slide 2's title is "Objectives"** but its phase pill stays "TODAY · 1 MIN".
+  **Banners are one full sentence with the key words underlined.**
+- **The Hook slide has no "Vote!" line.** Say it in the notes (`TEMPLATE.md` wants
+  the vote and the tally on the board; that is the teacher's, not a slide line).
+- **Do Now:** each question's text sits on the same vertical centre as its number
+  (`qGrid`). Before writing one, check every question against the last three Do Nows
+  in `reference/` (or `out/`): the same fact three lessons running has happened.
+- **Students have no mini whiteboards.** Never write an instruction that needs one.
+- **The answers list lives in ONE module** (`build/<slug>-answers.js`), so the
+  worksheet block and the speaker notes cannot disagree; `DP.answersBlock` renders it
+  upside down at the foot of the last worksheet page.
+- **A content video plays on click**, not when the slide opens (see "Media").
 
 ## Layout
 
@@ -379,7 +370,10 @@ Most lessons follow another one. Units built so far:
 - **Y7 Science, The World of Science** — 4 lessons, all built
 - **Y9 Science, Ecosystems** — 4 lessons, all built (ends on Human Population Growth)
 - **Y10 Science, Motion** — acceleration, motion graphs, equations of motion
-- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify, putting numbers in, function machines
+- **Y10 Science, Forces** — Resultant Forces (all forces along one straight line, no angles; Net Force game; 'motion' palette).; When The Resultant Is Zero (Newton's first law; Zero Or Not game; zero resultant is not no forces)
+- **Y8 Maths, Algebra** — collecting like terms, expanding brackets, expand and simplify, putting numbers in, function machines, from a table to a rule
+- **Y8 Science, Natural Selection** — Natural Selection, How Darwin Got There, Natural Selection In Action, Fossils And The Fossil Record, More Evidence, Small Changes Big Changes, Shuffling The Gene Pool (Galapagos palette)
+- **Y9 Science, Water** (Catchment palette) — Lesson 1 built (How Much Water Can We Actually Use, deployed as How Much Water Is Available), then Finite Freshwater (uses, groundwater used up, where and when; lesson number not written down); Lesson 4 is eutrophication, set up by the two jars at the end of Lesson 1
 - **T3 CLIL, Atoms** — 5 lessons planned, only Lesson 1 built
 
 Before building lesson N, read lesson N−1 from `reference/`. Take from it:
@@ -389,6 +383,15 @@ Before building lesson N, read lesson N−1 from `reference/`. Take from it:
   than redefining it
 - **what the plenary promised** — the next lesson has to keep that promise
 - any **open decision** flagged in the speaker notes
+
+Find lesson N−1 through `reference/INDEX.md` (see "Before you build anything").
+
+**Building several lessons in one go.** Each later lesson's Do Now draws on the
+earlier ones in the batch, even though they are not in `reference/` yet: open
+their builds in `out/` (and the `build/` scripts) and treat them as the previous
+lessons. That means the spaced-retrieval mix and the "do not repeat what the
+class has just answered" check both include the lessons built earlier in the
+same batch, along with their vocabulary and what each plenary promised.
 
 Carry the palette and the visual conventions forward within a unit. A second
 lesson in a unit should look like the first one.
@@ -525,17 +528,23 @@ Never coded names like `Y7_U1_L4`.
 ## Layout
 
 ```
+TEMPLATE.md   the lesson spec: ten slides, You Do 14, Mark 3, and what goes in each.
+              Read before building ANY lesson.
 TIMETABLE.md  classes, loads, doubles, and the T3 slot pattern
 LESSON-REQUEST.md  how Chuka asks for a lesson, and what he gets back
+PEDAGOGY.md   the reasoning behind TEMPLATE.md (retrieval, fading, marking). Read when
+              a change to the shape is being argued for; TEMPLATE.md is what you build to.
+GAMES.md      read when a request says GAME: (or the You Do becomes a game): the
+              catalogue, the build rules, per-student randomising, the hard last round
+ASSESSMENT.md  read when asked for a topic assessment. Printed in black and white and
+              follows different rules from decks: no palette, no media, no timer.
 curriculum/   scheme of work PDFs and their indexes — look up, never read whole
 CLIL.md       the T3 Developing Science exception — read before planning for them
-GAMES.md      when the You Do becomes a game, and how to build one
-ASSESSMENT.md  topic assessments. Printed in black and white and follow different
-              rules from decks: no palette, no media, no timer.
-reference/    DEPLOYED lessons, teacher-edited. Read before any follow-on lesson.
+reference/    DEPLOYED lessons, teacher-edited. INDEX.md (from MANIFEST.tsv) says what
+              came before for each class: read it before any follow-on lesson.
 lib/        theme, furniture, shapes, docparts, timer, animate, autoplay-media
 tools/      build-lesson, validate, check-timers, check-contrast, make-timers,
-            make-icons, make-preview, syllabus
+            make-icons, make-preview, syllabus, record-lesson, index-reference
 assets/     pre-built timer videos, Google Classroom logo
 examples/   complete working builds — read these before writing a new one
 build/      your lesson builders go here

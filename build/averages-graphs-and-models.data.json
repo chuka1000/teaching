@@ -1,0 +1,6 @@
+{
+  "note": "FABRICATED results for a practical nobody ran: how far a toy car rolls off ramps of different heights. Three trials per height. Used by the deck (You Do), the worksheet and the answers. Checked in build/averages-graphs-and-models-check.py.",
+  "heights": [10, 20, 30, 40, 50],
+  "trials": [[45, 42, 45], [79, 83, 78], [118, 112, 115], [154, 158, 150], [190, 195, 188]],
+  "thermometers": { "A": [99, 100, 101], "B": [95, 96, 97], "C": [94, 100, 106] }
+}

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technology And Society</title>
+<style>
+  :root { --dark:#15395C; --accent:#FFD921; --ink:#0E2A40; --soft:#55708A; --alert:#CD312F; --green:#1F7A48; --tint:#F2F6FB; --tint2:#C7D9EA; --white:#fff; --gold:#957D11; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; background:var(--white); color:var(--ink); font-family:Arial,Helvetica,sans-serif; -webkit-text-size-adjust:100%; }
+  body { min-height:100vh; display:flex; justify-content:center; }
+  #app { width:100%; max-width:820px; padding:14px 16px 28px; }
+  h1,h2,h3 { font-family:Georgia,'Times New Roman',serif; color:var(--dark); margin:0; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+  .pill { background:var(--dark); color:#fff; font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; border-radius:999px; padding:7px 14px; }
+  .dots { display:flex; gap:6px; } .dot { width:15px; height:15px; border-radius:50%; border:2px solid var(--dark); background:#fff; } .dot.on { background:var(--accent); } .dot.done { background:var(--dark); }
+  .card { background:var(--tint); border-radius:14px; padding:16px; margin-bottom:12px; }
+  .brief { background:#fff; border:3px solid var(--dark); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .brief b { color:var(--dark); } .brief .rule { margin-top:8px; padding-top:8px; border-top:2px dashed var(--tint2); }
+  .ask { font-size:19px; font-weight:700; color:var(--dark); margin:0 0 12px; line-height:1.35; }
+  .lead { font-size:18px; line-height:1.45; } .small { font-size:13px; color:var(--soft); } .tip { font-size:14px; color:var(--soft); margin:4px 0 10px; line-height:1.4; }
+  label { display:block; font-weight:700; font-size:15px; margin:12px 0 4px; color:var(--dark); }
+  input[type=text], textarea, select { width:100%; font:inherit; font-size:17px; padding:10px 12px; border:2px solid var(--tint2); border-radius:10px; background:#fff; color:var(--ink); min-height:46px; }
+  textarea { min-height:78px; resize:vertical; } input:focus, textarea:focus, select:focus { outline:3px solid var(--accent); border-color:var(--dark); }
+  input[readonly] { background:var(--tint); color:var(--dark); font-weight:700; }
+  .row2 { display:grid; grid-template-columns:1fr 1.6fr; gap:8px; margin-bottom:8px; }
+  button { font:inherit; cursor:pointer; }
+  .btn { padding:15px 26px; border-radius:12px; font-size:18px; font-weight:700; min-height:54px; background:var(--dark); color:#fff; border:2px solid var(--dark); touch-action:manipulation; }
+  .btn.ghost { background:#fff; color:var(--dark); } .btn.small { padding:8px 14px; font-size:14px; min-height:44px; }
+  button:disabled { opacity:.45; cursor:default; } button:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  .opts { display:grid; gap:10px; margin-bottom:12px; }
+  .opt { display:flex; align-items:center; gap:12px; text-align:left; min-height:58px; padding:8px 14px; background:#fff; border:2px solid var(--tint2); border-radius:12px; font-size:17px; font-weight:700; color:var(--dark); touch-action:manipulation; line-height:1.3; }
+  .opt b { width:32px; height:32px; border-radius:50%; background:var(--tint2); display:flex; align-items:center; justify-content:center; font-size:16px; flex:none; }
+  .opt.correct { border-color:var(--green); background:#EAF6EF; } .opt.picked { border-color:var(--alert); background:#FBEAE8; }
+  #feedback { border-radius:14px; padding:14px 16px; margin-bottom:12px; border:3px solid; }
+  #feedback.right { border-color:var(--green); background:#EAF6EF; } #feedback.wrong { border-color:var(--alert); background:#FBEAE8; }
+  #feedback .head { font-size:21px; font-weight:700; margin-bottom:6px; } #feedback.right .head { color:var(--green); } #feedback.wrong .head { color:var(--alert); }
+  #feedback .msg { font-size:17px; font-weight:700; color:var(--dark); margin-bottom:6px; } #feedback .why { font-size:16px; line-height:1.4; }
+  .pad { border:3px solid var(--dark); border-radius:12px; background:#fff; }
+  #sketch { display:block; width:100%; height:auto; touch-action:none; cursor:crosshair; border-radius:9px; }
+  .tools { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; } .tool { min-width:46px; min-height:46px; border-radius:10px; border:3px solid var(--tint2); background:#fff; font-weight:700; font-size:14px; padding:0 12px; }
+  .tool.on { border-color:var(--dark); background:var(--accent); } .sw { width:22px; height:22px; border-radius:50%; display:inline-block; vertical-align:middle; }
+  .chk { display:flex; gap:10px; align-items:center; font-size:16px; margin:10px 0; min-height:44px; } .chk input { width:26px; height:26px; flex:none; }
+  .note { font-size:15px; color:var(--alert); font-weight:700; margin:6px 0; }
+  .score { font-size:44px; font-family:Georgia,serif; font-weight:700; color:var(--dark); }
+  .row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--tint2); } .row:last-child { border-bottom:0; }
+  .bar { height:12px; border-radius:6px; background:var(--tint2); overflow:hidden; width:140px; flex:none; } .bar i { display:block; height:100%; background:var(--green); }
+  ul.tips { padding-left:20px; margin:8px 0 0; } ul.tips li { margin:8px 0; font-size:17px; line-height:1.4; }
+  .code { font-family:'Courier New',monospace; font-weight:700; letter-spacing:.12em; color:var(--dark); }
+  details.review { border:2px solid var(--tint2); border-radius:12px; background:#fff; margin:10px 0 0; }
+  details.review > summary { cursor:pointer; padding:12px 14px; font-weight:700; color:var(--dark); font-size:16px; list-style:none; display:flex; justify-content:space-between; gap:10px; align-items:center; min-height:48px; }
+  details.review > summary::-webkit-details-marker { display:none; } details.review > summary::after { content:'▾'; font-size:18px; } details.review[open] > summary::after { transform:rotate(180deg); }
+  .rq { padding:12px 14px; border-top:1px solid var(--tint2); } .rq .top { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; font-size:15px; font-weight:700; color:var(--dark); }
+  .rq .meta { font-weight:400; color:var(--soft); } .verdict.ok { color:var(--green); font-weight:700; } .verdict.no { color:var(--alert); font-weight:700; } .rq .txt { font-size:15px; margin:4px 0; line-height:1.4; }
+  #designcard { background:#fff; border:3px solid var(--dark); border-radius:14px; padding:16px; margin-bottom:12px; }
+  #designcard h2 { font-size:22px; } #designcard h3 { font-size:15px; margin:14px 0 4px; text-transform:uppercase; letter-spacing:.06em; } #designcard p { margin:2px 0; font-size:16px; line-height:1.45; overflow-wrap:anywhere; }
+  #designcard img { width:100%; height:auto; border:2px solid var(--tint2); border-radius:8px; } #designcard .undone { color:var(--soft); font-style:italic; }
+  #designcard table { width:100%; border-collapse:collapse; font-size:15px; } #designcard td, #designcard th { border:1px solid var(--tint2); padding:6px 8px; text-align:left; }
+  .hide { display:none !important; }
+  @media print { body * { visibility:hidden; } #designcard, #designcard * { visibility:visible; } #designcard { position:absolute; left:0; top:0; width:100%; border:0; } }
+  @media (max-width:480px) { .ask { font-size:17px; } .row2 { grid-template-columns:1fr; } .bar { width:80px; } }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * TECHNOLOGY AND SOCIETY: a scaffolded design task. Nobody gets the same game.
+   *
+   * Each student gets a design brief (a person with a problem) and a rule the design must follow, drawn
+   * from a six-character game code. Opening the file with #CODE after the address shows the same brief
+   * again. The STEPS are the same for everyone: state the problem, sketch a solution, say how it would
+   * be tested, then check what it does to society. Five short questions along the way (problem or
+   * solution; a fair test; three on technology and society) say what the mistake probably was. Every wrong
+   * option is built to be as convincing as the right one: the same length, the same shape, a real flaw. The
+   * design itself is open: nothing is marked by the computer, the design card is for the teacher to read.
+   *
+   * The briefs, rules and society items are build/technology-and-society.data.json, injected below by
+   * build/technology-and-society-game.py. Nothing is stored and nothing leaves the device.
+   * ================================================================== */
+  var DATA = /*DATA_JSON*/null;
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() { var o = '', b = new Uint8Array(6); if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(b); else for (var k = 0; k < 6; k++) b[k] = Math.floor(Math.random() * 256); for (var i = 0; i < 6; i++) o += ALPHABET[b[i] % ALPHABET.length]; return o; }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var MSG = {
+    solution: 'That one already names the fix inside the need. A problem statement says what is needed and why, and leaves the fix for step 2.',
+    vague: 'That need is too broad to design for. What exactly do they need to be able to do?',
+    once: 'One result could be a fluke, however carefully you test. Repeat the test at least three times, so you can take a mean.',
+    changes: 'Changing the place each time changes more than the design, so you cannot tell what made the difference. Keep everything but the design the same.',
+    best: 'Using only the best result hides how much the results vary. Use every result and take the mean.',
+    dir_society: 'Look at what came first. Here society came first: a need or a law changed what was made.',
+    dir_tech: 'Look at what came first. Here the technology came first, and it changed how people live.',
+    dir_both: 'Read to the end. Here the technology changed society, and then society changed the technology.'
+  };
+  var WHY = {
+    society: 'Society came first: people’s needs, money or a law changed what was made.',
+    tech: 'Technology came first: it changed how people live, work or shop.',
+    both: 'Both: the technology changed society, and then society changed the technology.'
+  };
+  var HABIT = {
+    solution: 'A problem statement says what is wrong or needed. Do not say the fix.',
+    vague: 'Name who has the problem, what they need, and why.',
+    once: 'Repeat a test at least three times so you can take a mean, however carefully you did it once.',
+    changes: 'A fair test changes only the design. Keep the place, the person and everything else the same.',
+    best: 'Use every result and take the mean. Picking the best one is not a fair test.',
+    dir_society: 'Ask what came first. If a need or a law came first, society changed the technology.',
+    dir_tech: 'Ask what came first. If the technology came first, it changed society.',
+    dir_both: 'When both things happen one after the other, it works both ways.'
+  };
+  var CATS = { problem: 'Problem or solution', test: 'Fair tests', society: 'Technology and society' };
+  var DIRS = [['tech', 'Technology is changing society'], ['society', 'Society is changing technology'], ['both', 'Both, one after the other']];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var pick = function (a) { return a[Math.floor(rnd() * a.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var brief = pick(DATA.briefs), cid = pick(brief.allowed);
+    var statement = brief.user + ' needs a way to ' + brief.need + ', because ' + brief.reason + '.';
+    var solStmt = brief.user + ' needs ' + brief.solutionNeed + ', because ' + brief.reason + '.';
+    var vagStmt = brief.user + ' needs ' + brief.vagueNeed + ', because ' + brief.reason + '.';
+
+    var pOpts = shuffle([{ text: statement, tag: null, msg: '' }, { text: solStmt, tag: 'solution', msg: MSG.solution + ' (It says the need is \u201C' + brief.solutionNeed + '\u201D.)' }, { text: vagStmt, tag: 'vague', msg: MSG.vague + ' (\u201C' + brief.vagueNeed + '\u201D could mean almost anything.)' }]);
+    var qProblem = { id: 'problem', cat: 'problem', kind: 'mcq', prompt: 'All three say who and why. Which one is a good problem statement?', options: pOpts, why: 'A good problem statement says who needs what, and why, and does not name the fix: \u201C' + statement + '\u201D' };
+    qProblem.correctIndex = qProblem.options.map(function (o) { return o.tag === null; }).indexOf(true);
+
+    var M = brief.measure;
+    var TABLE = ' Put them in a table.';
+    var withTable = shuffle([0, 1, 2, 3]).slice(0, 2);   /* two of the four plans, at random, add the same harmless clause */
+    var variant = function (list, i) { return pick(list).replace('MEAS', M) + (withTable.indexOf(i) >= 0 ? TABLE : ''); };
+    var tOpts = shuffle([
+      { text: variant(['Test it 3 times in the same conditions. Measure MEAS each time, and find the mean.', 'Test it 3 times, keeping the conditions the same. Measure MEAS each time, then find the mean of all 3.'], 0), tag: null },
+      { text: variant(['Test it once, with great care, in the same conditions. Measure MEAS, and use that result.', 'Test it once, very carefully, keeping the conditions the same. Measure MEAS, and use that result.'], 1), tag: 'once' },
+      { text: variant(['Test it 3 times, in a different place each time. Measure MEAS each time, and find the mean.', 'Test it 3 times, each in a different place. Measure MEAS each time, and find the mean of all 3.'], 2), tag: 'changes' },
+      { text: variant(['Test it 3 times in the same conditions. Measure MEAS each time, and use the best result.', 'Test it 3 times, keeping the conditions the same. Measure MEAS each time, then use the best result.'], 3), tag: 'best' }]);
+    var qTest = { id: 'test', cat: 'test', kind: 'mcq', prompt: 'Each plan sounds careful. Which test of your design is the fairest?', options: tOpts.map(function (o) { return { text: o.text, tag: o.tag, msg: o.tag ? MSG[o.tag] : '' }; }), why: 'A fair test repeats at least 3 times, keeps everything but the design the same, measures the same thing each time, and uses every result.' };
+    qTest.correctIndex = qTest.options.map(function (o) { return o.tag === null; }).indexOf(true);
+
+    var soc = shuffle(['society', 'tech', 'both'].map(function (d) { return pick(DATA.society.filter(function (s) { return s.dir === d; })); }));
+    var qSoc = soc.map(function (s, i) {
+      var opts = shuffle(DIRS.map(function (d) { return { text: d[1], key: d[0] }; }));
+      var o2 = opts.map(function (o) { return { text: o.text, tag: o.key === s.dir ? null : 'dir_' + s.dir, msg: o.key === s.dir ? '' : MSG['dir_' + s.dir] }; });
+      return { id: 'soc' + (i + 1), cat: 'society', kind: 'mcq', dir: s.dir, statement: s.text, prompt: '“' + s.text + '” Which is happening?', options: o2, correctIndex: o2.map(function (o) { return o.tag === null; }).indexOf(true), why: WHY[s.dir] };
+    });
+    return { code: code, brief: brief, constraint: { id: cid, text: DATA.constraints[cid] }, statement: statement, qs: [qProblem, qTest].concat(qSoc) };
+  }
+
+  var PAGES = ['brief', 'q_problem', 'w_problem', 'sketch', 'q_test', 'w_test', 'q_soc1', 'q_soc2', 'q_soc3', 'w_soc', 'card'];
+  var STEPOF = { brief: 0, q_problem: 1, w_problem: 1, sketch: 2, q_test: 3, w_test: 3, q_soc1: 4, q_soc2: 4, q_soc3: 4, w_soc: 4, card: 5 };
+  var STEPNAME = ['Your design brief', 'State the problem', 'Sketch a solution', 'Test it', 'Society check', 'Your design card'];
+  var QPAGE = { q_problem: 0, q_test: 1, q_soc1: 2, q_soc2: 3, q_soc3: 4 };
+
+  var app = document.getElementById('app'), G, S, canvas, ctx, drawing = false, last = null, tool = { kind: 'pen', colour: '#15395C' };
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) {
+    G = generate(code || newCode());
+    S = { page: -1, locked: false, results: [], qStart: 0, a: { who: '', needs: '', because: '', labels: [['', ''], ['', ''], ['', '']], constraintWhy: '', paper: false, how: '', measure: '', repeats: '', works: '', same: '', benefit: '', harm: '', daily: '', improve: '' }, drawn: false, img: '' };
+  }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  function display(g) { return g.brief.id + ' | ' + g.constraint.id + ' | ' + g.qs.map(function (q) { return q.options.map(function (o) { return o.text; }).join(' / '); }).join(' || '); }
+  var page = function () { return PAGES[S.page]; };
+  var long = function (s, n) { return String(s || '').trim().length >= (n || 4); };
+
+  function header() {
+    var h = el('header'); var st = STEPOF[page()];
+    h.appendChild(el('span', 'pill', st >= 1 && st <= 4 ? 'Step ' + st + ' of 4 · ' + STEPNAME[st] : STEPNAME[st]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Step ' + st + ' of 4');
+    for (var k = 1; k <= 4; k++) d.appendChild(el('span', 'dot' + (k < st ? ' done' : k === st ? ' on' : '')));
+    h.appendChild(d); return h;
+  }
+  function briefHtml() {
+    return '<div class="brief" id="brief"><div><b>Your design brief</b></div><div class="lead" id="briefText">' + esc(G.brief.user) + ' needs a way to ' + esc(G.brief.need) + '.</div>' +
+      '<div class="rule"><b>Your design must follow this rule:</b> <span id="ruleText">' + esc(G.constraint.text) + '</span></div></div>';
+  }
+  function stopBtn() { var b = el('button', 'btn ghost small', 'Stop and see my results'); b.id = 'stop'; b.type = 'button'; b.style.marginTop = '14px'; b.onclick = function () { S.page = PAGES.length - 1; show(); }; return b; }
+  function nextBtn(label, ok, fn) { var b = el('button', 'btn', label); b.id = 'next'; b.type = 'button'; b.disabled = !ok; b.onclick = fn; return b; }
+  function go(d) { S.page = Math.max(0, Math.min(PAGES.length - 1, S.page + d)); show(); window.scrollTo(0, 0); }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); S.page = -1;
+    var c = el('div', 'card');
+    c.appendChild(el('h1', null, 'Technology And Society'));
+    c.appendChild(el('p', 'lead', 'You are a designer. You will get a person with a problem, and a rule your design must follow.'));
+    c.appendChild(el('p', 'lead', 'Four steps: state the problem, sketch a solution, say how you would test it, then check what it would do to society. There are five short questions on the way. A wrong answer says what the mistake probably was.'));
+    c.appendChild(el('p', 'lead', 'There is no timer. You can stop and see your design card at any time.'));
+    c.appendChild(el('p', 'small', 'Your brief is different from everyone else’s. Game code <span class="code" id="code">' + G.code + '</span>'));
+    app.appendChild(c);
+    var b = el('button', 'btn', 'Get my design brief'); b.id = 'start'; b.type = 'button'; b.onclick = function () { go(1); }; app.appendChild(b); b.focus();
+  }
+  function show() {
+    var p = page(); if (S.page < 0) return start();
+    clear(); S.locked = false; S.qStart = Date.now();
+    if (p === 'card') return card();
+    app.appendChild(header());
+    if (p === 'brief') return pBrief();
+    if (QPAGE[p] !== undefined) return pQuestion(QPAGE[p]);
+    if (p === 'w_problem') return pProblem();
+    if (p === 'sketch') return pSketch();
+    if (p === 'w_test') return pTest();
+    if (p === 'w_soc') return pSociety();
+  }
+  function pBrief() {
+    var c = el('div', 'card'); c.appendChild(el('p', 'ask', 'This is your brief. Read it twice.')); c.insertAdjacentHTML('beforeend', briefHtml());
+    c.appendChild(el('p', 'tip', 'A designer starts by being clear about who has the problem. Everything you do next has to solve this one, and follow the rule.'));
+    app.appendChild(c); var n = nextBtn('Step 1: state the problem', true, function () { go(1); }); app.appendChild(n); n.focus(); app.appendChild(stopBtn());
+  }
+  function pQuestion(i) {
+    var Q = G.qs[i]; var c = el('div', 'card'); c.id = 'qcard'; c.setAttribute('data-display', Q.prompt + ' | ' + Q.options.map(function (o) { return o.text; }).join(' / '));
+    if (i <= 1) c.insertAdjacentHTML('beforeend', briefHtml());
+    c.appendChild(el('p', 'ask', esc(Q.prompt))); app.appendChild(c);
+    var opts = el('div', 'opts'); opts.id = 'opts';
+    Q.options.forEach(function (o, k) { var b = el('button', 'opt', '<b>' + 'ABCD'[k] + '</b><span>' + esc(o.text) + '</span>'); b.type = 'button'; b.dataset.o = String(k + 1); b.onclick = function () { answer(i, k); }; opts.appendChild(b); });
+    app.appendChild(opts);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var nb = nextBtn('Next', false, function () { go(1); }); nb.classList.add('hide'); app.appendChild(nb);
+    app.appendChild(stopBtn());
+  }
+  function answer(i, k) {
+    if (S.locked) return; S.locked = true;
+    var Q = G.qs[i], o = Q.options[k], ok = k === Q.correctIndex;
+    S.results[i] = { id: Q.id, cat: Q.cat, ok: ok, tag: ok ? null : o.tag, wrote: o.text, secs: Math.max(1, Math.round((Date.now() - S.qStart) / 1000)) };
+    document.querySelectorAll('.opt').forEach(function (b, j) { b.disabled = true; if (j === Q.correctIndex) b.classList.add('correct'); else if (j === k) b.classList.add('picked'); });
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + (ok ? 'Correct.' : 'Not quite.') + '</div>' + (ok ? '' : '<div class="msg">' + esc(o.msg) + '</div>') + '<div class="why">' + esc(Q.why) + '</div>';
+    var nb = document.getElementById('next'); nb.disabled = false; nb.classList.remove('hide'); nb.focus(); fb.scrollIntoView({ block: 'nearest' });
+  }
+  function field(id, label, key, o) {
+    o = o || {}; var w = el('div'); w.appendChild(el('label', null, label)); w.firstChild.setAttribute('for', id);
+    var f = el(o.area ? 'textarea' : 'input'); f.id = id; if (!o.area) f.type = 'text'; f.value = S.a[key] || ''; if (o.ro) f.readOnly = true; f.autocomplete = 'off'; f.maxLength = 300;
+    f.addEventListener('input', function () { S.a[key] = f.value; gate(); }); w.appendChild(f); if (o.tip) w.appendChild(el('p', 'tip', o.tip)); return w;
+  }
+  var GATE = null; function gate() { var b = document.getElementById('next'); if (b && GATE) b.disabled = !GATE(); }
+  function pProblem() {
+    S.a.who = G.brief.user; var c = el('div', 'card'); c.insertAdjacentHTML('beforeend', briefHtml());
+    c.appendChild(el('p', 'ask', 'Now write the problem in your own words.'));
+    c.appendChild(el('p', 'tip', 'Use the frame. Say what is needed, not how to fix it.'));
+    c.appendChild(field('f_who', '1. Who has the problem?', 'who', { ro: true }));
+    c.appendChild(field('f_needs', '2. They need a way to…', 'needs', { tip: 'Not the fix. What do they need to be able to do?' }));
+    c.appendChild(field('f_because', '3. …because', 'because', { tip: 'Why does it matter?' }));
+    app.appendChild(c); GATE = function () { return long(S.a.needs) && long(S.a.because); };
+    app.appendChild(nextBtn('Step 2: sketch a solution', GATE(), function () { go(1); })); app.appendChild(stopBtn());
+  }
+  function pSketch() {
+    var c = el('div', 'card'); c.insertAdjacentHTML('beforeend', briefHtml()); c.appendChild(el('p', 'ask', 'Sketch your solution. Draw with your finger or the mouse.'));
+    var pad = el('div', 'pad'); canvas = el('canvas'); canvas.id = 'sketch'; canvas.width = 900; canvas.height = 560; canvas.setAttribute('aria-label', 'Drawing pad'); pad.appendChild(canvas); c.appendChild(pad);
+    ctx = canvas.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 900, 560);
+    if (S.img) { var im = new Image(); im.onload = function () { ctx.drawImage(im, 0, 0); }; im.src = S.img; }
+    var tl = el('div', 'tools');
+    [['pen', '#15395C', 'Dark pen'], ['pen', '#CD312F', 'Red pen'], ['pen', '#1F6FB2', 'Blue pen'], ['eraser', '#fff', 'Eraser']].forEach(function (t, i) {
+      var b = el('button', 'tool' + (i === 0 ? ' on' : ''), t[0] === 'pen' ? '<span class="sw" style="background:' + t[1] + '"></span>' : 'Eraser'); b.type = 'button'; b.setAttribute('aria-label', t[2]); b.dataset.tool = String(i);
+      b.onclick = function () { tool = { kind: t[0], colour: t[1] }; tl.querySelectorAll('.tool').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); }; tl.appendChild(b);
+    });
+    var cl = el('button', 'tool', 'Clear'); cl.type = 'button'; cl.id = 'clearpad'; cl.onclick = function () { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 900, 560); S.drawn = false; S.img = ''; gate(); }; tl.appendChild(cl); c.appendChild(tl);
+    function pos(e) { var r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * canvas.width / r.width, (e.clientY - r.top) * canvas.height / r.height]; }
+    canvas.addEventListener('pointerdown', function (e) { e.preventDefault(); drawing = true; canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId); last = pos(e); stroke(last, last); });
+    canvas.addEventListener('pointermove', function (e) { if (!drawing) return; e.preventDefault(); var p = pos(e); stroke(last, p); last = p; });
+    function end() { if (drawing) { drawing = false; S.img = canvas.toDataURL('image/png'); } }
+    canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end); canvas.addEventListener('pointerleave', end);
+    function stroke(a, b) { ctx.strokeStyle = tool.colour; ctx.lineWidth = tool.kind === 'eraser' ? 26 : 4; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); if (tool.kind === 'pen') { S.drawn = true; gate(); } }
+    var pc = el('label', 'chk'); pc.style.fontWeight = '400'; var cb = el('input'); cb.type = 'checkbox'; cb.id = 'paper'; cb.checked = S.a.paper; cb.onchange = function () { S.a.paper = cb.checked; gate(); }; pc.appendChild(cb); pc.appendChild(el('span', null, 'I sketched it on paper instead.')); c.appendChild(pc);
+    c.appendChild(el('p', 'ask', 'Label three parts.')); c.appendChild(el('p', 'tip', 'Name each part and say what it does.'));
+    for (var i = 0; i < 3; i++) (function (i) {
+      var r = el('div', 'row2'); var a = el('input'); a.type = 'text'; a.id = 'part' + i; a.placeholder = 'Part ' + (i + 1); a.value = S.a.labels[i][0]; a.setAttribute('aria-label', 'Part ' + (i + 1) + ' name'); a.maxLength = 60;
+      var b = el('input'); b.type = 'text'; b.id = 'does' + i; b.placeholder = 'What it does'; b.value = S.a.labels[i][1]; b.setAttribute('aria-label', 'Part ' + (i + 1) + ' job'); b.maxLength = 150;
+      a.oninput = function () { S.a.labels[i][0] = a.value; gate(); }; b.oninput = function () { S.a.labels[i][1] = b.value; gate(); }; r.appendChild(a); r.appendChild(b); c.appendChild(r);
+    })(i);
+    c.appendChild(el('p', 'ask', 'Does it follow the rule?')); c.appendChild(el('p', 'tip', 'Rule: ' + esc(G.constraint.text)));
+    c.appendChild(field('f_cwhy', 'It follows the rule because…', 'constraintWhy', { area: true }));
+    app.appendChild(c);
+    GATE = function () { return (S.drawn || S.a.paper) && S.a.labels.every(function (l) { return long(l[0], 2) && long(l[1], 4); }) && long(S.a.constraintWhy); };
+    app.appendChild(nextBtn('Step 3: test it', GATE(), function () { go(1); })); app.appendChild(stopBtn());
+  }
+  function pTest() {
+    var c = el('div', 'card'); c.insertAdjacentHTML('beforeend', briefHtml()); c.appendChild(el('p', 'ask', 'Now write your own test plan.'));
+    c.appendChild(field('f_how', '1. I will test it by…', 'how', { area: true }));
+    c.appendChild(field('f_measure', '2. I will measure…', 'measure', { tip: 'Idea for this brief: ' + esc(G.brief.measure) + '. Always include a unit or a scale.' }));
+    var w = el('div'); w.appendChild(el('label', null, '3. I will repeat the test this many times…')); w.firstChild.setAttribute('for', 'f_rep');
+    var sel = el('select'); sel.id = 'f_rep'; ['', '1', '3', '5', '10'].forEach(function (v) { var o = el('option', null, v === '' ? 'Choose…' : v + (v === '1' ? ' time' : ' times')); o.value = v; sel.appendChild(o); }); sel.value = S.a.repeats;
+    sel.onchange = function () { S.a.repeats = sel.value; gate(); }; w.appendChild(sel); w.appendChild(el('p', 'tip', 'More than once, so you can take a mean.')); c.appendChild(w);
+    c.appendChild(field('f_same', '4. I will keep the same…', 'same', { tip: 'A fair test changes only the design.' }));
+    c.appendChild(field('f_works', '5. It works if…', 'works', { tip: 'Give a number.' }));
+    app.appendChild(c);
+    GATE = function () { return long(S.a.how) && long(S.a.measure, 2) && S.a.repeats !== '' && long(S.a.same) && long(S.a.works); };
+    app.appendChild(nextBtn('Step 4: society check', GATE(), function () { go(1); })); app.appendChild(stopBtn());
+  }
+  function pSociety() {
+    var c = el('div', 'card'); c.insertAdjacentHTML('beforeend', briefHtml()); c.appendChild(el('p', 'ask', 'What would your design do to society?'));
+    c.appendChild(field('f_benefit', '1. One person it would help, and how', 'benefit', { area: true }));
+    c.appendChild(field('f_harm', '2. One person who might be harmed or left out, and how', 'harm', { area: true }));
+    c.appendChild(field('f_daily', '3. One way it could change daily life', 'daily', { area: true }));
+    c.appendChild(field('f_improve', '4. One change to your design that would reduce the harm', 'improve', { area: true }));
+    app.appendChild(c); GATE = function () { return long(S.a.benefit) && long(S.a.harm) && long(S.a.daily) && long(S.a.improve); };
+    app.appendChild(nextBtn('See my design card', GATE(), function () { go(1); })); app.appendChild(stopBtn());
+  }
+
+  /* ---------- the design card, and the review ---------- */
+  function fmt(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  var UN = '<span class="undone">Not done</span>';
+  function P(label, v) { return '<p><b>' + label + '</b> ' + (long(v, 1) ? esc(v) : UN) + '</p>'; }
+  function card() {
+    var a = S.a, c = el('div'); c.id = 'cardwrap';
+    var done = S.results.filter(function (r) { return r; }), right = done.filter(function (r) { return r.ok; }).length;
+    var d = el('div'); d.id = 'designcard';
+    var stmt = long(a.needs, 1) && long(a.because, 1) ? esc(G.brief.user) + ' needs a way to ' + esc(a.needs) + ', because ' + esc(a.because) + '.' : UN;
+    var img = S.drawn && S.img ? '<img id="cardimg" alt="My sketch" src="' + S.img + '">' : (a.paper ? '<p class="undone">Sketched on paper.</p>' : UN);
+    var rows = a.labels.map(function (l) { return '<tr><td>' + (long(l[0], 1) ? esc(l[0]) : UN) + '</td><td>' + (long(l[1], 1) ? esc(l[1]) : UN) + '</td></tr>'; }).join('');
+    d.innerHTML = '<h2>My design card</h2><p class="small">Game code <span class="code">' + G.code + '</span></p>' +
+      '<h3>The brief</h3><p>' + esc(G.brief.user) + ' needs a way to ' + esc(G.brief.need) + '.</p><p><b>Rule:</b> ' + esc(G.constraint.text) + '</p>' +
+      '<h3>1 · The problem</h3><p>' + stmt + '</p>' +
+      '<h3>2 · My sketch</h3>' + img + '<table><tr><th>Part</th><th>What it does</th></tr>' + rows + '</table>' + P('It follows the rule because', a.constraintWhy) +
+      '<h3>3 · How I will test it</h3>' + P('I will test it by', a.how) + P('I will measure', a.measure) + '<p><b>I will repeat it</b> ' + (a.repeats ? esc(a.repeats) + ' times' : UN) + '</p>' + P('I will keep the same', a.same) + P('It works if', a.works) +
+      '<h3>4 · Society check</h3>' + P('Helps', a.benefit) + P('Might be harmed or left out', a.harm) + P('Could change daily life', a.daily) + P('To reduce the harm', a.improve);
+    c.appendChild(d);
+    var pr = el('button', 'btn small', 'Print or save as PDF'); pr.id = 'print'; pr.type = 'button'; pr.onclick = function () { window.print(); }; c.appendChild(pr);
+    app.appendChild(c);
+    var res = el('div', 'card'); res.appendChild(el('h2', null, 'What to practise')); res.appendChild(el('div', 'score', right + ' of 5'));
+    if (done.length < 5) res.appendChild(el('p', 'small', done.length + ' of 5 questions answered.'));
+    Object.keys(CATS).forEach(function (k) {
+      var all = G.qs.filter(function (q) { return q.cat === k; }).length, rs = done.filter(function (r) { return r.cat === k; }), ok = rs.filter(function (r) { return r.ok; }).length;
+      res.appendChild(el('div', 'row', '<span><b>' + CATS[k] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    var counts = {}; done.forEach(function (r) { if (!r.ok) counts[r.tag] = (counts[r.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    res.appendChild(el('h3', null, 'Your mistakes')); res.lastChild.style.marginTop = '12px';
+    if (!tags.length) res.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t]))); }); res.appendChild(ul); }
+    var det = el('details', 'review'); det.id = 'review'; var body = '';
+    G.qs.forEach(function (q, i) { var r = S.results[i];
+      body += '<div class="rq" data-q="' + (i + 1) + '"><div class="top"><span>Question ' + (i + 1) + '</span>' + (r ? '<span class="meta">' + fmt(r.secs) + '</span>' : '<span class="meta">Not reached</span>') + '</div><div class="txt">' + esc(q.prompt) + '</div>' +
+        (r ? (r.ok ? '<div class="verdict ok">Correct</div>' : '<div class="verdict no">Wrong</div><div class="txt">You wrote: <b>' + esc(r.wrote) + '</b></div><div class="txt">Better: <b>' + esc(q.options[q.correctIndex].text) + '</b></div><div class="txt">' + esc(q.why) + '</div>') : '') + '</div>'; });
+    det.innerHTML = '<summary><span>Your five questions · ' + right + ' of 5</span></summary>' + body; res.appendChild(det);
+    res.appendChild(el('p', 'small', 'Game code <span class="code">' + G.code + '</span>. Your teacher can open this file with #' + G.code + ' on the end of the address to see the same brief.')); app.appendChild(res);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.type = 'button'; b.onclick = function () { fresh(); start(); }; app.appendChild(b);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || S.page < 0) return; var p = page(); if (QPAGE[p] === undefined) return;
+    if (/^[1-4]$/.test(e.key) && !S.locked && parseInt(e.key, 10) <= G.qs[QPAGE[p]].options.length) { e.preventDefault(); answer(QPAGE[p], parseInt(e.key, 10) - 1); }
+    else if (e.key === 'Enter' && S.locked) { e.preventDefault(); go(1); }
+  });
+  window.__game = { generate: generate, newCode: newCode, code: function () { return G.code; }, game: function () { return G; }, state: function () { return S; }, display: display, data: function () { return DATA; } };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

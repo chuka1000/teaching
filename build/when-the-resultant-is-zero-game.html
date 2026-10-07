@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero Or Not</title>
+<style>
+  :root {
+    --forest: #17203F; --amber: #FF8A3D; --amberink: #C25A16; --teal: #1FB6BC; --rust: #E03D6B; --cream: #F2F4FA; --cream2: #DDE2F0;
+    --ink: #141A30; --soft: #5A6480; --green: #1E8E5A; --white: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--forest); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--forest); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--rust); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--forest); background: var(--white); }
+  .dot.now { background: var(--cream2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--rust); border-color: var(--rust); }
+  .card { background: var(--white); border: 2px solid var(--cream2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--forest); font-weight: 700; margin: 0 0 12px; line-height: 1.35; }
+  .ask small { display: block; font-size: 15px; font-weight: 400; color: var(--soft); margin-top: 6px; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  /* rock layers */
+  table.chart { border-collapse: collapse; margin: 6px 0; font-size: 14px; width: 100%; }
+  .chartwrap { overflow-x: auto; max-width: 100%; }
+  table.chart th, table.chart td { border: 1px solid #6F5F4B; padding: 4px 3px; text-align: center; min-width: 26px; }
+  table.chart th { background: var(--cream2); font-size: 13px; }
+  table.chart td.on { background: var(--amber); } table.chart td.off { background: var(--white); }
+  table.chart td.name { text-align: left; white-space: nowrap; font-weight: 700; }
+  #answer { height: 64px; border: 3px solid var(--forest); border-radius: 12px; background: var(--white); font-size: 34px; font-weight: 700; color: var(--forest); display: flex; align-items: center; padding: 0 16px; margin-bottom: 12px; font-family: Georgia, serif; }
+  #answer.empty { color: #9AA59D; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  .unit { font-size: 15px; color: var(--soft); margin: -6px 0 10px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 58px; font-size: 28px; font-weight: 700; color: var(--forest); background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--cream2); } .key.fn { background: var(--cream); font-size: 22px; }
+  .key.go, .btn { background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .5; cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--cream2); border-radius: 12px; font-size: 17px; font-weight: 700; color: var(--forest); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--rust); background: #FBEAE6; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--rust); background: #FBEAE6; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--rust); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--forest); margin-bottom: 8px; }
+  .how { font-size: 15px; color: var(--soft); margin: 6px 0 2px; }
+  .work { font-size: 17px; color: var(--forest); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--cream2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--cream2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--forest); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--forest); }
+  details.review { border: 2px solid var(--cream2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--forest); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '▾'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--cream2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--forest); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--rust); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--forest); }
+  .hide { display: none !important; }
+  .treefig { margin: 6px 0 10px; } .treefig svg { width: 100%; max-width: 360px; height: auto; display: block; }
+  .treefig text { font-family: Arial, Helvetica, sans-serif; fill: #182B1E; } .treefig .leaf { font-weight: 700; font-size: 16px; } .treefig .len { font-size: 13px; fill: #A8651F; font-weight: 700; }
+  .treefig line { stroke: #1F3D2B; stroke-width: 2.5; stroke-linecap: round; }
+  table.chart td.num { min-width: 34px; } table.chart td.blank { background: var(--cream2); }
+  caption { caption-side: bottom; font-size: 13px; color: var(--soft); padding-top: 4px; text-align: left; }
+
+  .fbdfig { margin: 6px 0 10px; } .fbdfig svg { width: 100%; max-width: 560px; height: auto; display: block; background: #fff; border: 2px solid var(--cream2); border-radius: 12px; }
+  .fbdfig text { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 15px; }
+  .legend { font-size: 14px; color: var(--soft); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * ZERO OR NOT (When The Resultant Is Zero). Nobody gets the same game.
+   *
+   * Every question is built from a template with random forces, objects and numbers, from a
+   * six-character game code that is random for each student. Opening the file with #CODE on the
+   * end of the address gives the same game again, so a teacher can see exactly what a student saw.
+   * The SKILLS and their order are the same for everyone, so the diagnostic at the end means the
+   * same thing for every student.
+   *
+   * THE TWO IDEAS THE GAME KEEPS APART: a resultant force of ZERO (forces are there, and they cancel)
+   * and NO FORCES AT ALL (nothing pushes or pulls). Almost every wrong option is a way of collapsing
+   * the first into the second, or of believing that motion needs a force. build/check-when-the-
+   * resultant-is-zero-game.py re-derives every answer, every mistake value and every line of working
+   * from the data each question keeps.
+   *
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson: the law, and what
+   * a set of forces says about the motion. Round 2 adds why things slow down, deep space, and missing
+   * forces at a steady speed. Round 3 goes far past it: an odd one out, a car at a steady speed, a
+   * skydiver, a pull that is increased, and then two questions from small pools of very hard puzzles
+   * (a ball at the top of its path, a lift, a probe whose engine switches off, a parachute).
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  /* ---------------- the data the questions draw on ---------------- */
+  var DRIVE = ['Push', 'Pull', 'Thrust', 'Driving force'], RESIST = ['Friction', 'Air resistance', 'Drag', 'Water resistance'];
+  var LAWS = [
+    { id: 'lawA', prompt: 'Which statement is Newton’s first law?',
+      right: 'An object stays at rest, or keeps moving at a constant speed in a straight line, unless a resultant force acts on it.',
+      wrong: [
+        { text: 'A force is always needed to keep an object moving.', tag: 'needforce', msg: 'No force is needed to keep a moving object going. With no resultant force it keeps its speed.' },
+        { text: 'An object stays at rest, or keeps moving at a constant speed in a straight line, unless any force acts on it.', tag: 'anyforce', msg: 'Forces can act and cancel out. It is a RESULTANT force that changes the motion.' },
+        { text: 'A moving object always slows down and stops unless it is pushed.', tag: 'natural', msg: 'It slows down only because a force, such as friction, acts against it. With no resultant force it keeps its speed.' }
+      ] },
+    { id: 'lawB', prompt: 'Complete the law. A moving object keeps moving at a constant speed in a straight line, unless ...',
+      right: 'a resultant force acts on it.',
+      wrong: [
+        { text: 'any force acts on it.', tag: 'anyforce', msg: 'Forces can act and cancel out. It is a RESULTANT force that changes the motion.' },
+        { text: 'it runs out of push.', tag: 'needforce', msg: 'Nothing gets used up. With no resultant force the motion simply carries on.' },
+        { text: 'the forces on it are balanced.', tag: 'balancedchange', msg: 'Balanced forces mean a resultant of 0 N, so the motion does NOT change.' }
+      ] },
+    { id: 'lawC', prompt: 'Complete the law. An object at rest stays at rest, unless ...',
+      right: 'a resultant force acts on it.',
+      wrong: [
+        { text: 'any force acts on it.', tag: 'anyforce', msg: 'Forces can act and cancel out. A book on a table has two forces on it and stays at rest.' },
+        { text: 'it is pushed by a force that is balanced by another.', tag: 'balancedchange', msg: 'Two balanced forces make a resultant of 0 N, so the motion does NOT change.' },
+        { text: 'there are no forces acting on it.', tag: 'noforces', msg: 'An object with no forces on it stays at rest too. It is a resultant force that makes it move.' }
+      ] }
+  ];
+  var STOPS = [
+    { id: 'ball', obj: 'A ball rolls along the floor and slows down until it stops.', why: 'Friction and air resistance act against the ball’s motion. The resultant force is backwards, so the speed falls.' },
+    { id: 'puck', obj: 'A puck slides across a rough floor and slows down until it stops.', why: 'Friction acts against the puck’s motion. The resultant force is backwards, so the speed falls.' },
+    { id: 'bike', obj: 'A cyclist stops pedalling and the bicycle slows down until it stops.', why: 'Friction and air resistance act against the bicycle. The resultant force is backwards, so the speed falls.' },
+    { id: 'book', obj: 'A book slides along a table and slows down until it stops.', why: 'Friction from the table acts against the book’s motion. The resultant force is backwards, so the speed falls.' }
+  ];
+  var RESTS = [
+    { id: 'book', obj: 'A book rests on a table.', up: 'the reaction force from the table', upName: 'reaction force' },
+    { id: 'lamp', obj: 'A lamp hangs still from a cable.', up: 'the tension in the cable', upName: 'tension' },
+    { id: 'boat', obj: 'A boat floats at rest on a still lake.', up: 'the upthrust from the water', upName: 'upthrust' },
+    { id: 'picture', obj: 'A picture hangs still on a wall from a string.', up: 'the tension in the string', upName: 'tension' }
+  ];
+  var ZEROS = [
+    { id: 'z1', text: 'A car moves at a steady 20 m/s along a flat road.', kind: 'steady' },
+    { id: 'z2', text: 'A skydiver falls at a steady speed.', kind: 'steady' },
+    { id: 'z3', text: 'A train moves at a steady speed along a straight track.', kind: 'steady' },
+    { id: 'z4', text: 'A boat sails at a steady speed in a straight line.', kind: 'steady' },
+    { id: 'z5', text: 'A car speeds up from 10 m/s to 20 m/s.', kind: 'speedup' },
+    { id: 'z6', text: 'A ball falls and speeds up.', kind: 'speedup' },
+    { id: 'z7', text: 'A bus slows down as it comes to a stop.', kind: 'slowdown' },
+    { id: 'z8', text: 'A sledge slows down on rough snow.', kind: 'slowdown' }
+  ];
+  var ODD_ZERO = ['A book rests on a table.', 'A car moves at a steady 25 m/s on a flat road.', 'A skydiver falls at a steady speed.', 'A lift moves upwards at a steady speed.', 'A boat sails at a steady speed in a straight line.', 'A picture hangs still on a wall.'];
+  var ODD_NOT = ['A stone falls from a cliff and speeds up.', 'A car brakes and slows down.', 'A rocket speeds up as it leaves the ground.', 'A cyclist slows down on a rough path.'];
+  var SPACES = [
+    { id: 'probe', obj: 'A probe is far from every star and planet, with its engine off. It is moving at', unit: 'km/s', vals: [3, 4, 5, 6, 8] },
+    { id: 'ball', obj: 'A tennis ball is thrown in deep space, far from every star and planet. It leaves the astronaut’s hand at', unit: 'm/s', vals: [10, 12, 15, 20] }
+  ];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 20000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+    var W = function (value, tag, how, msg) { return { value: value, tag: tag, how: how, msg: msg }; };
+    var five = function (a, b) { return 5 * int(a / 5, b / 5); };
+    var sum = function (a) { return a.reduce(function (x, y) { return x + y; }, 0); };
+    function arrange(correct, wrongs) { var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) }; }
+    var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
+    var lc = function (s) { return s.charAt(0).toLowerCase() + s.slice(1); };
+
+    /* forces along ONE line, for an object moving in direction `dir`: drive forces point the way it moves, resistive forces point against it */
+    function makeForces(nDrive, nResist, dir) {
+      var drive = shuffle(DRIVE), resist = shuffle(RESIST), f = [], other = dir === 'right' ? 'left' : 'right';
+      for (var i = 0; i < nDrive; i++) f.push({ name: drive[i], dir: dir, n: five(10, 150) });
+      for (var j = 0; j < nResist; j++) f.push({ name: resist[j], dir: other, n: five(10, 150) });
+      return f;
+    }
+    var along = function (f, d) { return sum(f.filter(function (x) { return x.dir === d; }).map(function (x) { return x.n; })); };
+    var listN = function (f, d) { return f.filter(function (x) { return x.dir === d; }).map(function (x) { return x.n; }); };
+    var joinSum = function (a) { return a.join(' + '); };
+    function workLines(f, dir) {
+      var other = dir === 'right' ? 'left' : 'right', a = listN(f, dir), b = listN(f, other), lines = [];
+      if (a.length > 1) lines.push(joinSum(a) + ' = ' + sum(a)); if (b.length > 1) lines.push(joinSum(b) + ' = ' + sum(b));
+      lines.push(Math.max(sum(a), sum(b)) + ' − ' + Math.min(sum(a), sum(b)) + ' = ' + Math.abs(sum(a) - sum(b)));
+      return lines;
+    }
+
+    /* ---------------- Newton's first law ---------------- */
+    function lawQ(item) {
+      var wr = item.wrong.map(function (w) { return { text: w.text, tag: w.tag, msg: w.msg }; });
+      var a = arrange({ text: item.right, tag: null }, wr);
+      return Q('law', 'law', { prompt: item.prompt, item: item, options: a.options, correctIndex: a.correctIndex,
+        explain: ['No resultant force means no change in motion: an object at rest stays at rest, and a moving object keeps its speed and direction.', 'It is a RESULTANT force that changes motion. Forces can act and cancel.'] });
+    }
+
+    /* ---------------- what the forces say about the motion ---------------- */
+    var MOTION_TEXT = { same: 'It stays at the same speed.', up: 'It speeds up.', down: 'It slows down.', stop: 'It stops at once.' };
+    function motionQ(nDrive, nResist, want) {
+      return until(function () {
+        var dir = rnd() < 0.5 ? 'right' : 'left', f = makeForces(nDrive, nResist, dir), R = along(f, dir) - along(f, dir === 'right' ? 'left' : 'right');
+        if (want === 'zero') {
+          var last = f.filter(function (x) { return x.dir !== dir; }).slice(-1)[0], need = along(f, dir) - (along(f, dir === 'right' ? 'left' : 'right') - last.n);
+          if (need < 5 || need > 200) return null; last.n = need; R = 0;
+        } else if (R === 0) return null;
+        if (want === 'drive' && R < 0) return null; if (want === 'resist' && R > 0) return null;
+        var truth = R === 0 ? 'same' : R > 0 ? 'up' : 'down';
+        var msgs = { same: 'The forces are balanced. The resultant is 0 N, so nothing changes the speed.', up: 'The resultant is not zero.', down: 'The resultant is not zero.' };
+        var wr = [];
+        ['same', 'up', 'down', 'stop'].forEach(function (k) {
+          if (k === truth) return;
+          var tag, msg;
+          if (truth === 'same') { tag = k === 'up' ? 'drivebigger' : k === 'down' ? 'frictionslows' : 'stopsnow'; msg = k === 'up' ? 'There is a driving force, but the resistive forces are just as big. The resultant is 0 N, so the speed does not change.' : k === 'down' ? 'There are resistive forces, but the driving force is just as big. The resultant is 0 N, so the speed does not change.' : 'With a resultant of 0 N nothing changes the motion. It keeps going at the same speed.'; }
+          else if (k === 'same') { tag = 'movingsteady'; msg = 'The resultant is NOT zero, so the motion does change. The forces are not balanced.'; }
+          else if (k === 'stop') { tag = 'stopsnow'; msg = 'A resultant force changes the speed gradually, in the way the resultant points. It does not stop the object at once.'; }
+          else { tag = 'wrongway'; msg = 'The resultant points ' + (truth === 'up' ? 'the way the object is moving, so it speeds up.' : 'against the way the object is moving, so it slows down.'); }
+          wr.push({ text: MOTION_TEXT[k], tag: tag, msg: msg });
+        });
+        var a = arrange({ text: MOTION_TEXT[truth], tag: null }, wr);
+        return Q('motion', 'motion', { prompt: 'The object is moving to the ' + dir + '. All the forces act along one straight line. What happens to its speed?', figure: { type: 'fbd', forces: f, moving: dir }, forces: f, moving: dir, R: R, truth: truth,
+          options: a.options, correctIndex: a.correctIndex, explain: workLines(f, dir).concat([R === 0 ? 'The resultant is 0 N: the speed does not change.' : 'The resultant is ' + Math.abs(R) + ' N ' + (R > 0 ? 'in the direction of motion' : 'against the direction of motion') + ', so the speed ' + (R > 0 ? 'increases.' : 'decreases.')]) });
+      });
+    }
+    function stopsQ(item) {
+      var wr = [
+        { text: 'No forces act on it, so it stops.', tag: 'noforcesstops', msg: 'With no forces at all it would KEEP moving. It stops because a force acts on it.' },
+        { text: 'It runs out of the push it was given.', tag: 'impetus', msg: 'Nothing gets used up. It slows because a force acts against its motion.' },
+        { text: 'Moving things naturally slow down and stop. No force is needed.', tag: 'natural', msg: 'A change in motion always needs a resultant force. Here it is friction.' }
+      ];
+      var a = arrange({ text: 'A resultant force acts against its motion: friction.', tag: null }, wr);
+      return Q('motion', 'stops', { prompt: item.obj + ' Which explanation is correct?', item: item, options: a.options, correctIndex: a.correctIndex, explain: [item.why, 'A change in speed needs a resultant force.'] });
+    }
+
+    /* ---------------- zero resultant, or no forces at all? ---------------- */
+    function zeroQ() {
+      var z = pick(ZEROS), opts;
+      var O1 = { text: 'Zero. The forces are balanced.', key: 'balanced' }, O2 = { text: 'Not zero. The resultant force is in the direction of motion.', key: 'with' }, O3 = { text: 'Not zero. The resultant force is against the direction of motion.', key: 'against' }, O4 = { text: 'Zero. There are no forces on it.', key: 'none' };
+      var truth = z.kind === 'steady' ? 'balanced' : z.kind === 'speedup' ? 'with' : 'against';
+      var all = [O1, O2, O3, O4].map(function (o) {
+        var c = { text: o.text, key: o.key, tag: null, msg: '' };
+        if (o.key !== truth) {
+          if (o.key === 'none') { c.tag = 'noforces'; c.msg = truth === 'balanced' ? 'The resultant is zero, but the forces have not gone. They are there and they cancel.' : 'The speed is changing, so there IS a resultant force.'; }
+          else if (truth === 'balanced') { c.tag = 'movingneedsforce'; c.msg = 'A steady speed means the speed is not changing, so the resultant is zero. The forces are balanced.'; }
+          else if (o.key === 'balanced') { c.tag = 'steadyspeedmistake'; c.msg = 'The speed is changing, so the forces cannot be balanced. There is a resultant force.'; }
+          else { c.tag = 'wrongway'; c.msg = truth === 'with' ? 'The speed is increasing, so the resultant points the way it is moving.' : 'The speed is decreasing, so the resultant points against the way it is moving.'; }
+        }
+        return c;
+      });
+      var opts2 = shuffle(all);
+      return Q('noforces', 'zero', { prompt: z.text + ' Is the resultant force on it zero?', item: z, truth: truth, options: opts2, correctIndex: opts2.map(function (o) { return o.tag === null; }).indexOf(true),
+        explain: truth === 'balanced' ? ['A steady speed is no change in motion, so the resultant force is zero.', 'Forces still act. They cancel.'] : ['The speed is changing, so there is a resultant force.', truth === 'with' ? 'It points the way the object is moving.' : 'It points against the way the object is moving.'] });
+    }
+    function restQ() {
+      var it = pick(RESTS), cap = it.up;
+      var wr = [
+        { text: 'No forces act on it, because it is not moving, so nothing is pushing or pulling it.', tag: 'noforces', msg: 'Forces ARE acting on it. It only looks as if none are, because they cancel.' },
+        { text: 'Only its weight acts on it. It stays still because nothing pushes it sideways.', tag: 'weightonly', msg: 'If only the weight acted, it would fall. ' + cap.charAt(0).toUpperCase() + cap.slice(1) + ' holds it up.' },
+        { text: 'The ' + it.upName + ' is bigger than the weight, and that extra force holds it still.', tag: 'biggerreaction', msg: 'If the two forces were not equal there would be a resultant force, and it would move. They are equal.' }
+      ];
+      var a = arrange({ text: 'Weight acts down and the ' + it.upName + ' acts up. They are equal, so the resultant is 0 N.', tag: null }, wr);
+      return Q('noforces', 'rest', { prompt: it.obj + ' Which statement is correct?', item: it, options: a.options, correctIndex: a.correctIndex, explain: ['The object is at rest, so the resultant force is zero.', 'Weight down and ' + cap + ' up are equal and opposite. They cancel: they have not gone.'] });
+    }
+    function steadyStateQ() {
+      var D = 100 * int(5, 20);
+      var wr = [
+        { text: 'There are no forces on the car, because it is not speeding up, so nothing is pushing it.', tag: 'noforces', msg: 'The forces have not gone. The driving force and the resistive forces are both there, and they cancel.' },
+        { text: 'The driving force is bigger than the resistive forces, because the car would slow down otherwise.', tag: 'drivebigger', msg: 'If the driving force were bigger, the car would speed up. At a steady speed they are equal.' },
+        { text: 'There are no resistive forces, because the speed is steady and nothing is slowing it down.', tag: 'noresist', msg: 'The resistive forces (friction and air resistance) are there. They are exactly as big as the driving force.' }
+      ];
+      var a = arrange({ text: 'The resistive forces add up to ' + D + ' N, the same as the driving force. The resultant is 0 N.', tag: null }, wr);
+      return Q('noforces', 'steadyState', { prompt: 'A car moves at a steady 20 m/s along a flat road. The driving force is ' + D + ' N. Which statement is correct?', D: D, options: a.options, correctIndex: a.correctIndex, explain: ['A steady speed means no change in motion, so the resultant force is 0 N.', 'The resistive forces must add up to ' + D + ' N, the same as the driving force.'] });
+    }
+    function spaceQ() {
+      var it = pick(SPACES), v = pick(it.vals), vs = v + ' ' + it.unit;
+      var wr = [
+        { text: 'It slowly slows down and stops, because nothing is pushing it along.', tag: 'slowsstop', msg: 'Nothing is needed to keep it moving. With no forces its speed does not change.' },
+        { text: 'It slows down and stops, because there is no air to carry it along.', tag: 'noair', msg: 'Air does not carry things along. Air only slows an object down. In space nothing slows it.' },
+        { text: 'It speeds up slowly, because nothing is holding it back any more.', tag: 'speedsup', msg: 'Speeding up needs a resultant force. With no forces its speed does not change.' }
+      ];
+      var a = arrange({ text: 'It keeps moving at ' + vs + ' in a straight line, as nothing acts on it.', tag: null }, wr);
+      return Q('noforces', 'space', { prompt: it.obj + ' ' + vs + '. What happens next?', item: it, v: v, options: a.options, correctIndex: a.correctIndex, explain: ['No forces act, so there is no resultant force.', 'By the first law the motion does not change: the same speed, in a straight line.'] });
+    }
+    function oddQ() {
+      var z = shuffle(ODD_ZERO).slice(0, 3), n = pick(ODD_NOT);
+      var wr = z.map(function (t) { return { text: t, tag: /rests|hangs/.test(t) ? 'restzero' : 'steadyzero', msg: /rests|hangs/.test(t) ? 'It is at rest, so the forces cancel: the resultant is zero.' : 'The speed is steady, so the resultant is zero.' }; });
+      var a = arrange({ text: n, tag: null }, wr);
+      return Q('noforces', 'odd', { prompt: 'In three of these the resultant force is zero. In which one is the resultant force NOT zero?', zero: z, notzero: n, options: a.options, correctIndex: a.correctIndex, explain: ['The speed is changing, so there is a resultant force.', 'In the other three the object is at rest or at a steady speed: the forces cancel.'] });
+    }
+
+    /* ---------------- numbers: a steady speed means the resultant is zero ---------------- */
+    function steadyNum2() {
+      return until(function () {
+        var P = five(20, 150), nm = pick([['A crate slides', 'push', 'Push', 'Friction'], ['A boat sails', 'thrust', 'Thrust', 'Water resistance'], ['A trolley is pulled', 'pull', 'Pull', 'Friction']]);
+        var f = [{ name: nm[2], dir: 'right', n: P }, { name: nm[3], dir: 'left', n: P, label: nm[3] + ' X' }];
+        return Q('missing', 'steadyNum2', { prompt: nm[0] + ' at a steady speed. The ' + nm[1] + ' is ' + P + ' N. Find the force X.', figure: { type: 'fbd', forces: f }, forces: f, P: P, unit: 'N', answer: P,
+          worked: ['Steady speed: the resultant is 0 N', 'The force X is equal to the ' + nm[1] + ': ' + P + ' N'], method: 'A steady speed means the resultant force is zero, so the forces one way equal the forces the other way.',
+          wrong: [W(0, 'noforces', '0', 'A steady speed does not mean there is no ' + nm[3].toLowerCase() + '. The force is there and it equals the ' + nm[1] + '.'), W(2 * P, 'doubled', '2 × ' + P, 'The two forces are equal, not added: X = ' + P + ' N.')] });
+      });
+    }
+    function steadyNum3() {
+      return until(function () {
+        var D = five(100, 400), A = five(20, D - 40), X = D - A; if (X < 10 || A === X) return null;
+        var nm = pick([['A car moves', 'Driving force', 'Air resistance', 'Friction'], ['A boat moves', 'Thrust', 'Water resistance', 'Wind']]);
+        var f = [{ name: nm[1], dir: 'right', n: D }, { name: nm[2], dir: 'left', n: A }, { name: nm[3], dir: 'left', n: X, label: nm[3] + ' X' }];
+        return Q('missing', 'steadyNum3', { prompt: nm[0] + ' at a steady speed. Find the force X.', figure: { type: 'fbd', forces: f }, forces: f, D: D, A: A, unit: 'N', answer: X,
+          worked: ['Steady speed: the resultant is 0 N', 'Right: ' + D + ' N. Left: ' + A + ' + X', D + ' = ' + A + ' + X, so X = ' + D + ' − ' + A + ' = ' + X], method: 'A steady speed means the resultant force is zero. The forces to the left add up to the force to the right.',
+          wrong: [W(D + A, 'addedall', D + ' + ' + A, 'You added the two known forces. They point opposite ways, so subtract.'), W(D, 'driveonly', String(D), 'That is the whole driving force. Part of it is cancelled by the ' + nm[2].toLowerCase() + ', so X is the rest.'), W(A, 'knownonly', String(A), 'That is the ' + nm[2].toLowerCase() + '. The force X is what is left of the ' + D + ' N.')] });
+      });
+    }
+    function missingZero() {
+      return until(function () {
+        var a = five(30, 150), b = five(20, 100), c = five(20, 150), X = a + b - c; if (X < 10 || X > 250) return null;
+        var f = [{ name: 'Push', dir: 'right', n: a }, { name: 'Pull', dir: 'right', n: b }, { name: 'Friction', dir: 'left', n: c }, { name: 'Drag', dir: 'left', n: X, label: 'Drag X' }];
+        return Q('missing', 'missingZero', { prompt: 'An object moves at a steady speed. Find the force X.', figure: { type: 'fbd', forces: f }, forces: f, a: a, b: b, c: c, unit: 'N', answer: X,
+          worked: ['Steady speed: the resultant is 0 N', 'Right: ' + a + ' + ' + b + ' = ' + (a + b), a + ' + ' + b + ' = ' + c + ' + X', 'X = ' + (a + b) + ' − ' + c + ' = ' + X], method: 'A steady speed means the resultant is zero: the forces to the right add up to the forces to the left.',
+          wrong: [W(a + b + c, 'addedall', a + ' + ' + b + ' + ' + c, 'You added all three known forces. The two totals must be EQUAL, so take ' + c + ' away from ' + (a + b) + '.'), W(a + b, 'righttotal', a + ' + ' + b, 'That is the whole right-hand total. The left total, ' + c + ' + X, equals it.'), W(Math.abs(a - c), 'skipped', Math.max(a, c) + ' − ' + Math.min(a, c), 'You left out the ' + b + ' N.')] });
+      });
+    }
+    function skydiverNum() {
+      var m = pick([60, 65, 70, 75, 80]), Wt = Math.round(m * 98) / 10;
+      return Q('missing', 'skydiverNum', { prompt: 'A skydiver of mass ' + m + ' kg falls at a steady speed. Use g = 9.8 N/kg. Find the size of the air resistance.', m: m, Wt: Wt, unit: 'N', answer: Wt,
+        worked: ['Weight = ' + m + ' × 9.8 = ' + Wt, 'Steady speed: the resultant is 0 N', 'Air resistance = weight = ' + Wt + ' N'], method: 'At a steady speed the upward force equals the downward force. The downward force is the weight, mass × 9.8.',
+        wrong: [W(m, 'masswt', String(m), 'That is the mass in kg. Air resistance is a force: it equals the WEIGHT, ' + m + ' × 9.8.'), W(10 * m, 'tengrav', String(10 * m), 'You used g = 10. Use g = 9.8 N/kg, as in the lesson.')] });
+    }
+    function pushIncrease() {
+      return until(function () {
+        var P = five(20, 120), N2 = P + five(10, 60); if (N2 - P < 10) return null;
+        return Q('missing', 'pushIncrease', { prompt: 'A sledge is pulled along at a steady speed with a pull of ' + P + ' N. The pull is then increased to ' + N2 + ' N. Find the size of the resultant force on the sledge now.', P: P, N2: N2, unit: 'N', answer: N2 - P,
+          worked: ['At first the friction equals the pull: ' + P + ' N', 'Now the pull is ' + N2 + ' N and the friction is still ' + P + ' N', N2 + ' − ' + P + ' = ' + (N2 - P)], method: 'The friction does not change. Before, it cancelled the whole pull. Now only part of the new pull is cancelled.',
+          wrong: [W(N2, 'newpull', String(N2), 'That is the new pull. The friction, ' + P + ' N, still acts against it.'), W(N2 + P, 'addedall', N2 + ' + ' + P, 'The pull and the friction point opposite ways, so subtract.'), W(P, 'oldpull', String(P), 'That is the old pull, which the friction used to cancel. Now the pull is bigger.'), W(0, 'stillsteady', '0', 'The speed WAS steady, but now the forces are not equal, so there is a resultant force.')] });
+      });
+    }
+
+    /* ---------------- the very hard pools ---------------- */
+    function topOfPath() {
+      var wr = [
+        { text: 'The ball is at rest, so the resultant force on it is zero and it stays there for a moment.', tag: 'restzero', msg: 'It is at rest only for an instant. The weight is still pulling it down, so the resultant is NOT zero.' },
+        { text: 'No forces act on the ball at the top of its path, because it has stopped moving for an instant.', tag: 'noforces', msg: 'Gravity never switches off. The weight still acts on the ball at the top.' },
+        { text: 'The upward force from the throw balances the weight, and that is why the ball stops for an instant.', tag: 'throwforce', msg: 'After the ball leaves the hand there is no upward force. Only the weight acts (ignoring air resistance).' }
+      ];
+      var a = arrange({ text: 'Only the weight acts. The resultant is the weight, downwards, so the ball does not stay at rest.', tag: null }, wr);
+      return Q('puzzle', 'topOfPath', { prompt: 'A ball is thrown straight up. At the top of its path it stops for an instant. Ignore air resistance. Which statement is correct at that instant?', options: a.options, correctIndex: a.correctIndex,
+        explain: ['The first law: an object stays at rest only if the resultant force is zero.', 'At the top the weight still acts and nothing balances it, so the ball starts to fall.'] });
+    }
+    function liftSteady() {
+      var m = pick([400, 500, 600, 800, 1000]), Wt = Math.round(m * 98) / 10;
+      return Q('puzzle', 'liftSteady', { prompt: 'A lift of mass ' + m + ' kg moves upwards at a steady speed. Use g = 9.8 N/kg. Find the tension in the cable.', m: m, Wt: Wt, unit: 'N', answer: Wt,
+        worked: ['Weight = ' + m + ' × 9.8 = ' + Wt, 'Steady speed: the resultant is 0 N', 'Tension = weight = ' + Wt + ' N'], method: 'A steady speed means the resultant force is zero, even when the lift is moving up. The tension equals the weight.',
+        wrong: [W(m, 'masswt', String(m), 'That is the mass in kg. The tension is a force: it equals the WEIGHT, ' + m + ' × 9.8.'), W(10 * m, 'tengrav', String(10 * m), 'You used g = 10. Use g = 9.8 N/kg, as in the lesson.')] });
+    }
+    function engineOff() {
+      var s1 = pick([2, 3, 4]), s2 = s1 + pick([3, 4, 5]);
+      var wr = [
+        { text: 'It slows back down to ' + s1 + ' km/s.', tag: 'slowsback', msg: 'Nothing slows it down. With the engine off and no forces its speed does not change.' },
+        { text: 'It keeps speeding up for a while, because it was speeding up.', tag: 'keepspeeding', msg: 'Speeding up needs a resultant force. With the engine off there is none.' },
+        { text: 'It slows down and stops, because the engine is off.', tag: 'slowsstop', msg: 'The engine is not needed to keep it moving. It keeps its speed.' }
+      ];
+      var a = arrange({ text: 'It keeps moving at ' + s2 + ' km/s in a straight line.', tag: null }, wr);
+      return Q('puzzle', 'engineOff', { prompt: 'A probe in deep space speeds up from ' + s1 + ' km/s to ' + s2 + ' km/s while its engine is on. The engine then switches off. What happens next?', s1: s1, s2: s2, options: a.options, correctIndex: a.correctIndex,
+        explain: ['With the engine on there was a resultant force: the speed changed.', 'With the engine off there are no forces, so the speed stays at ' + s2 + ' km/s.'] });
+    }
+    function chuteNew() {
+      var wr = [
+        { text: 'It is bigger than her weight, because the bigger parachute catches much more air.', tag: 'bigger', msg: 'If the air resistance were bigger than her weight there would be a resultant force upwards, and she would still be slowing down.' },
+        { text: 'It is smaller than her weight, because she is moving more slowly.', tag: 'smaller', msg: 'If it were smaller there would be a resultant force downwards, and she would be speeding up.' },
+        { text: 'There is no air resistance now, because the forces are balanced.', tag: 'noforces', msg: 'The forces have not gone. The air resistance is there: it is equal to her weight.' }
+      ];
+      var a = arrange({ text: 'It is equal to her weight, the same size as before the parachute opened.', tag: null }, wr);
+      return Q('puzzle', 'chuteNew', { prompt: 'A skydiver falls at a steady speed. She opens her parachute, slows down, and then falls at a new, slower, steady speed. At the new steady speed, how does the air resistance compare with her weight?', options: a.options, correctIndex: a.correctIndex,
+        explain: ['A steady speed means the resultant is 0 N, so the air resistance equals the weight.', 'Her weight has not changed, so the air resistance is the same size as before. What changed is the speed needed to get that much air resistance.'] });
+    }
+
+    var plan = [
+      [function () { return lawQ(pick([LAWS[0], LAWS[1]])); }, function () { return motionQ(1, 1, 'drive'); }, zeroQ, function () { return motionQ(1, 2, 'zero'); }, restQ, steadyNum2],
+      [function () { return stopsQ(pick(STOPS)); }, function () { return lawQ(LAWS[2]); }, function () { return motionQ(2, 1, rnd() < 0.5 ? 'resist' : 'drive'); }, steadyNum3, spaceQ, missingZero],
+      [oddQ, steadyStateQ, skydiverNum, pushIncrease, function () { return rnd() < 0.5 ? topOfPath() : liftSteady(); }, function () { return rnd() < 0.5 ? engineOff() : chuteNew(); }]
+    ];
+    var out = [], used = {};
+    var keyOf = function (q) { return q.kind === 'law' ? q.item.id : q.kind === 'stops' ? q.item.id : q.kind === 'rest' ? q.item.id : q.kind === 'zero' ? q.item.id : q.kind === 'space' ? q.item.id : null; };
+    plan.forEach(function (r, ri) {
+      r.forEach(function (make, qi2) {
+        var q = make(), key = keyOf(q);
+        for (var tries = 0; key && used[q.kind + key] && tries < 50; tries++) { q = make(); key = keyOf(q); }
+        if (key) used[q.kind + key] = 1;
+        q.round = ri + 1; q.n = qi2 + 1;
+        if (q.wrong) {
+          var seen = {}, wrong = {};
+          q.wrong.forEach(function (w) { if (w && w.value === Math.round(w.value) && w.value >= 0 && w.value !== q.answer && w.value <= 999999 && !seen[w.value]) { seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg }; } });
+          q.wrong = wrong;
+        }
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['The first law', 'Steady speed', 'Beat the game'];
+  var CATS = { law: 'Newton’s first law', motion: 'Forces and motion', noforces: 'Zero resultant or no forces', missing: 'Missing forces', puzzle: 'Hard puzzles' };
+  var HABIT = {
+    needforce: 'No force is needed to keep an object moving. Only a CHANGE in motion needs a resultant force.', anyforce: 'It is the RESULTANT force that matters. Forces can act and cancel out.', natural: 'Things slow down and stop only because a force, such as friction, acts on them.', balancedchange: 'Balanced forces mean a resultant of 0 N, so the motion does not change.', noforces: 'A resultant of 0 N is not the same as no forces. The forces are there and they cancel.',
+    drivebigger: 'At a steady speed the driving force is NOT bigger than the resistive forces: they are equal.', frictionslows: 'Resistive forces slow an object only if they are bigger than the forces driving it.', stopsnow: 'A resultant force changes the speed gradually. It does not stop an object at once.', movingsteady: 'If the resultant is not zero, the motion changes. A steady speed needs a resultant of zero.', wrongway: 'The resultant points the way of the bigger total: with the motion, it speeds up; against it, it slows down.',
+    movingneedsforce: 'A steady speed needs NO resultant force, even when the object is moving.', steadyspeedmistake: 'If the speed is changing there IS a resultant force.', noforcesstops: 'With no forces at all an object keeps moving. It stops because a force acts on it.', impetus: 'Nothing is used up. A moving object keeps its speed unless a resultant force acts.',
+    weightonly: 'Look for every force: something always holds up an object at rest.', biggerreaction: 'At rest the forces are equal and opposite, not one bigger than the other.', noresist: 'Resistive forces are there at a steady speed. They are equal to the driving force.',
+    slowsstop: 'Nothing is needed to keep an object moving at a constant speed.', noair: 'Air does not carry things along. Air only slows them down.', speedsup: 'Speeding up needs a resultant force. With no forces the speed does not change.',
+    steadyzero: 'A steady speed means a resultant of zero.', restzero: 'At rest the forces cancel: the resultant is zero.',
+    addedall: 'Forces that point opposite ways SUBTRACT. At a steady speed the two totals are equal.', driveonly: 'Part of the driving force is cancelled by the other resistive force. Work out what is left.', knownonly: 'Subtract the force you know from the driving force.', righttotal: 'Balanced means the two totals are equal. Take the known left force from the right total.', skipped: 'Use every force you are given.', doubled: 'The two forces are equal. Do not add them.',
+    masswt: 'The force is the WEIGHT: mass × 9.8, not the mass.', tengrav: 'Use g = 9.8 N/kg, as in the lesson.', newpull: 'The friction still acts. Take it away from the new pull.', oldpull: 'The old pull was cancelled by the friction. Look at the NEW pull.', stillsteady: 'The speed was steady, but now the forces are not equal.',
+    throwforce: 'After the throw there is no upward force. Only the weight acts.', slowsback: 'Nothing slows the probe down once the engine is off.', keepspeeding: 'Speeding up needs a resultant force. With the engine off there is none.', bigger: 'At a steady speed the air resistance equals the weight, whatever the size of the parachute.', smaller: 'At a steady speed the air resistance equals the weight.'
+  };
+  var GENERIC = 'Read the question again. No resultant force means no change in motion. A resultant of 0 N is not the same as no forces.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, roundStart, qStart;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; typed = ''; locked = false; }
+  function idx() { return state.r * 6 + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+  /* ---------- the free-body diagram, drawn from its data (arrows to scale) ---------- */
+  function fbdSvg(fig) {
+    var f = fig.forces, maxN = Math.max.apply(null, f.map(function (x) { return x.n; })), sc = 110 / maxN, bw = 120, bh = 70, cx = 300, cy = 150, parts = [];
+    parts.push('<rect x="' + (cx - bw / 2) + '" y="' + (cy - bh / 2) + '" width="' + bw + '" height="' + bh + '" rx="8" fill="#F2F4FA" stroke="#17203F" stroke-width="4"/>');
+    var COL = { right: '#1E8E5A', left: '#E03D6B', up: '#1FB6BC', down: '#C25A16' };
+    function arrow(x0, y0, x1, y1, col) {
+      var dx = x1 - x0, dy = y1 - y0, L = Math.sqrt(dx * dx + dy * dy), ux = dx / L, uy = dy / L, px = -uy, py = ux, h = 13;
+      return '<line x1="' + x0 + '" y1="' + y0 + '" x2="' + (x1 - ux * h) + '" y2="' + (y1 - uy * h) + '" stroke="' + col + '" stroke-width="6" stroke-linecap="round"/><polygon points="' + x1 + ',' + y1 + ' ' + (x1 - ux * h + px * 8) + ',' + (y1 - uy * h + py * 8) + ' ' + (x1 - ux * h - px * 8) + ',' + (y1 - uy * h - py * 8) + '" fill="' + col + '"/>';
+    }
+    ['right', 'left'].forEach(function (side) {
+      var fs = f.filter(function (x) { return x.dir === side; }), offs = { 1: [0], 2: [-22, 22], 3: [-34, 0, 34] }[fs.length] || [];
+      fs.forEach(function (x, i) {
+        var L = Math.max(18, x.n * sc), y = cy + offs[i], x0 = side === 'right' ? cx + bw / 2 : cx - bw / 2, x1 = side === 'right' ? x0 + L : x0 - L;
+        parts.push(arrow(x0, y, x1, y, COL[side]));
+        parts.push('<text class="fl" data-n="' + x.n + '" data-dir="' + side + '" x="' + (side === 'right' ? x0 + 6 : x0 - 6) + '" y="' + (y - 11) + '" text-anchor="' + (side === 'right' ? 'start' : 'end') + '" fill="' + COL[side] + '">' + esc(x.label || (x.name + ' ' + x.n + ' N')) + '</text>');
+      });
+    });
+    ['up', 'down'].forEach(function (side) {
+      f.filter(function (x) { return x.dir === side; }).forEach(function (x) {
+        var L = Math.max(18, x.n * sc), x0 = cx, y0 = side === 'up' ? cy - bh / 2 : cy + bh / 2, y1 = side === 'up' ? y0 - L : y0 + L;
+        parts.push(arrow(x0, y0, x0, y1, COL[side]));
+        parts.push('<text class="fl" data-n="' + x.n + '" data-dir="' + side + '" x="' + (x0 + 14) + '" y="' + ((y0 + y1) / 2 + 5) + '" text-anchor="start" fill="' + COL[side] + '">' + esc(x.name) + ' ' + x.n + ' N</text>');
+      });
+    });
+    if (fig.moving) {
+      var mx0 = fig.moving === 'right' ? cx - 60 : cx + 60, mx1 = fig.moving === 'right' ? cx + 60 : cx - 60;
+      parts.push(arrow(mx0, 56, mx1, 56, '#5A6480')); parts.push('<text class="mv" x="' + cx + '" y="34" text-anchor="middle" fill="#5A6480">Moving ' + fig.moving + '</text>');
+    }
+    return '<div class="fbdfig"><svg viewBox="0 0 600 300" role="img" aria-label="Free-body diagram">' + parts.join('') + '</svg></div>';
+  }
+  function figureHtml(Q) { return Q.figure ? fbdSvg(Q.figure) : ''; }
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.figure) d += ' | ' + Q.figure.forces.map(function (x) { return x.name + ' ' + x.n + ' N ' + x.dir; }).join(' ; ');
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text; }).join(' / ');
+    return d;
+  }
+  function shortText(Q) { return Q.prompt; }
+
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Zero Or Not'));
+    card.appendChild(el('p', 'lead', 'Three rounds of six questions. Each round is harder than the one before. Think about what the forces say about the motion.'));
+    card.appendChild(el('p', 'lead', 'Round 3 goes far past the lesson. The last questions are meant to be almost impossible. Do what you can and read the working.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'The arrows on each diagram are drawn to scale, and every force is along one straight line. Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.onclick = beginRound; app.appendChild(b); b.focus();
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); question(); }
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), 'Round ' + (state.r + 1) + ' · ' + ROUND_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 6');
+    for (var k = 0; k < 6; k++) { var res = state.results[state.r * 6 + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); return h;
+  }
+  var isMCQ = function (Q) { return !!Q.options; };
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function question() {
+    clear(); state.screen = 'question'; typed = ''; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.innerHTML = '<p class="ask">' + esc(Q.prompt) + '</p>' + figureHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (isMCQ(Q)) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else {
+      var ans = el('div', 'empty'); ans.id = 'answer'; ans.setAttribute('role', 'status'); ans.textContent = 'Type your answer'; app.appendChild(ans);
+      if (Q.unit) app.appendChild(el('p', 'unit', 'Give your answer in ' + Q.unit + '.'));
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (!isMCQ(Q)) {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','', '0','back','go'].forEach(function (k) {
+        if (k === '') { pad.appendChild(el('span')); return; }
+        var b = el('button', 'key' + (k === 'back' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'go' ? 'Check' : k);
+        b.type = 'button'; b.dataset.k = k; if (k === 'back') b.setAttribute('aria-label', 'Delete'); b.onclick = function () { press(k); }; pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else { var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go); }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px'; stop.onclick = final; app.appendChild(stop);
+  }
+  function paintAnswer() { var a = document.getElementById('answer'); if (!a) return; a.className = typed ? '' : 'empty'; a.textContent = typed || 'Type your answer'; }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    if (locked) { if (k === 'go') next(); return; }
+    if (k === 'back') typed = typed.slice(0, -1);
+    else if (k === 'go') { if (typed) check(parseInt(typed, 10), null); }
+    else if (typed.length < 6) typed += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question' || locked) return; check(k + 1, k); }
+
+  function workHtml(Q) {
+    var lines = (Q.worked || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return (Q.method ? '<p class="how">' + esc(Q.method) + '</p>' : '') + (expl ? '<div class="work">' + expl + '</div>' : '') + (lines ? '<p class="how">Working:</p><div class="work">' + lines + '</div>' : '');
+  }
+  function correctText(Q) { return isMCQ(Q) ? Q.options[Q.correctIndex].text : String(Q.answer) + (Q.unit ? ' ' + Q.unit : ''); }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head, wrote;
+    if (isMCQ(Q)) {
+      ok = picked === Q.correctIndex; wrote = Q.options[picked].text;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text;
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else {
+      ok = given === Q.answer; wrote = String(given); var w = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.answer + (Q.unit ? ' ' + Q.unit : '') + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, given: given, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: wrote };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div>' + (msg ? '<div class="msg">' + esc(msg) + '</div>' : '') + workHtml(Q);
+    var last = state.i === 5, label = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn'); goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 5) { state.i++; question(); } else roundEnd(); }
+
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 6 + k], x = state.results[r * 6 + k], n = r * 6 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(correctText(Q)) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q);
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 6, r * 6 + 6), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Round ' + (r + 1) + ' · ' + ROUND_NAMES[r] + ' · ' + right + ' of ' + (done.length === 6 ? 6 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 6; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 6, state.r * 6 + 6), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See what to practise'); b.id = 'roundnext';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus();
+  }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', total + ' of 18'));
+    if (done.length < 18) card.appendChild(el('p', 'small', done.length + ' of 18 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length, rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a round to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(HABIT[t] || GENERIC))); }); tips.appendChild(ul); }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q();
+    if (isMCQ(Q)) {
+      if (/^[1-4]$/.test(e.key) && !locked) { var k = parseInt(e.key, 10) - 1; if (k < Q.options.length) { e.preventDefault(); pressOpt(k); } }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>
