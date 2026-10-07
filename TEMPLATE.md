@@ -50,6 +50,20 @@ Sciences is one course.
 
 **Never:** new content, or a question the deck has not taught.
 
+**How the answers look** (Chuka's edits to The Greatest Show On Earth, 8I, 2026-10-07):
+
+- **A numeric answer is the working, then the answer and its unit: `120 ÷ 20 = 6 m/s`.**
+  No full stops, and never the other way round ("6 m/s. 120 ÷ 20."). The same goes for
+  any numeric answer in the Cold Call's answer boxes.
+- **The preview question uses the command word "Suggest"** wherever it fits ("Suggest
+  why…"). The class has not been taught it yet, so they suggest; they do not state.
+- **The preview question's card is shaded**, so the room can see the answer is new. Its
+  card and answer box swap colours: the card takes a warm tint with a darker accent
+  border, and its answer box goes white. Galapagos values: card `F3E7CB`, border
+  `A86E32`, answer box `FFFFFF`. For another palette, fill the card with that deck's
+  answer-box tint and outline it in the palette's `accentInk`. Worked example:
+  `qGrid(..., { preview: 5 })` in `build/the-greatest-show-on-earth.js`.
+
 ---
 
 ## 2 · Today — 1 minute
@@ -100,11 +114,16 @@ lesson, or in another science.
 
 ## 6 · We Do — 5 minutes
 
-Guided practice, out loud, with the teacher. **Pick the mode that fits the
-lesson:**
+Guided practice, out loud, with the teacher. **There are three modes, and the We
+Do is always one of them.** Pick the one that fits the lesson, and never the same
+one two lessons running in a unit (check the previous deck in `reference/`).
 
-**"What should be the correct answer?"** — four wrong statements, each with its
-correction. Best when the lesson has sharp misconceptions.
+**Every mode needs a decision or a reason from the room, never the recall of one
+word.** A We Do that can be answered with single words reads as condescending to a
+secondary class (Chuka's feedback on The Greatest Show On Earth, 2026-10-07).
+
+**Spot The Mistake** — four statements, each with its correction. Best when the
+lesson has sharp misconceptions.
 
 - **One of the four must already be correct**, so the task is *check this*
   rather than *find a flaw*. A student who says "this one is fine" has done
@@ -114,12 +133,30 @@ correction. Best when the lesson has sharp misconceptions.
   is what stops them repeating it.
 - Use real errors from the previous lesson's marking where you have them.
 
-**"Finish this one."** — three partially worked solutions; students supply the
-missing step. Best when the lesson is a method, not a concept. This is the rung
-between watching and doing, and it is currently missing from most decks.
+**Finish It Off** — three partially worked solutions; students supply what is
+missing. Best when the lesson is a method (a calculation, a procedure), not a
+concept. This is the rung between watching and doing.
 
-Alternate between the two across a unit. A unit of nothing but spot-the-mistake
-teaches error-hunting.
+- On a concept lesson the blanks shrink to single words. If it is used there, every
+  blank gets a follow-up that needs thinking ("which step is that?", "why must it
+  come there?"), and the notes say what it is.
+
+**Rank And Conquer** — four answers to one exam-style question, written to differ
+in quality in known ways: one with a wrong idea, one that is incomplete, one
+missing a step, one that would get full marks. Best for "explain" objectives and
+for evidence.
+
+- **Rank.** The class commits to the weakest and the strongest by a show of hands.
+  The slide then reveals the ranking one card at a time, each with one reason.
+- **Conquer.** Take the answer that holds the lesson's main misconception and
+  upgrade it together until it would rank first. The upgraded answer is the last
+  click.
+- The ranking must come from the mark scheme, not taste. Count what each answer
+  has (for speciation: the barrier, different selection, many generations, the
+  test), and put the count in the notes.
+
+Rotate the three across a unit. A unit of nothing but Spot The Mistake teaches
+error-hunting.
 
 ---
 
@@ -205,7 +242,11 @@ sheet, or it looks like a mistake.
 - Phase minutes total 50, printed by the build script.
 - Do Now spans more than last lesson; one question previews today.
 - Each I Do teaches exactly one objective, with a worked example.
-- We Do: one row already correct; students commit before each reveal.
+- We Do is Spot The Mistake, Finish It Off or Rank And Conquer, not last lesson's
+  mode; it needs a decision or a reason, not one word; students commit before each
+  reveal (Spot The Mistake: one row already correct).
+- Do Now: numeric answers as `working = answer unit`, no full stops; the preview
+  question says "Suggest" and has the shaded card.
 - Cold Call includes two questions from earlier lessons.
 - Worksheet interleaved, with a worked and a half-worked example per tier.
 - "Why does that step work?" and "where would you meet this?" both present.
