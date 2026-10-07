@@ -68,6 +68,47 @@ that the code was right.
 
 ---
 
+## Saving your work to GitHub
+
+The copy on your Mac is `~/teaching`. GitHub only sees what is inside that folder
+**and** has been committed and pushed. Files in Downloads, on the Desktop or in
+`out/` never reach it (`out/` is left out on purpose: it can always be rebuilt).
+
+**After you teach a lesson and edit its deck:**
+
+1. Save the edited deck into `~/teaching/reference/` under the lesson's own name,
+   for example `The Greatest Show On Earth.pptx`. From Keynote, use File, Export To,
+   PowerPoint.
+2. Then, in Terminal:
+
+```bash
+cd ~/teaching
+git pull origin main                       # get anything new from GitHub first
+python3 tools/index-reference.py           # update reference/INDEX.md
+git add reference/                         # stage the deck and the index
+git commit -m "Add taught <Lesson Name> (<class>)"
+git push origin main                       # send it to GitHub
+```
+
+**The pattern for any change:** `git pull`, then `git add <what changed>`, then
+`git commit -m "<one sentence saying what changed>"`, then `git push origin main`.
+`git status` at any point shows what has changed and what is not saved yet.
+
+**When a Claude session in the cloud finishes some work**, it pushes it to a branch
+of its own (`claude/...`), not to `main`. Bring it into `main` with:
+
+```bash
+cd ~/teaching
+git fetch origin
+git checkout main
+git merge origin/claude/<branch-name>
+git push origin main
+```
+
+Or ask that session to open a pull request, and merge it on GitHub with one click.
+
+---
+
 ## What's in here
 
 | Folder | What it is |

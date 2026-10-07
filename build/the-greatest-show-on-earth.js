@@ -21,7 +21,7 @@
  * SHAPE, per TEMPLATE.md: ten slides, 50 minutes: Do Now 10, Today 1, Hook 2, I Do 3, I Do 3, We Do 5, Cold Call 6, You Do 14, Mark 3, Plenary 3.
  * I Do 1 teaches objective 1 (species, speciation, isolation; horse and donkey). I Do 2 teaches objectives 2 AND 3 together, because objective 3 is the
  * last step of objective 2's sequence: the finches animation builds the six steps and ends on "they no longer interbreed", and the card beside it
- * says WHY. The We Do is "Finish this one" (the last We Do in the unit was the bead activity), with the squirrels from the brief, a second real case
+ * says WHY. The We Do is "Finish It Off" (the last We Do in the unit was the bead activity), with the squirrels from the brief, a second real case
  * (snapping shrimp) and an imagined one. The You Do is the GAME (Sequencer, as the brief says), with the worksheet as the fallback.
  *
  * THE KAIBAB SQUIRREL IS NOT A FINISHED EXAMPLE, and the deck says so. It is the textbook case of speciation by geographic isolation, but checked
@@ -108,18 +108,22 @@ function sentence(slide, parts, o) {
   });
 }
 const PHASES = [];
+// The Do Now's preview question (answered for the first time later in the lesson) has its card and answer box swapped: the card takes
+// the tint and an accentInk-like border, the answer box goes white. Chuka's colours, from his edited reference deck.
+const PREVIEW_CARD = 'F3E7CB', PREVIEW_LINE = 'A86E32';
 function qGrid(s, o) {
   const cw = (RIGHT - M - 0.30) / 2;
   o.qs.forEach(([q, a], i) => {
     const col = i % 2, row = Math.floor(i / 2);
     const x = M + col * (cw + 0.30), y = o.y0 + row * (o.ch + o.gap);
-    card(s, { x, y, w: cw, h: o.ch, name: `${o.p}${i}` });
+    const pv = i === o.preview;
+    card(s, pv ? { x, y, w: cw, h: o.ch, fill: PREVIEW_CARD, line: PREVIEW_LINE, name: `${o.p}${i}` } : { x, y, w: cw, h: o.ch, name: `${o.p}${i}` });
     const qy = y + 0.14, cy = qy + o.qh / 2;
     s.addShape(S.ellipse, { x: x + 0.22, y: cy - 0.21, w: 0.42, h: 0.42, fill: { color: C.accent }, line: { color: C.accent, width: 0 }, objectName: `${o.p}${i}_badge` });
     s.addText(String(i + 1), { x: x + 0.22, y: cy - 0.21, w: 0.42, h: 0.42, color: C.dark, fontFace: F.title, fontSize: 14, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: `${o.p}${i}_num` });
     s.addText(q, { x: x + 0.80, y: qy, w: cw - 1.02, h: o.qh, color: C.ink, fontFace: F.body, fontSize: o.size, valign: 'middle', margin: 0, lineSpacing: o.size + 4, objectName: `${o.p}${i}_q` });
     s.addText(a, {
-      shape: S.roundRect, rectRadius: 0.10, x: x + 0.22, y: y + o.ch - 0.64, w: cw - 0.44, h: 0.50, fill: { color: ANS }, line: { color: C.accent, width: 1.3 },
+      shape: S.roundRect, rectRadius: 0.10, x: x + 0.22, y: y + o.ch - 0.64, w: cw - 0.44, h: 0.50, fill: { color: pv ? 'FFFFFF' : ANS }, line: { color: C.accent, width: 1.3 },
       color: C.dark, fontFace: F.body, fontSize: o.asize ?? 12.5, bold: true, align: 'left', valign: 'middle', margin: 6, objectName: `${o.p}${i}_a`,
     });
   });
@@ -138,12 +142,12 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   s.addText(LESSON, { x: 2.90, y: 0.22, w: 7.50, h: 0.66, color: C.dark, fontFace: F.title, fontSize: 22, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: 'lesson_title' });
   s.addText(DATE, { x: RIGHT - 3.40, y: PILL_Y, w: 3.40, h: PILL_H, color: C.inkSoft, fontFace: F.body, fontSize: 13, align: 'right', valign: 'middle', margin: 0, objectName: 'lesson_date' });
   s.addShape(S.rect, { x: M, y: 0.98, w: RIGHT - M, h: 0.04, fill: { color: C.accent }, line: { color: C.accent, width: 0 }, objectName: 'rule' });
-  qGrid(s, { p: 'd', y0: 1.24, ch: 1.62, gap: 0.20, qh: 0.78, size: 15, asize: 12, qs: [
+  qGrid(s, { p: 'd', y0: 1.24, ch: 1.62, gap: 0.20, qh: 0.78, size: 15, asize: 12, preview: 5, qs: [
     ['Explain why genetic drift has a bigger effect in a small population than in a large one.', 'A small group is a small random sample, so it is more likely to be far from the true mix.'],
     ['Name the force that moves alleles from one population to another when animals move and breed.', 'Gene flow.'],
     ['A pharyngeal arch becomes part of the gills in a fish embryo, and part of the jaw and ear in a human embryo. Explain what this suggests.', 'Fish and humans share an ancestor that had pharyngeal arches. Each kept them and changed how they are used.'],
     ['Explain why the fossil record is incomplete.', 'Most dead organisms rot or are eaten. Few are buried fast enough to become fossils.'],
-    ['A runner covers 120 m in 20 s. Calculate the speed.', '6 m/s. 120 ÷ 20.'],
+    ['A runner covers 120 m in 20 s. Calculate their speed.', '120 ÷ 20 = 6 m/s'],
     ['A horse and a donkey can breed and have a mule. Suggest why they are still called different species.', 'A mule is almost always sterile, so they cannot have fertile young together. We define it today.'],
   ] });
   s.addNotes(
@@ -189,7 +193,7 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
     x: M, y: 0.86, w: RIGHT - M - 1.55, h: 1.30, color: C.dark, fontFace: F.title, fontSize: 21, bold: true, valign: 'middle', margin: 0, lineSpacing: 26, objectName: 'slide_title',
   });
   s.addImage({ path: ICON('finch', 'accentInk'), x: RIGHT - 1.40, y: 0.90, w: 1.30, h: 1.30, objectName: 'hook_finch' });
-  const OPTS = [['A', 'Each finch changed its own beak to suit the food on its island.'], ['B', 'Groups were kept apart, and each group slowly changed in its own way.'], ['C', 'One mutation turned a finch into a new species in a single generation.']];
+  const OPTS = [['A', 'Each finch changed its beak to suit the food on its island.'], ['B', 'Groups were kept apart, and each group slowly changed in its own way.'], ['C', 'One mutation turned a finch into a new species in a single generation.']];
   const cw = (RIGHT - M - 2 * 0.30) / 3;
   OPTS.forEach(([k, txt], i) => {
     const x = M + i * (cw + 0.30);
@@ -218,7 +222,7 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   const DEFS = [
     ['SPECIES', 'A group of living things that can breed together and produce fertile offspring.'],
     ['SPECIATION', 'The formation of a new species from an existing one.'],
-    ['ISOLATION', 'Two groups kept apart, so they cannot breed together. GEOGRAPHIC isolation: kept apart by a barrier such as sea, mountains or a river.'],
+    ['ISOLATION', 'Two groups kept apart, so they cannot breed together. Geographic isolation: kept apart by a barrier such as sea, mountains, or a river.'],
   ];
   DEFS.forEach(([h, t_], i) => {
     const ch = CH[i], y = y0 + CH.slice(0, i).reduce((a, b) => a + b + cg, 0);
@@ -264,7 +268,7 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   ], { x: M + 0.24, y: y0 + vh + 0.14, w: lw - 0.48, h: 1.30, color: C.ink, fontFace: F.body, fontSize: 13.5, valign: 'middle', margin: 0, lineSpacing: 18, objectName: 'bp_t' });
   const RX = M + lw + g, RW = RIGHT - RX;
   card(s, { x: RX, y: y0, w: RW, h: 2.40, name: 'st' });
-  s.addText('THE STEPS (OBJECTIVE 2)', { x: RX + 0.24, y: y0 + 0.10, w: RW - 0.48, h: 0.36, color: C.accentInk, fontFace: F.title, fontSize: 13.5, bold: true, charSpacing: 1, valign: 'middle', margin: 0, objectName: 'st_h' });
+  s.addText('THE STEPS', { x: RX + 0.24, y: y0 + 0.10, w: RW - 0.48, h: 0.36, color: C.accentInk, fontFace: F.title, fontSize: 13.5, bold: true, charSpacing: 1, valign: 'middle', margin: 0, objectName: 'st_h' });
   s.addText([
     { text: '1.  One population, one gene pool.', options: { breakLine: true, paraSpaceAfter: 3 } },
     { text: '2.  A barrier splits it: geographic isolation.', options: { breakLine: true, paraSpaceAfter: 3 } },
@@ -274,8 +278,7 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
     { text: '6.  They can no longer interbreed: two species.', options: { bold: true } },
   ], { x: RX + 0.24, y: y0 + 0.50, w: RW - 0.48, h: 1.84, color: C.ink, fontFace: F.body, fontSize: 13.5, valign: 'top', margin: 0, lineSpacing: 17, objectName: 'st_t' });
   card(s, { x: RX, y: y0 + 2.54, w: RW, h: 2.36, name: 'wy' });
-  // the heading may run to two lines at this width, so it gets room for two and the list starts below it
-  s.addText('WHY THEY CAN NO LONGER INTERBREED (OBJECTIVE 3)', { x: RX + 0.24, y: y0 + 2.64, w: RW - 0.48, h: 0.50, color: C.accentInk, fontFace: F.title, fontSize: 12.5, bold: true, charSpacing: 0.5, valign: 'top', margin: 0, lineSpacing: 15, objectName: 'wy_h' });
+  s.addText('WHY THEY CAN NO LONGER INTERBREED', { x: RX + 0.24, y: y0 + 2.64, w: RW - 0.48, h: 0.50, color: C.accentInk, fontFace: F.title, fontSize: 12.5, bold: true, charSpacing: 0.5, valign: 'top', margin: 0, lineSpacing: 15, objectName: 'wy_h' });
   s.addText([
     { text: 'Over many generations each group differs in:', options: { breakLine: true, paraSpaceAfter: 4 } },
     { text: 'looks and behaviour, such as beak and song', options: { bullet: true, breakLine: true, paraSpaceAfter: 2 } },
@@ -295,27 +298,28 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
 }
 
 /* ================================================================== *
- * 6. WE DO · 5: "Finish this one"
+ * 6. WE DO · 5: "Finish It Off"
  * ================================================================== */
 {
   const s = pptx.addSlide();
   bg(s, 'light'); PHASES.push(timer(s, 5, 'light')); pill(s, 'We Do', 5, 'light');
-  title(s, 'Finish this one', 'light'); sub(s, 'Say the missing step out loud before the answer appears.', 'light');
+  title(s, 'Finish this', 'light'); sub(s, 'Fill in the blanks.', 'light');
+  // Chuka's wording, from his edited reference deck: the blanks are single words, and each answer box lists them one per line
   const ROWS = [
-    ['Kaibab squirrels live only on the north side of the Grand Canyon, apart from the other Abert’s squirrels.', 'Kept apart: ____ isolation. Selection works in its own way, so Kaibab squirrels have a white tail and a ____ belly. Still counted as ____ species.', 'Geographic. Black. One species: speciation may be starting, but they can still interbreed.'],
-    ['About 3 million years ago the Isthmus of Panama rose and split sea animals into a Pacific group and a Caribbean group.', 'Each side had different ____. Over about 3 million years each group ____ in its own way. Today many pairs of snapping shrimp from the two sides are different ____.', 'Conditions. Changed. Species: the pairs rarely mate when put together.'],
-    ['Imagine two groups of beetles, apart for 100,000 years, that meet again. They mate, but the eggs never hatch.', 'Can they produce fertile young? ____. So they are now ____ species. Speciation is ____.', 'No. Two species. Complete.'],
+    ['Kaibab squirrels live only on the north side of the Grand Canyon, apart from the other Abert’s squirrels.', '____ isolation. Selection works in its own way, so Kaibab squirrels have a white tail and a ____ belly. All Kaibab squirrels are counted as ____ species.', ['Geographic', 'black', 'one']],
+    ['About 3 million years ago the Isthmus of Panama rose and split sea animals into a Pacific group and a Caribbean group.', 'Each side had different ____. Over about 3 million years each group ____ in its own way. Today many pairs of snapping shrimp from the two sides are different ____.', ['conditions', 'changed', 'species']],
+    ['Imagine two groups of beetles, apart for 100,000 years, that meet again. They mate, but the eggs never hatch.', 'Can they produce fertile young? ____. So they are now ____ species. _______ has occurred.', ['No', 'two', 'speciation']],
   ];
   const rowH = 1.42, gap = 0.14, y0 = BODY_Y + 0.22;   // four lines of 13.5 pt fit a row
   ROWS.forEach(([prob, work, fin], i) => {
     const y = y0 + i * (rowH + gap);
     card(s, { x: M, y, w: CW, h: rowH, name: `wd${i}` });
     s.addText([{ text: prob, options: { bold: true, color: C.dark, breakLine: true, paraSpaceAfter: 6 } }, { text: work, options: { color: C.ink } }], { x: M + 0.28, y, w: 6.70, h: rowH, fontFace: F.body, fontSize: 13.5, valign: 'middle', margin: 0, lineSpacing: 17.5, objectName: `wd${i}_q` });
-    s.addText(fin, { shape: S.roundRect, rectRadius: 0.10, x: M + 7.20, y: y + 0.12, w: CW - 7.20 - 0.14, h: rowH - 0.24, fill: { color: ANS }, line: { color: C.alert, width: 1.5 }, color: C.dark, fontFace: F.body, fontSize: 13, bold: true, align: 'left', valign: 'middle', margin: 8, lineSpacing: 17, objectName: `wd${i}_a` });
+    s.addText(fin.map((w, k) => ({ text: w, options: { breakLine: k < fin.length - 1 } })), { shape: S.roundRect, rectRadius: 0.10, x: M + 7.20, y: y + 0.12, w: CW - 7.20 - 0.14, h: rowH - 0.24, fill: { color: ANS }, line: { color: C.alert, width: 1.5 }, color: C.dark, fontFace: F.body, fontSize: 13, bold: true, align: 'left', valign: 'middle', margin: 8, lineSpacing: 17, objectName: `wd${i}_a` });
   });
   s.addNotes(
-    'WE DO. 5 minutes. Three clicks. THE MODE IS "FINISH THIS ONE" (TEMPLATE.md): three partly worked cases, and they supply the missing step. The last We Do in the unit was an activity, and TEMPLATE.md says to alternate. A process lesson fits this mode.\n\n'
-    + 'THEY SAY THE MISSING STEP OUT LOUD BEFORE EACH REVEAL, and you ask "which step of the six is that?" The rows are mixed on purpose.\n\n'
+    'WE DO. 5 minutes. Three clicks. THE MODE IS "FINISH IT OFF" (TEMPLATE.md): three partly worked cases, and they fill in the blanks. The last We Do in the unit was an activity, and TEMPLATE.md says to alternate.\n\n'
+    + 'THEY SAY THE MISSING WORDS OUT LOUD BEFORE EACH REVEAL, then ask "which step of the six is that?" That question is what lifts it above a word game: the blank is the cue, the step is the thinking. The rows are mixed on purpose.\n\n'
     + 'ROW 1 IS THE KAIBAB SQUIRREL FROM THE BRIEF, AND IT IS NOT A FINISHED SPECIATION. Check before you say otherwise. The Kaibab squirrel (Sciurus aberti kaibabensis) lives only in the ponderosa pine forests of the north rim of the Grand Canyon. It has a black belly and a white tail, unlike the other Abert\'s squirrels. It used to be called a species of its own, but it is now counted as a SUBSPECIES of Abert\'s squirrel, and a 2018 genome study (Bono and others, BMC Evolutionary Biology) found it is highly divergent but has also interbred with other Abert\'s squirrels in the past. One more correction: the canyon is often given as the barrier, but Wikipedia and the study credit changes in the pine forests since the last Ice Age, which left the Kaibab forest cut off (the canyon is part of the picture, not the whole). So the slide says "apart from the other Abert\'s squirrels". USE IT AS SPECIATION THAT HAS STARTED: steps 1 to 5 have begun, and step 6 has not happened. Ask "what test would show they have become two species?" (do they still produce fertile young together?). That is objective 1\'s definition doing work.\n\n'
     + 'ROW 2 IS A FINISHED CASE: the Isthmus of Panama (the seaway closed about 3 to 3.5 million years ago) split populations of sea animals into Pacific and Caribbean groups. Snapping shrimps of the genus Alpheus now form pairs of closely related species, one on each coast. Knowlton and others tested the pairs and found strong reproductive isolation: the sort of thing "they do not interbreed" means in practice. ROW 3 IS IMAGINED (say so): a test of the definition. Mating but no hatching means no fertile young, so two species, and the speciation is complete.\n\n'
     + 'IF THEY ARE QUICK, ask for one more barrier (a river changing course, a new mountain range, a lava flow). IF SHORT OF TIME, do rows 1 and 3 only.'
