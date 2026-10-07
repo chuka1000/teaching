@@ -28,6 +28,7 @@
   button { font: inherit; cursor: pointer; }
   .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--forest); color: var(--white); border: 2px solid var(--forest); }
   .btn.ghost { background: var(--white); color: var(--forest); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  .btn.small:not(.ghost) { color: var(--white); }   /* .small (grey caption text, below) must not grey out a filled button such as Check */
   button:disabled { opacity: .5; cursor: default; }
   button:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
   .opts { display: grid; gap: 10px; margin-bottom: 12px; }
@@ -86,9 +87,16 @@
    * build/check-the-greatest-show-on-earth-game.py re-derives every correct order, every right option and every message tag from
    * the data each question keeps, over hundreds of generated games.
    *
-   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson. Round 2 adds cards that do not belong and a step in the wrong
-   * place. Round 3 goes far past it: eight steps, a barrier that disappears too soon, the "one generation" trap, the breeding test for a species,
-   * and then two questions from small pools of very hard puzzles.
+   * DIFFICULTY RAMPS, AND THE END IS MEANT TO BE HARD. Round 1 is the lesson. Round 2 adds cards that do not belong, a missing step, a step
+   * in the wrong place, why the groups stop interbreeding, and the pharyngeal arches. Round 3 goes far past it: eight steps, a barrier that
+   * disappears too soon, the "one generation" trap, the breeding test for a species, then the two hardest: eight steps with two cards that do
+   * not belong, and reading a family tree of three splits. The skill in every slot is the same for everyone; only the example, the wording
+   * and the order of cards and options change. Where a slot draws from a pool, every template in it tests the same skill.
+   *
+   * THE EIGHT-STEP ORDER HAS ONE PAIR THAT CAN GO EITHER WAY: "gene flow stops" and "different conditions" both follow straight from the
+   * barrier, so both orders are marked right (Q.accept), and the feedback says so.
+   *
+   * The examples and the cards that do not belong are drawn from shuffled pools that refill when they run out, so a game never runs short.
    * ================================================================== */
   var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   function newCode() {
@@ -119,6 +127,8 @@
   ];
   var ROLES6 = ['one', 'barrier', 'cond', 'sel', 'build', 'split'];
   var ROLES8 = ['one', 'barrier', 'geneflow', 'cond', 'sel', 'build', 'differ', 'split'];
+  var ROLES8_ALT = ['one', 'barrier', 'cond', 'geneflow', 'sel', 'build', 'differ', 'split'];   // steps 3 and 4 either way round
+  var SWAP_NOTE = 'Steps 3 and 4 can go either way round: gene flow stops, and the groups face different conditions, as soon as the barrier forms.';
   function stepText(role, sc) {
     switch (role) {
       case 'one': return 'One population of ' + sc.org + ' lives ' + sc.place + ' and breeds together.';
@@ -127,7 +137,7 @@
       case 'cond': return 'The two groups live in different conditions: ' + sc.cond + '.';
       case 'sel': return 'Natural selection works differently in each group: ' + sc.sel + '.';
       case 'build': return 'Over many generations the differences build up in the two gene pools.';
-      case 'differ': return 'The groups now differ in looks, behaviour, breeding time or genes.';
+      case 'differ': return 'After all those generations, the groups differ in looks, behaviour, breeding time or genes.';
       case 'split': return 'The two groups can no longer interbreed: they are two species.';
     }
   }
@@ -142,15 +152,17 @@
     differ: 'Many small changes add up to differences in looks, behaviour, breeding time or genes.',
     split: 'Only when the differences are big enough can the groups no longer interbreed.'
   };
-  /* cards that do NOT belong to the process: each is a known mistake */
+  /* cards that do NOT belong to the process: each is a known mistake, written about the example in hand so that its wording does not give
+   * it away (make(org) builds the text) */
   var DIS = [
-    { id: 'x_lamarck', text: 'Each animal changes its own body during its life to suit its place, and passes the change on.', tag: 'lamarck', msg: 'Animals do not change themselves to suit a place. Selection acts on variation that is already there.' },
-    { id: 'x_onegen', text: 'A single mutation turns one animal into a new species.', tag: 'onegen', msg: 'One mutation is one new allele in one gene pool. A new species needs many differences, and that takes many generations.' },
-    { id: 'x_choose', text: 'The two groups decide to stop breeding together.', tag: 'choose', msg: 'Animals do not choose to become separate species. They stop interbreeding because of the differences that built up.' },
-    { id: 'x_stillbreed', text: 'The two groups keep breeding together all the time.', tag: 'stillbreed', msg: 'If the groups keep interbreeding, alleles keep mixing (gene flow) and they stay one species.' },
-    { id: 'x_needs', text: 'The animals change because they need to, and then they cannot breed together.', tag: 'lamarck', msg: 'Need does not cause change. The alleles that already help in a place become more common.' },
-    { id: 'x_instant', text: 'The barrier forms and the two groups are two species at once.', tag: 'instant', msg: 'A barrier only keeps the groups apart. Becoming two species takes many generations of different selection.' }
+    { id: 'x_lamarck', tag: 'lamarck', make: function (o) { return 'Each of the ' + o + ' changes its own body during its life to suit its side of the barrier, and passes that change on to its young.'; }, msg: 'Living things do not change themselves to suit a place. Selection acts on variation that is already there.' },
+    { id: 'x_onegen', tag: 'onegen', make: function (o) { return 'A single mutation turns one of the ' + o + ' into a new species, and all of its young belong to that new species too.'; }, msg: 'One mutation is one new allele in one gene pool. A new species needs many differences, and that takes many generations.' },
+    { id: 'x_choose', tag: 'choose', make: function (o) { return 'The two groups of ' + o + ' decide to stop breeding together, and choose to become two separate species.'; }, msg: 'Living things do not choose to become separate species. They stop interbreeding because of the differences that built up.' },
+    { id: 'x_stillbreed', tag: 'stillbreed', make: function (o) { return 'The two groups of ' + o + ' keep meeting and breeding together all the time, wherever they live.'; }, msg: 'If the groups keep interbreeding, alleles keep mixing (gene flow) and they stay one species.' },
+    { id: 'x_needs', tag: 'lamarck', make: function (o) { return 'The ' + o + ' change because they need to survive on their side, and then they cannot breed together any more.'; }, msg: 'Need does not cause change. The alleles that already help in a place become more common.' },
+    { id: 'x_instant', tag: 'instant', make: function (o) { return 'The barrier forms and the two groups of ' + o + ' are two species at once, with no time needed for any change.'; }, msg: 'A barrier only keeps the groups apart. Becoming two species takes many generations of different selection.' }
   ];
+  var disById = function (id) { for (var d = 0; d < DIS.length; d++) if (DIS[d].id === id) return DIS[d]; return null; };
 
   function generate(code) {
     var rnd = makeRng(code);
@@ -158,10 +170,25 @@
     var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
     var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
     var Q = function (cat, kind, o) { o.cat = cat; o.kind = kind; return o; };
-    var scPool = shuffle(SCEN);
-    var nextScen = function () { return scPool.shift(); };
+    /* A game uses ten examples and up to seven cards that do not belong, more than either pool holds, so each pool is reshuffled when it
+     * runs out (the example just used never comes straight back, and one question never gets two cards with the same mistake). */
+    var scPool = shuffle(SCEN), lastSc = null;
+    var nextScen = function () {
+      if (!scPool.length) scPool = shuffle(SCEN.filter(function (s) { return s !== lastSc; }));
+      lastSc = scPool.shift(); return lastSc;
+    };
     var disPool = shuffle(DIS);
-    var nextDis = function (n) { var out = []; for (var i = 0; i < n; i++) out.push(disPool.shift()); return out; };
+    var nextDis = function (n) {
+      var out = [];
+      for (var guard = 0; out.length < n && guard < 100; guard++) {
+        if (!disPool.length) disPool = shuffle(DIS.filter(function (d) { return out.indexOf(d) < 0; }));
+        var d = disPool.shift();
+        if (out.some(function (x) { return x.tag === d.tag; })) continue;
+        out.push(d);
+      }
+      if (out.length < n) throw new Error('nextDis stuck');
+      return out;
+    };
     function arrange(correct, wrongs) { var all = shuffle([correct].concat(wrongs)); return { options: all, correctIndex: all.indexOf(correct) }; }
     var W = function (text, tag, msg) { return { text: text, tag: tag, msg: msg }; };
     var R = function (text) { return { text: text, tag: null, msg: '' }; };
@@ -173,12 +200,15 @@
     }
 
     /* ---------------- sequencing: tap the cards in order ---------------- */
-    function orderQ(kind, roles, sc, nDis, prompt, hint) {
+    function orderQ(kind, roles, sc, nDis, prompt, hint, alt) {
       var dis = nextDis(nDis);
-      var cards = roles.map(function (r) { return { id: r, text: stepText(r, sc), label: LABEL[r] }; }).concat(dis.map(function (d) { return { id: d.id, text: d.text, label: d.text }; }));
+      var cards = roles.map(function (r) { return { id: r, text: stepText(r, sc), label: LABEL[r] }; }).concat(dis.map(function (d) { var t = d.make(sc.org); return { id: d.id, text: t, label: t }; }));
+      var accept = [roles.slice()].concat(alt ? [alt.slice()] : []);
+      var explain = roles.map(function (r, i) { return (i + 1) + '. ' + LABEL[r] + '. ' + WHY[r]; });
+      if (alt) explain.push(SWAP_NOTE);
       return Q('order', kind, {
-        prompt: prompt, hint: hint, scen: sc.id, scenName: sc.name, real: sc.real, roles: roles.slice(), cards: shuffle(cards), correct: roles.slice(), distract: dis.map(function (d) { return d.id; }),
-        explain: roles.map(function (r, i) { return (i + 1) + '. ' + LABEL[r] + '. ' + WHY[r]; })
+        prompt: prompt, hint: hint, scen: sc.id, scenName: sc.name, real: sc.real, roles: roles.slice(), cards: shuffle(cards), correct: roles.slice(), accept: accept, distract: dis.map(function (d) { return d.id; }),
+        explain: explain
       });
     }
     var tapIn = 'Tap the steps in the order they happen. Tap Undo to take the last one back.';
@@ -189,12 +219,12 @@
       if (rnd() < 0.5) {
         return mcq('species', 'speciesDef', pick(['Which is the best definition of a species?', 'A student writes a definition of a species. Which one would a scientist accept?']),
           'A group of living things that can breed together and produce fertile offspring.',
-          [['A group of living things that look the same.', 'lookalike', 'Looks do not decide it. All dogs are one species and they look very different.'], ['A group of living things that live in the same place.', 'sameplace', 'Living in the same place does not decide it. Two different species can share a place.'], ['A group of living things that can breed together.', 'nofertile', 'The young must be fertile too. A horse and a donkey can breed, but the mule is almost always sterile.']],
+          [['A group of living things that look the same and share the same features.', 'lookalike', 'Looks do not decide it. All dogs are one species and they look very different.'], ['A group of living things that live together in the same place at the same time.', 'sameplace', 'Living in the same place does not decide it. Two different species can share a place.'], ['A group of living things that can breed together.', 'nofertile', 'The young must be fertile too. A horse and a donkey can breed, but the mule is almost always sterile.']],
           ['A species is a group that can breed together AND produce fertile offspring.', 'Fertile: the young can have young.']);
       }
       return mcq('species', 'speciationDef', pick(['What is speciation?', 'Which statement defines speciation?']),
         'The formation of a new species from an existing one.',
-        [['The change in one animal during its own life.', 'lifetime', 'Speciation is about populations over many generations, not about one animal changing.'], ['The death of every member of a species.', 'extinct', 'That is extinction. Speciation makes a NEW species.'], ['Two different species breeding together.', 'hybrid', 'Speciation is the formation of a new species from an existing one.']],
+        [['The change in one animal as it grows up during its own lifetime.', 'lifetime', 'Speciation is about populations over many generations, not about one animal changing.'], ['The death of every single member of a species, so none are left.', 'extinct', 'That is extinction. Speciation makes a NEW species.'], ['Two different species breeding with each other and having young.', 'hybrid', 'Speciation is the formation of a new species from an existing one.']],
         ['Speciation is the formation of a new species from an existing one.']);
     }
     var RIGHT_PAIRS = ['a poodle and a labrador, whose puppies can have puppies', 'two groups of oak trees whose seeds grow into oaks that can make seeds', 'a collie and a spaniel, whose puppies can breed', 'a tabby cat and a Siamese cat, whose kittens can breed'];
@@ -207,9 +237,10 @@
 
     /* ---------------- which step? ---------------- */
     function nextStep(sc) {
+      // three wrong options always: up to two steps that come later, and the rest from steps already shown
       var k = int(2, 4), shown = ROLES6.slice(0, k), nextRole = ROLES6[k];
-      var wr = ROLES6.filter(function (r) { return r !== nextRole && shown.indexOf(r) < 0 || shown.indexOf(r) >= 0; }).filter(function (r) { return r !== nextRole; });
-      var picks = shuffle(wr.filter(function (r) { return shown.indexOf(r) >= 0; })).slice(0, 1).concat(shuffle(wr.filter(function (r) { return shown.indexOf(r) < 0; })).slice(0, 2));
+      var later = shuffle(ROLES6.slice(k + 1)).slice(0, 2);
+      var picks = later.concat(shuffle(shown).slice(0, 3 - later.length));
       var o = mcq('steps', 'nextStep', 'What happens NEXT?', LABEL[nextRole],
         picks.map(function (r) { return shown.indexOf(r) >= 0 ? [LABEL[r], 'repeat', 'That has already happened. Look at the steps so far.'] : [LABEL[r], 'skip', 'That comes later. Something has to happen first: ' + WHY[nextRole]]; }),
         ['Next: ' + LABEL[nextRole] + '.', WHY[nextRole]], { shown: shown.map(function (r) { return stepText(r, sc); }), shownRoles: shown, nextRole: nextRole, scen: sc.id, scenName: sc.name, real: sc.real });
@@ -219,7 +250,7 @@
       var gap = int(1, 4), roles = ROLES6.slice(), removed = roles[gap], dis = nextDis(3);
       var shown = roles.map(function (r, i) { return i === gap ? null : stepText(r, sc); });
       var o = mcq('steps', 'missingStep', 'One step is missing. Which step goes in the gap?', stepText(removed, sc),
-        dis.map(function (d) { return [d.text, d.tag, d.msg]; }), ['The missing step is: ' + LABEL[removed] + '.', WHY[removed]],
+        dis.map(function (d) { return [d.make(sc.org), d.tag, d.msg]; }), ['The missing step is: ' + LABEL[removed] + '.', WHY[removed]],
         { shown: shown, gap: gap, removedRole: removed, scen: sc.id, scenName: sc.name, real: sc.real });
       return o;
     }
@@ -240,71 +271,95 @@
     /* ---------------- why, how long, the test for a species ---------------- */
     function whyNoInterbreed() {
       return mcq('reasons', 'whyNoInterbreed', pick(['After many generations the two isolated groups can no longer interbreed. Why?', 'Why can two groups that were isolated for a very long time no longer interbreed?']),
-        'Differences built up (in looks, song, breeding time or genes), so they no longer mate, or any young are sterile.',
-        [['They live too far apart to meet.', 'distance', 'Distance began it. Groups that meet again still do not interbreed once the differences have built up.'], ['They decided not to breed together.', 'choose', 'Animals do not choose to become separate species.'], ['One mutation made them different species.', 'onegen', 'One mutation is one new allele, not enough to stop two groups interbreeding.']],
+        'Differences built up in looks, song, breeding time or genes, so they do not mate or the young are sterile.',
+        [['The barrier still keeps the two groups far apart, so distance alone stops them from ever meeting and mating.', 'distance', 'Distance began it. Groups that meet again still do not interbreed once the differences have built up.'], ['Each group decided to stop mating with the other, and they chose to stay apart for good.', 'choose', 'Living things do not choose to become separate species.'], ['A single mutation in one animal made its whole group a different species in one go.', 'onegen', 'One mutation is one new allele, not enough to stop two groups interbreeding.']],
         ['The groups changed in different ways over many generations.', 'The differences (looks, behaviour, breeding time, genes) mean they no longer recognise each other as mates, or the young are sterile.']);
     }
+    /* the pharyngeal arches (Lesson 5, the thing 8I found hard): one slot, two forms of the same question */
     function arches() {
-      return mcq('ancestors', 'arches', pick(['Fish, chicken and human embryos all have pharyngeal arches. Which explanation fits speciation?', 'Why do fish, chickens and humans all build pharyngeal arches as embryos?']),
-        'They share an ancestor that had pharyngeal arches, and every split in the family tree kept them.',
-        [['A human embryo turns into a fish first.', 'turnfish', 'No animal turns into another. The arches are inherited from an ancestor they share.'], ['It is a coincidence: the arches evolved three times.', 'coincidence', 'The same structure in the same place is far more likely to be inherited from a common ancestor.'], ['Every embryo needs gills to breathe.', 'gills', 'Human embryos do not breathe through gills. The arches become the jaw and the ear.']],
-        ['Each split in the family tree keeps what the ancestor had.', 'The ancestor of the vertebrates had pharyngeal arches, so fish, chickens and humans all still build them.']);
+      if (rnd() < 0.5) {
+        return mcq('ancestors', 'arches', pick(['Fish, chicken and human embryos all have pharyngeal arches. Which explanation fits speciation?', 'Why do fish, chickens and humans all build pharyngeal arches as embryos?']),
+          'They share an ancestor that had pharyngeal arches, and every split in the family tree kept them.',
+          [['A human embryo turns into a fish first, and then it changes into a human later on.', 'turnfish', 'No animal turns into another. The arches are inherited from an ancestor they share.'], ['It is a coincidence: the same arches evolved three separate times, once in each of the three animals.', 'coincidence', 'The same structure in the same place is far more likely to be inherited from a common ancestor.'], ['Every embryo needs gills to breathe in the egg or the womb, so every embryo grows them.', 'gills', 'Human embryos do not breathe through gills. The arches become parts of the jaw and the ear.']],
+          ['Each split in the family tree keeps what the ancestor had.', 'The ancestor of the vertebrates had pharyngeal arches, so fish, chickens and humans all still build them.']);
+      }
+      return mcq('ancestors', 'arches2', 'Fish, chickens and humans all build pharyngeal arches, but only fish use them for gills. Which statement is correct?',
+        'Their shared ancestor had arches. Each line kept them and changed what they become.',
+        [['Humans lost their arches long ago, and then grew a new set of them again by pure chance.', 'regrow', 'Nothing was lost and regrown. The arches were inherited and then used differently.'], ['Chickens and humans both came from the kinds of fish that are still alive in the sea today.', 'fromfish', 'They share an ancestor with fish. They did not come from the fish alive today.'], ['The arches evolved separately in each animal, with no link between them.', 'coincidence', 'The same structure in the same place points to inheritance from one ancestor.']],
+        ['Every split in the family tree keeps what the ancestor had.', 'Each line then changes how the arches are used: gills in a fish, parts of the jaw and ear in a human.']);
     }
 
     /* ---------------- round 3 ---------------- */
     function barrierGone() {
       return mcq('reasons', 'barrierGone', 'A barrier splits one population into two groups. Before they have changed much, the barrier disappears and the groups meet again. What happens?',
         'They interbreed again and stay one species, because their gene pools mix.',
-        [['They are now two species, because they were separated.', 'sepisspecies', 'Being separated is not enough. Without many generations of different selection they are still one species.'], ['They cannot interbreed, because they were once apart.', 'sepnobreed', 'They can still breed together and have fertile young, so they interbreed.'], ['They become two species anyway, a little later.', 'anyway', 'Once the gene pools mix again, nothing keeps them different.']],
+        [['They are now two species, because being separated for a while made them different.', 'sepisspecies', 'Being separated is not enough. Without many generations of different selection they are still one species.'], ['They cannot interbreed any more, because the two groups were once kept apart.', 'sepnobreed', 'They can still breed together and have fertile young, so they interbreed.'], ['They stay one species for now, but become two species a little later anyway.', 'anyway', 'Once the gene pools mix again, nothing keeps them different.']],
         ['The groups had not changed enough, so they still breed together and the young are fertile.', 'Speciation needs a barrier that lasts long enough for the differences to build up.']);
     }
     function timeTrap() {
       return mcq('reasons', 'timeTrap', pick(['Which statement about the time speciation takes is correct?', 'How long does speciation take?']),
         'Many generations, because each generation changes a gene pool only a little.',
-        [['One generation: a single mutation makes a new species.', 'onegen', 'A mutation is one new allele in one gene pool. It cannot make a new species alone.'], ['A few generations, once the barrier forms.', 'few', 'A few generations is far too few for the differences to build up.'], ['It happens as soon as the two groups look different.', 'lookdiff', 'Looking different is not enough. The test is whether they can still interbreed and have fertile young.']],
+        [['One generation: a single mutation in one animal is enough to make a new species.', 'onegen', 'A mutation is one new allele in one gene pool. It cannot make a new species alone.'], ['A few generations, as soon as the barrier forms and the groups are kept apart.', 'few', 'A few generations is far too few for the differences to build up.'], ['It is finished as soon as the two groups start to look different from each other.', 'lookdiff', 'Looking different is not enough. The test is whether they can still interbreed and have fertile young.']],
         ['Speciation is a process over many thousands of generations, not an event.']);
     }
     function squirrels() {
       var yrs = pick(['10,000', '20,000', '50,000']), trait = pick(['tail colour', 'belly colour', 'body size']);
       return mcq('species', 'squirrels', 'Two groups of squirrels have been apart for ' + yrs + ' years and differ in ' + trait + '. When they meet, they breed and their young are fertile. How many species are there?',
         'One species: they can still breed together and have fertile young.',
-        [['Two species, because they look different.', 'lookdiff', 'Looks do not decide it. The test is whether they breed and have fertile young.'], ['Two species, because they were apart for a very long time.', 'timeisall', 'Time apart helps, but the test is whether they can still breed and have fertile young.'], ['It cannot be known until their DNA is tested.', 'dna', 'The breeding test already answers it: fertile young means one species.']],
+        [['Two species, because the two groups now look different from each other.', 'lookdiff', 'Looks do not decide it. The test is whether they breed and have fertile young.'], ['Two species, because they were kept apart for a very long time.', 'timeisall', 'Time apart helps, but the test is whether they can still breed and have fertile young.'], ['Nobody can tell how many species until their DNA has been tested.', 'dna', 'The breeding test already answers it: fertile young means one species.']],
         ['They breed and the young are fertile, so they are still one species.', 'Speciation has started (steps 1 to 5) but step 6, no longer interbreeding, has not happened.'], { yrs: yrs, trait: trait });
     }
     function whichIsSpeciation() {
       var t = pick(['a million years', 'about 500,000 years', 'a hundred thousand years']);
       var right = 'Apart for ' + t + '. They now mate, but all the young are sterile.';
-      return mcq('puzzle', 'whichIsSpeciation', 'Which pair of groups has COMPLETED speciation?', right,
+      return mcq('species', 'whichIsSpeciation', 'Which pair of groups has COMPLETED speciation?', right,
         [['Apart for ' + pick(['10,000 years', '20,000 years']) + '. They sing different songs, but they breed when put together and the young are fertile.', 'notyet', 'They still breed and have fertile young, so they are one species. Speciation has not finished.'], ['Apart for a million years. They look very different, but they breed when put together and the young are fertile.', 'lookdiff', 'Time and looks do not decide it. Fertile young means one species.'], ['Apart for ' + pick(['5,000 years', '8,000 years']) + '. They have different colours, but they mate and all the young are fertile.', 'notyet', 'Different colours are not enough. They still interbreed with fertile young.']],
         ['Speciation is complete when the groups can no longer produce fertile young together.'], { time: t });
     }
-    function founderDrift() {
-      return mcq('puzzle', 'founderDrift', 'A few finches reach a new island and found a small population. Why might chance (genetic drift) matter more for them than for the large population they left?',
-        'A small group is a small random sample, so its allele frequencies can be far from the original mix.',
-        [['Drift only happens on islands.', 'islandonly', 'Drift happens in any population. It matters most when the population is small.'], ['Drift is natural selection working faster.', 'driftsel', 'Drift is chance. Natural selection is not random: the trait decides who survives.'], ['Small groups cannot have mutations.', 'nomut', 'Small groups can have mutations. The point is that chance changes the alleles they inherit.']],
-        ['A small founding group is a small random sample of the gene pool, so chance has a bigger effect (Lesson 7).']);
-    }
-    function arches2() {
-      return mcq('puzzle', 'arches2', 'Fish, chickens and humans all build pharyngeal arches, but only fish use them for gills. Which statement is correct?',
-        'Their shared ancestor had arches. Each line kept them and changed what they become.',
-        [['Humans lost the arches and grew new ones by chance.', 'regrow', 'Nothing was lost and regrown. The arches were inherited and then used differently.'], ['Chickens and humans came from today’s fish.', 'fromfish', 'They share an ancestor with fish. They did not come from the fish alive today.'], ['The arches evolved separately in each animal.', 'coincidence', 'The same structure in the same place points to inheritance from one ancestor.']],
-        ['Every split in the family tree keeps what the ancestor had; each line then changes how it is used.']);
-    }
-    function secondSplit() {
-      var L = shuffle(['X', 'Y', 'Z', 'P', 'Q', 'R', 'S', 'T']).slice(0, 3), x = L[0], y = L[1];
-      var x1 = x + '1', x2 = x + '2';
-      return mcq('puzzle', 'secondSplit', 'A species splits into ' + x + ' and ' + y + '. Later ' + x + ' is split by a barrier into ' + x1 + ' and ' + x2 + '. Which statement is true?',
-        x1 + ' and ' + x2 + ' share a more recent common ancestor with each other than either does with ' + y + '.',
-        [[x1 + ', ' + x2 + ' and ' + y + ' are all equally closely related.', 'equal', 'The ' + x + ' line split later, so ' + x1 + ' and ' + x2 + ' are the closer pair.'], [y + ' is the ancestor of ' + x1 + ' and ' + x2 + '.', 'ancestor', y + ' is a separate branch that split off earlier. It is not their ancestor.'], [x1 + ' and ' + y + ' share a more recent common ancestor than ' + x1 + ' and ' + x2 + '.', 'backwards', 'The later split makes ' + x1 + ' and ' + x2 + ' the closer pair.']],
-        ['Each split makes two branches. ' + x1 + ' and ' + x2 + ' split from each other after ' + x + ' split from ' + y + '.'], { x: x, y: y });
+    /* round 3, slot 4: the breeding test for a species, in one of two forms (same skill, same category) */
+    function speciesTest() { return rnd() < 0.5 ? squirrels() : whichIsSpeciation(); }
+
+    /* round 3, slot 6, the hardest: a family tree of three splits, kept as data (names and times) so that the checker can recompute the answer.
+     * Species are named with letters that are never A to D, which label the options. */
+    var TREE_LETTERS = ['E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'R', 'S', 'T', 'V', 'W'];
+    function splits() {
+      var L = shuffle(TREE_LETTERS).slice(0, 6), p = L[0], q = L[1], r = L[2], s = L[3], t = L[4], u = L[5];
+      var t1 = pick([8, 9, 10, 12]), t2 = pick([4, 5, 6]), t3 = pick([1, 2]);
+      var story = t1 + ' million years ago, one species split into ' + p + ' and ' + q + '. ' + t2 + ' million years ago, ' + q + ' split into ' + r + ' and ' + s + '. '
+        + t3 + ' million years ago, ' + s + ' split into ' + t + ' and ' + u + '. Today ' + p + ', ' + r + ', ' + t + ' and ' + u + ' are alive.';
+      var tree = { p: p, q: q, r: r, s: s, t: t, u: u, t1: t1, t2: t2, t3: t3 };
+      var explain = ['Draw it: ' + p + ' branched off first (' + t1 + ' million years ago), then ' + r + ' (' + t2 + ' million years ago), and ' + t + ' and ' + u + ' split last (' + t3 + ' million years ago).',
+        'Two species are more closely related the more recently they split, because they share a more recent common ancestor.'];
+      var v = int(0, 2);
+      if (v === 0) {
+        return mcq('puzzle', 'splitsClosest', story + ' Which living species is most closely related to ' + t + '?', u,
+          [[r, 'oldsplit', r + ' split from the line leading to ' + t + ' ' + t2 + ' million years ago, but ' + u + ' split from ' + t + ' only ' + t3 + ' million years ago.'],
+           [p, 'oldsplit', p + ' split off first, ' + t1 + ' million years ago. It is the most distant of the three.'],
+           ['All three are equally closely related to ' + t + '.', 'equal', 'They split off at different times, so they are not equally related.']],
+          explain, { tree: tree, variant: 'closest', target: t });
+      }
+      if (v === 1) {
+        var other = pick([r, t, u]);
+        return mcq('puzzle', 'splitsOldest', story + ' Which pair of living species shares the OLDEST common ancestor?', p + ' and ' + other,
+          [[r + ' and ' + t, 'newerpair', r + ' and ' + t + ' share the ancestor ' + q + ', from ' + t2 + ' million years ago.'],
+           [t + ' and ' + u, 'newerpair', t + ' and ' + u + ' share the ancestor ' + s + ', from only ' + t3 + ' million years ago.'],
+           [r + ' and ' + u, 'newerpair', r + ' and ' + u + ' share the ancestor ' + q + ', from ' + t2 + ' million years ago.']],
+          explain.concat(['Any pair that includes ' + p + ' goes back to the first split, ' + t1 + ' million years ago.']), { tree: tree, variant: 'oldest', pair: [p, other] });
+      }
+      return mcq('puzzle', 'splitsTrue', story + ' Which statement is true?', r + ' is more closely related to ' + t + ' than ' + p + ' is.',
+        [[p + ' is the ancestor of ' + r + '.', 'ancestor', p + ' is a branch that split off. It is a cousin of ' + r + ', not its ancestor.'],
+         ['The split into ' + t + ' and ' + u + ' happened before the split into ' + r + ' and ' + s + '.', 'backwards', 'It happened after: ' + t3 + ' million years ago is more recent than ' + t2 + ' million years ago.'],
+         [p + ' is more closely related to ' + u + ' than ' + t + ' is.', 'backwards', t + ' and ' + u + ' split most recently, so they are the closest pair.']],
+        explain, { tree: tree, variant: 'true' });
     }
 
-    var poolA = [function () { return orderQ('orderHard2', ROLES8, nextScen(), 2, 'Two cards do not belong. Put the eight steps in order and leave out both cards that do not belong.', tapLeave(2, 'the two cards that do not belong')); }, whichIsSpeciation, founderDrift];
-    var poolB = [arches2, secondSplit];
+    var ORDER6 = 'Put the six steps of speciation in the order they happen.';
+    var LEAVE1 = 'One card does not belong. Put the six steps in order and leave out the card that does not belong.';
     var plan = [
-      [function () { var st = int(0, 2); return orderQ('order4', ROLES6.slice(st, st + 4), nextScen(), 0, 'Put these four steps of speciation in the order they happen.', tapIn); }, speciesDef, function () { return orderQ('order6', ROLES6, nextScen(), 0, 'Put the six steps of speciation in the order they happen.', tapIn); }, speciesPair, function () { return nextStep(nextScen()); }, function () { return orderQ('order6', ROLES6, nextScen(), 0, 'Put the six steps of speciation in the order they happen.', tapIn); }],
-      [function () { return missingStep(nextScen()); }, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, 'One card does not belong. Put the six steps in order and leave out the card that does not belong.', tapLeave(1, 'the card that does not belong')); }, whyNoInterbreed, function () { return wrongPlace(nextScen()); }, arches, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, 'One card does not belong. Put the six steps in order and leave out the card that does not belong.', tapLeave(1, 'the card that does not belong')); }],
-      [function () { return orderQ('order8', ROLES8, nextScen(), 0, 'Put the eight steps in order.', tapIn); }, barrierGone, timeTrap, squirrels, function () { return pick(poolA)(); }, function () { return pick(poolB)(); }]
+      [function () { var st = int(0, 2); return orderQ('order4', ROLES6.slice(st, st + 4), nextScen(), 0, 'Put these four steps of speciation in the order they happen.', tapIn); }, speciesDef, function () { return orderQ('order6', ROLES6, nextScen(), 0, ORDER6, tapIn); }, speciesPair, function () { return nextStep(nextScen()); }, function () { return orderQ('order6', ROLES6, nextScen(), 0, ORDER6, tapIn); }],
+      [function () { return missingStep(nextScen()); }, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, LEAVE1, tapLeave(1, 'the card that does not belong')); }, whyNoInterbreed, function () { return wrongPlace(nextScen()); }, arches, function () { return orderQ('order6dis', ROLES6, nextScen(), 1, LEAVE1, tapLeave(1, 'the card that does not belong')); }],
+      [function () { return orderQ('order8', ROLES8, nextScen(), 0, 'Put the eight steps in order.', tapIn, ROLES8_ALT); }, barrierGone, timeTrap, speciesTest,
+       function () { return orderQ('orderHard2', ROLES8, nextScen(), 2, 'Two cards do not belong. Put the eight steps in order and leave out both cards that do not belong.', tapLeave(2, 'the two cards that do not belong'), ROLES8_ALT); }, splits]
     ];
     var out = [];
     plan.forEach(function (r, ri) { r.forEach(function (make, qi) { var q = make(); q.round = ri + 1; q.n = qi + 1; out.push(q); }); });
@@ -318,7 +373,7 @@
   var CATS = { order: 'Putting the steps in order', species: 'Species and speciation', steps: 'Which step?', reasons: 'Why and how long', ancestors: 'Evidence and ancestors', puzzle: 'Hard puzzles' };
   var HABIT = {
     nobarrier: 'The barrier comes FIRST. While the groups can still interbreed, alleles keep mixing and they stay one species.', selbeforecond: 'Selection works on the conditions, so the conditions must differ first.', instant: 'Speciation is not instant. The groups can only stop interbreeding after the differences have built up over many generations.',
-    notfirst: 'The story starts with ONE population that breeds together.', buildfirst: 'The differences can only build up after selection has started to work differently in each group.', order: 'Ask what has to be true before each step can happen.',
+    notfirst: 'Find the step that all the others depend on, and start there. The whole story starts with ONE population that breeds together.', buildfirst: 'The differences can only build up after selection has started to work differently in each group.', order: 'Ask what has to be true before each step can happen.',
     lamarck: 'Animals do not change themselves to suit a place. Selection acts on variation that is already there.', onegen: 'One mutation cannot make a new species. It takes many generations.', choose: 'Animals do not choose to become separate species.', stillbreed: 'Groups that keep interbreeding stay one species.',
     lookalike: 'Looks do not decide a species.', sameplace: 'Living in the same place does not decide a species.', nofertile: 'The young must be fertile too.', lifetime: 'Speciation is about populations over many generations.', extinct: 'Extinction is not speciation.', hybrid: 'Speciation forms a NEW species from an existing one.',
     sterile: 'Fertile young are the test: sterile young mean two species.', noyoung: 'No young at all means two species.', nohatch: 'No fertile young means two species.',
@@ -327,7 +382,8 @@
     sepisspecies: 'Being separated is not enough. The differences must build up.', sepnobreed: 'Groups that did not change enough still interbreed.', anyway: 'Once the gene pools mix again, nothing keeps them different.', few: 'A few generations is far too few.', lookdiff: 'Looking different is not the test. Breeding with fertile young is.',
     timeisall: 'Time apart helps, but the test is fertile young.', dna: 'The breeding test already answers it.', notyet: 'If they still have fertile young together, speciation is not complete.',
     islandonly: 'Drift happens in any population, and matters most when it is small.', driftsel: 'Drift is chance. Selection is not.', nomut: 'Small groups can have mutations.', regrow: 'The arches were inherited, not lost and regrown.', fromfish: 'They share an ancestor with fish. They did not come from today’s fish.',
-    equal: 'The later split makes the closer pair.', ancestor: 'A separate branch is not the ancestor.', backwards: 'The later split makes the closer pair.'
+    equal: 'Species that split at different times are not equally related.', ancestor: 'A branch that split off is a cousin, not an ancestor.', backwards: 'The later split makes the closer pair.',
+    oldsplit: 'The more recently two species split, the more closely related they are.', newerpair: 'The oldest common ancestor is at the first split: any pair that includes the first branch to split off.'
   };
   var GENERIC = 'Read the question again. Ask what has to be true before each step can happen. Speciation needs a barrier, different selection and many generations.';
 
@@ -427,14 +483,21 @@
     return expl ? '<div class="work">' + expl + '</div>' : '';
   }
   function labelOf(Q, id) { var c = cardById(Q, id); return c ? (Q.cards && c.label ? c.label : c.text) : id; }
-  function correctText(Q) { return isOrder(Q) ? Q.correct.map(function (r, i) { return (i + 1) + '. ' + LABEL[r]; }).join('  ') : Q.options[Q.correctIndex].text; }
+  function correctText(Q) { return isOrder(Q) ? Q.correct.map(function (r, i) { return (i + 1) + '. ' + LABEL[r]; }).join('  ') + (Q.accept.length > 1 ? '  (steps 3 and 4 either way round)' : '') : Q.options[Q.correctIndex].text; }
+  function isAccepted(Q, seq) { return Q.accept.some(function (a) { return a.join() === seq.join(); }); }
+  // the accepted order that agrees with the student's for longest, so the feedback names their first real slip
+  function bestTarget(Q, seq) {
+    var best = Q.accept[0], bestLen = -1;
+    Q.accept.forEach(function (a) { var k = 0; while (k < a.length && a[k] === seq[k]) k++; if (k > bestLen) { best = a; bestLen = k; } });
+    return best;
+  }
   function orderMistake(Q, seq) {
-    for (var i = 0; i < seq.length; i++) if (Q.distract.indexOf(seq[i]) >= 0) { for (var d = 0; d < DIS.length; d++) if (DIS[d].id === seq[i]) return { tag: DIS[d].tag, msg: '"' + DIS[d].text + '" does not belong. ' + DIS[d].msg }; }
-    var pos = -1; for (var j = 0; j < Q.correct.length; j++) if (seq[j] !== Q.correct[j]) { pos = j; break; }
+    for (var i = 0; i < seq.length; i++) if (Q.distract.indexOf(seq[i]) >= 0) { var dd = disById(seq[i]); return { tag: dd.tag, msg: '"' + cardById(Q, seq[i]).text + '" does not belong. ' + dd.msg }; }
+    var target = bestTarget(Q, seq);
+    var pos = -1; for (var j = 0; j < target.length; j++) if (seq[j] !== target[j]) { pos = j; break; }
     if (pos < 0) return { tag: null, msg: '' };
-    var placed = seq[pos], needed = Q.correct[pos], tag = 'order', msg;
-    var later = Q.correct.indexOf(placed), nowDue = pos;
-    if (pos === 0) { tag = 'notfirst'; msg = 'You started with "' + LABEL[placed] + '". ' + WHY.one; }
+    var placed = seq[pos], needed = target[pos], tag = 'order', msg;
+    if (pos === 0) { tag = 'notfirst'; msg = 'You started with "' + LABEL[placed] + '". ' + (needed === 'one' ? WHY.one : 'Of these steps, "' + LABEL[needed] + '" happens first: the others all depend on it.'); }
     else if (placed === 'split') { tag = 'instant'; msg = 'You put "They can no longer interbreed" too early. ' + HABIT.instant; }
     else if (needed === 'barrier') { tag = 'nobarrier'; msg = 'You put "' + LABEL[placed] + '" before the barrier. ' + HABIT.nobarrier; }
     else if (placed === 'sel' && needed === 'cond') { tag = 'selbeforecond'; msg = 'You put selection before the different conditions. ' + HABIT.selbeforecond; }
@@ -461,7 +524,7 @@
   }
   function checkOrder() {
     var Q = q(); if (state.screen !== 'question' || locked || chosen.length !== need(Q)) return;
-    var seq = chosen.slice(), ok = seq.join() === Q.correct.join(), tag = null, msg = '';
+    var seq = chosen.slice(), ok = isAccepted(Q, seq), tag = null, msg = '';
     if (!ok) { var m = orderMistake(Q, seq); tag = m.tag || 'order'; msg = m.msg || GENERIC; }
     locked = true;
     document.querySelectorAll('.cardstep').forEach(function (b) { b.disabled = true; var pos = seq.indexOf(b.dataset.id); if (pos >= 0) b.classList.add(seq[pos] === Q.correct[pos] ? 'ok' : 'bad'); });
@@ -539,7 +602,7 @@
     }
     if (/^[1-4]$/.test(e.key) && !locked) { var k2 = parseInt(e.key, 10) - 1; if (k2 < Q.options.length) { e.preventDefault(); pressOpt(k2); } }
   });
-  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display, results: function () { return state.results; } };
   fresh(fromHash()); start();
 })();
 </script>

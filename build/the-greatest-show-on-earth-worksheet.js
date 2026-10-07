@@ -47,7 +47,7 @@ function worksheet(answers) {
   k.push(ruledBox(1));
   const lines = SHOWN.map((kk, i) => `(${'abcdef'[i]}) ${STEPS[ORDER[kk]]}`);
   k.push(q('5', 'A population of beetles lives in one valley. These six steps of what happens next are in the wrong order. Write the numbers 1 to 6 in the order they happen.', { marks: 3 }));
-  lines.forEach((l, i) => k.push(p(l + '  ____', { size: 10, after: 30 })));
+  lines.forEach((l, i) => k.push(p(l + '  ____', { size: 10, after: 30, keepNext: true })));   // the six lines stay on one page with their question
   k.push(ruledBox(1));
 
   /* ---- SILVER ---- */

@@ -213,19 +213,20 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   const s = pptx.addSlide();
   bg(s, 'light'); PHASES.push(timer(s, 3, 'light')); pill(s, 'I Do', 3, 'light');
   title(s, 'Species and speciation', 'light', { size: 30 });
-  const y0 = BODY_Y - 0.10, lw = 6.45, g = 0.30, ch = 1.30, cg = 0.14;
+  // the three cards are sized to their text (two lines, one line, three lines), so the same 4.18 in column holds them without overflow
+  const y0 = BODY_Y - 0.10, lw = 6.45, g = 0.30, cg = 0.14, CH = [1.30, 1.00, 1.60];
   const DEFS = [
     ['SPECIES', 'A group of living things that can breed together and produce fertile offspring.'],
     ['SPECIATION', 'The formation of a new species from an existing one.'],
     ['ISOLATION', 'Two groups kept apart, so they cannot breed together. GEOGRAPHIC isolation: kept apart by a barrier such as sea, mountains or a river.'],
   ];
   DEFS.forEach(([h, t_], i) => {
-    const y = y0 + i * (ch + cg);
+    const ch = CH[i], y = y0 + CH.slice(0, i).reduce((a, b) => a + b + cg, 0);
     card(s, { x: M, y, w: lw, h: ch, name: `df${i}` });
     s.addText(h, { x: M + 0.26, y: y + 0.12, w: lw - 0.52, h: 0.34, color: C.accentInk, fontFace: F.title, fontSize: 13.5, bold: true, charSpacing: 1, valign: 'middle', margin: 0, objectName: `df${i}_h` });
     s.addText(t_, { x: M + 0.26, y: y + 0.48, w: lw - 0.52, h: ch - 0.56, color: C.ink, fontFace: F.body, fontSize: 15.5, valign: 'top', margin: 0, lineSpacing: 20, objectName: `df${i}_t` });
   });
-  const RX = M + lw + g, RW = RIGHT - RX, RH = 3 * ch + 2 * cg;
+  const RX = M + lw + g, RW = RIGHT - RX, RH = CH.reduce((a, b) => a + b) + 2 * cg;
   card(s, { x: RX, y: y0, w: RW, h: RH, fill: ANS, line: C.accentInk, lineWidth: 1.5, name: 'ex' });
   s.addText('WORKED EXAMPLE: ARE A HORSE AND A DONKEY THE SAME SPECIES?', { x: RX + 0.24, y: y0 + 0.12, w: RW - 0.48, h: 0.62, color: C.accentInk, fontFace: F.title, fontSize: 13, bold: true, charSpacing: 0.5, valign: 'middle', margin: 0, objectName: 'ex_h' });
   s.addImage({ path: ICON('horse', 'accentInk'), x: RX + 0.60, y: y0 + 0.86, w: 0.80, h: 0.80, objectName: 'ex_horse' });
@@ -273,14 +274,15 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
     { text: '6.  They can no longer interbreed: two species.', options: { bold: true } },
   ], { x: RX + 0.24, y: y0 + 0.50, w: RW - 0.48, h: 1.84, color: C.ink, fontFace: F.body, fontSize: 13.5, valign: 'top', margin: 0, lineSpacing: 17, objectName: 'st_t' });
   card(s, { x: RX, y: y0 + 2.54, w: RW, h: 2.36, name: 'wy' });
-  s.addText('WHY THEY CAN NO LONGER INTERBREED (OBJECTIVE 3)', { x: RX + 0.24, y: y0 + 2.64, w: RW - 0.48, h: 0.36, color: C.accentInk, fontFace: F.title, fontSize: 12.5, bold: true, charSpacing: 0.5, valign: 'middle', margin: 0, objectName: 'wy_h' });
+  // the heading may run to two lines at this width, so it gets room for two and the list starts below it
+  s.addText('WHY THEY CAN NO LONGER INTERBREED (OBJECTIVE 3)', { x: RX + 0.24, y: y0 + 2.64, w: RW - 0.48, h: 0.50, color: C.accentInk, fontFace: F.title, fontSize: 12.5, bold: true, charSpacing: 0.5, valign: 'top', margin: 0, lineSpacing: 15, objectName: 'wy_h' });
   s.addText([
     { text: 'Over many generations each group differs in:', options: { breakLine: true, paraSpaceAfter: 4 } },
     { text: 'looks and behaviour, such as beak and song', options: { bullet: true, breakLine: true, paraSpaceAfter: 2 } },
     { text: 'breeding time', options: { bullet: true, breakLine: true, paraSpaceAfter: 2 } },
     { text: 'genes, so young do not form, or are sterile', options: { bullet: true, breakLine: true, paraSpaceAfter: 4 } },
     { text: 'They no longer recognise each other as mates.', options: { bold: true } },
-  ], { x: RX + 0.24, y: y0 + 3.04, w: RW - 0.48, h: 1.80, color: C.ink, fontFace: F.body, fontSize: 13.5, valign: 'top', margin: 0, lineSpacing: 17, objectName: 'wy_t' });
+  ], { x: RX + 0.24, y: y0 + 3.20, w: RW - 0.48, h: 1.64, color: C.ink, fontFace: F.body, fontSize: 13.5, valign: 'top', margin: 0, lineSpacing: 17, objectName: 'wy_t' });
   s.addNotes(
     'I DO. 3 minutes. Four clicks: the animation (ON CLICK, so say the idea first), the six steps, why they can no longer interbreed, then the bigger picture.\n\n'
     + 'OBJECTIVES 2 AND 3 TOGETHER, ON PURPOSE. TEMPLATE.md gives each I Do one objective, but objective 3 is the sixth step of objective 2\'s sequence, so they are one slide: the animation builds the sequence and the second card says why it ends where it does. Objective 1 had its own slide.\n\n'
@@ -300,11 +302,11 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   bg(s, 'light'); PHASES.push(timer(s, 5, 'light')); pill(s, 'We Do', 5, 'light');
   title(s, 'Finish this one', 'light'); sub(s, 'Say the missing step out loud before the answer appears.', 'light');
   const ROWS = [
-    ['Kaibab squirrels live only on the north side of the Grand Canyon, apart from the other Abert’s squirrels.', 'Kept apart: ____ isolation. Each group is selected in its own way, so Kaibab squirrels have a white tail and a ____ belly. They are still counted as ____ species.', 'Geographic. Black. One species: speciation may be starting, but they can still interbreed.'],
-    ['About 3 million years ago the Isthmus of Panama rose and split sea animals into a Pacific group and a Caribbean group.', 'Each side had different ____. Over about 3 million years the groups ____ apart. Today many pairs of snapping shrimp from the two sides are different ____.', 'Conditions. Changed (drifted). Species: most pairs do not mate when put together.'],
+    ['Kaibab squirrels live only on the north side of the Grand Canyon, apart from the other Abert’s squirrels.', 'Kept apart: ____ isolation. Selection works in its own way, so Kaibab squirrels have a white tail and a ____ belly. Still counted as ____ species.', 'Geographic. Black. One species: speciation may be starting, but they can still interbreed.'],
+    ['About 3 million years ago the Isthmus of Panama rose and split sea animals into a Pacific group and a Caribbean group.', 'Each side had different ____. Over about 3 million years each group ____ in its own way. Today many pairs of snapping shrimp from the two sides are different ____.', 'Conditions. Changed. Species: the pairs rarely mate when put together.'],
     ['Imagine two groups of beetles, apart for 100,000 years, that meet again. They mate, but the eggs never hatch.', 'Can they produce fertile young? ____. So they are now ____ species. Speciation is ____.', 'No. Two species. Complete.'],
   ];
-  const rowH = 1.30, gap = 0.16, y0 = BODY_Y + 0.22;
+  const rowH = 1.42, gap = 0.14, y0 = BODY_Y + 0.22;   // four lines of 13.5 pt fit a row
   ROWS.forEach(([prob, work, fin], i) => {
     const y = y0 + i * (rowH + gap);
     card(s, { x: M, y, w: CW, h: rowH, name: `wd${i}` });
@@ -369,8 +371,8 @@ const video = (s, file, x, y, w, h, name) => s.addMedia({
   });
   s.addNotes(
     'YOU DO. 14 minutes, then 3 to mark (the next slide). Five clicks: the three rounds, then the note. THE GAME IS A SEQUENCER, as the brief says (one population, a barrier forms, different conditions, different selection, changes build up, can no longer interbreed). The worksheet is the fallback, built every time.\n\n'
-    + 'WHAT THEY DO. Open the file "The Greatest Show On Earth game" from Google Classroom. Three rounds of six questions. In a SEQUENCE question they TAP the steps in the order they happen, and tap the last one again to undo. A wrong order is explained: it says which step was in the wrong place and why that step cannot come there. Other questions are multiple choice (the definitions, the next step, which step is missing, which step is in the wrong place, why they cannot interbreed). EVERY STUDENT GETS A DIFFERENT GAME: a different example of the same process each time (some real, such as Darwin\'s finches and the snapping shrimp of Panama; some invented, and the start screen says which), a different order, different wording. The skills and their order are the same for everyone. Each game has a six-character code, shown on the start and end screens; add #CODE to the file\'s address to see exactly what a student saw. There are no lives and no penalty for being slow.\n\n'
-    + 'THE DIFFICULTY RAMPS ON PURPOSE, AND THE TOP IS MEANT TO BE HARD. Round 1: the six steps in order, four of them in order, and what a species is. Round 2: a sequence with a step that does NOT belong (the game says to leave it out), a step in the wrong place, which step is missing, why the groups stop interbreeding, and the pharyngeal arches. Round 3 goes far past the lesson: eight steps (gene flow stopping, new mutations in only one group, a small founding group), a barrier that DISAPPEARS before the groups have changed enough (they mix again: no speciation), the "one generation" trap, and two very hard last questions. Expect most of the room to miss some of the last two. That is the design. Tell them before they start, so nobody reads a red mark as "I am bad at science".\n\n'
+    + 'WHAT THEY DO. Open the file "The Greatest Show On Earth game" from Google Classroom. Three rounds of six questions. In a SEQUENCE question they TAP the steps in the order they happen, then Check; Undo (or tapping the last card again) takes the last one back. A wrong order is explained: it says which step was in the wrong place and why that step cannot come there. Other questions are multiple choice (the definitions, the next step, which step is missing, which step is in the wrong place, why they cannot interbreed). EVERY STUDENT GETS A DIFFERENT GAME: each game uses all eight examples of the same process (two real, Darwin\'s finches and the snapping shrimp of Panama; six invented, and every question says which), in a different order, with different cards that do not belong. The skills and their order are the same for everyone. Each game has a six-character code, shown on the start and end screens; add #CODE to the file\'s address to see exactly what a student saw. There are no lives and no penalty for being slow.\n\n'
+    + 'THE DIFFICULTY RAMPS ON PURPOSE, AND THE TOP IS MEANT TO BE HARD. Round 1: four steps in order, the six steps in order (twice), what a species and speciation are, which pair is one species, and the next step. Round 2: which step is missing, a sequence with a card that does NOT belong (twice: the game says to leave it out), why the groups stop interbreeding, a step in the wrong place, and the pharyngeal arches. Round 3 goes far past the lesson: EIGHT steps (adding "gene flow stops" and "the groups now differ in looks, behaviour, breeding time or genes"), a barrier that DISAPPEARS before the groups have changed enough (they mix again: no speciation), the "one generation" trap, the breeding test (groups that still have fertile young are one species), then the two hardest: eight steps with TWO cards that do not belong, and a family tree of three splits (which living species are most closely related). In the eight-step questions, "gene flow stops" and "different conditions" can go either way round, because both follow straight from the barrier: the game accepts both and says so. Expect most of the room to miss some of the last two. That is the design. Tell them before they start, so nobody reads a red mark as "I am bad at science".\n\n'
     + 'EVERY QUESTION HAS EXACTLY ONE RIGHT ANSWER BY CONSTRUCTION. AT THE END OF EACH ROUND, and again on the last screen, there is a drop-down with how long each took, whether it was right and, for a wrong one, what the student chose and the reasoning. There is a "Stop and see my results" button on every question.\n\n'
     + 'ON AN iPAD, an HTML file attached in Google Classroom can be awkward to open. Check before relying on it. If a student cannot open it, finishes early or is absent, the worksheet is the fallback: fourteen questions in Bronze, Silver and Gold, with the answers printed UPSIDE DOWN on its last page.\n\n'
     + 'CIRCULATE WITH ONE QUESTION: "what has to be true before the next step can happen?" AT THE END OF 14 MINUTES, stop them and go straight to the Mark slide. It does not get absorbed into the You Do.'
