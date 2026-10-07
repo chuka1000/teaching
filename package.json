@@ -9,13 +9,14 @@
     "lesson": "node tools/build-lesson.js"
   },
   "dependencies": {
-    "pptxgenjs": "^4.0.1",
+    "@svgmoji/noto": "^3.2.0",
+    "@xmldom/xmldom": "^0.8.10",
+    "adm-zip": "^0.5.10",
     "docx": "^9.7.1",
-    "sharp": "^0.33.0",
+    "pptxgenjs": "^4.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.0",
-    "adm-zip": "^0.5.10",
-    "@xmldom/xmldom": "^0.8.10"
+    "sharp": "^0.33.0"
   }
 }

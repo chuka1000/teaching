@@ -1,0 +1,733 @@
+{
+  "deck": "out/Living Or Non-Living/Living Or Non-Living.pptx",
+  "output": "out/Living Or Non-Living/Living Or Non-Living.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_num",
+            "o0_img0",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_num",
+            "o1_img0",
+            "o1_img1",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_num",
+            "o2_img0",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "w_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "it_dog",
+          "members": [
+            "it_dog_img",
+            "it_dog_t"
+          ]
+        },
+        {
+          "name": "it_rock",
+          "members": [
+            "it_rock_img",
+            "it_rock_t"
+          ]
+        },
+        {
+          "name": "it_tree",
+          "members": [
+            "it_tree_img",
+            "it_tree_t"
+          ]
+        },
+        {
+          "name": "it_chair",
+          "members": [
+            "it_chair_img",
+            "it_chair_t"
+          ]
+        },
+        {
+          "name": "it_bird",
+          "members": [
+            "it_bird_img",
+            "it_bird_t"
+          ]
+        },
+        {
+          "name": "it_ball",
+          "members": [
+            "it_ball_img",
+            "it_ball_t"
+          ]
+        },
+        {
+          "name": "it_flower",
+          "members": [
+            "it_flower_img",
+            "it_flower_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "it_dog",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_rock",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_tree",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_chair",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_bird",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_ball",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "it_flower",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "ysa0",
+          "members": [
+            "ys0_yn",
+            "ys0_chip"
+          ]
+        },
+        {
+          "name": "ysa1",
+          "members": [
+            "ys1_yn",
+            "ys1_chip"
+          ]
+        },
+        {
+          "name": "ysa2",
+          "members": [
+            "ys2_yn",
+            "ys2_chip"
+          ]
+        },
+        {
+          "name": "ysa3",
+          "members": [
+            "ys3_yn",
+            "ys3_chip"
+          ]
+        },
+        {
+          "name": "ysa4",
+          "members": [
+            "ys4_yn",
+            "ys4_chip"
+          ]
+        },
+        {
+          "name": "ysa5",
+          "members": [
+            "ys5_yn",
+            "ys5_chip"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ysa0",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ysa1",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ysa2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ysa3",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ysa4",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ysa5",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "eo0_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo1_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo2_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo3_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo4_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo5_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo6_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo7_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ring_tree",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ring_bird",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "ring_butterfly",
+              "effect": "fade",
+              "delay": 300
+            },
+            {
+              "target": "ring_walker",
+              "effect": "fade",
+              "delay": 450
+            },
+            {
+              "target": "ring_dog",
+              "effect": "fade",
+              "delay": 600
+            },
+            {
+              "target": "ring_flower",
+              "effect": "fade",
+              "delay": 750
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ring_sun",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ring_cloud",
+              "effect": "fade",
+              "delay": 150
+            },
+            {
+              "target": "ring_kite",
+              "effect": "fade",
+              "delay": 300
+            },
+            {
+              "target": "ring_ball",
+              "effect": "fade",
+              "delay": 450
+            },
+            {
+              "target": "ring_rock",
+              "effect": "fade",
+              "delay": 600
+            },
+            {
+              "target": "ring_bicycle",
+              "effect": "fade",
+              "delay": 750
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_img0",
+            "t0_k",
+            "t0_h",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_img0",
+            "t1_img1",
+            "t1_k",
+            "t1_h",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_img0",
+            "t2_k",
+            "t2_h",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "ta0",
+          "members": [
+            "tl0_chip",
+            "tl0_tick"
+          ]
+        },
+        {
+          "name": "ta1",
+          "members": [
+            "tl1_chip",
+            "tl1_tick"
+          ]
+        },
+        {
+          "name": "ta2",
+          "members": [
+            "tl2_chip",
+            "tl2_tick"
+          ]
+        },
+        {
+          "name": "ta3",
+          "members": [
+            "tl3_chip",
+            "tl3_tick"
+          ]
+        },
+        {
+          "name": "ta4",
+          "members": [
+            "tl4_chip",
+            "tl4_tick"
+          ]
+        },
+        {
+          "name": "ta5",
+          "members": [
+            "tl5_chip",
+            "tl5_tick"
+          ]
+        },
+        {
+          "name": "ta6",
+          "members": [
+            "tl6_chip",
+            "tl6_tick"
+          ]
+        },
+        {
+          "name": "ta7",
+          "members": [
+            "tl7_chip",
+            "tl7_tick"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ta0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta6",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta7",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -4,3 +4,4 @@ out/
 *.png
 !assets/**/*.png
 .DS_Store
+tools/.photo-search/

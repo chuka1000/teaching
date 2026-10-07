@@ -1,0 +1,36 @@
+{
+  "_comment": "Deep Time (8I). The ONE copy of every date in the lesson, in millions of years ago (Mya). The deck, the worksheet answers and the checkers read this file; the game carries a copy that build/check-deep-time-game.py compares with it. Sources (checked 2026-10-07): ICS International Chronostratigraphic Chart (Cambrian base 538.8, Permian-Triassic 251.9, Cretaceous-Paleogene 66.0); Dresser Formation stromatolites (life, 3,500); Middle Ordovician spores (land plants, 470); earliest dinosaurs, Late Triassic (230); Brasilodon (mammals, 225); Archaeopteryx (birds, 150); Montsechia (flowering plants, 130); Tiktaalik (375); Haikouichthys (fish, 530); Ediacaran animals (about 575); Great Oxidation Event (2,400); Jebel Irhoud Homo sapiens (0.3); Isthmus of Panama (about 3); Darwin's finches' ancestor (about 2, Lamichhaney and others 2015); the Big Five extinctions and their losses (Our World in Data). The Precambrian is strictly a supereon, taught here as the first era, as the brief asks.",
+  "earth_age": 4600,
+  "eras": [
+    ["Precambrian", 4600, 539],
+    ["Palaeozoic", 539, 252],
+    ["Mesozoic", 252, 66],
+    ["Cenozoic", 66, 0]
+  ],
+  "events": {
+    "earth":     ["Earth forms", 4600],
+    "life":      ["First life (single cells in the sea)", 3500],
+    "oxygen":    ["Oxygen builds up in the air", 2400],
+    "animals":   ["First animals", 575],
+    "fish":      ["First fish", 530],
+    "plants":    ["First plants on land", 470],
+    "tetrapods": ["Fish with leg-like fins crawl onto land", 375],
+    "dinosaurs": ["First dinosaurs", 230],
+    "mammals":   ["First mammals", 225],
+    "birds":     ["First birds", 150],
+    "flowers":   ["First flowering plants", 130],
+    "asteroid":  ["The asteroid hits and the last dinosaurs die out", 66],
+    "panama":    ["The Isthmus of Panama closes", 3],
+    "finches":   ["The finches' ancestor reaches the Galápagos", 2],
+    "humans":    ["First humans (Homo sapiens)", 0.3]
+  },
+  "extinctions": [
+    ["End-Ordovician", 445, 85],
+    ["Late Devonian", 372, 70],
+    ["End-Permian", 252, 90],
+    ["End-Triassic", 201, 75],
+    ["End-Cretaceous", 66, 75]
+  ],
+  "trex": 68,
+  "stegosaurus": 150
+}

@@ -1,0 +1,1048 @@
+{
+  "deck": "out/Why Is It Living/Why Is It Living.pptx",
+  "output": "out/Why Is It Living/Why Is It Living.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_num",
+            "o0_img0",
+            "o0_img1",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_num",
+            "o1_img0",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_num",
+            "o2_img0",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rm0_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm1_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm2_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm3_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm4_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm5_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm6_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm7_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm8_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm9_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "md0_c0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md0_c1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md0_c2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md0_c3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md1_c0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md1_c1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md1_c2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md1_c3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md2_c0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md2_c1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md2_c2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "md2_c3",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rw0_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rw1_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rw2_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rw3_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rw4_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rw5_chip",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "eo0_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo1_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo2_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo3_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo4_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo5_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "eo6_chip",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "eo7_chip",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "opr0",
+          "members": [
+            "op0_r0",
+            "op0_r1"
+          ]
+        },
+        {
+          "name": "opr1",
+          "members": [
+            "op1_r0",
+            "op1_r1"
+          ]
+        },
+        {
+          "name": "opr2",
+          "members": [
+            "op2_r0",
+            "op2_r1"
+          ]
+        },
+        {
+          "name": "opr3",
+          "members": [
+            "op3_r0",
+            "op3_r1"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "opr0",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opr1",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opr2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "opr3",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_img0",
+            "t0_k",
+            "t0_h",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_img0",
+            "t1_img1",
+            "t1_k",
+            "t1_h",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_img0",
+            "t2_k",
+            "t2_h",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "ta0",
+          "members": [
+            "tl0_chip",
+            "tl0_tick"
+          ]
+        },
+        {
+          "name": "ta1",
+          "members": [
+            "tl1_chip",
+            "tl1_tick"
+          ]
+        },
+        {
+          "name": "ta2",
+          "members": [
+            "tl2_chip",
+            "tl2_tick"
+          ]
+        },
+        {
+          "name": "ta3",
+          "members": [
+            "tl3_chip",
+            "tl3_tick"
+          ]
+        },
+        {
+          "name": "ta4",
+          "members": [
+            "tl4_chip",
+            "tl4_tick"
+          ]
+        },
+        {
+          "name": "ta5",
+          "members": [
+            "tl5_chip",
+            "tl5_tick"
+          ]
+        },
+        {
+          "name": "ta6",
+          "members": [
+            "tl6_chip",
+            "tl6_tick"
+          ]
+        },
+        {
+          "name": "ta7",
+          "members": [
+            "tl7_chip",
+            "tl7_tick"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ta0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ta6",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "ta7",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "builds": []
+    },
+    {
+      "index": 12,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 13,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "hs0",
+          "members": [
+            "hs0_bg",
+            "hs0_n",
+            "hs0_img",
+            "hs0_t"
+          ]
+        },
+        {
+          "name": "hs1",
+          "members": [
+            "hs1_bg",
+            "hs1_n",
+            "hs1_img",
+            "hs1_t"
+          ]
+        },
+        {
+          "name": "hs2",
+          "members": [
+            "hs2_bg",
+            "hs2_n",
+            "hs2_img",
+            "hs2_t"
+          ]
+        },
+        {
+          "name": "hs3",
+          "members": [
+            "hs3_bg",
+            "hs3_n",
+            "hs3_img",
+            "hs3_t"
+          ]
+        },
+        {
+          "name": "hs4",
+          "members": [
+            "hs4_bg",
+            "hs4_n",
+            "hs4_img",
+            "hs4_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "hs0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hs1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hs2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hs3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hs4",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "frame_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 15,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 16,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "ll0",
+          "members": [
+            "ll0_bg",
+            "ll0_img",
+            "ll0_t"
+          ]
+        },
+        {
+          "name": "ll1",
+          "members": [
+            "ll1_bg",
+            "ll1_img",
+            "ll1_t"
+          ]
+        },
+        {
+          "name": "ll2",
+          "members": [
+            "ll2_bg",
+            "ll2_img",
+            "ll2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ll0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ll1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ll2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "frame_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "pr3a",
+          "members": [
+            "pr3_c0",
+            "pr3_c1",
+            "pr3_c2",
+            "pr3_c3"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "pr0_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pr1_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pr2_a",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "pr3a",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "tza0",
+          "members": [
+            "tz0_chip",
+            "tz0_tick"
+          ]
+        },
+        {
+          "name": "tza1",
+          "members": [
+            "tz1_chip",
+            "tz1_tick"
+          ]
+        },
+        {
+          "name": "tza2",
+          "members": [
+            "tz2_chip",
+            "tz2_tick"
+          ]
+        },
+        {
+          "name": "tza3",
+          "members": [
+            "tz3_chip",
+            "tz3_tick"
+          ]
+        },
+        {
+          "name": "tza4",
+          "members": [
+            "tz4_chip",
+            "tz4_tick"
+          ]
+        },
+        {
+          "name": "tza5",
+          "members": [
+            "tz5_chip",
+            "tz5_tick"
+          ]
+        },
+        {
+          "name": "tza6",
+          "members": [
+            "tz6_chip",
+            "tz6_tick"
+          ]
+        },
+        {
+          "name": "tza7",
+          "members": [
+            "tz7_chip",
+            "tz7_tick"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "tza0",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "tza1",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tza2",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "tza3",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tza4",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "tza5",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tza6",
+              "effect": "fade",
+              "delay": 0
+            },
+            {
+              "target": "tza7",
+              "effect": "fade",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
