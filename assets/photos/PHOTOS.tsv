@@ -57,9 +57,7 @@ bac_swamp	ov:2d313cb7-4c17-489e-a340-66c1f4b5dc76	0.5,0.5,1.0
 bac_saltlake	ov:a41b6dfc-9a5d-43d7-b01c-e76eebdd48be	0.5,0.5,1.0
 bac_insulin	ov:dca8c84b-a942-4ed9-ade6-0233aea8e879	0.5,0.5,0.95
 bac_amoeba	ov:bdfbd099-e967-44e5-b64a-e5d6995bb918	0.58,0.42,0.88
-bac_decomp	ov:4f105a91-1800-48b3-af0a-7580eb6084c2	0.55,0.55,1.0
-bac_yoghurt	ov:5ef34e1c-00fe-4f61-986c-545eab513160	0.5,0.5,1.0
-bac_hands	ov:2e0a2278-cc4a-43d9-8a51-0c02ed863842	0.5,0.5,1.0
-bac_hotspring	ov:de82759d-f1e0-484c-8cc1-904f2f874559	0.5,0.5,1.0
-bac_virus	ov:35b2a000-9171-4c8c-ad2e-5487f30a2a5f	0.5,0.4,1.0
-bac_cheek	ov:2439d52e-0a46-4f09-a00d-803ea60fd979	0.5,0.5,1.0
+bac_decomp	ov:e2148d39-01f3-462b-9d91-a1e39ec31abe	0.55,0.5,1.0
+bac_yoghurt	ov:db591ecf-3535-4d44-ba78-f7db8281aa28	0.5,0.5,1.0
+bac_hands	ov:35522ff5-34bb-42ca-8d3f-06d957c4b2a1	0.38,0.5,1.0
+bac_hotspring	ov:37ff531e-9266-49aa-9a78-843a110a5345	0.55,0.5,1.0
