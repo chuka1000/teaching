@@ -61,9 +61,11 @@ bac_decomp	ov:e2148d39-01f3-462b-9d91-a1e39ec31abe	0.55,0.5,1.0
 bac_yoghurt	ov:db591ecf-3535-4d44-ba78-f7db8281aa28	0.5,0.5,1.0
 bac_hands	ov:35522ff5-34bb-42ca-8d3f-06d957c4b2a1	0.38,0.5,1.0
 bac_hotspring	ov:37ff531e-9266-49aa-9a78-843a110a5345	0.55,0.5,1.0
-bac_tem	ov:908c8a0c-8be7-4800-98f6-41de3555174f	0.4,0.5,1.0
 bac_vent	ov:b8e1011a-00d3-4b6c-8489-5ace15e49469	0.5,0.5,1.0
 bac_cocci	ov:3c5cef98-7296-46ec-bb1e-bbe32fa989fc	0.3,0.4,0.7
 bac_pathogen	ov:e3360de5-0cd4-4010-94ed-e134025f5f47	0.5,0.5,1.0
 bac_cyano	ov:871fc497-7db3-436c-ba4c-9701102fe75c	0.5,0.5,1.0
 bac_plate	ov:685d3dce-3f03-4fdd-be40-072a510c3740	0.5,0.5,1.0
+bac_ice	ov:aa1990a6-74a7-424d-a778-14e552d94c35	0.5,0.5,1.0
+bac_soysauce	ov:e15cb777-8415-4a30-9231-8f78eedc2f3b	0.5,0.5,1.0
+bac_tem	ov:5591d2d7-f218-4713-ac50-6cf1d1d2643a	0.5,0.5,1.0
