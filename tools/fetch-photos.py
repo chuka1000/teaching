@@ -85,7 +85,10 @@ def ov_meta(r):
     lic = OV_LICENCES.get(r.get('license', ''), '')
     if lic and r.get('license_version') and lic not in ('CC0', 'Public domain'):
         lic = f"{lic} {r['license_version']}"
-    return r['url'], lic, (r.get('creator') or '')[:120], r.get('foreign_landing_url') or ''
+    url = r['url']
+    if 'iiif.wellcomecollection.org' in url:      # Openverse links Wellcome's 512 px rendition; 1024 px is served too
+        url = url.replace('/full/512,/', '/full/1024,/')
+    return url, lic, (r.get('creator') or '')[:120], r.get('foreign_landing_url') or ''
 
 
 def search_ov(query, n=12):
