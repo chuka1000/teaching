@@ -66,3 +66,4 @@ bac_vent	ov:b8e1011a-00d3-4b6c-8489-5ace15e49469	0.5,0.5,1.0
 bac_cocci	ov:3c5cef98-7296-46ec-bb1e-bbe32fa989fc	0.3,0.4,0.7
 bac_pathogen	ov:e3360de5-0cd4-4010-94ed-e134025f5f47	0.5,0.5,1.0
 bac_cyano	ov:871fc497-7db3-436c-ba4c-9701102fe75c	0.5,0.5,1.0
+bac_plate	ov:685d3dce-3f03-4fdd-be40-072a510c3740	0.5,0.5,1.0
