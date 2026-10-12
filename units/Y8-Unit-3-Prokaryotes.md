@@ -81,7 +81,13 @@ UKHSA, OpenStax, NOAA and the primary papers named in the speaker notes. TB figu
 - Animations (`build/media/`): `how-prokaryotes-live-media.py` (binary fission and doubling),
   `the-bacteria-we-need-media.py` (insulin), `pathogens-and-antibiotics-media.py` (resistance and
   a plasmid passing between two bacteria). All silent, 960 × 540, played on click.
-- Photographs: `assets/photos/bac_*.jpg`, with sources in `SOURCES.tsv`.
+- Photographs: `assets/photos/bac_*.jpg`, with sources in `SOURCES.tsv` (all CC BY, CC BY-SA, CC0 or public
+  domain: Wellcome Collection micrographs, NIH and USGS images, Flickr). Wikimedia's image server refuses downloads from
+  the build machine (HTTP 429), so every photograph came through Openverse and nothing needed Commons.
+  Check each caption against what the photograph really shows: the micrograph in Lesson 1 shows the outside of one E. coli
+  cell and its flagella (not the inside), the Lesson 3 cyanobacteria are under a fluorescence microscope (false colour),
+  the Lesson 4 salt photo is salt-making ponds beside San Francisco Bay, the Lesson 5 root nodules are on a cowpea, and
+  the insulin vial is an old animal-insulin vial (the notes say so).
 
 ## The assessment
 

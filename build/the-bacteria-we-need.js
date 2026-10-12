@@ -52,14 +52,14 @@ K.today({
  * 3. HOOK · 2
  * ================================================================== */
 K.hook({
-  question: 'A pot of yoghurt, the lumps on a pea root, and a vial of insulin. What do all three have in common?',
+  question: 'A pot of yoghurt, the lumps on a bean root, and a vial of insulin. What do all three have in common?',
   qSize: 21,
   picture: [{ key: 'bac_yoghurt', w: 1.30, h: 1.30, y: 0.72 }, { key: 'bac_nodules', w: 1.30, h: 1.30, y: 0.72 }, { key: 'bac_insulin', w: 1.30, h: 1.30, y: 0.72 }],
   opts: ['All three are made by animals.', 'Bacteria are behind all three.', 'All three are free of bacteria.'],
   notes:
     'HOOK. 2 minutes. Three cards on one click.\n\n'
-    + 'Point at the three photographs: a pot of yoghurt, the round lumps (nodules) on the roots of a plant of the pea family, and a vial of insulin (an old one, labelled with the name of a laboratory and from before human insulin was made by bacteria: insulin used to be taken from the pancreas of cattle and pigs). Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the lesson does, and you will point at the tally on the second I Do.\n\n'
-    + 'ANSWER, FOR YOU: B. Yoghurt is milk fermented by bacteria. The nodules on pea roots are full of nitrogen-fixing bacteria that feed the plant. Human insulin is made by bacteria that carry the human insulin gene. (Insulin is also made in yeast today; do not raise it unless asked.)\n\n'
+    + 'Point at the three photographs: a pot of yoghurt, the round lumps (nodules) on the roots of a bean plant (the photograph is a cowpea), and a vial of insulin (an old one, labelled with the name of a laboratory and from before human insulin was made by bacteria: insulin used to be taken from the pancreas of cattle and pigs). Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the lesson does, and you will point at the tally on the second I Do.\n\n'
+    + 'ANSWER, FOR YOU: B. Yoghurt is milk fermented by bacteria. The nodules on bean and pea roots are full of nitrogen-fixing bacteria that feed the plant. Human insulin is made by bacteria that carry the human insulin gene. (Insulin is also made in yeast today; do not raise it unless asked.)\n\n'
     + 'EXPECT MOST VOTES FOR A OR C. A COMMITMENT THAT IS WRONG IS CORRECTED MORE STRONGLY (PEDAGOGY.md): say "write your vote down".',
 });
 

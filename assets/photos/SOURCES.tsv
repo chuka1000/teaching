@@ -1,16 +1,13 @@
 key	file	author	licence	url	crop
 air	ov:7f5efc4a-c3c5-460d-92ce-e8bb5df1d059	Spojení	CC BY 2.0	https://www.flickr.com/photos/91514913@N00/250801417	0.5,0.55,1.0
 ant	ov:03e2b2c4-64eb-4f24-ade0-34e1daa94865	spotter_nl	CC BY 2.0	https://www.flickr.com/photos/30733371@N00/28671685151	0.5,0.45,1.0
-bac_amoeba	ov:bdfbd099-e967-44e5-b64a-e5d6995bb918	Picturepest	CC BY 2.0	https://www.flickr.com/photos/59923990@N05/10748128705	0.58,0.42,0.88
 bac_bacilli	ov:3fc79cf8-91c3-4ee7-ac57-129c11c23d05		CC BY 4.0	https://wellcomecollection.org/works/qdcjup8w	0.5,0.5,1.0
-bac_cheek	ov:743df7e4-b913-472b-ba26-0460b8f1121f	MaximilianParadiz	CC BY 2.0	https://www.flickr.com/photos/36074605@N05/54540598926	0.45,0.5,1.0
 bac_cheese	ov:e5a6bc85-8044-404b-a18b-c3786e59bd65	Maggie Hoffman	CC BY 2.0	https://www.flickr.com/photos/8830972@N08/3186892720	0.5,0.5,1.0
 bac_cocci	ov:3c5cef98-7296-46ec-bb1e-bbe32fa989fc	National Institutes of Health (NIH)	Public domain	https://www.flickr.com/photos/132318516@N08/49234831117	0.3,0.4,0.7
 bac_cow	ov:654a06cd-363e-412a-bf0c-ba057f4cccc3		CC0	https://www.rawpixel.com/image/5926499/photo-image-background-public-domain-green	0.52,0.55,1.0
 bac_cyano	ov:871fc497-7db3-436c-ba4c-9701102fe75c	U.S. Geological Survey	Public domain	https://www.flickr.com/photos/27784370@N05/21461433360	0.5,0.5,1.0
 bac_decomp	ov:4a8f3f0e-76e4-49b3-bbbf-5b05a7d2589a	CAJC: in the PNW	CC BY-SA 2.0	https://www.flickr.com/photos/88913562@N00/51623156533	0.5,0.5,1.0
 bac_discs	ov:28e9e136-2ec9-4b90-adfb-a41222bafe21	mostly*harmless	CC BY 2.0	https://www.flickr.com/photos/21997898@N04/16337751205	0.5,0.5,1.0
-bac_hands	ov:35522ff5-34bb-42ca-8d3f-06d957c4b2a1	peapod labs	CC BY 2.0	https://www.flickr.com/photos/79418529@N02/6963932022	0.38,0.5,1.0
 bac_hotspring	ov:37ff531e-9266-49aa-9a78-843a110a5345	James St. John	CC BY 2.0	https://www.flickr.com/photos/47445767@N05/14484815622	0.55,0.5,1.0
 bac_ice	ov:aa1990a6-74a7-424d-a778-14e552d94c35	Liam Quinn	CC BY-SA 2.0	https://www.flickr.com/photos/59222181@N03/6060881094	0.5,0.5,1.0
 bac_insulin	ov:dca8c84b-a942-4ed9-ade6-0233aea8e879		CC BY 4.0	https://collections.museumsvictoria.com.au/items/1078529	0.5,0.5,0.95
@@ -20,13 +17,9 @@ bac_pathogen	ov:e3360de5-0cd4-4010-94ed-e134025f5f47	National Institutes of Heal
 bac_plate	ov:685d3dce-3f03-4fdd-be40-072a510c3740	sarah.sletten	CC BY 2.0	https://www.flickr.com/photos/182262517@N04/48537561907	0.5,0.5,1.0
 bac_saltlake	ov:a41b6dfc-9a5d-43d7-b01c-e76eebdd48be	dsearls	CC BY-SA 2.0	https://www.flickr.com/photos/52614599@N00/3021779026	0.5,0.5,1.0
 bac_soil	ov:d4e3818c-3870-4377-bfca-8dec934ce661		CC0	https://www.rawpixel.com/image/3284609/free-photo-image-agriculture-cc0-creative-commons	0.4,0.5,1.0
-bac_soysauce	ov:e15cb777-8415-4a30-9231-8f78eedc2f3b	David Jackmanson	CC BY 2.0	https://www.flickr.com/photos/58301516@N00/37082990452	0.5,0.5,1.0
 bac_spirilla	ov:fdc2864f-fd34-463f-b143-0ec3d81de65f		CC BY 4.0	https://wellcomecollection.org/works/afqev3tp	0.45,0.42,0.8
-bac_stromatolite	ov:409d7bb6-2b39-43ef-8a5c-e89b0df0aa9e	4nitsirk	CC BY-SA 2.0	https://www.flickr.com/photos/26223114@N02/11902636365	0.55,0.58,1.0
-bac_swamp	ov:2d313cb7-4c17-489e-a340-66c1f4b5dc76	rkramer62	CC BY 2.0	https://www.flickr.com/photos/26503922@N08/14789473529	0.5,0.5,1.0
 bac_tem	ov:5591d2d7-f218-4713-ac50-6cf1d1d2643a		CC BY 4.0	https://wellcomecollection.org/works/fkc8pbh2	0.5,0.5,1.0
 bac_vent	ov:b8e1011a-00d3-4b6c-8489-5ace15e49469	NOAA Photo Library	CC BY 2.0	https://www.flickr.com/photos/51647007@N08/5277263409	0.5,0.5,1.0
-bac_yeast	ov:12ddce6a-fdea-41fc-ad57-ad6a9b99babb	Laboratorio de Tecnologías Libres	CC BY-SA 2.0	https://www.flickr.com/photos/144912655@N02/48728504756	0.5,0.5,1.0
 bac_yoghurt	ov:db591ecf-3535-4d44-ba78-f7db8281aa28	Alabama Extension	CC0	https://www.flickr.com/photos/184594136@N08/50088084781	0.5,0.5,1.0
 bag	ov:5b7c3e00-77f3-4f7c-980b-87b2da3a3d77	megforce1	CC0	https://www.flickr.com/photos/35608308@N05/28404475294	0.5,0.5,1.0
 ball	ov:59dc0317-c399-40b4-962c-3cc67f54a2bf	wjarrettc	CC BY 2.0	https://www.flickr.com/photos/77744839@N00/3445300205	0.5,0.55,1.0

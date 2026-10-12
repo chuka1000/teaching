@@ -53,12 +53,9 @@ bac_cow	ov:654a06cd-363e-412a-bf0c-ba057f4cccc3	0.52,0.55,1.0
 bac_nodules	ov:4186e3ee-549f-4623-8b9f-552931537eb0	0.5,0.5,1.0
 bac_soil	ov:d4e3818c-3870-4377-bfca-8dec934ce661	0.4,0.5,1.0
 bac_cheese	ov:e5a6bc85-8044-404b-a18b-c3786e59bd65	0.5,0.5,1.0
-bac_swamp	ov:2d313cb7-4c17-489e-a340-66c1f4b5dc76	0.5,0.5,1.0
 bac_saltlake	ov:a41b6dfc-9a5d-43d7-b01c-e76eebdd48be	0.5,0.5,1.0
 bac_insulin	ov:dca8c84b-a942-4ed9-ade6-0233aea8e879	0.5,0.5,0.95
-bac_amoeba	ov:bdfbd099-e967-44e5-b64a-e5d6995bb918	0.58,0.42,0.88
 bac_yoghurt	ov:db591ecf-3535-4d44-ba78-f7db8281aa28	0.5,0.5,1.0
-bac_hands	ov:35522ff5-34bb-42ca-8d3f-06d957c4b2a1	0.38,0.5,1.0
 bac_hotspring	ov:37ff531e-9266-49aa-9a78-843a110a5345	0.55,0.5,1.0
 bac_vent	ov:b8e1011a-00d3-4b6c-8489-5ace15e49469	0.5,0.5,1.0
 bac_cocci	ov:3c5cef98-7296-46ec-bb1e-bbe32fa989fc	0.3,0.4,0.7
@@ -66,12 +63,8 @@ bac_pathogen	ov:e3360de5-0cd4-4010-94ed-e134025f5f47	0.5,0.5,1.0
 bac_cyano	ov:871fc497-7db3-436c-ba4c-9701102fe75c	0.5,0.5,1.0
 bac_plate	ov:685d3dce-3f03-4fdd-be40-072a510c3740	0.5,0.5,1.0
 bac_ice	ov:aa1990a6-74a7-424d-a778-14e552d94c35	0.5,0.5,1.0
-bac_soysauce	ov:e15cb777-8415-4a30-9231-8f78eedc2f3b	0.5,0.5,1.0
 bac_tem	ov:5591d2d7-f218-4713-ac50-6cf1d1d2643a	0.5,0.5,1.0
-bac_stromatolite	ov:409d7bb6-2b39-43ef-8a5c-e89b0df0aa9e	0.55,0.58,1.0
 bac_bacilli	ov:3fc79cf8-91c3-4ee7-ac57-129c11c23d05	0.5,0.5,1.0
 bac_spirilla	ov:fdc2864f-fd34-463f-b143-0ec3d81de65f	0.45,0.42,0.8
-bac_cheek	ov:743df7e4-b913-472b-ba26-0460b8f1121f	0.45,0.5,1.0
-bac_yeast	ov:12ddce6a-fdea-41fc-ad57-ad6a9b99babb	0.5,0.5,1.0
 bac_discs	ov:28e9e136-2ec9-4b90-adfb-a41222bafe21	0.5,0.5,1.0
 bac_decomp	ov:4a8f3f0e-76e4-49b3-bbbf-5b05a7d2589a	0.5,0.5,1.0
