@@ -69,3 +69,9 @@ bac_plate	ov:685d3dce-3f03-4fdd-be40-072a510c3740	0.5,0.5,1.0
 bac_ice	ov:aa1990a6-74a7-424d-a778-14e552d94c35	0.5,0.5,1.0
 bac_soysauce	ov:e15cb777-8415-4a30-9231-8f78eedc2f3b	0.5,0.5,1.0
 bac_tem	ov:5591d2d7-f218-4713-ac50-6cf1d1d2643a	0.5,0.5,1.0
+bac_stromatolite	ov:409d7bb6-2b39-43ef-8a5c-e89b0df0aa9e	0.55,0.58,1.0
+bac_bacilli	ov:3fc79cf8-91c3-4ee7-ac57-129c11c23d05	0.5,0.5,1.0
+bac_spirilla	ov:fdc2864f-fd34-463f-b143-0ec3d81de65f	0.45,0.42,0.8
+bac_cheek	ov:743df7e4-b913-472b-ba26-0460b8f1121f	0.45,0.5,1.0
+bac_yeast	ov:12ddce6a-fdea-41fc-ad57-ad6a9b99babb	0.5,0.5,1.0
+bac_discs	ov:28e9e136-2ec9-4b90-adfb-a41222bafe21	0.5,0.5,1.0
