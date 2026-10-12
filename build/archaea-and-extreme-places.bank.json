@@ -1,0 +1,361 @@
+{
+  "_comment": "The item bank for the Archaea And Extreme Places game (Sorter: bacterium / archaean / neither). Every classification was fact-checked (see the unit notes). Rounds: 1 = the lesson, 2 = the traps, 3 = far past the lesson (meant to be almost impossible at the end). 'core' items are in every draw. 'trap' names the mistake a student most likely made when the item is wrong.",
+  "bins": [
+    "bacterium",
+    "archaean",
+    "neither"
+  ],
+  "bin_labels": {
+    "bacterium": "Bacterium",
+    "archaean": "Archaean",
+    "neither": "Neither"
+  },
+  "bin_hints": {
+    "bacterium": "a prokaryote in the domain Bacteria",
+    "archaean": "a prokaryote in the domain Archaea",
+    "neither": "it has a nucleus, or it is not a cell"
+  },
+  "rules": [
+    "No nucleus and a cell: it is a bacterium or an archaean.",
+    "A nucleus, or not a cell at all (a virus): neither.",
+    "A methanogen (a microbe that lives by making methane) is always an archaean.",
+    "Where it lives does not decide it: bacteria live in hot, salty and deep places too."
+  ],
+  "rounds": [
+    {
+      "name": "Round 1: the lesson",
+      "draw": 8,
+      "per_bin": {
+        "bacterium": 3,
+        "archaean": 3,
+        "neither": 2
+      },
+      "pool": [
+        {
+          "id": "r1_b1",
+          "text": "A cyanobacterium in a pond",
+          "answer": "bacterium",
+          "core": false,
+          "why": "It has no nucleus and is in the domain Bacteria. Cyanobacteria make food using light."
+        },
+        {
+          "id": "r1_b2",
+          "text": "A bacterium that turns milk into yoghurt",
+          "answer": "bacterium",
+          "core": false,
+          "why": "It has no nucleus and is in the domain Bacteria."
+        },
+        {
+          "id": "r1_b3",
+          "text": "A rod-shaped bacillus from the soil",
+          "answer": "bacterium",
+          "core": false,
+          "why": "A bacillus is a rod-shaped bacterium."
+        },
+        {
+          "id": "r1_b4",
+          "text": "A decomposer in a compost heap that breaks down dead leaves",
+          "answer": "bacterium",
+          "core": false,
+          "why": "Decomposer bacteria feed on dead material. It has no nucleus."
+        },
+        {
+          "id": "r1_b5",
+          "text": "A coccus on your skin",
+          "answer": "bacterium",
+          "core": false,
+          "why": "A coccus is a spherical bacterium."
+        },
+        {
+          "id": "r1_a1",
+          "text": "A methane-making microbe in a cow's stomach",
+          "answer": "archaean",
+          "core": true,
+          "why": "Every methanogen (methane-making microbe) is an archaean. It needs no oxygen."
+        },
+        {
+          "id": "r1_a2",
+          "text": "A methane-making microbe in swamp mud",
+          "answer": "archaean",
+          "core": false,
+          "why": "Every methanogen (methane-making microbe) is an archaean. It needs no oxygen."
+        },
+        {
+          "id": "r1_a3",
+          "text": "A methane-making microbe in a sewage works",
+          "answer": "archaean",
+          "core": false,
+          "why": "Methanogens are archaea, and sewage has no oxygen for them to avoid."
+        },
+        {
+          "id": "r1_a4",
+          "text": "A methane-making microbe in a rice paddy",
+          "answer": "archaean",
+          "core": false,
+          "why": "Waterlogged mud has no oxygen: methanogens, which are archaea, live there."
+        },
+        {
+          "id": "r1_a5",
+          "text": "A microbe that can grow at 113 °C beside a deep-sea vent",
+          "answer": "archaean",
+          "core": true,
+          "why": "Only archaea are known to grow above about 100 °C. It has no nucleus, and it is not a bacterium."
+        },
+        {
+          "id": "r1_n1",
+          "text": "A human cheek cell",
+          "answer": "neither",
+          "core": false,
+          "why": "It has a nucleus, so it is a eukaryote."
+        },
+        {
+          "id": "r1_n2",
+          "text": "A yeast cell",
+          "answer": "neither",
+          "core": true,
+          "why": "Yeast is a single-celled fungus. It has a nucleus."
+        },
+        {
+          "id": "r1_n3",
+          "text": "A flu virus",
+          "answer": "neither",
+          "core": false,
+          "why": "A virus is not a cell, so it is not a bacterium or an archaean."
+        },
+        {
+          "id": "r1_n4",
+          "text": "An amoeba",
+          "answer": "neither",
+          "core": false,
+          "why": "An amoeba is a single cell, but it has a nucleus."
+        },
+        {
+          "id": "r1_n5",
+          "text": "A cell from a green leaf",
+          "answer": "neither",
+          "core": false,
+          "why": "A plant cell has a nucleus."
+        }
+      ]
+    },
+    {
+      "name": "Round 2: where it lives is a trap",
+      "draw": 8,
+      "per_bin": {
+        "bacterium": 3,
+        "archaean": 2,
+        "neither": 3
+      },
+      "pool": [
+        {
+          "id": "r2_b1",
+          "text": "A heat-loving microbe from a hot spring in Yellowstone, the source of the enzyme used in PCR tests",
+          "answer": "bacterium",
+          "core": true,
+          "why": "It loves heat, but it is a bacterium. A hot place does not make a microbe an archaean."
+        },
+        {
+          "id": "r2_b2",
+          "text": "A cyanobacterium forming orange mats at the edge of a hot spring",
+          "answer": "bacterium",
+          "core": true,
+          "why": "Cyanobacteria are bacteria, and some live in hot springs."
+        },
+        {
+          "id": "r2_b3",
+          "text": "A microbe that survives huge doses of radiation and was found in tinned meat",
+          "answer": "bacterium",
+          "core": false,
+          "why": "It is extreme, but it is a bacterium. Extreme does not mean archaean."
+        },
+        {
+          "id": "r2_b4",
+          "text": "The sulfur-using bacteria that live inside giant tube worms at a deep-sea vent",
+          "answer": "bacterium",
+          "core": false,
+          "why": "Vents have archaea, but these are chemosynthetic bacteria."
+        },
+        {
+          "id": "r2_b5",
+          "text": "A 'blue-green alga' that blooms on a lake in summer",
+          "answer": "bacterium",
+          "core": false,
+          "why": "'Blue-green algae' are cyanobacteria. They have no nucleus, so they are bacteria."
+        },
+        {
+          "id": "r2_a1",
+          "text": "Halobacterium, a salt-loving microbe from a very salty lake",
+          "answer": "archaean",
+          "core": true,
+          "why": "Its name says 'bacterium', but it is an archaean. It was named before archaea were recognised."
+        },
+        {
+          "id": "r2_a2",
+          "text": "A methane-making microbe in the human gut",
+          "answer": "archaean",
+          "core": false,
+          "why": "It lives in a body, as many bacteria do, but all methane-makers are archaea."
+        },
+        {
+          "id": "r2_a3",
+          "text": "A microbe that grows at 122 °C under very high pressure in the lab",
+          "answer": "archaean",
+          "core": false,
+          "why": "The record for the hottest growth is held by an archaean."
+        },
+        {
+          "id": "r2_n1",
+          "text": "A single-celled red alga that lives in a hot, acidic spring",
+          "answer": "neither",
+          "core": true,
+          "why": "It has a nucleus, so it is a eukaryote, even in a hot spring."
+        },
+        {
+          "id": "r2_n2",
+          "text": "A yeast that grows in the very salty brine of soy sauce",
+          "answer": "neither",
+          "core": false,
+          "why": "Yeast is a fungus with a nucleus. Salt does not make it an archaean."
+        },
+        {
+          "id": "r2_n3",
+          "text": "A virus that infects bacteria",
+          "answer": "neither",
+          "core": true,
+          "why": "A virus is not a cell, so it is neither."
+        },
+        {
+          "id": "r2_n4",
+          "text": "A virus that infects archaea",
+          "answer": "neither",
+          "core": false,
+          "why": "A virus is not a cell, even if its host is an archaean."
+        },
+        {
+          "id": "r2_n5",
+          "text": "A single-celled alga that turns a very salty lake pink",
+          "answer": "neither",
+          "core": false,
+          "why": "It is an alga with a nucleus. Some pink lakes also hold bacteria and archaea, but this cell has a nucleus."
+        }
+      ]
+    },
+    {
+      "name": "Round 3: beat the game",
+      "draw": 8,
+      "per_bin": {
+        "bacterium": 3,
+        "archaean": 2,
+        "neither": 3
+      },
+      "pool": [
+        {
+          "id": "r3_b1",
+          "text": "A cell with no nucleus whose cell wall is made of peptidoglycan",
+          "answer": "bacterium",
+          "core": true,
+          "why": "Peptidoglycan is found only in bacterial cell walls. Archaea have a different cell wall chemistry."
+        },
+        {
+          "id": "r3_b2",
+          "text": "A cell with no nucleus that makes its own food from light and gives out oxygen",
+          "answer": "bacterium",
+          "core": true,
+          "why": "Only cyanobacteria among the prokaryotes make oxygen by photosynthesis. It is a bacterium."
+        },
+        {
+          "id": "r3_b3",
+          "text": "The cells that turn a pond green and slimy in summer, each with no nucleus",
+          "answer": "bacterium",
+          "core": false,
+          "why": "Pond blooms like this are often cyanobacteria. With no nucleus, they are bacteria."
+        },
+        {
+          "id": "r3_b4",
+          "text": "A cell with no nucleus living in the cells of a giant tube worm",
+          "answer": "bacterium",
+          "core": false,
+          "why": "They are chemosynthetic bacteria. They are inside an animal, but they are not an archaean."
+        },
+        {
+          "id": "r3_a1",
+          "text": "A cell with no nucleus that lives by making methane",
+          "answer": "archaean",
+          "core": true,
+          "why": "Cells that live by making methane (methanogens) are all archaea."
+        },
+        {
+          "id": "r3_a2",
+          "text": "A cell with no nucleus, from a spring, that grows at 108 °C",
+          "answer": "archaean",
+          "core": false,
+          "why": "Only archaea are known to grow above about 100 °C."
+        },
+        {
+          "id": "r3_a3",
+          "text": "A methane-making microbe in a termite's gut",
+          "answer": "archaean",
+          "core": false,
+          "why": "Methanogens are archaea, in a termite as in a cow."
+        },
+        {
+          "id": "r3_n1",
+          "text": "A single-celled protist in a termite's gut that helps to digest wood",
+          "answer": "neither",
+          "core": true,
+          "why": "It has a nucleus. The termite's gut holds bacteria, archaea and protists."
+        },
+        {
+          "id": "r3_n2",
+          "text": "A mitochondrion inside one of your cells, which has its own circle of DNA and divides",
+          "answer": "neither",
+          "core": true,
+          "why": "It is part of a cell, not a cell. It looks a little like a bacterium, but it is neither."
+        },
+        {
+          "id": "r3_n3",
+          "text": "A bacteriophage, a virus with a tail that injects its DNA into a bacterium",
+          "answer": "neither",
+          "core": false,
+          "why": "A virus is not a cell, so it is neither."
+        },
+        {
+          "id": "r3_n4",
+          "text": "A single-celled fungus living in the gut of a beetle",
+          "answer": "neither",
+          "core": false,
+          "why": "A fungus has a nucleus, so it is a eukaryote."
+        },
+        {
+          "id": "r3_n5",
+          "text": "A cell from a mould growing on stale bread",
+          "answer": "neither",
+          "core": false,
+          "why": "A fungal cell has a nucleus."
+        },
+        {
+          "id": "r3_a4",
+          "text": "A cell with no nucleus whose membrane fats are joined by ether bonds",
+          "answer": "archaean",
+          "core": false,
+          "why": "Ether-linked membrane lipids are a mark of archaea. Bacteria have ester links."
+        },
+        {
+          "id": "r3_n6",
+          "text": "A cell with a nucleus and a cell wall that makes its own food from light",
+          "answer": "neither",
+          "core": false,
+          "why": "A plant or algal cell has a nucleus and a cell wall. A cell wall does not make it a prokaryote."
+        }
+      ]
+    }
+  ],
+  "mistakes": {
+    "bacterium>archaean": "Where it lives does not decide it. Bacteria live in hot, salty and deep places too.",
+    "archaean>bacterium": "Archaea have no nucleus either, and they look like bacteria, so this is an easy mistake. They are a separate domain.",
+    "neither>bacterium": "Check for a nucleus first. This one has a nucleus, or it is not a cell at all.",
+    "neither>archaean": "Check for a nucleus first. This one has a nucleus, or it is not a cell at all.",
+    "bacterium>neither": "A cell with no nucleus is a prokaryote. A prokaryote is a bacterium or an archaean.",
+    "archaean>neither": "A cell with no nucleus is a prokaryote. A prokaryote is a bacterium or an archaean."
+  }
+}

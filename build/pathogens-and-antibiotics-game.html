@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pathogens And Antibiotics: True Or False Blitz</title>
+<style>
+  /* the Culture palette (lib/theme.js), so the game looks like the deck */
+  :root {
+    --plum: #301338; --plum2: #502456; --lime: #B5E06A; --limeink: #4C7A12; --teal: #167A74; --red: #C73C28;
+    --tint: #F6F1F5; --tint2: #E8DCE6; --ink: #24122A; --soft: #6A5570; --white: #fff;
+    --rightbg: #F1F8E4; --wrongbg: #FDF1EE; --rightdeep: #2F4F0B; --wrongdeep: #8E2414;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--tint); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 820px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--plum); margin: 0; }
+  h1 { font-size: 34px; line-height: 1.15; }
+  header { margin-bottom: 10px; }
+  .hrow { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .pill { background: var(--plum); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; border-radius: 16px; padding: 8px 14px; line-height: 1.3; min-width: 0; }
+  .pill.hard { background: var(--red); }
+  .watch { text-align: right; flex: none; }
+  .watch .wt { display: block; font-family: 'Courier New', monospace; font-weight: 700; font-size: 24px; color: var(--plum); line-height: 1; }
+  .watch .wn { display: block; font-size: 12px; color: var(--soft); margin-top: 4px; }
+  .prog { font-size: 15px; color: var(--plum); font-weight: 700; margin: 10px 0 7px; }
+  .dots { display: flex; flex-wrap: wrap; gap: 5px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--plum); background: var(--white); }
+  .dot.gap { margin-right: 8px; }
+  .dot.now { background: var(--lime); } .dot.right { background: var(--limeink); border-color: var(--limeink); } .dot.wrong { background: var(--red); border-color: var(--red); }
+  .card { background: var(--white); border: 2px solid var(--tint2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .tag { font-size: 14px; color: var(--soft); margin: 0 0 6px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .ask { font-size: 23px; color: var(--plum); font-weight: 700; margin: 0; line-height: 1.35; }
+  .lead { font-size: 18px; line-height: 1.45; margin: 12px 0 0; }
+  .lead.hard { background: #FDF1EE; border-left: 5px solid var(--red); border-radius: 0 10px 10px 0; padding: 10px 14px; }
+  .note { font-size: 14px; color: var(--soft); line-height: 1.45; margin: 12px 0 0; }
+  button { font: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--plum); color: var(--white); border: 2px solid var(--plum); }
+  .btn.ghost { background: var(--white); color: var(--plum); }
+  .btn.sm { padding: 8px 14px; font-size: 15px; min-height: 44px; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+  /* the two answer buttons */
+  .tfrow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .tf { min-height: 84px; border-radius: 14px; border: 4px solid transparent; font-size: 28px; font-weight: 700; letter-spacing: .05em; color: var(--white); touch-action: manipulation; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px; }
+  .tf small { font-size: 12px; font-weight: 400; letter-spacing: 0; }
+  .tf.t { background: var(--teal); border-color: var(--teal); } .tf.f { background: var(--plum); border-color: var(--plum); }
+  .tf:disabled { cursor: default; }
+  .tf.correct { background: var(--rightbg); border-color: var(--limeink); color: var(--rightdeep); }
+  .tf.correct .lbl::before { content: '\2713\00a0'; }
+  .tf.picked { background: var(--wrongbg); border-color: var(--red); color: var(--wrongdeep); }
+  .tf.picked .lbl::before { content: '\2717\00a0'; }
+  .tf.dim { background: var(--tint2); border-color: var(--tint2); color: var(--soft); }
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .actions .stopbtn { margin-left: auto; }
+  .nw { white-space: nowrap; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--limeink); background: var(--rightbg); } #feedback.wrong { border-color: var(--red); background: var(--wrongbg); }
+  #feedback .head { font-size: 21px; font-weight: 700; line-height: 1.3; } #feedback.right .head { color: var(--limeink); } #feedback.wrong .head { color: var(--red); }
+  #feedback .why { font-size: 17px; line-height: 1.45; margin: 8px 0 0; color: var(--ink); }
+  #feedback .slip { font-size: 16px; line-height: 1.45; margin: 8px 0 0; color: var(--plum); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--tint2); }
+  .row:last-child { border-bottom: 0; }
+  .row .l { min-width: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--tint2); overflow: hidden; width: 120px; flex: none; } .bar i { display: block; height: 100%; background: var(--limeink); }
+  .score { font-size: 46px; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; color: var(--plum); line-height: 1.15; }
+  .small { font-size: 13px; color: var(--soft); }
+  .sub { font-size: 14px; font-weight: 700; color: var(--plum); text-transform: uppercase; letter-spacing: .04em; margin: 14px 0 0; }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--plum); font-size: 1.1em; }
+  details.review { border: 2px solid var(--tint2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--plum); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '\25BE'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--tint2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--plum); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; margin-left: 8px; } .verdict.ok { color: var(--limeink); } .verdict.no { color: var(--red); } .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 16px; line-height: 1.4; margin: 6px 0; font-weight: 700; color: var(--ink); } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--plum); }
+  .rq .why, .rq .slip { font-size: 15px; line-height: 1.4; margin: 6px 0 0; color: var(--ink); }
+  .hide { display: none !important; }
+  @media (max-width: 480px) {
+    h1 { font-size: 29px; }
+    .ask { font-size: 20px; }
+    .tf { min-height: 76px; font-size: 25px; }
+    .bar { width: 84px; }
+    .actions .btn { flex: 1 1 100%; margin-left: 0; }
+  }
+  @media (min-width: 720px) {
+    .ask { font-size: 27px; }
+    .card { padding: 20px; }
+    .tf { min-height: 96px; font-size: 32px; }
+    #feedback .head { font-size: 23px; } #feedback .why { font-size: 18px; } #feedback .slip { font-size: 17px; }
+  }
+  @media (hover: none) { .tf small { display: none; } }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * TRUE OR FALSE BLITZ (Pathogens And Antibiotics, 8I). Nobody gets the same game.
+   *
+   * 20 statements in 3 rounds (7, 7 and 6). The statements are build/pathogens-and-antibiotics.bank.json, written into DATA below by
+   * build/pathogens-and-antibiotics-game.py when the game is copied to the lesson folder, so this file carries no statement text of its own.
+   * Each SLOT of the bank holds one idea twice, a TRUE version and a FALSE version. A game uses a slot at most once and shows ONE version of
+   * it, so the student never sees the pair.
+   *
+   * WHAT THE CODE DECIDES (a six-character game code, random for each student; #CODE on the end of the address gives the same game again):
+   *   - which slots each round draws (from that round's own twelve). The bank lists CONFLICTS, pairs of slots that give each other away
+   *     (one statement is a clue to the other). A game never draws both slots of a pair, in the same round or across rounds: the whole
+   *     draw is made again, from the same seed, until no pair is drawn,
+   *   - which version each drawn slot shows, so that the whole game has exactly 10 true and 10 false statements: round 3 has 3 true of 6,
+   *     and rounds 1 and 2 have 3 and 4 true between them (which round has 3 is chosen by the code),
+   *   - the order of the statements inside each round.
+   * The SKILLS and their order are the same for everyone: round 1 is the unit so far, round 2 is today's lesson, round 3 goes far past it.
+   *
+   * THE TOP IS MEANT TO BE HARD (GAMES.md). The start screen says round 3 is meant to be too hard, so a red mark there is not read as
+   * "I am bad at science". A "Stop and see my results" button is on every statement. The time is shown, and says it does not count.
+   *
+   * build/check-pathogens-and-antibiotics-game.py re-derives, over 300 games, the round sizes, the 10 true and 10 false, the 3 / 4 split,
+   * that no game holds both slots of a conflicting pair, that every statement is word for word the bank's, and that its stored truth is
+   * the bank's true / false field.
+   * ================================================================== */
+  var DATA = /*DATA*/null/*END*/;
+  var app = document.getElementById('app');
+  if (!DATA) { app.textContent = 'The statements are missing from this file. Build it with build/pathogens-and-antibiotics-game.py.'; return; }
+
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var ROUNDS = DATA.rounds;                              // [{ name, slots: [{ id, true, false, why, mistake }] }]
+  var SIZES = DATA.draw.slice();                         // statements per round: 7, 7, 6
+  var STARTS = [0, SIZES[0], SIZES[0] + SIZES[1]];
+  var TOTAL = SIZES[0] + SIZES[1] + SIZES[2];            // 20
+  var HALF = TOTAL / 2;                                  // 10 true and 10 false in every game
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    // round 3 has half of its statements true; rounds 1 and 2 share the rest (3 and 4), and the code says which round has 3
+    var conflicts = DATA.conflicts || [];
+    var lastTrue = SIZES[2] / 2, rest = HALF - lastTrue;
+    var firstTrue = rnd() < 0.5 ? Math.floor(rest / 2) : Math.ceil(rest / 2);
+    var wantTrue = [firstTrue, rest - firstTrue, lastTrue];
+    // each round draws from its own slots; the draw is repeated (the seed goes on) until it holds no conflicting pair
+    var picks, tries = 0;
+    do {
+      if (++tries > 5000) throw new Error('The bank\'s conflicts leave no draw to make.');
+      picks = ROUNDS.map(function (rd, r) { return shuffle(rd.slots).slice(0, SIZES[r]); });
+      var drawn = {}; picks.forEach(function (sl) { sl.forEach(function (sx) { drawn[sx.id] = true; }); });
+    } while (conflicts.some(function (pair) { return drawn[pair[0]] && drawn[pair[1]]; }));
+    var out = [];
+    ROUNDS.forEach(function (rd, r) {
+      var slots = picks[r];                                                                    // this round's own slots, none twice
+      var flags = shuffle(slots.map(function (s, i) { return i < wantTrue[r]; }));            // which of them show their TRUE version
+      var items = shuffle(slots.map(function (s, i) {
+        var t = flags[i];
+        return { slot: s.id, truth: t, text: t ? s['true'] : s['false'], why: s.why, mistake: s.mistake };
+      }));
+      items.forEach(function (it, k) { it.round = r + 1; it.k = k + 1; it.n = out.length + 1; out.push(it); });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var state, locked, qStart, roundStart, tick = null;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; locked = false; }
+  function idx() { return STARTS[state.r] + state.i; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; window.scrollTo(0, 0); }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  var W = function (v) { return v ? 'TRUE' : 'FALSE'; };
+  function display(Q) { return Q.text; }                 // one statement only: never its pair, never the answer
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function mmss(ms) { var s = Math.max(0, Math.floor(ms / 1000)); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+
+  /* the round stopwatch: it runs from the first statement of a round to the end of it, and counts for nothing */
+  function paintClock() { var c = document.getElementById('clock'); if (c) c.textContent = mmss(Date.now() - roundStart); }
+  function startClock() { stopClock(); tick = setInterval(paintClock, 250); }
+  function stopClock() { if (tick) { clearInterval(tick); tick = null; } }
+
+  function start() {
+    clear(); stopClock(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'True Or False Blitz'));
+    card.appendChild(el('p', 'tag', 'Pathogens And Antibiotics'));
+    card.appendChild(el('p', 'lead', 'You get ' + TOTAL + ' statements in 3 rounds, one at a time, and you press <b>TRUE</b> or <b>FALSE</b> for each one (or the keys T and F). After every answer you see why, so a wrong answer is a chance to learn it.')).id = 'explain';
+    card.appendChild(el('p', 'lead', 'A stopwatch runs in the corner of each round. <b>The time does not count for anything.</b>'));
+    card.appendChild(el('p', 'lead hard', '<b>Round 3 is meant to be too hard.</b> Nobody is expected to get it all right, so a red mark there does not mean you are bad at science.')).id = 'hardnote';
+    card.appendChild(el('p', 'note', 'You can press &ldquo;Stop and see my results&rdquo; on any statement, with no penalty. Your statements are different from everyone else&rsquo;s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.type = 'button'; b.onclick = beginRound; app.appendChild(b); b.focus({ preventScroll: true });
+  }
+  function beginRound() { state.i = 0; roundStart = Date.now(); startClock(); statement(); }
+
+  function header() {
+    var h = el('header'), row = el('div', 'hrow');
+    row.appendChild(el('span', 'pill' + (state.r === 2 ? ' hard' : ''), esc(ROUNDS[state.r].name)));
+    row.appendChild(el('div', 'watch', '<span class="wt" id="clock" role="timer" aria-label="Round stopwatch">0:00</span><span class="wn">The time does not count</span>'));
+    h.appendChild(row);
+    h.appendChild(el('p', 'prog', 'Statement ' + (idx() + 1) + ' of ' + TOTAL + ' · Round ' + (state.r + 1) + ' of 3'));
+    var d = el('div', 'dots'); d.setAttribute('role', 'img'); d.setAttribute('aria-label', 'Statement ' + (idx() + 1) + ' of ' + TOTAL);
+    for (var k = 0; k < TOTAL; k++) {
+      var res = state.results[k];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === idx() ? ' now' : '')) + (k === STARTS[1] - 1 || k === STARTS[2] - 1 ? ' gap' : '')));
+    }
+    h.appendChild(d); return h;
+  }
+
+  function tfButton(val) {
+    var b = el('button', 'tf ' + (val ? 't' : 'f'), '<span class="lbl">' + W(val) + '</span><small>key ' + (val ? 'T or 1' : 'F or 2') + '</small>');
+    b.type = 'button'; b.id = val ? 'btn-true' : 'btn-false'; b.dataset.v = val ? 'true' : 'false';
+    b.setAttribute('aria-label', W(val)); b.setAttribute('aria-keyshortcuts', val ? 'T 1' : 'F 2');
+    b.onclick = function () { answer(val); };
+    return b;
+  }
+  function statement() {
+    clear(); state.screen = 'statement'; locked = false; qStart = Date.now();
+    var Q = state.qs[idx()];
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.innerHTML = '<p class="tag">True or false?</p><p class="ask" id="stmt">' + esc(Q.text) + '</p>';
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    var row = el('div', 'tfrow'); row.id = 'tfrow'; row.appendChild(tfButton(true)); row.appendChild(tfButton(false)); app.appendChild(row);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var acts = el('div', 'actions');
+    var nx = el('button', 'btn hide', 'Next'); nx.id = 'nextbtn'; nx.type = 'button'; nx.onclick = next; acts.appendChild(nx);
+    var stop = el('button', 'btn ghost sm stopbtn', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.onclick = final; acts.appendChild(stop);
+    app.appendChild(acts);
+    paintClock();
+  }
+
+  function answer(said) {
+    if (state.screen !== 'statement' || locked) return;
+    var Q = state.qs[idx()], ok = said === Q.truth;
+    locked = true;
+    state.results[idx()] = { ok: ok, said: said, truth: Q.truth, slot: Q.slot, mistake: ok ? null : Q.mistake, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)) };
+    var btns = document.querySelectorAll('.tf');
+    for (var b = 0; b < btns.length; b++) {
+      var v = btns[b].dataset.v === 'true';
+      btns[b].disabled = true;
+      if (v === Q.truth) btns[b].classList.add('correct'); else if (v === said) btns[b].classList.add('picked'); else btns[b].classList.add('dim');
+    }
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    var head = ok ? 'Right. The statement is ' + W(Q.truth) + '.' : 'Not quite. You said ' + W(said) + ', but the statement is ' + W(Q.truth) + '.';
+    fb.innerHTML = '<div class="head">' + esc(head) + '</div><p class="why"><b>Why:</b> ' + esc(Q.why) + '</p>' + (ok ? '' : '<p class="slip"><b>A common slip:</b> ' + esc(Q.mistake) + '</p>');
+    document.querySelectorAll('.dot')[idx()].className = 'dot ' + (ok ? 'right' : 'wrong') + (idx() === STARTS[1] - 1 || idx() === STARTS[2] - 1 ? ' gap' : '');
+    var last = state.i === SIZES[state.r] - 1, nx = document.getElementById('nextbtn');
+    nx.textContent = last ? (state.r === 2 ? 'See results' : 'Finish round') : 'Next'; nx.classList.remove('hide');
+    nx.focus({ preventScroll: true });
+    nx.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < SIZES[state.r] - 1) { state.i++; statement(); } else roundEnd(); }
+
+  /* ---------------- the review: a drop-down for each round ---------------- */
+  function reviewItem(r, k) {
+    var n = STARTS[r] + k, Q = state.qs[n], x = state.results[n];
+    var h = '<div class="rq" data-q="' + (n + 1) + '"><div class="top"><span><span class="qn">Statement ' + (n + 1) + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></span></div><div class="txt">' + esc(Q.text) + '</div></div>';
+    h += '<span class="verdict ' + (x.ok ? 'ok' : 'no') + '">' + (x.ok ? 'Right' : 'Wrong') + '</span></span><span class="meta">' + x.secs + ' s</span></div><div class="txt">' + esc(Q.text) + '</div>';
+    h += '<div class="wrote">You answered <b>' + W(x.said) + '</b>. The correct answer is <b>' + W(Q.truth) + '</b>.</div>';
+    if (!x.ok) h += '<p class="why"><b>Why:</b> ' + esc(Q.why) + '</p><p class="slip"><b>A common slip:</b> ' + esc(Q.mistake) + '</p>';
+    return h + '</div>';
+  }
+  function reviewHtml(r) {
+    var mine = state.results.slice(STARTS[r], STARTS[r] + SIZES[r]).filter(function (x) { return x; }), right = mine.filter(function (x) { return x.ok; }).length;
+    var secs = mine.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = esc(ROUNDS[r].name + ' · ' + (mine.length === SIZES[r] ? right + ' of ' + SIZES[r] : right + ' right, ' + mine.length + ' answered')) + ' · <span class="nw">' + (mine.length ? fmtTime(secs) : 'Not reached') + '</span>';
+    var body = ''; for (var k = 0; k < SIZES[r]; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+
+  function roundEnd() {
+    clear(); stopClock(); state.screen = 'round';
+    var mine = state.results.slice(STARTS[state.r], STARTS[state.r] + SIZES[state.r]), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - roundStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of ' + SIZES[state.r]));
+    card.appendChild(el('p', 'note', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    if (state.r === 2) card.appendChild(el('p', 'note', 'Round 3 was meant to be too hard, so read the reasons for the ones you missed.'));
+    card.appendChild(el('p', 'note', 'Open the drop-down to see how long each statement took, what you answered, and why.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r));
+    app.appendChild(card);
+    var b = el('button', 'btn', state.r < 2 ? 'Start round ' + (state.r + 2) : 'See my results'); b.id = 'roundnext'; b.type = 'button';
+    b.onclick = function () { if (state.r < 2) { state.r++; beginRound(); } else final(); }; app.appendChild(b); b.focus({ preventScroll: true });
+  }
+
+  function barRow(label, ok, all, reached) {
+    return el('div', 'row', '<span class="l"><b>' + esc(label) + '</b><br><span class="small">' + ok + ' of ' + all + (reached < all ? ' (' + (all - reached) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>');
+  }
+  function final() {
+    clear(); stopClock(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'Your results')); card.appendChild(el('div', 'score', total + ' of ' + TOTAL));
+    if (done.length < TOTAL) card.appendChild(el('p', 'note', done.length + ' of ' + TOTAL + ' statements answered, ' + (TOTAL - done.length) + ' not reached.'));
+    for (var r = 0; r < 3; r++) {
+      var rs = state.results.slice(STARTS[r], STARTS[r] + SIZES[r]).filter(function (x) { return x; });
+      card.appendChild(barRow(ROUNDS[r].name, rs.filter(function (x) { return x.ok; }).length, SIZES[r], rs.length));
+    }
+    card.appendChild(el('p', 'sub', 'Spotting each kind'));
+    [true, false].forEach(function (kind) {
+      var all = state.qs.filter(function (Q) { return Q.truth === kind; }).length, rs = done.filter(function (x) { return x.truth === kind; });
+      card.appendChild(barRow(kind ? 'True statements' : 'False statements', rs.filter(function (x) { return x.ok; }).length, all, rs.length));
+    });
+    app.appendChild(card);
+
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your slips'));
+    var counts = {}, order = [];
+    done.forEach(function (x) { if (!x.ok) { if (!(x.mistake in counts)) { counts[x.mistake] = 0; order.push(x.mistake); } counts[x.mistake]++; } });
+    order.sort(function (a, b) { return counts[b] - counts[a]; });
+    if (!order.length) tips.appendChild(el('p', 'lead', done.length ? 'No slips. Every answer you gave was right.' : 'You did not answer any statements.'));
+    else {
+      var ul = el('ul', 'tips');
+      order.forEach(function (m) { var n = counts[m]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(m))); });
+      tips.appendChild(ul);
+    }
+    app.appendChild(tips);
+
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every statement'));
+    rev.appendChild(el('p', 'note', 'Open a round to see how long each statement took, what you answered, the correct answer, and why.'));
+    for (var rr = 0; rr < 3; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr));
+    rev.appendChild(el('p', 'note', 'Game code <span class="code" id="endcode">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same statements.'));
+    app.appendChild(rev);
+    var b = el('button', 'btn ghost', 'Play again with a new code'); b.id = 'again'; b.type = 'button'; b.onclick = function () { fresh(); start(); }; app.appendChild(b); b.focus({ preventScroll: true });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || e.repeat || state.screen !== 'statement') return;
+    var k = e.key;
+    if (k === 'Enter') {
+      if (!locked) return;
+      if (document.activeElement && document.activeElement.id === 'stop') return;      // Enter on the Stop button stops
+      e.preventDefault(); next(); return;
+    }
+    if (locked) return;
+    if (k === 't' || k === 'T' || k === '1') { e.preventDefault(); answer(true); }
+    else if (k === 'f' || k === 'F' || k === '2') { e.preventDefault(); answer(false); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display, results: function () { return state.results; }, data: DATA };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

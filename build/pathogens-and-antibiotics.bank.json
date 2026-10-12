@@ -1,0 +1,303 @@
+{
+  "_comment": "The statement bank for the Pathogens And Antibiotics game (True or false blitz, 20 statements across 3 rounds). Each slot holds the same idea as a TRUE version and a FALSE version, so a student's draw can flip. Every statement was fact-checked against NHS, WHO, UKHSA and OpenStax (see the unit notes). Rounds: 1 = the whole unit's basics, 2 = the misconceptions of today's lesson, 3 = far past the lesson. 'why' is the one-line correction shown after a statement; 'mistake' names the thinking behind a wrong answer. 'conflicts' lists pairs of slots that give each other away, so a game never draws both.",
+  "draw": [
+    7,
+    7,
+    6
+  ],
+  "rounds": [
+    {
+      "name": "Round 1: the unit so far",
+      "slots": [
+        {
+          "id": "u1",
+          "true": "Bacteria have no nucleus.",
+          "false": "Bacteria keep their DNA inside a nucleus.",
+          "why": "A prokaryote is an organism whose cell has no nucleus. Its DNA lies in the cytoplasm.",
+          "mistake": "Confusing bacteria with your own cells."
+        },
+        {
+          "id": "u2",
+          "true": "A plasmid is a small ring of extra DNA.",
+          "false": "A plasmid is the main DNA loop of a bacterium.",
+          "why": "The main DNA loop is one big loop. A plasmid is a small spare ring, separate from it.",
+          "mistake": "Mixing up the main loop and the plasmid."
+        },
+        {
+          "id": "u3",
+          "true": "Most bacteria reproduce by binary fission.",
+          "false": "Bacteria reproduce by mating with another bacterium.",
+          "why": "In binary fission one cell copies its DNA and splits into two identical cells. Mating is not how bacteria reproduce.",
+          "mistake": "Thinking bacteria need two parents."
+        },
+        {
+          "id": "u4",
+          "true": "With plenty of food, one bacterium that divides every 20 minutes becomes 8 bacteria in 1 hour.",
+          "false": "With plenty of food, one bacterium that divides every 20 minutes becomes 6 bacteria in 1 hour.",
+          "why": "1 hour is 3 divisions of 20 minutes, and 2 × 2 × 2 = 8. Each division doubles the number.",
+          "mistake": "Adding 2 each time, or multiplying 3 by 2, instead of doubling."
+        },
+        {
+          "id": "u5",
+          "true": "Archaea and bacteria are two different groups of prokaryote.",
+          "false": "Archaea are a type of bacteria.",
+          "why": "Archaea are a separate domain. They look like bacteria but their chemistry and DNA differ.",
+          "mistake": "Thinking that no nucleus means bacteria."
+        },
+        {
+          "id": "u6",
+          "true": "Archaea live in ordinary places, such as soil and the sea, as well as extreme places.",
+          "false": "Archaea live only in extreme places.",
+          "why": "Many archaea live in soil and sea water. They are just famous for living in hot springs and salt lakes.",
+          "mistake": "Thinking archaea and extreme places go together."
+        },
+        {
+          "id": "u7",
+          "true": "Cyanobacteria make their own food using light.",
+          "false": "Cyanobacteria feed on dead plants and animals.",
+          "why": "Cyanobacteria are photosynthetic. Decomposers are the ones that feed on dead things.",
+          "mistake": "Swapping photosynthetic and decomposer."
+        },
+        {
+          "id": "u8",
+          "true": "A typical adult has about as many bacterial cells in their body as human cells.",
+          "false": "A typical adult has about ten times as many bacterial cells in their body as human cells.",
+          "why": "Careful counting gives about 38 trillion bacterial cells and 30 trillion human cells: roughly 1 to 1. The old 10 to 1 figure is out of date.",
+          "mistake": "Repeating an old textbook figure."
+        },
+        {
+          "id": "u9",
+          "true": "Some bacteria help plants get the nitrogen they need.",
+          "false": "Plants can use the nitrogen gas in the air directly.",
+          "why": "Rhizobium bacteria in the root nodules of peas and beans turn nitrogen gas into a form the plant can use.",
+          "mistake": "Thinking that nitrogen in the air is usable."
+        },
+        {
+          "id": "u10",
+          "true": "Bacteria that carry the human insulin gene can make human insulin.",
+          "false": "Bacteria make human insulin naturally, and scientists just collect it.",
+          "why": "The human gene is put into a plasmid, and the bacteria then follow its instructions.",
+          "mistake": "Forgetting the gene was added."
+        },
+        {
+          "id": "u11",
+          "true": "Bread rises because of yeast, which is a fungus.",
+          "false": "Bread rises because of bacteria.",
+          "why": "Yeast is a fungus. Yoghurt and fermented pickles are made with bacteria, but bread is not.",
+          "mistake": "Thinking every food microbe is a bacterium."
+        },
+        {
+          "id": "u12",
+          "true": "Methanogens are archaea that live where there is no oxygen.",
+          "false": "Methanogens are bacteria that need oxygen to live.",
+          "why": "Methanogens are archaea. They live in swamp mud, sewage and the guts of cows, where there is no oxygen.",
+          "mistake": "Mixing up the groups."
+        }
+      ]
+    },
+    {
+      "name": "Round 2: pathogens and antibiotics",
+      "slots": [
+        {
+          "id": "p1",
+          "true": "Antibiotics do not work against colds.",
+          "false": "Antibiotics cure colds.",
+          "why": "Colds are caused by viruses. Antibiotics are for bacterial infections and do nothing to a virus.",
+          "mistake": "Thinking every infection is a bacterial one."
+        },
+        {
+          "id": "p2",
+          "true": "You should take antibiotics exactly as the doctor says.",
+          "false": "It is fine to keep leftover antibiotics to take the next time you feel ill.",
+          "why": "Take them as directed, and never save or share them. A doctor chooses the drug and the length of the course.",
+          "mistake": "Treating antibiotics as something to save."
+        },
+        {
+          "id": "p3",
+          "true": "Bacteria become resistant to antibiotics. People do not.",
+          "false": "Your body becomes resistant to antibiotics.",
+          "why": "Resistance is what a population of bacteria evolves. A person can carry resistant bacteria, but the person is not resistant.",
+          "mistake": "Mixing up resistance with immunity."
+        },
+        {
+          "id": "p4",
+          "true": "A resistant bacterium was already resistant before the antibiotic arrived.",
+          "false": "The antibiotic makes bacteria resistant by changing them.",
+          "why": "A few bacteria carry a chance mutation. The antibiotic does not cause it. It selects the bacteria that already have it.",
+          "mistake": "Thinking the drug causes the change."
+        },
+        {
+          "id": "p5",
+          "true": "Resistant bacteria become common because the antibiotic kills the ones that are not resistant.",
+          "false": "Bacteria become resistant because they learn to cope with the antibiotic.",
+          "why": "Nothing learns. The ones that are not resistant die, and the resistant survivors reproduce.",
+          "mistake": "Thinking an individual bacterium changes on purpose."
+        },
+        {
+          "id": "p6",
+          "true": "Resistance genes can spread from one bacterium to another on plasmids.",
+          "false": "Resistance genes stay inside one bacterium and its offspring.",
+          "why": "Some plasmids pass between bacteria, even different species. DNA can move sideways, not just from parent to offspring.",
+          "mistake": "Forgetting that plasmids move sideways."
+        },
+        {
+          "id": "p7",
+          "true": "Antibiotics do not work against viruses.",
+          "false": "Antibiotics kill bacteria and viruses.",
+          "why": "Viruses are not bacteria. Antibiotics target things bacteria have, such as their cell wall, which a virus does not have.",
+          "mistake": "Thinking germs are all the same."
+        },
+        {
+          "id": "p8",
+          "true": "Most bacteria are harmless or helpful.",
+          "false": "Most bacteria are harmful to people.",
+          "why": "Only a small fraction of bacteria cause disease. Many recycle nutrients, fix nitrogen or live in your gut without harm.",
+          "mistake": "Thinking bacteria means germs."
+        },
+        {
+          "id": "p9",
+          "true": "Tuberculosis is caused by a bacterium.",
+          "false": "Tuberculosis is caused by a virus.",
+          "why": "Tuberculosis is a bacterial disease, spread through the air, and it is treated with antibiotics.",
+          "mistake": "Mixing up bacterial and viral diseases."
+        },
+        {
+          "id": "p10",
+          "true": "Cholera is spread by water that has been contaminated with a bacterium.",
+          "false": "Cholera is spread through the air in the same way as a cold.",
+          "why": "Cholera is caused by a bacterium in contaminated food or water.",
+          "mistake": "Mixing up how diseases spread."
+        },
+        {
+          "id": "p11",
+          "true": "Hand gel contains alcohol, not antibiotics.",
+          "false": "Hand gel contains antibiotics.",
+          "why": "Alcohol gel is not an antibiotic. An antibiotic is a medicine for a bacterial infection.",
+          "mistake": "Mixing up antibiotics and antiseptics."
+        },
+        {
+          "id": "p12",
+          "true": "Antibiotic resistance is natural selection happening in a population of bacteria.",
+          "false": "Antibiotic resistance is a different process from natural selection.",
+          "why": "There is variation, a selection pressure (the drug), survival and inheritance. It is the same mechanism as in the evolution unit.",
+          "mistake": "Not seeing resistance as evolution."
+        }
+      ]
+    },
+    {
+      "name": "Round 3: beat the game",
+      "slots": [
+        {
+          "id": "h1",
+          "true": "A single bacterium does not become resistant in its lifetime just because the drug is there. The population changes.",
+          "false": "A single bacterium becomes resistant during its life because the drug changes it.",
+          "why": "The individual does not change. The population does, because the susceptible ones die and the resistant ones reproduce.",
+          "mistake": "Thinking that individuals adapt."
+        },
+        {
+          "id": "h2",
+          "true": "Bacteria can evolve faster than animals because they have many more generations in the same time.",
+          "false": "Bacteria evolve more slowly than animals because they are so small.",
+          "why": "Evolution runs on generations. A bacterium can divide in as little as 20 minutes, so there are far more generations than in any animal.",
+          "mistake": "Linking evolution speed to size."
+        },
+        {
+          "id": "h3",
+          "true": "A bacterium can pass a plasmid to a bacterium of a different species.",
+          "false": "A plasmid can pass between bacteria of the same species, but not between different species.",
+          "why": "Plasmids can move between different species, which is how resistance can spread so widely.",
+          "mistake": "Thinking the species boundary blocks plasmids."
+        },
+        {
+          "id": "h4",
+          "true": "If an antibiotic kills every bacterium except one resistant one, that one's offspring will be resistant.",
+          "false": "If an antibiotic kills every bacterium except one resistant one, the offspring will lose the resistance.",
+          "why": "Resistance is inherited. Binary fission makes identical copies, so the offspring are resistant too.",
+          "mistake": "Forgetting that the offspring are copies."
+        },
+        {
+          "id": "h5",
+          "true": "Using an antibiotic when it is not needed makes it more likely that resistant bacteria spread.",
+          "false": "Using an antibiotic when it is not needed makes it less likely that resistant bacteria spread.",
+          "why": "Every use is a selection pressure on all the bacteria in and on you, so the resistant ones are favoured.",
+          "mistake": "Thinking an unneeded dose is harmless."
+        },
+        {
+          "id": "h6",
+          "true": "A methanogen, a cell with no nucleus that lives by making methane, is an archaean.",
+          "false": "A cell with no nucleus that lives in a hot spring must be an archaean.",
+          "why": "All methanogens are archaea. A hot spring also holds cyanobacteria and other bacteria, so where a microbe lives does not decide its group.",
+          "mistake": "Judging a microbe by where it lives."
+        },
+        {
+          "id": "h7",
+          "true": "A virus that infects bacteria is neither a bacterium nor an archaean.",
+          "false": "A virus is a very small bacterium.",
+          "why": "A virus is not a cell. It cannot reproduce on its own and has to use a host cell.",
+          "mistake": "Seeing a virus as a tiny bacterium."
+        },
+        {
+          "id": "h8",
+          "true": "With plenty of food, after 4 hours one bacterium that divides every 20 minutes has become 4,096.",
+          "false": "With plenty of food, after 4 hours one bacterium that divides every 20 minutes has become 24.",
+          "why": "4 hours is 12 divisions, and 2 multiplied by itself 12 times is 4,096. 24 is what you get by multiplying 2 by 12 instead of doubling 12 times.",
+          "mistake": "Multiplying by the number of divisions instead of doubling."
+        },
+        {
+          "id": "h9",
+          "true": "Most bacteria never make anyone ill.",
+          "false": "Most bacteria are pathogens.",
+          "why": "About 540 species of bacteria are known to cause disease in people. That is a small fraction of all bacteria.",
+          "mistake": "Seeing bacteria only as germs."
+        },
+        {
+          "id": "h10",
+          "true": "The human insulin gene is carried into the bacterium on a plasmid.",
+          "false": "The human insulin gene is put into the bacterium's nucleus.",
+          "why": "A bacterium has no nucleus. The gene goes in on a plasmid.",
+          "mistake": "Forgetting that a prokaryote has no nucleus."
+        },
+        {
+          "id": "h11",
+          "true": "Natural selection needs variation that is there before the antibiotic arrives.",
+          "false": "Natural selection needs the antibiotic to cause the variation.",
+          "why": "The variation arises by chance, before the drug. The drug only decides who survives.",
+          "mistake": "Thinking the environment causes the variation."
+        },
+        {
+          "id": "h12",
+          "true": "Some bacteria in your gut make vitamins, such as vitamin K.",
+          "false": "No bacteria in your gut make anything that your body can use.",
+          "why": "Gut bacteria make vitamin K and some B vitamins, and they help to break down fibre.",
+          "mistake": "Thinking gut bacteria only cause trouble."
+        }
+      ]
+    }
+  ],
+  "conflicts": [
+    [
+      "u4",
+      "h8"
+    ],
+    [
+      "p8",
+      "h9"
+    ],
+    [
+      "p1",
+      "p7"
+    ],
+    [
+      "u10",
+      "h10"
+    ],
+    [
+      "p4",
+      "h11"
+    ],
+    [
+      "p5",
+      "h1"
+    ]
+  ]
+}

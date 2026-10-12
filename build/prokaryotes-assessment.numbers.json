@@ -1,0 +1,61 @@
+{
+ "q4_table": {
+  "0": 1,
+  "20": 2,
+  "40": 4,
+  "60": 8,
+  "80": 16
+ },
+ "q4": {
+  "minutes": 180,
+  "gen": 20,
+  "divisions": 9,
+  "bacteria": 512
+ },
+ "q9": {
+  "total": 1000000,
+  "one_in": 100000,
+  "resistant": 10
+ },
+ "feedback": {
+  "q4s": {
+   "minutes": 60,
+   "gen": 20,
+   "divisions": 3,
+   "bacteria": 8
+  },
+  "q4c": {
+   "minutes": 180,
+   "gen": 30,
+   "divisions": 6,
+   "bacteria": 64
+  },
+  "q4e": {
+   "minutes": 300,
+   "gen": 15,
+   "divisions": 20,
+   "bacteria": 1048576
+  },
+  "q9s": {
+   "total": 2000000,
+   "one_in": 500000,
+   "resistant": 4
+  },
+  "q9c": {
+   "total": 5000000,
+   "one_in": 1000000,
+   "resistant": 5
+  },
+  "q9e": {
+   "total": 100000,
+   "one_in": 1000,
+   "resistant": 100,
+   "pct": 0.1
+  },
+  "q1c_size": {
+   "um_mm": 1000,
+   "rod_um": 4,
+   "across": 250
+  }
+ }
+}

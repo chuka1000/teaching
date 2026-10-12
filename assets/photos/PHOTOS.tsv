@@ -48,3 +48,12 @@ watering	ov:6a6b218a-cf4b-429e-b9f2-3e2aec54a9a8	0.5,0.6,1.0
 ball	ov:59dc0317-c399-40b4-962c-3cc67f54a2bf	0.5,0.55,1.0
 book	ov:b926f80c-23aa-4a71-836f-da7df8047946	0.4,0.6,1.0
 bag	ov:5b7c3e00-77f3-4f7c-980b-87b2da3a3d77	0.5,0.5,1.0
+bac_kimchi	ov:13ad4017-ca92-4cc2-a0d7-aa42e0047716	0.6,0.5,1.0
+bac_cow	ov:654a06cd-363e-412a-bf0c-ba057f4cccc3	0.52,0.55,1.0
+bac_nodules	ov:4186e3ee-549f-4623-8b9f-552931537eb0	0.5,0.5,1.0
+bac_soil	ov:d4e3818c-3870-4377-bfca-8dec934ce661	0.4,0.5,1.0
+bac_cheese	ov:e5a6bc85-8044-404b-a18b-c3786e59bd65	0.5,0.5,1.0
+bac_swamp	ov:2d313cb7-4c17-489e-a340-66c1f4b5dc76	0.5,0.5,1.0
+bac_saltlake	ov:a41b6dfc-9a5d-43d7-b01c-e76eebdd48be	0.5,0.5,1.0
+bac_insulin	ov:dca8c84b-a942-4ed9-ade6-0233aea8e879	0.5,0.5,0.95
+bac_amoeba	ov:bdfbd099-e967-44e5-b64a-e5d6995bb918	0.58,0.42,0.88
