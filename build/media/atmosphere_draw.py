@@ -41,7 +41,25 @@ def dist(p, q): return math.hypot(p[0] - q[0], p[1] - q[1])
 
 @lru_cache(maxsize=None)
 def F(size): return ImageFont.truetype(FONT_B, int(round(size * SS)))
-def text_w(s, size): return F(size).getlength(s) / SS
+
+SUB = {'₂': '2', '₃': '3', '₄': '4'}          # DejaVu's own subscripts are small: they are redrawn as bigger digits, set a little lower
+SUB_K, SUB_DROP = 0.74, 0.17
+
+
+def runs(s):
+    """Split a string into (text, is_subscript) runs."""
+    out, cur, sub = [], '', False
+    for ch in s:
+        is_sub = ch in SUB
+        if is_sub != sub and cur: out.append((cur, sub)); cur = ''
+        sub = is_sub
+        cur += SUB.get(ch, ch)
+    if cur: out.append((cur, sub))
+    return out
+
+
+def text_w(s, size):
+    return sum(F(size * SUB_K if sub else size).getlength(txt) for txt, sub in runs(s)) / SS
 
 
 # ------------------------------------------------------------------------------------------------ drawing context
@@ -78,7 +96,18 @@ class Ctx:
                                  outline=rgba(outline) if outline else None, width=int(round(width * SS)))
 
     def text(self, x, y, s, size, col, anchor='la'):
-        self.d.text(self.pt((x, y)), s, font=F(size), fill=rgba(col), anchor=anchor)
+        if not any(ch in SUB for ch in s):
+            self.d.text(self.pt((x, y)), s, font=F(size), fill=rgba(col), anchor=anchor)
+            return
+        X, Y = self.pt((x, y))
+        w = text_w(s, size) * SS
+        X -= {'l': 0, 'm': w / 2, 'r': w}[anchor[0]]
+        asc, desc = F(size).getmetrics()
+        Y += {'a': asc, 'm': (asc - desc) / 2, 's': 0}[anchor[1]]                   # Y is now the baseline
+        for txt, sub in runs(s):
+            f = F(size * SUB_K if sub else size)
+            self.d.text((X, Y + (size * SUB_DROP * SS if sub else 0)), txt, font=f, fill=rgba(col), anchor='ls')
+            X += f.getlength(txt)
 
     def arrow_head(self, tip, ux, uy, col, size, outline=None, ow=0):
         nx, ny = -uy, ux
@@ -191,7 +220,16 @@ def ring_pulse(c: Ctx, x, y, r0, r1, u, col, w=3.5):
 
 
 def wrap_lines(s, size, maxw):
-    words, lines, cur = s.split(), [], ''
+    """Fit s into lines no wider than maxw; when two lines are needed, split them as evenly as possible (no one-word second line)."""
+    if text_w(s, size) <= maxw: return [s]
+    words = s.split()
+    best = None
+    for i in range(1, len(words)):
+        a, b = ' '.join(words[:i]), ' '.join(words[i:])
+        m = max(text_w(a, size), text_w(b, size))
+        if best is None or m < best[0]: best = (m, [a, b])
+    if best and best[0] <= maxw: return best[1]
+    lines, cur = [], ''                                                       # three or more lines: plain greedy
     for wd in words:
         t = (cur + ' ' + wd).strip()
         if text_w(t, size) <= maxw or not cur: cur = t
@@ -200,12 +238,12 @@ def wrap_lines(s, size, maxw):
     return lines
 
 
-def caption(fr: Frame, items, t, badge=True, size=32, x=104, maxw=820, col=INK, ymid=488):
+def caption(fr: Frame, items, t, badge=True, size=32, x=104, maxw=820, col=INK, ymid=488, stop=None):
     """The caption band at the foot of the frame. items = [(t0, number, text), ...]. The caption of a step appears when the step starts
     (0.35 s fade); the one before it fades out. Returns the lines used (for checks)."""
     idx = max([i for i, it in enumerate(items) if t >= it[0]] or [0])
     t0, num, s = items[idx]
-    a = ease((t - t0) / 0.35)
+    a = ease((t - t0) / 0.35) * (1 - ease((t - stop) / 0.3) if stop is not None else 1.0)
     prev = items[idx - 1] if idx > 0 else None
     out = []
 
@@ -222,7 +260,7 @@ def caption(fr: Frame, items, t, badge=True, size=32, x=104, maxw=820, col=INK, 
             for ln, y in zip(lines, ys): c.text(x if badge else 40, y, ln, size, col, 'lm')
         out.append(lines)
 
-    if prev is not None and t - t0 < 0.25: one(prev, 1 - (t - t0) / 0.25)
+    if prev is not None and t - t0 < 0.25: one(prev, (1 - (t - t0) / 0.25) * (1 - ease((t - stop) / 0.3) if stop is not None else 1.0))
     one(items[idx], a)
     return out
 

@@ -68,9 +68,19 @@ def fade(im, a):
     return im
 
 
+def clip_composite(dst, src, X, Y):
+    """dst.alpha_composite(src) with the top-left of src at (X, Y), clipped to dst (X and Y may be negative)."""
+    sx0, sy0 = max(0, -X), max(0, -Y)
+    sx1, sy1 = min(src.width, dst.width - X), min(src.height, dst.height - Y)
+    if sx1 > sx0 and sy1 > sy0:
+        dst.alpha_composite(src.crop((sx0, sy0, sx1, sy1)), (X + sx0, Y + sy0))
+
+
 # ------------------------------------------------------------------------------------------------ the sprite
 class Sp:
-    """A transparent patch covering the box (x0, y0)-(x1, y1) of the picture, drawn in the picture's own coordinates."""
+    """A transparent patch covering the box (x0, y0)-(x1, y1) of the picture, drawn in the picture's own coordinates.
+    A see-through colour OVERWRITES what is already in the sprite (so overlapping see-through shapes make one flat shape: the union).
+    Pass blend=True to lay a see-through colour OVER what is already there instead (a stain, a highlight)."""
 
     def __init__(self, x0, y0, x1, y1):
         self.x0, self.y0 = int(math.floor(x0)), int(math.floor(y0))
@@ -81,24 +91,38 @@ class Sp:
     def q(self, x, y): return ((x - self.x0) * SS, (y - self.y0) * SS)
     def pts(self, p): return [self.q(x, y) for x, y in p]
 
-    def ellipse(self, x0, y0, x1, y1, fill=None, outline=None, width=0):
+    def _via_tmp(self, box, name, *a, **kw):
+        x0, y0, x1, y1 = box
+        t = Sp(x0 - 3, y0 - 3, x1 + 3, y1 + 3)
+        getattr(t, name)(*a, **kw)
+        clip_composite(self.im, t.im, (t.x0 - self.x0) * SS, (t.y0 - self.y0) * SS)
+
+    def ellipse(self, x0, y0, x1, y1, fill=None, outline=None, width=0, blend=False):
+        if blend: return self._via_tmp((x0 - width, y0 - width, x1 + width, y1 + width), 'ellipse', x0, y0, x1, y1, fill, outline, width)
         self.d.ellipse([self.q(x0, y0), self.q(x1, y1)], fill=rgba(fill), outline=rgba(outline), width=int(round(width * SS)))
 
-    def circle(self, cx, cy, r, fill=None, outline=None, width=0): self.ellipse(cx - r, cy - r, cx + r, cy + r, fill, outline, width)
+    def circle(self, cx, cy, r, fill=None, outline=None, width=0, blend=False): self.ellipse(cx - r, cy - r, cx + r, cy + r, fill, outline, width, blend)
 
-    def rect(self, x0, y0, x1, y1, fill=None, outline=None, width=0, r=0):
+    def rect(self, x0, y0, x1, y1, fill=None, outline=None, width=0, r=0, blend=False):
+        if blend: return self._via_tmp((x0 - width, y0 - width, x1 + width, y1 + width), 'rect', x0, y0, x1, y1, fill, outline, width, r)
         if r > 0:
             self.d.rounded_rectangle([self.q(x0, y0), self.q(x1, y1)], radius=r * SS, fill=rgba(fill), outline=rgba(outline), width=int(round(width * SS)))
         else:
             self.d.rectangle([self.q(x0, y0), self.q(x1, y1)], fill=rgba(fill), outline=rgba(outline), width=int(round(width * SS)))
 
-    def poly(self, p, fill=None, outline=None, width=0):
+    def poly(self, p, fill=None, outline=None, width=0, blend=False):
+        if blend:
+            xs, ys = [x for x, y in p], [y for x, y in p]
+            return self._via_tmp((min(xs) - width, min(ys) - width, max(xs) + width, max(ys) + width), 'poly', p, fill, outline, width)
         qp = self.pts(p)
         if fill is not None: self.d.polygon(qp, fill=rgba(fill))
         if outline is not None and width > 0:
             self.d.line(qp + [qp[0]], fill=rgba(outline), width=int(round(width * SS)), joint='curve')
 
-    def line(self, p, col, width, caps=False):
+    def line(self, p, col, width, caps=False, blend=False):
+        if blend:
+            xs, ys = [x for x, y in p], [y for x, y in p]
+            return self._via_tmp((min(xs) - width, min(ys) - width, max(xs) + width, max(ys) + width), 'line', p, col, width, caps)
         qp = self.pts(p)
         self.d.line(qp, fill=rgba(col), width=int(round(width * SS)), joint='curve')
         if caps:
@@ -131,11 +155,7 @@ class Sp:
         """Composite onto a 3x target image, clipped to it. dx, dy move it (1x units)."""
         if alpha <= 0.002: return
         src = self.im if alpha >= 0.999 else fade(self.im.copy(), alpha)
-        X, Y = int(round((self.x0 + dx) * SS)), int(round((self.y0 + dy) * SS))
-        sx0, sy0 = max(0, -X), max(0, -Y)
-        sx1, sy1 = min(src.width, target.width - X), min(src.height, target.height - Y)
-        if sx1 > sx0 and sy1 > sy0:
-            target.alpha_composite(src.crop((sx0, sy0, sx1, sy1)), (X + sx0, Y + sy0))
+        clip_composite(target, src, int(round((self.x0 + dx) * SS)), int(round((self.y0 + dy) * SS)))
 
 
 def canvas(w, h, col):

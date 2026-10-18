@@ -19,5 +19,6 @@ module.exports = [
   ['11', 'SO₂: burning coal and oil that contain sulfur; acid rain, and irritates the airways; scrubbers or low-sulfur fuel. NOx: very hot flames in engines; acid rain and irritates the airways; catalytic converter.'],
   ['12', 'Your own place or time (a busy road, a bonfire, a factory, cooking). A sensible idea: walk or cycle, cleaner buses, ask for a rule or a clean-air zone.'],
   ['13', 'A law applies to everyone and is enforced, so no one is at a disadvantage for cleaning up. One person asking others to pollute less has no effect on the total.'],
+  ['14', `Delhi: ${Z.pm.delhi} ÷ ${Z.pm.who} = ${Z.pm.delhi_x}, so about ${Z.pm.delhi_round} times higher. UK: ${Z.pm.uk} ÷ ${Z.pm.who} = ${Z.pm.uk_x} times higher.`],
 ];
 module.exports.DATA = DATA;

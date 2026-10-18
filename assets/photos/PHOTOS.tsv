@@ -74,3 +74,8 @@ atm_powerstation	ov:e5724476-77b3-4bcc-baf1-d652b11356c7	0.4,0.5,1.0
 atm_soot	ov:4ae69092-60ae-456f-9069-3501b7120113	0.5,0.52,1.0
 atm_solvent	ov:5952c494-0693-435a-837b-ec88851b59fe	0.42,0.5,1.0
 atm_volcano	ov:b7b4025c-30b3-4984-b479-242241b374c1	0.55,0.5,1.0
+atm_wildfire	ov:e014a534-4d06-427e-ac9c-3f5f5f5ecce8	0.5,0.5,1.0
+atm_statue	ov:402b756c-f5b6-43d0-9da4-2d33dc216bbd	0.58,0.5,1.0
+atm_deadforest	ov:f494ed38-0c1d-4d5d-ad96-4a107135765d	0.345,0.5,0.93
+atm_converter	ov:0451a461-315c-497b-a2d9-d836d5fc94c2	0.55,0.5,1.0
+atm_coral	ov:ad746e67-a3d0-40eb-bb9d-cea222621d38	0.48,0.5,1.0

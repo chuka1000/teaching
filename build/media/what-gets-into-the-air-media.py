@@ -82,7 +82,7 @@ def plan():
     # ozone sites: two rows of five, the rows offset (a hex grid inside the cloud)
     sites = [(300 + 80 * k, 136) for k in range(5)] + [(340 + 80 * k, 188) for k in range(5)]
     o_order = list(range(N_O3)); rnd.shuffle(o_order)
-    o3s = [dict(i=j, x=x, y=y, ta=S3 + 1.0 + 0.2 * o_order[j], ph=rnd.uniform(0, 6.28)) for j, (x, y) in enumerate(sites)]
+    o3s = [dict(i=j, x=x, y=y, ta=S3 + 0.9 + 0.17 * o_order[j], ph=rnd.uniform(0, 6.28)) for j, (x, y) in enumerate(sites)]
     ST.update(dots=dots, o3s=o3s, last_arrival=max(d['te'] for d in dots) + T_RISE)
 
 
@@ -190,7 +190,7 @@ def draw_blob(img, t):
     sp.blit(img, a)
 
 
-RAY_TARGETS = ((290, 150), (385, 168), (480, 176), (575, 170), (665, 152))
+RAY_TARGETS = ((320, 118), (395, 152), (468, 184), (545, 208), (620, 228))
 
 
 def draw_rays(img, t):
@@ -205,9 +205,11 @@ def draw_rays(img, t):
         ux, uy = (tx - sx) / L, (ty - sy) / L
         px, py = -uy, ux
         d0, d1 = SUN_R + 6, SUN_R + 6 + f * (L - SUN_R - 6)
-        w0, w1 = 5, 5 + 17 * f
-        sp.poly([(sx + ux * d0 + px * w0, sy + uy * d0 + py * w0), (sx + ux * d1 + px * w1, sy + uy * d1 + py * w1),
-                 (sx + ux * d1 - px * w1, sy + uy * d1 - py * w1), (sx + ux * d0 - px * w0, sy + uy * d0 - py * w0)], fill=('FFE680', 1.0))
+        w0, w1 = 4, 4 + 13 * f
+        dm = lerp(d0, d1, 0.8)                                                      # the beam narrows to a point at its far end
+        wm = lerp(w0, w1, 0.8)
+        sp.poly([(sx + ux * d0 + px * w0, sy + uy * d0 + py * w0), (sx + ux * dm + px * wm, sy + uy * dm + py * wm), (sx + ux * d1, sy + uy * d1),
+                 (sx + ux * dm - px * wm, sy + uy * dm - py * wm), (sx + ux * d0 - px * w0, sy + uy * d0 - py * w0)], fill=('FFE680', 1.0))
     shimmer = 0.58 + 0.07 * math.sin(2 * math.pi * 0.8 * t)
     keep = 1.0 if t < S3 else lerp(1.0, 0.7, ease((t - S3) / 1.0))                 # the sun keeps shining on the gases in steps 3 and 4
     sp.blit(img, shimmer * keep)
@@ -266,7 +268,7 @@ def draw_gas(img, t):
         elif it[0] == 'voc': A.voc(sp, it[1], it[2], it[3])
         elif it[0] == 'flash':
             _, x, y, u = it
-            sp.circle(x, y, 14 + 16 * u, outline=('FFFFFF', 0.9 * (1 - u)), width=3)
+            sp.circle(x, y, 14 + 16 * u, outline=('FFFFFF', 0.9 * (1 - u)), width=3, blend=True)
     for m in ST['o3s']:
         u = (t - m['ta']) / 0.45
         if u <= 0: continue
@@ -283,7 +285,7 @@ def o3_pos(j, t):
 
 
 def draw_o3_labels(img, t):
-    a = ease((t - (S3 + 3.5)) / 0.4)
+    a = ease((t - (S3 + 2.9)) / 0.4)
     if a <= 0: return
     for j, (cx, cy, side) in ((0, (186, 140, 'l')), (4, (752, 152, 'r'))):
         x, y = o3_pos(j, t)
@@ -293,7 +295,7 @@ def draw_o3_labels(img, t):
 
 
 def draw_haze(img, t):
-    a = ease((t - (S3 + 0.5)) / 3.6)
+    a = ease((t - (S3 + 0.5)) / 3.0)
     if a <= 0.004: return
     h = BASE['haze']
     img.alpha_composite(A.fade(h.copy(), a), (0, 150 * SS))

@@ -268,7 +268,7 @@
           "text": "A treaty that every country eventually joined, because there was a replacement chemical industry could use",
           "answer": "ozone",
           "core": true,
-          "why": "That is the Montreal Protocol. It worked because the science was clear, a replacement existed and every country joined."
+          "why": "That is the Montreal Protocol. It worked because the science was clear enough to act, industry had replacements, the risk felt personal, and every country joined."
         },
         {
           "id": "r3_o2",
@@ -282,7 +282,7 @@
           "text": "Thinner ozone over Antarctica when sunlight returns after the polar winter",
           "answer": "ozone",
           "core": false,
-          "why": "In the very cold polar winter chlorine builds up. When spring sunlight returns, it destroys ozone."
+          "why": "In the dark Antarctic winter, very cold clouds form inside a ring of wind. When the sunlight returns in spring, chlorine destroys ozone."
         },
         {
           "id": "r3_o4",
@@ -296,7 +296,7 @@
           "text": "Chlorine in the stratosphere peaking about the year 2000 and then falling",
           "answer": "ozone",
           "core": false,
-          "why": "After the CFC ban, the chlorine in the stratosphere began to fall. The ozone layer is recovering."
+          "why": "After the CFC ban, the chlorine reaching the stratosphere began to fall. The ozone layer is slowly recovering."
         },
         {
           "id": "r3_c1",
@@ -356,10 +356,10 @@
         },
         {
           "id": "r3_p4",
-          "text": "Sulfur dioxide falling sharply in Europe since 1990",
+          "text": "Sulfur dioxide emissions in the UK falling by about 98% since 1990",
           "answer": "pollution",
           "core": false,
-          "why": "Scrubbers, low-sulfur fuel and laws cut sulfur dioxide. Air pollution is the problem that has improved."
+          "why": "Scrubbers, low-sulfur fuel and laws cut sulfur dioxide. Air pollution is the problem that has improved most."
         },
         {
           "id": "r3_p5",

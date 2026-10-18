@@ -94,4 +94,7 @@ k.push(ruled(3));
 k.push(q('13', 'The Clean Air Act 1956 was passed four years after the Great Smog. Explain why a law can work better than asking people to pollute less.', { marks: 3 }));
 k.push(ruled(3));
 
+k.push(q('14', `Fine particles. In 2025 the average PM2.5 in Delhi was ${Z.pm.delhi} µg/m³ (IQAir). The WHO guideline is ${Z.pm.who} µg/m³. Example: 40 ÷ 5 = 8 times. Calculate how many times higher Delhi was. Then do the same for the UK’s city average, ${Z.pm.uk} µg/m³ (Defra).`, { marks: 3 }));
+k.push(ruled(2));
+
 WS.write(k, 'Gemini: ask it to check a finished answer, especially Q7 and Q13. Do not ask it to do the question for you.').catch((e) => { console.error(e); process.exit(1); });
