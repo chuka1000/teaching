@@ -37,10 +37,10 @@ k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
 k.push(q('1', 'Half-worked. A coal power station releases sulfur dioxide because the coal contains ______________.', { marks: 1 }));
 k.push(ruled(1));
 {
-  const w1 = 2700, w2 = Math.floor((PAGE_W - w1) / 2);
+  const w1 = 2700;
   k.push(q('2', 'Match each pollutant to where it comes from. Write the letter of the source.', { marks: 5 }));
   k.push(...box('SOURCES', ['A  paint, solvents and fuels evaporating', 'B  burning coal and oil that contain sulfur', 'C  very hot flames in engines and furnaces', 'D  soot from diesel engines and fires', 'E  fuel burning with too little oxygen'], { fill: 'FFF8E1' }));
-  k.push(grid(['Pollutant', 'Source (letter)', ''], [['carbon monoxide', '', ''], ['sulfur dioxide', '', ''], ['nitrogen oxides', '', ''], ['particulates', '', ''], ['VOCs', '', '']], [w1, w2, w2]));
+  k.push(grid(['Pollutant', 'Source (letter)'], [['carbon monoxide', ''], ['sulfur dioxide', ''], ['nitrogen oxides', ''], ['particulates', ''], ['VOCs', '']], [w1, PAGE_W - w1]));
 }
 k.push(WS.sp());
 k.push(q('3', 'Write P (primary) or S (secondary) for each: carbon monoxide ____   ozone in smog ____   sulfur dioxide ____   soot ____', { marks: 4 }));
@@ -69,7 +69,7 @@ k.push(ruled(2));
 
 /* ---- GOLD ---- */
 k.push(WS.pageBreak());
-k.push(...WS.tier('GOLD', 'Two smogs, and the traps.'));
+k.push(...WS.tier('GOLD', 'Smogs and traps.'));
 k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
   'Is the sulfur dioxide from a power station a primary or a secondary pollutant? How do you know?',
   'Primary. It leaves the chimney as sulfur dioxide. It is not made later in the air from anything else.',

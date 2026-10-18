@@ -24,7 +24,7 @@ const ROOT = path.join(__dirname, '..');
 K.doNow({
   preview: 5,
   qs: [
-    ['Describe what the ozone layer does.', 'It absorbs most of the Sun’s ultraviolet light, so less reaches the ground.'],
+    ['Describe what the ozone layer does.', 'It absorbs the most harmful ultraviolet light from the Sun, so less reaches the ground.'],
     [`The mean area of the ozone hole was ${D3.area['2006']} million km² in 2006 and ${D3.area['2025']} million km² in 2025. Calculate the fall.`, `${D3.area['2006']} − ${D3.area['2025']} = ${D3.fall_2006_2025} million km²`],
     ['Explain why a taller chimney does not solve the acid rain problem.', 'It only spreads the gases further. They still make acid rain, which falls somewhere else.'],
     ['Explain why smog is worst on a hot, still, sunny day.', 'Sunlight drives the reactions that make ozone, and still air does not blow the pollution away.'],
@@ -56,7 +56,7 @@ K.today({
 K.hook({
   question: 'Without the greenhouse effect, Earth’s average temperature would be about −18 °C. With it, it is about 15 °C. So is the greenhouse effect a problem?',
   qSize: 20,
-  opts: ['Yes. It is what causes global warming, so we should get rid of it.', 'No. It keeps Earth warm. The problem is that we are adding more greenhouse gases.', 'It makes no difference to the climate. It is a different problem.'],
+  opts: ['Yes. It is what causes global warming, so we should get rid of it.', 'No. It keeps Earth warm. The problem is the extra gas we add.', 'It makes no difference to the climate. It is a different problem.'],
   notes:
     'HOOK. 2 minutes. Three cards on one click.\n\n'
     + 'Read the question. The two temperatures are in it, so they have the numbers. Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the first I Do does, and you will point at the tally.\n\n'
@@ -70,25 +70,27 @@ K.hook({
 {
   const s = K.slide('light', 3, 'I Do');
   K.title(s, 'The greenhouse effect');
-  const vw = 6.10, vh = vw * 9 / 16, vy = 1.84;
+  const vw = 5.60, vh = vw * 9 / 16, vy = 1.84;
   K.card(s, { x: M - 0.06, y: vy - 0.06, w: vw + 0.12, h: vh + 0.12, name: 'vid_bg' });
   K.video(s, 'atm-greenhouse', M, vy, vw, vh, 'vid_gh');
   const rx = M + vw + 0.30, rw = RIGHT - rx, cw2 = (rw - 0.18) / 2;
-  K.card(s, { x: rx, y: vy, w: cw2, h: 1.46, fill: 'FFFFFF', line: C.accentInk, lineWidth: 1.8, name: 'cold' });
-  s.addText([{ text: `${D4.gh.without} °C`, options: { bold: true, color: C.accentInk, fontSize: 30, breakLine: true } }, { text: 'without the greenhouse effect', options: { color: C.ink, fontSize: 12.5 } }], { x: rx + 0.14, y: vy, w: cw2 - 0.28, h: 1.46, fontFace: F.title, align: 'center', valign: 'middle', margin: 0, lineSpacing: 30, objectName: 'cold_t' });
-  K.card(s, { x: rx + cw2 + 0.18, y: vy, w: cw2, h: 1.46, fill: ANS, line: C.alert, lineWidth: 1.8, name: 'warm' });
-  s.addText([{ text: `${D4.gh.with_} °C`, options: { bold: true, color: C.alert, fontSize: 30, breakLine: true } }, { text: 'with it: the average today', options: { color: C.ink, fontSize: 12.5 } }], { x: rx + cw2 + 0.32, y: vy, w: cw2 - 0.28, h: 1.46, fontFace: F.title, align: 'center', valign: 'middle', margin: 0, lineSpacing: 30, objectName: 'warm_t' });
-  K.card(s, { x: rx, y: vy + 1.62, w: rw, h: 1.80, name: 'gases' });
+  K.card(s, { x: rx, y: vy, w: cw2, h: 1.30, fill: 'FFFFFF', line: C.accentInk, lineWidth: 1.8, name: 'cold' });
+  s.addText(`${String(D4.gh.without).replace('-', '−')} °C`, { x: rx + 0.14, y: vy + 0.14, w: cw2 - 0.28, h: 0.64, color: C.accentInk, bold: true, fontSize: 30, fontFace: F.title, align: 'center', valign: 'middle', margin: 0, objectName: 'cold_t' });
+  s.addText('without the greenhouse effect', { x: rx + 0.14, y: vy + 0.80, w: cw2 - 0.28, h: 0.40, color: C.ink, fontSize: 12.5, fontFace: F.title, align: 'center', valign: 'top', margin: 0, lineSpacing: 15, objectName: 'cold_l' });
+  K.card(s, { x: rx + cw2 + 0.18, y: vy, w: cw2, h: 1.30, fill: ANS, line: C.alert, lineWidth: 1.8, name: 'warm' });
+  s.addText(`${D4.gh.with_} °C`, { x: rx + cw2 + 0.32, y: vy + 0.14, w: cw2 - 0.28, h: 0.64, color: C.alert, bold: true, fontSize: 30, fontFace: F.title, align: 'center', valign: 'middle', margin: 0, objectName: 'warm_t' });
+  s.addText('with it: the average today', { x: rx + cw2 + 0.32, y: vy + 0.80, w: cw2 - 0.28, h: 0.40, color: C.ink, fontSize: 12.5, fontFace: F.title, align: 'center', valign: 'top', margin: 0, lineSpacing: 15, objectName: 'warm_l' });
+  K.card(s, { x: rx, y: vy + 1.46, w: rw, h: vh - 1.46, name: 'gases' });
   s.addText([
     { text: 'GREENHOUSE GASES', options: { bold: true, color: C.accentInk, fontSize: 12, breakLine: true } },
     { text: 'Carbon dioxide: burning fossil fuels.', options: { color: C.ink, fontSize: 14, breakLine: true } },
     { text: 'Methane: cattle, rice fields, rubbish tips.', options: { color: C.ink, fontSize: 14, breakLine: true } },
     { text: 'We have added more. That is the enhanced greenhouse effect.', options: { bold: true, color: C.dark, fontSize: 14 } },
-  ], { x: rx + 0.22, y: vy + 1.62, w: rw - 0.44, h: 1.80, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 20, paraSpaceAfter: 3, objectName: 'gases_t' });
-  const by = vy + vh + 0.50;
-  K.card(s, { x: M, y: by, w: CW, h: 0.98, fill: ANS, line: C.accentInk, name: 'mech' });
+  ], { x: rx + 0.22, y: vy + 1.46, w: rw - 0.44, h: vh - 1.46, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 20, paraSpaceAfter: 3, objectName: 'gases_t' });
+  const by = vy + vh + 0.30;
+  K.card(s, { x: M, y: by, w: CW, h: 0.86, fill: ANS, line: C.accentInk, name: 'mech' });
   s.addText([{ text: 'IN: ', options: { bold: true, color: C.accentInk } }, { text: 'sunlight (short waves) passes through the air and warms the ground.   ', options: { color: C.ink } }, { text: 'OUT: ', options: { bold: true, color: C.alert } }, { text: 'the ground gives out infrared (longer waves). Greenhouse gases absorb it and send it out in all directions, some back down.', options: { color: C.ink } }], { x: M + 0.24, y: by, w: CW - 0.48, h: 0.98, fontFace: F.body, fontSize: 14, valign: 'middle', margin: 0, lineSpacing: 19, objectName: 'mech_t' });
-  K.sentence(s, [['More greenhouse gas means more infrared sent ', false], ['back down', true], [', so the Earth gets ', false], ['warmer', true], ['.', false]], { y: by + 1.12, h: 0.56, size: 16, name: 'gh_banner' });
+  K.sentence(s, [['More greenhouse gas means more infrared sent ', false], ['back down', true], [', so the Earth gets ', false], ['warmer', true], ['.', false]], { y: by + 1.00, h: 0.56, size: 16, name: 'gh_banner' });
   s.addNotes(
     'I DO. 3 minutes. Five clicks: the animation (ON CLICK, so say the idea first), the two temperatures, the gases, the one-line mechanism, then the banner.\n\n'
     + 'OBJECTIVE 1. THE GREENHOUSE EFFECT IS NOT THE PROBLEM: NOT HAVING ONE WOULD BE. START THERE. Settle the hook, pointing at the tally: B. Without it, the Earth would average about −18 °C and would be a ball of ice; with it, about 15 °C. That is a difference of 33 °C, and every living thing depends on it. WHAT HAS CHANGED IS THE AMOUNT: from the extra carbon dioxide and methane we have added. "ENHANCED GREENHOUSE EFFECT" is the honest name and it is worth using.\n\n'
@@ -104,18 +106,18 @@ K.hook({
 {
   const s = K.slide('light', 3, 'I Do');
   K.title(s, 'How we know, and what it does');
-  const gw = 5.70, gh = gw * 620 / 1100, gy = 1.80;
+  const gw = 4.80, gh = gw * 620 / 1100, gy = 1.80;
   K.card(s, { x: M - 0.06, y: gy - 0.06, w: gw + 0.12, h: gh + 0.12, name: 'gr' });
   K.pic(s, 'atm-temp', M, gy, gw, gh, 'gr_pic');
   s.addText('Global temperature compared with 1951 to 1980 (NASA)', { x: M, y: gy + gh + 0.10, w: gw, h: 0.34, color: C.inkSoft, fontFace: F.body, fontSize: 12, italic: true, align: 'center', valign: 'middle', margin: 0, objectName: 'gr_cap' });
-  const ey = gy + gh + 0.58;
-  K.card(s, { x: M, y: ey, w: gw, h: 1.84, name: 'ev' });
+  const ey = gy + gh + 0.50;
+  K.card(s, { x: M, y: ey, w: gw, h: 1.42, name: 'ev' });
   s.addText([
     { text: 'MORE EVIDENCE', options: { bold: true, color: C.accentInk, fontSize: 12, breakLine: true } },
-    { text: `Ice cores: carbon dioxide stayed between about 170 and 300 ppm for 800,000 years. Today it is about ${Math.round(D4.co2.y2025)} ppm.`, options: { color: C.ink, fontSize: 13, breakLine: true } },
-    { text: 'Arctic sea ice and glaciers are shrinking. Sea level is rising.', options: { color: C.ink, fontSize: 13 } },
-  ], { x: M + 0.22, y: ey, w: gw - 0.44, h: 1.84, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 18.5, paraSpaceAfter: 4, objectName: 'ev_t' });
-  const rx = M + gw + 0.34, rw = RIGHT - rx, ih = 0.86, ig = 0.10;
+    { text: `Ice cores: carbon dioxide stayed between about 170 and 300 ppm for 800,000 years. Today it is about ${Math.round(D4.co2.y2025)} ppm.`, options: { color: C.ink, fontSize: 12.5, breakLine: true } },
+    { text: 'Arctic sea ice and glaciers are shrinking. Sea level is rising.', options: { color: C.ink, fontSize: 12.5 } },
+  ], { x: M + 0.22, y: ey, w: gw - 0.44, h: 1.42, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 16.5, paraSpaceAfter: 3, objectName: 'ev_t' });
+  const rx = M + gw + 0.34, rw = RIGHT - rx, ih = 0.78, ig = 0.08;
   s.addText('IMPACTS', { x: rx, y: gy - 0.04, w: rw, h: 0.34, color: C.accentInk, fontFace: F.title, fontSize: 13, bold: true, charSpacing: 1, valign: 'middle', margin: 0, objectName: 'im_h' });
   const IMP = [
     ['Sea level rise', 'Warm water expands and land ice melts. Coasts flood.', 'atm_flood'],
@@ -132,7 +134,7 @@ K.hook({
     const tx = ph ? rx + ih + 0.04 : rx + 0.40;
     s.addText([{ text: head, options: { bold: true, color: C.dark, fontSize: 14.5, breakLine: true } }, { text, options: { color: C.ink, fontSize: 12 } }], { x: tx, y, w: rx + rw - tx - 0.12, h: ih, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 15.5, objectName: `im${i}_t` });
   });
-  K.sentence(s, [['Several ', false], ['independent records', true], [' show the same thing: Earth is ', false], ['warming', true], [', and the extra carbon dioxide is ours.', false]], { y: ey + 1.98, h: 0.56, size: 15, name: 'evid_banner' });
+  K.sentence(s, [['Several ', false], ['independent records', true], [' show the same thing: Earth is ', false], ['warming', true], [', and the extra carbon dioxide is ours.', false]], { y: ey + 1.56, h: 0.56, size: 15, name: 'evid_banner' });
   s.addNotes(
     'I DO. 3 minutes. Five clicks: the temperature graph, the other evidence, the five impacts, then the banner.\n\n'
     + 'OBJECTIVE 2. HOW WE KNOW. THE GRAPH IS THE REAL NASA RECORD (GISTEMP), each bar one year, 1880 to 2025, compared with the 1951 to 1980 average. READ IT WITH THE CLASS: "what do you notice?" Cool bars before about 1940, warm bars after about 1980, and the eleven warmest years on record are 2015 to 2025 (the WMO, in all eight datasets it uses); 2023, 2024 and 2025 are the three warmest, and 2025 was one of the three (NASA puts it second, NOAA, the Met Office and Berkeley Earth put it third, so say "one of the three warmest"). NASA, NOAA, the UK Met Office, Berkeley Earth and Copernicus use different methods and get the same picture. THE BASELINE MATTERS: this graph is compared with 1951 to 1980, so its numbers (about +1.2 °C for 2025) are smaller than the figures you may quote against the late 1800s: the IPCC gives 1.09 °C for 2011 to 2020 against 1850 to 1900, and the WMO\'s long-term warming level is about 1.4 °C; the WMO said 2024 was likely the first calendar year more than 1.5 °C above 1850 to 1900 (one year over 1.5 °C does not mean the Paris goal is lost: that is measured over decades). SAY THE UNITS AND THE BASELINE. MORE EVIDENCE: ICE CORES are long cylinders of ice drilled in Antarctica; bubbles of ancient air are trapped in them, so they give the carbon dioxide of the past. For 800,000 years it stayed between about 170 and 300 ppm (the saved record has a low of 174 and a high of 299 before industry). Today: about 427 ppm, about 50% above the 280 ppm before industry, and higher than at any time in at least 2 million years (IPCC). (The Keeling curve, on the worksheet, is the modern measurement from Mauna Loa, Hawaii, since 1958: it zigzags with the seasons because Northern Hemisphere plants take in carbon dioxide in summer.) And shrinking Arctic sea ice, retreating glaciers and rising sea level.\n\n'
@@ -146,10 +148,10 @@ K.hook({
 K.weDoRC({
   question: 'Explain how the greenhouse effect keeps the Earth warm. (4 marks: sunlight warms the ground, the ground gives out infrared, greenhouse gases absorb it, they send it out in all directions, some back down.)',
   answers: [
-    { text: 'The Earth is covered by a layer of greenhouse gases that works like the glass of a greenhouse. The Sun’s heat gets in through a hole in the ozone layer, and the gas layer stops the heat from escaping, so the planet warms up.', rank: 4, reason: '0 marks. Heat does not come in through the ozone layer, and the gases absorb infrared; they are not glass.' },
-    { text: 'The Sun sends light and heat to the Earth, and the ground warms up in the sunshine. Greenhouse gases are in the air and they are warm too, which is what keeps the Earth at a comfortable temperature for living things.', rank: 3, reason: '1 mark. Sunlight warms the ground, but nothing about infrared or what the gases do.' },
-    { text: 'Sunlight passes through the air and warms the ground. The warm ground gives out infrared radiation, and greenhouse gases such as carbon dioxide absorb it. This is why the Earth is warm, and why adding more of these gases makes it warmer still.', rank: 2, reason: '3 marks. The sunlight, the infrared and the absorbing. It never says the gases send the infrared back down.' },
-    { text: 'Sunlight passes through the air and warms the ground. The ground gives out infrared radiation, which greenhouse gases absorb. They send it out in all directions, and some goes back down to the ground, so the Earth is warmer than it would be.', rank: 1, reason: '4 marks. In goes through, out does not: all four steps.' },
+    { text: 'The Earth is covered by a layer of greenhouse gases that works like the glass of a greenhouse. The Sun’s heat gets in through a hole in the ozone layer, and the gas layer stops the heat escaping, so the planet warms up.', rank: 4, reason: '0 marks. Heat does not enter through the ozone layer, and gases are not glass.' },
+    { text: 'The Sun sends light and heat to the Earth, and the ground warms up in the sunshine. Greenhouse gases are in the air and they are warm too, which keeps the Earth at a comfortable temperature for living things.', rank: 3, reason: '1 mark. Sunlight warms the ground, but nothing about infrared or what the gases do.' },
+    { text: 'Sunlight passes through the air and warms the ground. The warm ground gives out infrared radiation, and greenhouse gases such as carbon dioxide absorb it. This is why the Earth is warm, and why more gas means more warming.', rank: 2, reason: '3 marks. Sunlight, infrared and absorbing. It never says the gases send it back down.' },
+    { text: 'Sunlight passes through the air and warms the ground. The ground gives out infrared radiation, which greenhouse gases absorb. They send it out in all directions, and some goes back down, so the Earth is warmer.', rank: 1, reason: '4 marks. In goes through, out does not: all four steps.' },
   ],
   upgradedFrom: 'A',
   upgraded: 'Sunlight passes through the air and warms the ground. The ground gives out infrared radiation. Greenhouse gases absorb it and send it out in all directions, and some goes back down, so the Earth is warmer. The ozone layer has nothing to do with it.',

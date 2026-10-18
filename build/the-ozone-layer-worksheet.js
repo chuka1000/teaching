@@ -19,12 +19,12 @@ const HEAD = 'DCE9F1', GREY = 'E9F1F6';
 const k = WS.begin();
 
 /* ---- BRONZE ---- */
-k.push(...WS.tier('BRONZE', 'The layer and the harm.'));
+k.push(...WS.tier('BRONZE', 'Layer and harm.'));
 k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
   'What does the ozone layer do?',
-  'It absorbs most of the Sun’s ultraviolet light, so less ultraviolet light reaches the ground.',
+  'It absorbs the most harmful ultraviolet light from the Sun, so less ultraviolet light reaches the ground.',
 ]));
-k.push(q('1', 'Half-worked. The ozone layer is high up in the ______________. It absorbs most of the Sun’s ______________ light.', { marks: 2 }));
+k.push(q('1', 'Half-worked. The ozone layer is high up in the ______________. It absorbs the most harmful ______________ light from the Sun.', { marks: 2 }));
 k.push(q('2', 'Name two harms caused by more ultraviolet light reaching the ground.', { marks: 2 }));
 k.push(ruled(2));
 k.push(q('3', 'Write T (true) or F (false) for each. The ozone layer is at ground level ___   It absorbs ultraviolet light ___   It is a thinning, not a hole ___   A thinner layer lets in more heat ___', { marks: 4 }));

@@ -79,3 +79,8 @@ atm_statue	ov:402b756c-f5b6-43d0-9da4-2d33dc216bbd	0.58,0.5,1.0
 atm_deadforest	ov:f494ed38-0c1d-4d5d-ad96-4a107135765d	0.345,0.5,0.93
 atm_converter	ov:0451a461-315c-497b-a2d9-d836d5fc94c2	0.55,0.5,1.0
 atm_coral	ov:ad746e67-a3d0-40eb-bb9d-cea222621d38	0.48,0.5,1.0
+atm_flood	ov:f5957ce6-3f08-4d27-bbc5-e37b5b5ed2b8	0.5,0.5,1.0
+atm_solar	ov:a8a04d7b-5aa7-4112-a4cc-308d4bae29bd	0.6,0.5,1.0
+atm_halley	ov:bd2f8aea-c646-4d9d-a247-def249f97467	0.58,0.5,1.0
+atm_ice	ov:80a8419a-5f84-4050-9734-a841dee0ae6c	0.47,0.5,1.0
+atm_aerosol	ov:d69e28a0-37f7-4bbf-9d07-1e5b14153ee0	0.45,0.5,1.0

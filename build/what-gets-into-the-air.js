@@ -55,11 +55,10 @@ K.today({
 K.hook({
   question: 'From 5 to 9 December 1952 a thick smog covered London. About how many people died because of it, in the days and weeks that followed?',
   qSize: 21,
-  picture: { key: 'atm_london1952', w: 2.05, h: 2.05, y: 0.40 },
   opts: ['About 40.', 'About 400.', 'About 4,000.'],
   notes:
     'HOOK. 2 minutes. Three cards on one click.\n\n'
-    + 'THE PHOTOGRAPH is a London street in the Great Smog of December 1952. Say it is real. Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the second I Do does, and you will point at the tally.\n\n'
+    + 'THERE IS NO PHOTOGRAPH ON THIS SLIDE: no photograph of the 1952 smog could be found under a free licence, and a drawing would only decorate it. If you have one, put it on the slide before the lesson. Say how thick it was: in places the visibility fell to a few metres, and some buses were led through the streets by someone walking in front with a torch. Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the second I Do does, and you will point at the tally.\n\n'
     + 'ANSWER, FOR YOU: C. The smog lasted from Friday 5 to Tuesday 9 December 1952. A government committee counted between 3,500 and 4,000 more deaths than normal in the two weeks to 20 December, with about 4,000 the best estimate (the Met Office says "about 4,000 people were known to have died"). A later study of December 1952 to February 1953 estimated about 12,000 excess deaths. SAY WHICH IS WHICH if a student asks, and DO NOT SAY "4,000 in four days": that is a common mistake. The smog lasted about four days, but the 4,000 is counted over two weeks.\n\n'
     + 'EXPECT most votes for B. A is the "fog cannot kill" idea. A COMMITMENT THAT IS WRONG IS CORRECTED MORE STRONGLY (PEDAGOGY.md): say "write your vote down". The gap is "what was in the fog?", and I Do 2 answers it.',
 });
@@ -74,21 +73,21 @@ K.hook({
     ['Carbon monoxide', 'CO', 'Fuel burns with too little oxygen: car engines, coal fires, faulty boilers.'],
     ['Sulfur dioxide', 'SO₂', 'Coal and oil that contain sulfur are burned: power stations, ships, factories.'],
     ['Nitrogen oxides', 'NOx', 'Very hot flames: the nitrogen and oxygen of the air react in engines and furnaces.'],
-    ['Particulates', '', 'Soot, dust and smoke: diesel engines, fires, building sites.'],
-    ['VOCs', '', 'Volatile organic compounds: gases that evaporate from fuels, paint and solvents.'],
+    ['Particulates', 'PM', 'Soot, dust and smoke: diesel engines, fires, building sites.'],
+    ['VOCs', 'VOC', 'Volatile organic compounds: gases that evaporate from fuels, paint and solvents.'],
   ];
-  const y0 = 1.80, rh = 0.66, gap = 0.08, lw = 7.45;
+  const y0 = 1.80, rh = 0.66, gap = 0.08, ps = 1.45, pg = 0.16, lw = CW - 2 * ps - pg - 0.26;
   ROWS.forEach(([name, formula, where], i) => {
     const y = y0 + i * (rh + gap);
     K.card(s, { x: M, y, w: lw, h: rh, name: `pr${i}` });
-    s.addText(formula || '·', { x: M + 0.14, y: y + 0.10, w: 0.86, h: rh - 0.20, shape: S.roundRect, rectRadius: 0.08, fill: { color: C.accent }, line: { color: C.accent, width: 0 }, color: C.dark, fontFace: F.title, fontSize: formula.length > 2 ? 13 : 15, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: `pr${i}_f` });
+    s.addText(formula, { x: M + 0.14, y: y + 0.10, w: 0.86, h: rh - 0.20, shape: S.roundRect, rectRadius: 0.08, fill: { color: C.accent }, line: { color: C.accent, width: 0 }, color: C.dark, fontFace: F.title, fontSize: formula.length > 2 ? 13 : 15, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: `pr${i}_f` });
     s.addText([{ text: name, options: { bold: true, color: C.dark, fontSize: 15.5, breakLine: true } }, { text: where, options: { color: C.ink, fontSize: 12.5 } }], { x: M + 1.14, y, w: lw - 1.28, h: rh, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 15.5, objectName: `pr${i}_t` });
   });
   // the four sources, as photographs
   const PH = [['atm_exhaust', 'Vehicle exhaust'], ['atm_powerstation', 'Power station'], ['atm_soot', 'Smoke and soot'], ['atm_solvent', 'Paint and solvents']];
-  const px = M + lw + 0.26, pw = RIGHT - px, pg = 0.16, ps = (pw - pg) / 2, py = y0;
+  const px = M + lw + 0.26, py = y0;
   PH.forEach(([key, cap], i) => {
-    const x = px + (i % 2) * (ps + pg), y = py + Math.floor(i / 2) * (ps + 0.42 + pg);
+    const x = px + (i % 2) * (ps + pg), y = py + Math.floor(i / 2) * (ps + 0.40 + 0.06);
     K.pic(s, key, x, y, ps, ps, `ph${i}`);
     s.addText(cap, { x, y: y + ps + 0.02, w: ps, h: 0.34, color: C.inkSoft, fontFace: F.body, fontSize: 12, italic: true, align: 'center', valign: 'middle', margin: 0, objectName: `ph${i}_c` });
   });
@@ -181,7 +180,7 @@ K.youDo({
   cards: [
     ['BRONZE', 'Sources and kinds', 'Match each pollutant to where it comes from, then sort pollutants into primary and secondary. Read the worked example first.'],
     ['SILVER', 'How smog forms', 'Explain how ozone forms in smog, work out a number about sulfur in coal, and explain why the weather matters.'],
-    ['GOLD', 'Two smogs, and the traps', 'Compare London in 1952 with Los Angeles, and predict which of the six particulate traps will be dirtiest.'],
+    ['GOLD', 'Smogs and traps', 'Compare London in 1952 with Los Angeles, and predict which of the six particulate traps will be dirtiest.'],
   ],
   note: 'Choose a tier. In each one read the worked example, finish the half-worked one, then do your own. The questions are mixed on purpose.',
   notes:

@@ -13,7 +13,7 @@ The unit follows Water (the last lesson was Pollution Pandemic).
 | 2 | What It Does To Us | yes | | Rank And Conquer | worksheet, with the six traps read at a station |
 | 3 | The Ozone Layer | yes | | Spot The Mistake | worksheet |
 | 4 | A Warming Planet | yes | Sorter (ozone depletion, climate change, air pollution) | Rank And Conquer | game |
-| | Atmosphere assessment | paper, mark scheme, feedback | | | |
+| | Atmosphere assessment (45 marks, 45 minutes) | paper, mark scheme, feedback | | | |
 
 Each lesson's "previous" is the lesson before it. **Lesson 1's previous is Pollution Pandemic** (Water, Lesson 4), which Chuka supplied (it was not in
 `reference/`; it is there now, with his edited Making It Last). There is **no dedicated fossil-fuels deck**: What The Earth Gives Us, Resource Depletion and
@@ -39,6 +39,17 @@ for every ecosystem at once."
 - **The evidence graphs** (`build/media/a-warming-planet-graphs.py`) are drawn from the real NOAA, NASA and NOAA Paleo files in `build/atmosphere-data/`.
 - The games reuse the Prokaryotes Sorter code: `build/a-warming-planet-game.html` is the template with the palette and bin names changed, and
   `check-a-warming-planet-game.py` and `test-a-warming-planet-game.js` are the same checker and Playwright test.
+
+- **The Lesson 1 hook has no photograph.** No photograph of the 1952 smog could be sourced under a free licence (the one candidate on Flickr has a doubtful
+  provenance, and Wikimedia's image server refuses the build machine), and a drawing was tried and dropped. The notes say what to say, and to add one if the teacher has it.
+- **The assessment** (`build/atmosphere-assessment*.js`, numbers in `atmosphere-assessment-check.py`, graph in `build/media/atmosphere-assessment-graph.py`): eleven
+  questions, 45 marks. Q1 source-to-pollutant matching (5); Q2 primary and secondary, and what held London's smog down (3); Q3 health (4); Q4 acid rain: gases,
+  acids, what is damaged (4); Q5 ozone useful high up and harmful at ground level (4); Q6 name the CFCs, and diagnose "the ozone hole causes global warming" (4);
+  Q7 three impacts (3); Q8 the carbon dioxide graph, 1960 to 2020, from the real NOAA file: a value (1), the trend (1), a rise with the unit ppm (1), a human cause (1);
+  Q9 how greenhouse gases keep the Earth warm (3); **Q10 four situations, which of the three problems and a reason, 8 marks, on a page of its own** (one is acid rain from a
+  distant power station, the likely trap); Q11 why the Montreal Protocol worked (3: clear science, a replacement, an agreement). The feedback sheet's Extend variant of the
+  greenhouse question asks for short waves in and long waves out; Support and Consolidate ask only that the gases trap heat. No chlorine radical mechanism anywhere, and
+  carbon dioxide is never listed as a pollutant that harms the lungs (it appears only where a student is asked to correct that idea).
 
 ## Corrections to the unit plan, found by fact-checking (see the notes of each deck)
 

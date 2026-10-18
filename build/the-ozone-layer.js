@@ -55,10 +55,10 @@ K.hook({
   question: 'CFCs were safe to breathe, did not burn and poisoned nobody. In 1985 scientists found the ozone layer, 30 km above our heads, was thinning. CFCs were the cause. How can a harmless gas do that?',
   qSize: 18,
   picture: { key: 'atm_aerosol', w: 1.80, h: 1.80, y: 0.50 },
-  opts: ['It reacts with ozone as soon as it leaves the can.', 'Ultraviolet light high up breaks it apart and releases chlorine.', 'It makes the air so warm that the ozone layer melts.'],
+  opts: ['It reacts with ozone as soon as it escapes from a fridge or a can.', 'Ultraviolet light high up breaks it apart and releases chlorine.', 'It makes the air so warm that the ozone layer melts.'],
   notes:
     'HOOK. 2 minutes. Three cards on one click.\n\n'
-    + 'THE PICTURE is the kind of thing CFCs were in: an old aerosol can or fridge. Read the question. Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the second I Do does, and you will point at the tally.\n\n'
+    + 'THE PICTURE is an old refrigerator, one of the two things CFCs were used in (the other was aerosol spray cans). Read the question. Show of hands for each option, and WRITE THE TALLY ON THE BOARD. Do not settle it yet: the second I Do does, and you will point at the tally.\n\n'
     + 'ANSWER, FOR YOU: B. CFCs (chlorofluorocarbons) are very unreactive, which is exactly why they seemed safe: they did not burn, poison anyone or react with anything at ground level, so they lasted. They slowly drift up into the stratosphere, where strong ultraviolet light breaks them apart and releases chlorine atoms. That is the damage. A is the tempting wrong one: if CFCs reacted with ozone at ground level, they would have been noticed (and ozone is only a thin trace gas there). C is the confusion with the greenhouse effect: a warmer air does not "melt" ozone, and ozone depletion is NOT a heating problem. A COMMITMENT THAT IS WRONG IS CORRECTED MORE STRONGLY (PEDAGOGY.md): say "write your vote down".',
 });
 
@@ -68,7 +68,7 @@ K.hook({
 {
   const s = K.slide('light', 3, 'I Do');
   K.title(s, 'What the ozone layer does');
-  const dw = 5.30, dh = dw * 760 / 1000, dy = 1.80;
+  const dw = 4.90, dh = dw * 760 / 1000, dy = 1.80;
   K.card(s, { x: M - 0.06, y: dy - 0.06, w: dw + 0.12, h: dh + 0.12, name: 'ly' });
   K.pic(s, 'atm-layers', M, dy, dw, dh, 'ly_pic');
   const rx = M + dw + 0.36, rw = RIGHT - rx;
@@ -82,10 +82,10 @@ K.hook({
     K.card(s, { x, y, w: ew, h: eh, name: `ef${i}` });
     s.addText([{ text: a, options: { bold: true, color: C.dark, fontSize: 15, breakLine: true } }, { text: b, options: { color: C.inkSoft, fontSize: 12 } }], { x: x + 0.18, y, w: ew - 0.36, h: eh, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 17, objectName: `ef${i}_t` });
   });
-  const ty = dy + dh + 0.30;
-  K.card(s, { x: M, y: ty, w: dw, h: 0.92, fill: 'FFFFFF', line: C.alert, lineWidth: 1.6, name: 'thin' });
-  s.addText([{ text: 'A thinning, not a hole. ', options: { bold: true, color: C.alert } }, { text: 'Nothing is missing. The layer gets very thin over Antarctica each spring.', options: { color: C.ink } }], { x: M + 0.20, y: ty, w: dw - 0.40, h: 0.92, fontFace: F.body, fontSize: 13.5, valign: 'middle', margin: 0, lineSpacing: 17, objectName: 'thin_t' });
-  K.sentence(s, [['The ozone layer is ', false], ['high up', true], [' and it ', false], ['protects', true], [' us. Ozone at ground level is a pollutant.', false]], { y: ty + 1.06, h: 0.56, size: 15.5, name: 'oz_banner' });
+  const ty = dy + dh + 0.20;
+  K.card(s, { x: M, y: ty, w: dw, h: 0.78, fill: 'FFFFFF', line: C.alert, lineWidth: 1.6, name: 'thin' });
+  s.addText([{ text: 'A thinning, not a hole. ', options: { bold: true, color: C.alert } }, { text: 'Nothing is missing. The layer gets very thin over Antarctica each spring.', options: { color: C.ink } }], { x: M + 0.20, y: ty, w: dw - 0.40, h: 0.78, fontFace: F.body, fontSize: 13, valign: 'middle', margin: 0, lineSpacing: 17, objectName: 'thin_t' });
+  K.sentence(s, [['The ozone layer is ', false], ['high up', true], [' and it ', false], ['protects', true], [' us. Ozone at ground level is a pollutant.', false]], { y: ty + 0.92, h: 0.54, size: 15.5, name: 'oz_banner' });
   s.addNotes(
     'I DO. 3 minutes. Four clicks: the diagram, the one-line job, the four effects, then the thinning and the banner.\n\n'
     + 'OBJECTIVE 1. WHAT THE OZONE LAYER DOES. THE DIAGRAM: the lowest 50 km of the air. Weather, clouds, aeroplanes and air pollution are all in the lowest layer (the troposphere, up to about 12 km). Above it is the stratosphere, and in it, roughly 15 to 35 km up, is the OZONE LAYER: ozone (O₃) is a rare gas there, a few parts in ten million, but it is enough: it absorbs all of the Sun\'s UV-C and most of its UV-B (the most harmful kinds) before they reach the ground. Most UV-A, the least harmful kind, gets through. It is roughly 15 to 35 km up (the sources differ a little at the edges). If all of it were squashed to ground-level pressure it would be a layer only about 3 mm thick. Say "it is a layer even though it is a trace gas, because it is concentrated in one band". IT IS THE REASON OZONE HIGH UP IS PROTECTION AND OZONE AT GROUND LEVEL IS A POLLUTANT: same substance, opposite verdict, purely because of where it is (Lesson 1). Say it again.\n\n'
@@ -173,7 +173,7 @@ K.coldCall({
 K.youDo({
   kind: 'worksheet',
   cards: [
-    ['BRONZE', 'The layer and the harm', 'Say what the ozone layer does, name the harms of more UV, and put the CFC story in order. Read the worked example first.'],
+    ['BRONZE', 'Layer and harm', 'Say what the ozone layer does, name the harms of more UV, and put the CFC story in order. Read the worked example first.'],
     ['SILVER', 'How CFCs do it', 'Explain how CFCs damage ozone, spot what the Montreal Protocol did, and say why the ozone layer is not the greenhouse effect.'],
     ['GOLD', 'Read the record', 'Use the real data on the size of the Antarctic ozone hole, and explain why the Montreal Protocol worked.'],
   ],
@@ -189,7 +189,7 @@ K.youDo({
  * ================================================================== */
 K.mark({
   bullets: [
-    'The ozone layer is high up in the stratosphere. It absorbs most of the Sun’s ultraviolet light.',
+    'The ozone layer is high up in the stratosphere. It absorbs the most harmful ultraviolet light from the Sun.',
     'More ultraviolet light means more skin cancer, cataracts, damaged crops and damaged plankton.',
     'CFCs are harmless near the ground. High up, ultraviolet light breaks them apart and the chlorine destroys thousands of ozone molecules each.',
     'The Montreal Protocol (1987) phased CFCs out and the ozone layer is recovering. It is a thinning, not a hole, and it is not the greenhouse effect.',

@@ -1,15 +1,21 @@
 key	file	author	licence	url	crop
 air	ov:7f5efc4a-c3c5-460d-92ce-e8bb5df1d059	Spojení	CC BY 2.0	https://www.flickr.com/photos/91514913@N00/250801417	0.5,0.55,1.0
 ant	ov:03e2b2c4-64eb-4f24-ade0-34e1daa94865	spotter_nl	CC BY 2.0	https://www.flickr.com/photos/30733371@N00/28671685151	0.5,0.45,1.0
+atm_aerosol	ov:d69e28a0-37f7-4bbf-9d07-1e5b14153ee0	nicolas.boullosa	CC BY 2.0	https://www.flickr.com/photos/90802476@N00/9044189416	0.45,0.5,1.0
 atm_converter	ov:0451a461-315c-497b-a2d9-d836d5fc94c2	oakridgelabnews	CC BY 2.0	https://www.flickr.com/photos/37940997@N05/4293629922	0.55,0.5,1.0
 atm_coral	ov:ad746e67-a3d0-40eb-bb9d-cea222621d38	NOAA's National Ocean Service	Public domain	https://www.flickr.com/photos/40322276@N04/15525190564	0.48,0.5,1.0
 atm_deadforest	ov:f494ed38-0c1d-4d5d-ad96-4a107135765d	SoilScience.info	CC BY 2.0	https://www.flickr.com/photos/22503286@N06/5097076781	0.345,0.5,0.93
+atm_dobson	d065.jpg (Dobson spectrophotometer D065)	NOAA Global Monitoring Laboratory	Public domain (NOAA)	https://gml.noaa.gov/ozwv/dobson/	0.45,0.45,0.9
 atm_exhaust	ov:9f10fc9c-6439-4d24-bf4a-a128f62518d8	frankieleon	CC BY 2.0	https://www.flickr.com/photos/23307937@N04/4230901721	0.62,0.5,1.0
+atm_flood	ov:f5957ce6-3f08-4d27-bbc5-e37b5b5ed2b8	Jef Poskanzer	CC BY 2.0	https://www.flickr.com/photos/37996593020@N01/8267973140	0.5,0.5,1.0
 atm_glacier1	MuirRiggs-1941.jpg (Muir and Riggs Glaciers, Muir Inlet, Alaska, 13 August 1941)	W. O. Field (USGS Glacier Photograph Collection repeat photography)	Public domain (USGS)	https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941	0.5,0.5,1.0
 atm_glacier2	MuirRiggs-2004.jpg (Muir and Riggs Glaciers, Muir Inlet, Alaska, 31 August 2004)	Bruce F. Molnia (USGS)	Public domain (USGS)	https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004	0.5,0.5,1.0
+atm_halley	ov:bd2f8aea-c646-4d9d-a247-def249f97467	Podknox	CC BY 2.0	https://www.flickr.com/photos/91198056@N00/4589520497	0.58,0.5,1.0
+atm_ice	ov:80a8419a-5f84-4050-9734-a841dee0ae6c	Oregon State University	CC BY-SA 2.0	https://www.flickr.com/photos/33247428@N08/5408325822	0.47,0.5,1.0
 atm_lasmog	ov:46661336-34c4-4fb4-9a39-d657dcea4c75	TravelingOtter	CC BY-SA 2.0	https://www.flickr.com/photos/14146962@N07/1553153400	0.375,0.55,1.0
 atm_ozonehole	OZONE_D2026-09-27_G^716X716.IOMPS_PNPP_V21_MGEOS5FP_LSH.PNG	NASA Goddard Space Flight Center, Ozone Watch (OMPS satellite data)	Public domain (NASA)	https://ozonewatch.gsfc.nasa.gov/Scripts/big_image.php?date=2026-09-27&hem=S&section=HOME	0.5,0.5,1.0
 atm_powerstation	ov:e5724476-77b3-4bcc-baf1-d652b11356c7	Beyond Coal and Gas	CC BY 2.0	https://www.flickr.com/photos/98076023@N02/46241911234	0.4,0.5,1.0
+atm_solar	ov:a8a04d7b-5aa7-4112-a4cc-308d4bae29bd		CC0	https://www.rawpixel.com/image/3338657/free-photo-image-cc0-creative-commons	0.6,0.5,1.0
 atm_solvent	ov:5952c494-0693-435a-837b-ec88851b59fe	Homedust	CC BY 2.0	https://www.flickr.com/photos/159630537@N08/41620164734	0.42,0.5,1.0
 atm_soot	ov:4ae69092-60ae-456f-9069-3501b7120113	Marufish	CC BY-SA 2.0	https://www.flickr.com/photos/8819274@N04/3331977231	0.5,0.52,1.0
 atm_statue	ov:402b756c-f5b6-43d0-9da4-2d33dc216bbd	FritzFlohrReynolds	CC BY-SA 2.0	https://www.flickr.com/photos/81112662@N03/8295301175	0.58,0.5,1.0

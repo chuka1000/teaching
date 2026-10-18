@@ -224,7 +224,8 @@ module.exports = function kit({ lesson, subject, title: deckTitle }) {
     const len = answers.map((a) => a.text.length), max = Math.max(...len), min = Math.min(...len);
     const best = answers.find((a) => a.rank === 1), bl = best.text.length;
     const detail = answers.map((a, i) => `${'ABCD'[i]} (rank ${a.rank}) ${a.text.length}`).join(', ');
-    if (bl >= max) throw new Error(`Rank And Conquer: the best answer is the longest, which gives the game away. Pad the weak ones. Lengths: ${detail}`);
+    if (max > 225) throw new Error(`Rank And Conquer: an answer is ${max} characters; keep each to 225 or fewer so it fits four lines`);
+  if (bl >= max) throw new Error(`Rank And Conquer: the best answer is the longest, which gives the game away. Pad the weak ones. Lengths: ${detail}`);
     if (bl <= min) throw new Error(`Rank And Conquer: the best answer is the shortest, which is a cue too. Lengths: ${detail}`);
     if (max / min > 1.3) throw new Error(`Rank And Conquer: the four answers differ by more than a quarter in length (${(max / min).toFixed(2)}x). Lengths: ${detail}`);
     return len;

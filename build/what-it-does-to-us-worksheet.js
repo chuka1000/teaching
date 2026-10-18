@@ -41,7 +41,7 @@ k.push(...box('THE SIX TRAPS. Read them at the trap station: by eye first, then 
 k.push(WS.sp());
 
 /* ---- BRONZE ---- */
-k.push(...WS.tier('BRONZE', 'The effects, and the traps.'));
+k.push(...WS.tier('BRONZE', 'Effects and traps.'));
 k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
   'How does carbon monoxide harm the body?',
   'It sticks to haemoglobin in the blood in place of oxygen. The blood carries less oxygen, so the body gets less.',

@@ -101,10 +101,10 @@ K.hook({
 {
   const s = K.slide('light', 3, 'I Do');
   K.title(s, 'Acid rain, and how it is reduced');
-  const vw = 5.60, vh = vw * 9 / 16, vy = 1.82;
+  const vw = 5.20, vh = vw * 9 / 16, vy = 1.82;
   K.card(s, { x: M - 0.06, y: vy - 0.06, w: vw + 0.12, h: vh + 0.12, name: 'vid_bg' });
   K.video(s, 'atm-acid-rain', M, vy, vw, vh, 'vid_acid');
-  const rx = M + vw + 0.30, rw = RIGHT - rx, dh = 0.98, dg = 0.10;
+  const rx = M + vw + 0.30, rw = RIGHT - rx, dg = 0.10, dh = (vh - 2 * dg) / 3;
   const DAM = [
     ['Lakes', 'The water becomes too acid. Fish and other animals die.', null],
     ['Trees', 'Leaves are damaged and nutrients wash out of the soil.', 'atm_deadforest'],
@@ -117,7 +117,7 @@ K.hook({
     else s.addText('pH', { x: rx + 0.12, y: y + 0.10, w: dh - 0.20, h: dh - 0.20, shape: S.roundRect, rectRadius: 0.08, fill: { color: C.alert }, line: { color: C.alert, width: 0 }, color: 'FFFFFF', fontFace: F.title, fontSize: 20, bold: true, align: 'center', valign: 'middle', margin: 0, objectName: `dm${i}_pic` });
     s.addText([{ text: head, options: { bold: true, color: C.dark, fontSize: 16, breakLine: true } }, { text, options: { color: C.ink, fontSize: 13 } }], { x: rx + dh + 0.10, y, w: rw - dh - 0.22, h: dh, fontFace: F.body, valign: 'middle', margin: 0, lineSpacing: 16.5, objectName: `dm${i}_t` });
   });
-  const ry = vy + vh + 0.34, rcw = (CW - 3 * 0.18) / 4, rch = 1.34;
+  const ry = vy + vh + 0.32, rcw = (CW - 3 * 0.18) / 4, rch = 1.30;
   const RED = [
     ['Catalytic converters', 'Clean the exhaust of a car.', 'atm_converter'],
     ['Scrubbers on chimneys', 'Remove sulfur dioxide with limestone.', 'atm_powerstation'],
@@ -147,10 +147,10 @@ K.hook({
 K.weDoRC({
   question: 'Explain how acid rain forms and what it damages. (4 marks: burning releases sulfur dioxide and nitrogen oxides, they dissolve in cloud water, they make acids that fall as rain, one thing damaged.)',
   answers: [
-    { text: 'Acid rain happens when carbon dioxide from factories and cars rises and mixes with the clouds. The extra carbon dioxide makes the rain acidic, and it also burns a hole in the ozone layer, so more acid falls through.', rank: 4, reason: '0 marks. It is not carbon dioxide, and it has nothing to do with the ozone layer.' },
+    { text: 'Acid rain happens when carbon dioxide from factories and cars mixes with the clouds. The extra carbon dioxide makes the rain acidic, and it also burns a hole in the ozone layer, so more acid falls through.', rank: 4, reason: '0 marks. It is not carbon dioxide, and it has nothing to do with the ozone layer.' },
     { text: 'Burning coal and oil in power stations releases sulfur dioxide. The sulfur dioxide makes the rain acidic, and acid rain is very bad for the environment because it harms a lot of living things and spoils many places.', rank: 3, reason: '2 marks. Source and acid rain, but no dissolving in cloud water and no named damage.' },
-    { text: 'Power stations burn coal and oil, which sends sulfur dioxide and nitrogen oxides high into the air from tall chimneys. They dissolve in cloud water to make sulfuric and nitric acid, and the wind carries them far away before they fall as acid rain.', rank: 2, reason: '3 marks. Every step of how it forms, but no damage is named.' },
-    { text: 'Burning coal and oil releases sulfur dioxide and nitrogen oxides. They dissolve in the water in clouds and make sulfuric and nitric acid, which fall as acid rain. It kills fish in lakes and slowly dissolves limestone buildings.', rank: 1, reason: '4 marks. The source, the dissolving, the acids, and damage to lakes and buildings.' },
+    { text: 'Power stations burn coal and oil, which sends sulfur dioxide and nitrogen oxides up tall chimneys. They dissolve in cloud water to make sulfuric and nitric acid, and the wind carries them far away before they fall as rain.', rank: 2, reason: '3 marks. Every step of how it forms, but no damage is named.' },
+    { text: 'Burning coal and oil releases sulfur dioxide and nitrogen oxides. They dissolve in cloud water and make sulfuric and nitric acid, which fall as acid rain. It kills fish in lakes and slowly dissolves limestone buildings.', rank: 1, reason: '4 marks. The source, the dissolving, the acids, and damage to lakes and buildings.' },
   ],
   upgradedFrom: 'A',
   upgraded: 'Acid rain forms when burning coal and oil releases sulfur dioxide and nitrogen oxides. They dissolve in cloud water to make sulfuric and nitric acid, which fall as rain. It kills fish in lakes and dissolves limestone and marble. Carbon dioxide is not the cause.',
@@ -167,7 +167,7 @@ K.weDoRC({
 K.coldCall({
   qs: [
     ['Name the gas that carbon monoxide takes the place of in the blood.', 'Oxygen. Carbon monoxide binds to haemoglobin instead.'],
-    ['Describe how particulates harm health.', 'The smallest particles go deep into the lungs, and some reach the blood. They are linked to asthma, heart disease and lung cancer.'],
+    ['Describe how particulates harm health.', 'They go deep into the lungs, and some reach the blood. Linked to asthma, heart disease and lung cancer.'],
     ['Name the two acids in acid rain.', 'Sulfuric acid and nitric acid.'],
     ['Describe two ways air pollution is reduced.', 'Any two of: catalytic converters, scrubbers on chimneys, low-sulfur fuel, laws.'],
     ['Name three air pollutants.', 'Any three of: carbon monoxide, sulfur dioxide, nitrogen oxides, particulates, VOCs.'],
@@ -185,7 +185,7 @@ K.coldCall({
 K.youDo({
   kind: 'worksheet',
   cards: [
-    ['BRONZE', 'The effects, and the traps', 'Say how each pollutant harms us, record what the six traps show, and rank the six places. Read the worked example first.'],
+    ['BRONZE', 'Effects and traps', 'Say how each pollutant harms us, record what the six traps show, and rank the six places. Read the worked example first.'],
     ['SILVER', 'How acid rain forms', 'Put the acid rain steps in order, explain why the ozone layer and carbon dioxide are not the cause, and work out a number.'],
     ['GOLD', 'Cause, effect, fix', 'Link each pollutant to its harm and its fix, and explain why a taller chimney does not solve acid rain.'],
   ],

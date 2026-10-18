@@ -6,7 +6,7 @@ SP.doNow(1); SP.today(2); SP.hook(3);
 /* 4. I Do 1: the animation (on click), the two temperatures, the gases, the one-line mechanism, then the banner */
 S(4, {
   groups: [
-    { name: 'g_num', members: ['cold_bg', 'cold_t', 'warm_bg', 'warm_t'] },
+    { name: 'g_num', members: ['cold_bg', 'cold_t', 'cold_l', 'warm_bg', 'warm_t', 'warm_l'] },
     { name: 'g_gas', members: ['gases_bg', 'gases_t'] },
     { name: 'g_mech', members: ['mech_bg', 'mech_t'] },
   ],
