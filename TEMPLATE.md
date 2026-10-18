@@ -154,6 +154,15 @@ for evidence.
 - The ranking must come from the mark scheme, not taste. Count what each answer
   has (for speciation: the barrier, different selection, many generations, the
   test), and put the count in the notes.
+- **The best answer must not be the longest** (Chuka, 2026-10-18). Students rank by
+  length when they can, so the full-marks answer is about the same length as the
+  other three, and the longest is a weaker one. Pad the weak answers with believable
+  filler: a wrong idea stated confidently, a true but irrelevant detail, a step said
+  twice in other words, or a plausible-sounding reason that is wrong. Never pad with
+  nonsense, because then length is not the cue but obvious silliness is. Keep all four
+  within about a quarter of each other's length, and check with the notes: the top rank
+  is never the longest. `build/atmosphere-kit.js` refuses to build a Rank And Conquer
+  that breaks this; copy its check into any other kit.
 
 Rotate the three across a unit. A unit of nothing but Spot The Mistake teaches
 error-hunting.
@@ -245,6 +254,7 @@ sheet, or it looks like a mistake.
 - We Do is Spot The Mistake, Finish It Off or Rank And Conquer, not last lesson's
   mode; it needs a decision or a reason, not one word; students commit before each
   reveal (Spot The Mistake: one row already correct).
+  Rank And Conquer: the top-ranked answer is not the longest, and all four are of similar length.
 - Do Now: numeric answers as `working = answer unit`, no full stops; the preview
   question says "Suggest" and has the shaded card.
 - Cold Call includes two questions from earlier lessons.
