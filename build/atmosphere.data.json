@@ -10,5 +10,26 @@
    "pct": 2,
    "sulfur": 40
   }
+ },
+ "l2": {
+  "fish": {
+   "fish": 400,
+   "pct": 35,
+   "dead": 140,
+   "left": 260
+  },
+  "particles": {
+   "hair": 70,
+   "pm25": 2.5,
+   "pm10": 10,
+   "hair_over_pm25": 28,
+   "hair_over_pm10": 7
+  },
+  "ws_fish": {
+   "fish": 800,
+   "pct": 15,
+   "dead": 120,
+   "left": 680
+  }
  }
 }

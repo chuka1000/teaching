@@ -1,0 +1,382 @@
+{
+  "_comment": "The item bank for the A Warming Planet game (Sorter: ozone depletion / climate change / air pollution). It spans the whole unit: about half the items are today's (climate change), the rest are from Lessons 1 to 3. Rounds: 1 = the unit, 2 = the look-alikes (where the obvious answer is wrong), 3 = far past the lesson (meant to be almost impossible at the end). 'core' items are in every draw. Every classification was checked against the lesson decks and the fact notes in units/Y9-Unit-6-Atmosphere.md.",
+  "bins": [
+    "ozone",
+    "climate",
+    "pollution"
+  ],
+  "bin_labels": {
+    "ozone": "Ozone depletion",
+    "climate": "Climate change",
+    "pollution": "Air pollution"
+  },
+  "bin_hints": {
+    "ozone": "the ozone layer high up gets thinner, so more UV reaches the ground",
+    "climate": "gases in the whole atmosphere trap heat, so the Earth warms",
+    "pollution": "harmful gases and particles near the ground: lungs, acid rain, smog"
+  },
+  "rules": [
+    "Where is it? Ozone depletion is high up in the stratosphere. Air pollution is near the ground. Climate change is the whole atmosphere.",
+    "What is the harm? More ultraviolet light is ozone depletion. Trapped heat is climate change. Harm to lungs, lakes and buildings is air pollution.",
+    "Which gas? CFCs are ozone depletion. Carbon dioxide and methane are climate change. Sulfur dioxide, nitrogen oxides, soot and carbon monoxide are air pollution.",
+    "Ozone high up protects us. Ozone near the ground is a pollutant."
+  ],
+  "rounds": [
+    {
+      "name": "Round 1: the unit",
+      "draw": 8,
+      "per_bin": {
+        "ozone": 3,
+        "climate": 3,
+        "pollution": 2
+      },
+      "pool": [
+        {
+          "id": "r1_o1",
+          "text": "CFCs from old fridges and aerosol cans",
+          "answer": "ozone",
+          "core": true,
+          "why": "CFCs release chlorine high in the stratosphere, and chlorine destroys ozone."
+        },
+        {
+          "id": "r1_o2",
+          "text": "The ozone layer getting thin over Antarctica each spring",
+          "answer": "ozone",
+          "core": true,
+          "why": "This is ozone depletion. The layer is not missing, it is thinner."
+        },
+        {
+          "id": "r1_o3",
+          "text": "More skin cancer and cataracts from the Sun",
+          "answer": "ozone",
+          "core": false,
+          "why": "A thinner ozone layer lets more ultraviolet light reach the ground, and ultraviolet light damages skin and eyes."
+        },
+        {
+          "id": "r1_o4",
+          "text": "The Montreal Protocol of 1987",
+          "answer": "ozone",
+          "core": false,
+          "why": "The Montreal Protocol is the treaty that phased out CFCs. It is the success story of the unit."
+        },
+        {
+          "id": "r1_o5",
+          "text": "Ultraviolet light reaching the ground",
+          "answer": "ozone",
+          "core": false,
+          "why": "The ozone layer absorbs most ultraviolet light. When it thins, more reaches the ground."
+        },
+        {
+          "id": "r1_c1",
+          "text": "Carbon dioxide from burning fossil fuels",
+          "answer": "climate",
+          "core": true,
+          "why": "Carbon dioxide is a greenhouse gas. It traps heat, so the Earth warms."
+        },
+        {
+          "id": "r1_c2",
+          "text": "Sea level rise",
+          "answer": "climate",
+          "core": true,
+          "why": "Warm sea water expands and land ice melts. Both are caused by the Earth getting warmer."
+        },
+        {
+          "id": "r1_c3",
+          "text": "Methane from cattle and rice fields",
+          "answer": "climate",
+          "core": false,
+          "why": "Methane is a greenhouse gas. It traps heat."
+        },
+        {
+          "id": "r1_c4",
+          "text": "Glaciers melting and retreating",
+          "answer": "climate",
+          "core": false,
+          "why": "Glaciers are melting because the Earth is warming."
+        },
+        {
+          "id": "r1_c5",
+          "text": "Coral bleaching",
+          "answer": "climate",
+          "core": false,
+          "why": "Corals bleach when the sea water gets too warm."
+        },
+        {
+          "id": "r1_p1",
+          "text": "Acid rain",
+          "answer": "pollution",
+          "core": true,
+          "why": "Sulfur dioxide and nitrogen oxides dissolve in cloud water and make acid rain. It is air pollution."
+        },
+        {
+          "id": "r1_p2",
+          "text": "Smog over a city on a hot, still, sunny day",
+          "answer": "pollution",
+          "core": false,
+          "why": "Smog is air pollution near the ground. Sunlight turns exhaust gases into ozone."
+        },
+        {
+          "id": "r1_p3",
+          "text": "A catalytic converter on a car",
+          "answer": "pollution",
+          "core": false,
+          "why": "A catalytic converter cleans harmful gases out of the exhaust. It reduces air pollution."
+        },
+        {
+          "id": "r1_p4",
+          "text": "Asthma attacks in a busy city",
+          "answer": "pollution",
+          "core": false,
+          "why": "Particulates and ozone near the ground irritate the lungs. That is air pollution."
+        },
+        {
+          "id": "r1_p5",
+          "text": "Sulfur dioxide from a coal power station",
+          "answer": "pollution",
+          "core": false,
+          "why": "Sulfur dioxide is a pollutant. It harms the lungs and makes acid rain."
+        }
+      ]
+    },
+    {
+      "name": "Round 2: the look-alikes",
+      "draw": 8,
+      "per_bin": {
+        "ozone": 2,
+        "climate": 3,
+        "pollution": 3
+      },
+      "pool": [
+        {
+          "id": "r2_o1",
+          "text": "A gas that is harmless to breathe at ground level, but is broken apart by ultraviolet light 30 km up",
+          "answer": "ozone",
+          "core": true,
+          "why": "That describes a CFC. It is harmless near the ground, which is why nobody worried, but high up it releases chlorine."
+        },
+        {
+          "id": "r2_o2",
+          "text": "Plankton in the Southern Ocean damaged by ultraviolet light",
+          "answer": "ozone",
+          "core": false,
+          "why": "More ultraviolet light is the harm of ozone depletion. Plankton is at the base of the ocean food chain."
+        },
+        {
+          "id": "r2_o3",
+          "text": "The fall in CFC production after 1990",
+          "answer": "ozone",
+          "core": false,
+          "why": "CFCs were phased out because of the Montreal Protocol. That is the ozone problem being fixed."
+        },
+        {
+          "id": "r2_o4",
+          "text": "Chlorine atoms high in the stratosphere",
+          "answer": "ozone",
+          "core": false,
+          "why": "Chlorine atoms from CFCs destroy ozone, over and over, high in the stratosphere."
+        },
+        {
+          "id": "r2_o5",
+          "text": "More ultraviolet light reaching crops",
+          "answer": "ozone",
+          "core": false,
+          "why": "A thinner ozone layer lets more ultraviolet light through, and that can damage crops."
+        },
+        {
+          "id": "r2_c1",
+          "text": "The carbon dioxide that comes out of a car's exhaust",
+          "answer": "climate",
+          "core": true,
+          "why": "Carbon dioxide does not harm lungs. It traps heat, so it belongs to climate change, not air pollution."
+        },
+        {
+          "id": "r2_c2",
+          "text": "Methane leaking from gas pipes and rubbish tips",
+          "answer": "climate",
+          "core": false,
+          "why": "Methane is a greenhouse gas. It traps heat."
+        },
+        {
+          "id": "r2_c3",
+          "text": "Heatwaves and droughts becoming more frequent",
+          "answer": "climate",
+          "core": false,
+          "why": "A warmer planet brings more frequent and more intense heatwaves."
+        },
+        {
+          "id": "r2_c4",
+          "text": "Sea water expanding as it warms",
+          "answer": "climate",
+          "core": false,
+          "why": "Warm water takes up more space. This is one cause of sea level rise."
+        },
+        {
+          "id": "r2_c5",
+          "text": "Species moving towards the poles and uphill",
+          "answer": "climate",
+          "core": false,
+          "why": "Animals and plants move to stay in the temperatures they live in. The Earth is warming."
+        },
+        {
+          "id": "r2_p1",
+          "text": "Ozone that irritates the lungs on a hot day in a city",
+          "answer": "pollution",
+          "core": true,
+          "why": "Ozone near the ground is a pollutant. Ozone high up protects us. Where it is decides the problem."
+        },
+        {
+          "id": "r2_p2",
+          "text": "Lakes in Scandinavia that lost their fish",
+          "answer": "pollution",
+          "core": false,
+          "why": "Acid rain from sulfur dioxide and nitrogen oxides acidified the lakes. That is air pollution."
+        },
+        {
+          "id": "r2_p3",
+          "text": "A marble statue losing its detail",
+          "answer": "pollution",
+          "core": false,
+          "why": "Acid rain slowly dissolves marble and limestone. That is air pollution."
+        },
+        {
+          "id": "r2_p4",
+          "text": "Carbon monoxide from a faulty gas boiler",
+          "answer": "pollution",
+          "core": false,
+          "why": "Carbon monoxide takes the place of oxygen in the blood. That is a harm of air pollution."
+        },
+        {
+          "id": "r2_p5",
+          "text": "Soot from diesel engines that goes deep into the lungs",
+          "answer": "pollution",
+          "core": false,
+          "why": "Particulates harm the lungs. That is air pollution."
+        }
+      ]
+    },
+    {
+      "name": "Round 3: beat the game",
+      "draw": 8,
+      "per_bin": {
+        "ozone": 3,
+        "climate": 2,
+        "pollution": 3
+      },
+      "pool": [
+        {
+          "id": "r3_o1",
+          "text": "A treaty that every country eventually joined, because there was a replacement chemical industry could use",
+          "answer": "ozone",
+          "core": true,
+          "why": "That is the Montreal Protocol. It worked because the science was clear, a replacement existed and every country joined."
+        },
+        {
+          "id": "r3_o2",
+          "text": "A single atom that destroys thousands of ozone molecules and is not used up",
+          "answer": "ozone",
+          "core": false,
+          "why": "A chlorine atom from a CFC takes part again and again, so one atom destroys many ozone molecules."
+        },
+        {
+          "id": "r3_o3",
+          "text": "Thinner ozone over Antarctica when sunlight returns after the polar winter",
+          "answer": "ozone",
+          "core": false,
+          "why": "In the very cold polar winter chlorine builds up. When spring sunlight returns, it destroys ozone."
+        },
+        {
+          "id": "r3_o4",
+          "text": "Skin cancers avoided because CFCs were banned",
+          "answer": "ozone",
+          "core": false,
+          "why": "Banning CFCs protected the ozone layer, so less ultraviolet light reaches the ground."
+        },
+        {
+          "id": "r3_o5",
+          "text": "Chlorine in the stratosphere peaking about the year 2000 and then falling",
+          "answer": "ozone",
+          "core": false,
+          "why": "After the CFC ban, the chlorine in the stratosphere began to fall. The ozone layer is recovering."
+        },
+        {
+          "id": "r3_c1",
+          "text": "Infrared radiation from the ground that gases in the air absorb and send back down",
+          "answer": "climate",
+          "core": true,
+          "why": "That is the greenhouse effect. Greenhouse gases absorb infrared radiation and send some of it back to the ground."
+        },
+        {
+          "id": "r3_c2",
+          "text": "A zigzag line on a graph from Mauna Loa that climbs year after year",
+          "answer": "climate",
+          "core": false,
+          "why": "That is the Keeling curve of carbon dioxide. The zigzag is the seasons, and the climb is the extra carbon dioxide."
+        },
+        {
+          "id": "r3_c3",
+          "text": "Bubbles of ancient air in Antarctic ice that show carbon dioxide over 800,000 years",
+          "answer": "climate",
+          "core": false,
+          "why": "Ice cores are evidence for climate change. Carbon dioxide today is far higher than at any time in the record."
+        },
+        {
+          "id": "r3_c4",
+          "text": "HFCs, which replaced CFCs, do not harm ozone, and trap heat strongly",
+          "answer": "climate",
+          "core": false,
+          "why": "HFCs have no chlorine, so they do not destroy ozone. They are powerful greenhouse gases, so they are a climate problem."
+        },
+        {
+          "id": "r3_c5",
+          "text": "The Arctic Ocean ice melting in summer",
+          "answer": "climate",
+          "core": false,
+          "why": "Arctic sea ice is shrinking because the Earth is getting warmer."
+        },
+        {
+          "id": "r3_p1",
+          "text": "Nitrogen oxides from a hot engine, which help to make smog and acid rain",
+          "answer": "pollution",
+          "core": true,
+          "why": "Nitrogen oxides are made in hot flames. They are air pollutants that help make smog and acid rain."
+        },
+        {
+          "id": "r3_p2",
+          "text": "A layer of warm air that holds cold, smoky air down near the ground",
+          "answer": "pollution",
+          "core": false,
+          "why": "That is a temperature inversion. It trapped the smoke in the Great Smog of London."
+        },
+        {
+          "id": "r3_p3",
+          "text": "The Clean Air Act of 1956",
+          "answer": "pollution",
+          "core": false,
+          "why": "The Clean Air Act was passed after the Great Smog of London to reduce smoke from coal."
+        },
+        {
+          "id": "r3_p4",
+          "text": "Sulfur dioxide falling sharply in Europe since 1990",
+          "answer": "pollution",
+          "core": false,
+          "why": "Scrubbers, low-sulfur fuel and laws cut sulfur dioxide. Air pollution is the problem that has improved."
+        },
+        {
+          "id": "r3_p5",
+          "text": "A secondary pollutant made by sunlight from exhaust gases",
+          "answer": "pollution",
+          "core": false,
+          "why": "That is ozone in smog. It is made in the air from nitrogen oxides and VOCs, and it is near the ground."
+        }
+      ]
+    }
+  ],
+  "mistakes": {
+    "ozone>climate": "Ozone depletion lets more ultraviolet light in, not more heat. Heat trapped by gases is climate change.",
+    "ozone>pollution": "Ozone depletion happens high up in the stratosphere. Air pollution happens near the ground.",
+    "climate>ozone": "Climate change is heat trapped by gases such as carbon dioxide and methane. The ozone layer is a different problem.",
+    "climate>pollution": "Carbon dioxide and methane do not harm lungs. They trap heat, so they belong to climate change.",
+    "pollution>ozone": "Smog, acid rain and lung harm are at ground level. They are not about the ozone layer high up.",
+    "pollution>climate": "Smog, acid rain and lung harm are not about trapped heat. They are air pollution."
+  }
+}

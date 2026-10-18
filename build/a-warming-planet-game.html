@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Warming Planet: the Sorter</title>
+<style>
+  :root {
+    /* the 'atmosphere' palette from lib/theme.js, so the game looks like the deck */
+    --dark: #10213D; --darksoft: #2A4A73; --accent: #8FD3E8; --accentink: #1B6584; --support: #23805F; --alert: #C2432E;
+    --tint: #F2F7FA; --tintdeep: #DCE9F1; --ink: #14263D; --inksoft: #55708A; --white: #fff;
+    --okbg: #E6F4EE; --nobg: #FDEDEA; --gut: 20px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-bottom: 24px; }
+  html, body { margin: 0; padding: 0; background: var(--tint); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  #app { width: 100%; max-width: 1120px; margin: 0 auto; padding: 14px var(--gut) 32px; }
+  .narrow { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif; color: var(--dark); margin: 0; }
+  h1 { font-size: 32px; line-height: 1.15; } h2 { font-size: 26px; } h3 { font-size: 19px; }
+  button, summary { -webkit-tap-highlight-color: transparent; }
+  button { font: inherit; cursor: pointer; -webkit-appearance: none; appearance: none; touch-action: manipulation; }
+  button:disabled { cursor: default; }
+  button:focus-visible, summary:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .hide { display: none !important; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+  /* top of the board */
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pill { background: var(--dark); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; }
+  .pill.hard { background: var(--alert); }
+  .progress { display: flex; align-items: center; gap: 12px; }
+  .prog { font-weight: 700; color: var(--dark); font-size: 15px; white-space: nowrap; }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--dark); background: var(--white); }
+  .dot.sel { background: var(--accent); }
+  .dot.right { background: var(--accentink); border-color: var(--accentink); }
+  .dot.wrong { background: var(--alert); border-color: var(--alert); }
+
+  /* cards and text */
+  .card { background: var(--white); border: 2px solid var(--tintdeep); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+  .lead { font-size: 18px; line-height: 1.45; margin: 12px 0 0; }
+  .small { font-size: 14px; color: var(--inksoft); line-height: 1.4; }
+  .sub { font-size: 16px; color: var(--inksoft); margin: 4px 0 0; }
+  .callout { border: 3px solid var(--alert); border-radius: 12px; padding: 12px 14px; margin: 14px 0 0; font-size: 18px; line-height: 1.4; background: var(--nobg); color: var(--ink); }
+  .callout b { color: var(--alert); }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--dark); }
+  .btn { padding: 14px 24px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; background: var(--dark); color: var(--white); border: 2px solid var(--dark); }
+  .btn.ghost { background: var(--white); color: var(--dark); }
+  .btn.small { padding: 8px 14px; font-size: 15px; min-height: 46px; }
+  .btn.wide { width: 100%; }
+  .btn.ghost[aria-expanded="true"] { background: var(--dark); color: var(--white); }
+  .legend { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+  .legend li { display: flex; align-items: center; gap: 12px; font-size: 16px; line-height: 1.35; }
+  .chip { flex: none; min-width: 108px; text-align: center; border-radius: 999px; padding: 6px 12px; font-weight: 700; font-size: 15px; border: 2px solid var(--dark); }
+  [data-bin="ozone"] { --bc: #5B4A9E; --bt: var(--white); }
+  [data-bin="climate"] { --bc: #B23A27; --bt: var(--white); }
+  [data-bin="pollution"] { --bc: #6A5A3C; --bt: var(--white); }
+  .chip[data-bin], .tag[data-bin] { background: var(--bc); color: var(--bt); }
+
+  /* the clues */
+  details.clues { border: 2px solid var(--support); border-radius: 12px; background: var(--white); margin: 16px 0 0; }
+  details > summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 48px; padding: 10px 14px; font-weight: 700; font-size: 17px; color: var(--dark); line-height: 1.3; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after { content: ''; flex: none; width: 10px; height: 10px; margin: 0 4px 4px 0; border-right: 3px solid var(--dark); border-bottom: 3px solid var(--dark); transform: rotate(45deg); }
+  details[open] > summary::after { transform: rotate(-135deg); margin: 4px 4px 0 0; }
+  ul.rules { margin: 0; padding: 0 14px 12px 34px; }
+  ul.rules li { font-size: 17px; line-height: 1.4; margin: 7px 0; }
+
+  /* the board: items on the left, bins on the right (desktop); items, then a bar of bins (phone) */
+  .board { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+  ol.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  li.item { background: var(--white); border: 2px solid var(--tintdeep); border-left-width: 8px; border-radius: 14px; scroll-margin-bottom: 200px; scroll-margin-top: 12px; }
+  li.item.sel { border-color: var(--dark); box-shadow: 0 0 0 4px var(--accent); }
+  li.item.right { border-color: var(--accentink); background: var(--okbg); }
+  li.item.wrong { border-color: var(--alert); background: var(--nobg); }
+  li.item.dragging { opacity: .45; }
+  .itembtn { display: block; width: 100%; min-height: 58px; text-align: left; background: transparent; color: var(--ink); border: 0; border-radius: 12px; padding: 14px 16px; font-size: 18px; line-height: 1.4; -webkit-user-select: none; user-select: none; }
+  .itembtn:disabled { color: var(--ink); opacity: 1; }
+  @media (hover: hover) { li.item:not(.right):not(.wrong):hover { border-color: var(--darksoft); } .bin:not(:disabled):hover { filter: brightness(1.12); }  }
+  li.item.right .itembtn, li.item.wrong .itembtn { min-height: 0; padding-bottom: 8px; }
+  .fb { padding: 0 16px 14px; }
+  .fbtop { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin-bottom: 6px; }
+  .mark { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 17px; }
+  .mark.ok { color: var(--accentink); } .mark.no { color: var(--alert); }
+  .ico { width: 18px; height: 18px; flex: none; }
+  .tag { display: inline-block; border-radius: 999px; padding: 4px 11px; font-size: 14px; font-weight: 700; border: 2px solid var(--dark); }
+  .fb p { margin: 5px 0 0; font-size: 16px; line-height: 1.45; }
+  .fb .what { font-weight: 700; color: var(--dark); }
+  .fb .slip { color: var(--ink); }
+
+  .side { display: flex; flex-direction: column; background: var(--white); border: 2px solid var(--tintdeep); border-radius: 14px; padding: 14px; position: sticky; top: 14px; }
+  .hint { margin: 0 0 10px; font-size: 15px; line-height: 1.35; color: var(--inksoft); font-weight: 700; min-height: 20px; }
+  .hint.warn { color: var(--alert); }
+  .bins { display: grid; gap: 10px; }
+  .bin { position: relative; display: flex; align-items: center; gap: 12px; min-height: 82px; padding: 10px 14px; border-radius: 14px; border: 3px solid var(--dark); background: var(--bc); color: var(--bt); text-align: left; }
+  .bin .key { flex: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; background: var(--bt); color: var(--bc); }
+  .bin .bn { display: block; font-size: 21px; font-weight: 700; line-height: 1.2; }
+  .bin .bh { display: block; font-size: 14px; line-height: 1.3; margin-top: 3px; }
+  .bins.armed .bin { box-shadow: 0 0 0 3px var(--accent); }
+  .bin.over { transform: scale(1.03); box-shadow: 0 0 0 5px var(--accent); }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  #finishround { margin-top: 2px; }
+  .cluespanel { order: 5; margin-top: 12px; background: var(--tint); border: 2px solid var(--support); border-radius: 12px; padding: 10px 12px; max-height: 42vh; overflow: auto; }
+  .cluespanel ul.rules { padding: 0 0 0 22px; }
+  .cluespanel ul.rules li { font-size: 16px; }
+  .ghost-drag { position: fixed; z-index: 50; pointer-events: none; max-width: 340px; background: var(--white); border: 3px solid var(--dark); border-radius: 12px; padding: 10px 14px; font-size: 16px; line-height: 1.35; box-shadow: 0 8px 18px rgba(16, 33, 61, .3); }
+
+  @media (max-width: 760px) {
+    :root { --gut: 16px; }
+    h1 { font-size: 28px; }
+    .board { display: block; }
+    .itembtn { font-size: 17px; }
+    .side { position: sticky; bottom: 0; top: auto; z-index: 5; margin: 14px calc(-1 * var(--gut)) 0; border-radius: 0; border-width: 2px 0 0; padding: 8px var(--gut) calc(8px + env(safe-area-inset-bottom)); box-shadow: 0 -6px 14px rgba(16, 33, 61, .14); }
+    .hint { margin: 0 0 6px; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 19px; }
+    .bins { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .bin { flex-direction: column; justify-content: center; min-height: 68px; padding: 5px 4px; gap: 3px; text-align: center; border-width: 3px; }
+    .bin .key { width: 22px; height: 22px; font-size: 13px; }
+    .bin .bn { font-size: 16px; }
+    .bin .bh { display: none; }
+    .tools { margin-top: 8px; flex-wrap: nowrap; }
+    .tools .btn.small { flex: 1 1 auto; padding: 6px 10px; font-size: 14px; }
+    #cluesbtn { flex: 0 0 auto; }
+    .cluespanel { order: 0; margin: 0 0 8px; max-height: 36vh; }
+    .chip { min-width: 96px; }
+  }
+
+  /* the review: a drop-down for every round */
+  .score { font-size: 46px; font-family: Georgia, serif; font-weight: 700; color: var(--dark); margin: 6px 0 2px; }
+  details.review { border: 2px solid var(--tintdeep); border-radius: 12px; background: var(--white); margin: 12px 0 0; }
+  details.review > summary { font-size: 16px; }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--tintdeep); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--dark); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--inksoft); white-space: nowrap; }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; }
+  .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--accentink); } .verdict.no { color: var(--alert); } .verdict.na { color: var(--inksoft); }
+  .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--dark); line-height: 1.4; }
+  .rq .how { font-size: 15px; color: var(--inksoft); margin: 6px 0 2px; }
+  .rq .work div { font-size: 15px; line-height: 1.4; margin: 3px 0; color: var(--ink); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--tintdeep); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--tintdeep); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--accentink); }
+  ul.tips { padding-left: 20px; margin: 10px 0 0; } ul.tips li { margin: 10px 0; font-size: 16px; line-height: 1.45; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="sr" class="sr" role="status" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * THE SORTER (A Warming Planet, Y9). Three bins: Ozone depletion, Climate change, Air pollution. Nobody gets the same game.
+   *
+   * Every item, answer, reason and named mistake comes from build/a-warming-planet.bank.json, written into DATA below by
+   * build/a-warming-planet-game.py when the game is copied to the lesson folder. This file carries no item text of its own.
+   *
+   * Every game is built from a six-character code, random for each student. Opening the file with #CODE after the address gives the
+   * same game again, so a teacher can see what a student saw. The code lives in memory only. From the code come: which bin is in which
+   * place (shuffled once, the same all game), which items are drawn from each round's pool, and the order of the items in a round.
+   *
+   * THE DRAW. Each round takes 'draw' items from that round's pool with exactly 'per_bin' items in each bin. Every item marked
+   * core:true is always in the draw (if a bin has more core items than its count, a random subset of the core items is taken, never
+   * fewer than the count); the rest of the bin's places are filled at random from the other items in that bin.
+   *
+   * DIFFICULTY RAMPS, AND THE TOP IS MEANT TO BE TOO HARD. Round 1 is the lesson. Round 2 is where it lives, which is a trap. Round 3 goes
+   * far past the lesson. The start screen says so, so that nobody reads a red mark as "I am bad at science".
+   *
+   * A placement is a single go. The feedback comes at once (the reason, and for a wrong one what it is and the named mistake), and the
+   * item is locked with a small tag showing its right bin. Dragging is for a mouse or a pen; a finger taps an item and then a bin,
+   * because a dragging finger would also scroll the page.
+   * ================================================================== */
+  var DATA = /*DATA*/null/*END*/;
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+
+  var BINS = DATA.bins, LABEL = DATA.bin_labels, HINT = DATA.bin_hints, ROUNDS = DATA.rounds;
+  var N = ROUNDS[0].draw, R = ROUNDS.length, TOTAL = N * R;
+  var IS = { ozone: 'It is ozone depletion.', climate: 'It is climate change.', pollution: 'It is air pollution.' };
+  var KEYS = ['1', '2', '3'];
+
+  /* ---------------- the game, from the code ---------------- */
+  function generate(code) {
+    var rnd = makeRng(code);
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var binOrder = shuffle(BINS);                                  // once per game: the bins are in these places all game
+    var qs = [];
+    ROUNDS.forEach(function (rd, ri) {
+      if (rd.draw !== N) throw new Error('every round must draw the same number of items');
+      var chosen = [];
+      BINS.forEach(function (b) {
+        var need = rd.per_bin[b] || 0;
+        var inBin = rd.pool.filter(function (it) { return it.answer === b; });
+        var core = shuffle(inBin.filter(function (it) { return it.core; }));
+        var rest = shuffle(inBin.filter(function (it) { return !it.core; }));
+        var take = core.length >= need ? core.slice(0, need) : core.concat(rest.slice(0, need - core.length));
+        if (take.length !== need) throw new Error('the pool for ' + b + ' in round ' + (ri + 1) + ' is too small');
+        chosen = chosen.concat(take);
+      });
+      if (chosen.length !== rd.draw) throw new Error('round ' + (ri + 1) + ' does not draw ' + rd.draw + ' items');
+      shuffle(chosen).forEach(function (it, k) {
+        var mk = {};
+        BINS.forEach(function (c) { if (c !== it.answer) { var key = it.answer + '>' + c; mk[c] = { key: key, msg: DATA.mistakes[key] }; } });
+        qs.push({ idx: ri * N + k, round: ri + 1, n: k + 1, id: it.id, text: it.text, answer: it.answer, why: it.why, core: !!it.core, mistakes: mk });
+      });
+    });
+    return { code: code, binOrder: binOrder, qs: qs };
+  }
+
+  /* ---------------- state and small helpers ---------------- */
+  var app = document.getElementById('app'), srEl = document.getElementById('sr');
+  var state, drag = null, suppressClick = false;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, game: generate(c), r: 0, results: [], screen: 'start', sel: null, mark: 0, roundStart: 0, kbd: false, cluesOpen: false }; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  function show() { app.innerHTML = ''; window.scrollTo(0, 0); }
+  function say(t) { srEl.textContent = ''; setTimeout(function () { srEl.textContent = t; }, 30); }
+  function posOf(bin) { return state.game.binOrder.indexOf(bin) + 1; }
+  function roundItems(r) { return state.game.qs.slice(r * N, r * N + N); }
+  function roundName(r) { return ROUNDS[r].name; }
+  function shortName(r) { return ROUNDS[r].name.replace(/^Round \d+:\s*/, ''); }
+  function placedIn(r) { return roundItems(r).filter(function (q) { return state.results[q.idx]; }).length; }
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  var TICK = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8.5l3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CROSS = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  function rulesHtml() { return '<ul class="rules">' + DATA.rules.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'; }
+
+  /* ---------------- the start screen ---------------- */
+  function start() {
+    show(); state.screen = 'start';
+    var wrap = el('div', 'narrow'), card = el('div', 'card');
+    card.appendChild(el('h1', null, 'The Sorter'));
+    card.appendChild(el('p', 'sub', 'A Warming Planet: the whole unit'));
+    card.appendChild(el('p', 'lead', 'Put each item in a bin: <b>' + esc(LABEL.ozone) + '</b>, <b>' + esc(LABEL.climate) + '</b> or <b>' + esc(LABEL.pollution) + '</b>. There are ' + R + ' rounds of ' + N + ' items. Each round is harder than the one before.'));
+    var lg = el('ul', 'legend'); lg.id = 'legend';
+    BINS.forEach(function (b) { lg.appendChild(el('li', null, '<span class="chip" data-bin="' + b + '">' + esc(LABEL[b]) + '</span><span>' + esc(HINT[b]) + '</span>')); });
+    card.appendChild(lg);
+    card.appendChild(el('p', 'callout', '<b>Round ' + R + ' goes far past the lesson. It is meant to be too hard.</b> A red mark there does not mean you are bad at science. Do what you can and read the reasons.'));
+    card.appendChild(el('p', 'lead', 'Tap an item, then tap a bin. On a computer you can also drag an item onto a bin, or press 1, 2 or 3. You get one go at each item, and then you see why. There is no timer on the items. You can stop and see your results at any time.'));
+    var cl = el('details', 'clues'); cl.id = 'startclues';
+    cl.innerHTML = '<summary>Clues</summary>' + rulesHtml();
+    card.appendChild(cl);
+    card.appendChild(el('p', 'small', 'Your items are different from everyone else’s, and the bins change places, so read the label on each bin. Game code <span class="code" id="code">' + state.code + '</span>'));
+    wrap.appendChild(card);
+    var b = el('button', 'btn', 'Start round 1'); b.id = 'start'; b.type = 'button'; b.onclick = beginRound; wrap.appendChild(b);
+    app.appendChild(wrap); b.focus({ preventScroll: true });
+  }
+
+  /* ---------------- the board ---------------- */
+  function beginRound() { state.mark = Date.now(); state.roundStart = state.mark; board(); }
+  function board() {
+    show(); state.screen = 'board'; state.sel = null; state.cluesOpen = false;
+    var r = state.r;
+    var hd = el('header', 'top');
+    hd.appendChild(el('span', 'pill' + (r === R - 1 ? ' hard' : ''), 'Round ' + (r + 1) + ' of ' + R + ' · ' + esc(shortName(r))));
+    var pg = el('div', 'progress'); pg.appendChild(el('span', 'prog')); pg.firstChild.id = 'prog';
+    var dots = el('div', 'dots'); dots.id = 'dots'; for (var k = 0; k < N; k++) dots.appendChild(el('span', 'dot'));
+    pg.appendChild(dots); hd.appendChild(pg); app.appendChild(hd);
+
+    var wrap = el('div', 'board'), ol = el('ol', 'items'); ol.id = 'items';
+    roundItems(r).forEach(function (q) {
+      var li = el('li', 'item'); li.dataset.idx = String(q.idx); li.dataset.id = q.id;
+      var b = el('button', 'itembtn'); b.type = 'button'; b.textContent = q.text; b.setAttribute('aria-pressed', 'false');
+      b.onclick = function () { if (suppressClick) return; pickItem(q.idx); };
+      wireDrag(b, q.idx);
+      li.appendChild(b); li.appendChild(el('div', 'fb hide')); ol.appendChild(li);
+    });
+    wrap.appendChild(ol);
+
+    var side = el('div', 'side'); side.id = 'side';
+    var hint = el('p', 'hint'); hint.id = 'hint'; side.appendChild(hint);
+    var bins = el('div', 'bins'); bins.id = 'bins';
+    state.game.binOrder.forEach(function (b, k) {
+      var bt = el('button', 'bin', '<span class="key" aria-hidden="true">' + KEYS[k] + '</span><span class="bl"><span class="bn">' + esc(LABEL[b]) + '</span><span class="bh">' + esc(HINT[b]) + '</span></span>');
+      bt.type = 'button'; bt.dataset.bin = b; bt.dataset.pos = String(k + 1);
+      bt.setAttribute('aria-label', 'Bin ' + (k + 1) + ': ' + LABEL[b] + ', ' + HINT[b] + '. Key ' + KEYS[k] + '.');
+      bt.onclick = function () { binPressed(b); };
+      bins.appendChild(bt);
+    });
+    side.appendChild(bins);
+    var fin = el('button', 'btn wide hide'); fin.id = 'finishround'; fin.type = 'button'; fin.onclick = roundEnd; side.appendChild(fin);
+    var tools = el('div', 'tools');
+    var cb = el('button', 'btn ghost small', 'Clues'); cb.id = 'cluesbtn'; cb.type = 'button'; cb.setAttribute('aria-expanded', 'false'); cb.setAttribute('aria-controls', 'cluespanel'); cb.onclick = toggleClues;
+    var sb = el('button', 'btn ghost small', 'Stop and see my results'); sb.id = 'stop'; sb.type = 'button'; sb.onclick = final;
+    tools.appendChild(cb); tools.appendChild(sb); side.appendChild(tools);
+    var panel = el('div', 'cluespanel hide', '<h3>Clues</h3>' + rulesHtml() + '<p class="small">Looking at the clues does not cost anything.</p>'); panel.id = 'cluespanel'; side.appendChild(panel);
+    wrap.appendChild(side); app.appendChild(wrap);
+    roundItems(r).forEach(paintItem); paintTop(); paintSide();
+  }
+  function toggleClues() {
+    state.cluesOpen = !state.cluesOpen;
+    document.getElementById('cluespanel').classList.toggle('hide', !state.cluesOpen);
+    document.getElementById('cluesbtn').setAttribute('aria-expanded', String(state.cluesOpen));
+  }
+  function feedbackHtml(q, res) {
+    var h = '<div class="fbtop">' + (res.ok ? '<span class="mark ok">' + TICK + 'Right</span>' : '<span class="mark no">' + CROSS + 'Not quite</span>') +
+      '<span class="tag" data-bin="' + q.answer + '">Bin ' + posOf(q.answer) + ': ' + esc(LABEL[q.answer]) + '</span></div>';
+    if (!res.ok) h += '<p class="what">' + esc(IS[q.answer]) + ' You chose ' + esc(LABEL[res.chosen]) + '.</p>';
+    h += '<p class="why">' + esc(q.why) + '</p>';
+    if (!res.ok) h += '<p class="slip"><b>Watch out:</b> ' + esc(q.mistakes[res.chosen].msg) + '</p>';
+    return h;
+  }
+  function paintItem(q) {
+    var li = document.querySelector('.item[data-idx="' + q.idx + '"]'); if (!li) return;
+    var res = state.results[q.idx], b = li.querySelector('.itembtn'), fb = li.querySelector('.fb');
+    li.className = 'item' + (res ? (res.ok ? ' right' : ' wrong') : (state.sel === q.idx ? ' sel' : ''));
+    li.dataset.state = res ? (res.ok ? 'right' : 'wrong') : (state.sel === q.idx ? 'selected' : 'open');
+    b.disabled = !!res; b.setAttribute('aria-pressed', state.sel === q.idx ? 'true' : 'false');
+    if (res) { fb.className = 'fb'; fb.innerHTML = feedbackHtml(q, res); }
+  }
+  function paintTop() {
+    var items = roundItems(state.r), done = placedIn(state.r);
+    document.getElementById('prog').textContent = done < N ? 'Item ' + (done + 1) + ' of ' + N : 'All ' + N + ' sorted';
+    var dots = document.getElementById('dots'); dots.setAttribute('aria-label', done + ' of ' + N + ' sorted');
+    items.forEach(function (q, k) { var res = state.results[q.idx]; dots.children[k].className = 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (state.sel === q.idx ? ' sel' : '')); });
+  }
+  function paintSide(warn) {
+    var done = placedIn(state.r) === N, hint = document.getElementById('hint');
+    hint.className = 'hint' + (warn ? ' warn' : '');
+    hint.textContent = done ? 'All ' + N + ' are sorted.' : warn ? warn : state.sel !== null ? 'Now tap a bin for: ' + state.game.qs[state.sel].text : 'Tap an item, then tap a bin.';
+    var bins = document.getElementById('bins'); bins.classList.toggle('hide', done); bins.classList.toggle('armed', state.sel !== null);
+    var fin = document.getElementById('finishround'); fin.classList.toggle('hide', !done); fin.textContent = state.r < R - 1 ? 'Finish round ' + (state.r + 1) : 'See round ' + R + ' results';
+  }
+  function pickItem(idx) {
+    if (state.screen !== 'board' || state.results[idx]) return;
+    var prev = state.sel; state.sel = state.sel === idx ? null : idx;
+    if (prev !== null) paintItem(state.game.qs[prev]);
+    paintItem(state.game.qs[idx]); paintTop(); paintSide();
+  }
+  function binPressed(bin) {
+    if (state.screen !== 'board') return;
+    if (state.sel === null) { paintSide('Tap an item first, then tap a bin.'); return; }
+    place(state.sel, bin);
+  }
+  function place(idx, bin) {
+    if (state.screen !== 'board' || state.results[idx] || BINS.indexOf(bin) < 0) return;
+    var q = state.game.qs[idx], ok = bin === q.answer, now = Date.now();
+    state.results[idx] = { ok: ok, chosen: bin, key: ok ? null : q.answer + '>' + bin, secs: Math.max(1, Math.round((now - state.mark) / 1000)) };
+    state.mark = now; state.sel = null;
+    paintItem(q); paintTop(); paintSide();
+    say((ok ? 'Right. ' : 'Not quite. ' + IS[q.answer] + ' ') + q.why);
+    var li = document.querySelector('.item[data-idx="' + idx + '"]'); if (li) li.scrollIntoView({ block: 'nearest' });
+    if (state.kbd) {                                               // keep a keyboard player moving: on to the next item that is still open
+      var items = roundItems(state.r), nextQ = null;
+      for (var s = 1; s <= N && !nextQ; s++) { var c = items[(q.n - 1 + s) % N]; if (!state.results[c.idx]) nextQ = c; }
+      var target = nextQ ? document.querySelector('.item[data-idx="' + nextQ.idx + '"] .itembtn') : document.getElementById('finishround');
+      if (target) target.focus({ preventScroll: true });
+    }
+  }
+
+  /* ---------------- dragging, for a mouse or a pen ---------------- */
+  function binAt(x, y) { var e = document.elementFromPoint(x, y); return e && e.closest ? e.closest('.bin') : null; }
+  function wireDrag(btn, idx) {
+    btn.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch' || e.button !== 0 || btn.disabled || state.screen !== 'board') return;
+      suppressClick = false;
+      drag = { idx: idx, x: e.clientX, y: e.clientY, active: false, id: e.pointerId, ghost: null, btn: btn };
+      try { btn.setPointerCapture(e.pointerId); } catch (err) { /* not needed for the drag to work */ }
+    });
+    btn.addEventListener('pointermove', function (e) {
+      if (!drag || drag.id !== e.pointerId) return;
+      if (!drag.active) {
+        if (Math.abs(e.clientX - drag.x) + Math.abs(e.clientY - drag.y) < 8) return;
+        drag.active = true; drag.ghost = el('div', 'ghost-drag'); drag.ghost.textContent = state.game.qs[idx].text; document.body.appendChild(drag.ghost);
+        btn.parentNode.classList.add('dragging');
+      }
+      drag.ghost.style.left = (e.clientX + 14) + 'px'; drag.ghost.style.top = (e.clientY + 10) + 'px';
+      var over = binAt(e.clientX, e.clientY);
+      Array.prototype.forEach.call(document.querySelectorAll('.bin'), function (b) { b.classList.toggle('over', b === over); });
+    });
+    var end = function (e, dropped) {
+      if (!drag || drag.id !== e.pointerId) return;
+      var d = drag; drag = null;
+      try { btn.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+      if (!d.active) return;
+      suppressClick = true; setTimeout(function () { suppressClick = false; }, 0);   // the click that follows a drag is not a selection
+      var over = dropped ? binAt(e.clientX, e.clientY) : null;
+      if (d.ghost && d.ghost.parentNode) d.ghost.parentNode.removeChild(d.ghost);
+      btn.parentNode.classList.remove('dragging');
+      Array.prototype.forEach.call(document.querySelectorAll('.bin'), function (b) { b.classList.remove('over'); });
+      if (over) place(d.idx, over.dataset.bin);
+    };
+    btn.addEventListener('pointerup', function (e) { end(e, true); });
+    btn.addEventListener('pointercancel', function (e) { end(e, false); });
+  }
+
+  /* ---------------- the review: a drop-down for every round ---------------- */
+  function reviewItem(r, k) {
+    var idx = r * N + k, q = state.game.qs[idx], x = state.results[idx];
+    var h = '<div class="rq" data-q="' + (idx + 1) + '"><div class="top"><span class="qn">Item ' + (k + 1) + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(q.text) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(q.text) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Right</div></div>';
+    return h + '<div class="verdict no">Wrong</div><div class="wrote">You chose <b>' + esc(LABEL[x.chosen]) + '</b>. The answer is <b>' + esc(LABEL[q.answer]) + '</b>.</div><p class="how">How to get there:</p>' +
+      '<div class="work"><div>' + esc(q.why) + '</div><div>' + esc(q.mistakes[x.chosen].msg) + '</div></div></div>';
+  }
+  function reviewHtml(r) {
+    var done = 0, right = 0, secs = 0;
+    for (var k = 0; k < N; k++) { var x = state.results[r * N + k]; if (x) { done++; secs += x.secs; if (x.ok) right++; } }
+    var sum = roundName(r) + ' · ' + (done === 0 ? 'not reached' : done === N ? right + ' of ' + N + ' right' : right + ' right of ' + done + ' answered') + (done ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var j = 0; j < N; j++) body += reviewItem(r, j);
+    return '<details class="review" data-round="' + (r + 1) + '"><summary><span>' + esc(sum) + '</span></summary>' + body + '</details>';
+  }
+  function roundEnd() {
+    show(); state.screen = 'round';
+    var right = 0; for (var k = 0; k < N; k++) { var x = state.results[state.r * N + k]; if (x && x.ok) right++; }
+    var secs = Math.round((Date.now() - state.roundStart) / 1000);
+    var wrap = el('div', 'narrow'), card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of ' + N));
+    card.appendChild(el('p', 'small', 'Round time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each item took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r));
+    if (state.r === R - 2) card.appendChild(el('p', 'callout', '<b>Next is round ' + R + '. It is meant to be too hard.</b> Do what you can and read the reasons.'));
+    wrap.appendChild(card);
+    var b = el('button', 'btn', state.r < R - 1 ? 'Start round ' + (state.r + 2) : 'See my results'); b.id = 'roundnext'; b.type = 'button';
+    b.onclick = function () { if (state.r < R - 1) { state.r++; beginRound(); } else final(); };
+    wrap.appendChild(b); app.appendChild(wrap); b.focus({ preventScroll: true });
+  }
+
+  /* ---------------- the last screen ---------------- */
+  function final() {
+    show(); state.screen = 'final';
+    var answered = state.results.filter(function (x) { return x; }), total = answered.filter(function (x) { return x.ok; }).length;
+    var wrap = el('div', 'narrow'), card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Your results')); card.appendChild(el('div', 'score', total + ' of ' + TOTAL));
+    if (answered.length < TOTAL) card.appendChild(el('p', 'small', answered.length + ' of ' + TOTAL + ' items answered. ' + (TOTAL - answered.length) + ' not reached.'));
+    for (var r = 0; r < R; r++) {
+      var done = 0, right = 0; for (var k = 0; k < N; k++) { var x = state.results[r * N + k]; if (x) { done++; if (x.ok) right++; } }
+      card.appendChild(el('div', 'row', '<span><b>' + esc(roundName(r)) + '</b><br><span class="small">' + right + ' of ' + N + (done < N ? ' (' + (N - done) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * right / N) + '%"></i></span>'));
+    }
+    wrap.appendChild(card);
+
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {}; answered.forEach(function (x) { if (!x.ok) counts[x.key] = (counts[x.key] || 0) + 1; });
+    var keys = Object.keys(DATA.mistakes).filter(function (k) { return counts[k]; });
+    if (!keys.length) tips.appendChild(el('p', 'lead', answered.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any items.'));
+    else {
+      var ul = el('ul', 'tips');
+      keys.forEach(function (key) {
+        var parts = key.split('>'), n = counts[key];
+        ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>You chose ' + esc(LABEL[parts[1]]) + ' when the answer was ' + esc(LABEL[parts[0]]) + '. ' + esc(DATA.mistakes[key])));
+      });
+      tips.appendChild(ul);
+    }
+    wrap.appendChild(tips);
+
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every item'));
+    rev.appendChild(el('p', 'small', 'Open a round to see how long each item took, what you chose and how to get to each right answer. The time does not count for anything.'));
+    for (var rr = 0; rr < R; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr));
+    wrap.appendChild(rev);
+
+    var fin = el('div', 'card'); fin.appendChild(el('p', 'lead', 'Game code <span class="code" id="endcode">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same game.'));
+    wrap.appendChild(fin);
+    var b = el('button', 'btn', 'Play again with a new code'); b.id = 'again'; b.type = 'button'; b.onclick = function () { fresh(); start(); }; wrap.appendChild(b);
+    app.appendChild(wrap); b.focus({ preventScroll: true });
+  }
+
+  /* ---------------- keys: 1, 2, 3 for the bins as they are placed; Escape lets go ---------------- */
+  document.addEventListener('pointerdown', function () { state.kbd = false; }, true);
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    state.kbd = true;
+    if (state.screen !== 'board') return;
+    var k = KEYS.indexOf(e.key);
+    if (k >= 0) {
+      e.preventDefault();
+      if (state.sel === null) paintSide('Choose an item first, then press 1, 2 or 3.');
+      else place(state.sel, state.game.binOrder[k]);
+    } else if (e.key === 'Escape') {
+      if (state.cluesOpen) toggleClues();
+      else if (state.sel !== null) { var prev = state.sel; state.sel = null; paintItem(state.game.qs[prev]); paintTop(); paintSide(); }
+    }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, code: function () { return state.code; }, game: function () { return state.game; }, results: function () { return state.results; },
+    screen: function () { return state.screen; }, selected: function () { return state.sel; }, data: DATA };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

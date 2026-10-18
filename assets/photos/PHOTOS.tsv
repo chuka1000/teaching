@@ -71,3 +71,6 @@ bac_decomp	ov:4a8f3f0e-76e4-49b3-bbbf-5b05a7d2589a	0.5,0.5,1.0
 atm_lasmog	ov:46661336-34c4-4fb4-9a39-d657dcea4c75	0.375,0.55,1.0
 atm_exhaust	ov:9f10fc9c-6439-4d24-bf4a-a128f62518d8	0.62,0.5,1.0
 atm_powerstation	ov:e5724476-77b3-4bcc-baf1-d652b11356c7	0.4,0.5,1.0
+atm_soot	ov:4ae69092-60ae-456f-9069-3501b7120113	0.5,0.52,1.0
+atm_solvent	ov:5952c494-0693-435a-837b-ec88851b59fe	0.42,0.5,1.0
+atm_volcano	ov:b7b4025c-30b3-4984-b479-242241b374c1	0.55,0.5,1.0
