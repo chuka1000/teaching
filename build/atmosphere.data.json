@@ -1,0 +1,14 @@
+{
+ "l1": {
+  "strip": {
+   "runoff": 250,
+   "pct": 40,
+   "caught": 100
+  },
+  "coal": {
+   "coal": 2000,
+   "pct": 2,
+   "sulfur": 40
+  }
+ }
+}

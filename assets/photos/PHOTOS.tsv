@@ -68,3 +68,6 @@ bac_bacilli	ov:3fc79cf8-91c3-4ee7-ac57-129c11c23d05	0.5,0.5,1.0
 bac_spirilla	ov:fdc2864f-fd34-463f-b143-0ec3d81de65f	0.45,0.42,0.8
 bac_discs	ov:28e9e136-2ec9-4b90-adfb-a41222bafe21	0.5,0.5,1.0
 bac_decomp	ov:4a8f3f0e-76e4-49b3-bbbf-5b05a7d2589a	0.5,0.5,1.0
+atm_lasmog	ov:46661336-34c4-4fb4-9a39-d657dcea4c75	0.375,0.55,1.0
+atm_exhaust	ov:9f10fc9c-6439-4d24-bf4a-a128f62518d8	0.62,0.5,1.0
+atm_powerstation	ov:e5724476-77b3-4bcc-baf1-d652b11356c7	0.4,0.5,1.0
