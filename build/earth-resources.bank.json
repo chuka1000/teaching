@@ -1,0 +1,2621 @@
+{
+ "strands": {
+  "soil": {
+   "name": "What soil is made of",
+   "lesson": "What The Land Gives Us",
+   "key": "Soil has four parts: broken rock, dead organic matter, water and air, and living organisms. Producers grow in it, so nearly every land food chain starts there.",
+   "practise": "Cover this page and write the four parts from memory. Then say what each one is or does."
+  },
+  "time": {
+   "name": "How fast soil forms, and how fast it is lost",
+   "lesson": "What The Land Gives Us and Losing The Soil",
+   "key": "Centuries to make, years to lose. A crop takes months, a few centimetres of soil take a few hundred to about a thousand years, and coal takes millions of years.",
+   "practise": "Write the three times in order. Then explain, in one sentence, why soil is non-renewable on a human timescale."
+  },
+  "erosion": {
+   "name": "Erosion and desertification",
+   "lesson": "Losing The Soil",
+   "key": "Erosion is soil worn away AND carried off, by water or wind. Roots and leaves protect soil. Farming that removes plant cover can lead, in dry areas, to desertification.",
+   "practise": "Draw the four-step chain from farming to desertification, and say what the bare tray showed."
+  },
+  "cities": {
+   "name": "Cities and land",
+   "lesson": "Cities And What Can Be Done",
+   "key": "Urbanisation is a bigger share of people in towns and cities. Rain cannot soak in, so it runs off. Wuhan became a sponge city. The London Green Belt keeps a ring of land from being built on.",
+   "practise": "Name each place and say, in one sentence, what it did. Then explain runoff in your own words."
+  },
+  "renew": {
+   "name": "Natural resources, and renewable or not",
+   "lesson": "What The Earth Gives Us",
+   "key": "A natural resource comes from the Earth and is not made by people. Renewable or not is about the RATE: replaced as fast as, or faster than, it is used.",
+   "practise": "Pick three resources. For each, say how fast it is replaced and how fast it is used, then decide."
+  },
+  "last": {
+   "name": "Making it last",
+   "lesson": "Making It Last",
+   "key": "Conservation is careful use, not no use. A sustainable amount is no more than the resource replaces. Sustainable yield = stock × growth rate ÷ 100.",
+   "practise": "Do three sustainable-yield calculations. Write stock × rate ÷ 100 first, then the numbers."
+  },
+  "deplete": {
+   "name": "Running out",
+   "lesson": "Resource Depletion",
+   "key": "Depletion is use outrunning replacement for long enough. Even a renewable resource can run out, and a huge number is not a safe number. Repeat a fall once for EACH period.",
+   "practise": "Retell the passenger pigeon story in three sentences. Then do a repeated-fall calculation one period at a time."
+  }
+ },
+ "skills": {
+  "recall": "Remembering the facts",
+  "calc": "Calculations",
+  "spot": "Spotting what is wrong",
+  "explain": "Explaining in words",
+  "judge": "Judging and choosing",
+  "puzzle": "Puzzles past the test"
+ },
+ "habits": {
+  "soil-parts": "Learn the four parts of soil: broken rock, dead organic matter, water and air, and living organisms.",
+  "soil-rock-only": "Soil is not just crushed rock. Broken rock is one of four parts.",
+  "soil-forget-life": "Do not forget the living part of soil: bacteria, fungi, worms and insects, and the dead organic matter they break down.",
+  "soil-job": "Soil matters because producers grow in it and get their water and nutrients from it. Nearly every land food chain starts there.",
+  "time-order": "Learn the order: a crop takes months, a few centimetres of soil take centuries, coal takes millions of years.",
+  "time-fast": "Soil is slow: a few hundred to about a thousand years for a few centimetres. It can be LOST in years.",
+  "time-coal": "Coal is the one that takes millions of years. A few centimetres of soil take a few hundred to about a thousand years.",
+  "time-soil": "A few centimetres of soil take a few hundred to about a thousand years. Coal is far slower: millions of years.",
+  "time-never": "Soil does form again, but far slower than it is lost, so on a human timescale it is non-renewable.",
+  "time-calc-add": "To find the time for several centimetres, MULTIPLY the years for one centimetre by the number of centimetres. Do not add.",
+  "time-calc-one": "The question asks for several centimetres. Multiply the time for one centimetre by the number of centimetres.",
+  "resource-def": "A natural resource comes from the Earth and is not made by people. A thing made by people is made FROM natural resources.",
+  "renew-class": "Renewable: replaced far faster than we could use it up (sun, wind). Non-renewable: takes far longer to form than we use it (coal, oil, gas, ores).",
+  "renew-rate": "Ask for each resource: how fast is it replaced, and how fast is it used? Renewable only if it is replaced as fast as, or faster than, it is used.",
+  "renewable-rate": "Renewable or not is about the RATE, not the kind of resource: how fast it is replaced against how fast it is used.",
+  "can-regrow": "\"Can regrow\" is not the same as \"does regrow fast enough\". The resource is the whole forest or stock, not one tree or one fish.",
+  "renewable-cannot-run-out": "Renewable means it CAN be replaced, not that it cannot run out. Used too fast for long enough, a renewable resource is depleted.",
+  "eros-loosen": "Erosion is soil worn away AND carried off. The soil has to leave.",
+  "eros-formation": "Erosion is soil being lost. Soil formation is the slow process that makes it.",
+  "eros-agents": "Water and wind carry soil away. Roots, leaves, worms and insects do not.",
+  "eros-desert-only": "Erosion happens anywhere that soil is bare and water or wind can carry it off, not only in deserts.",
+  "eros-water-only": "Wind carries soil away as well as water.",
+  "cover": "Roots and leaves protect soil. A bare tray loses more soil than a covered one.",
+  "desert-spreads": "Desertification is land degradation in dry areas, from climate variation AND human activity. A desert does not spread by itself.",
+  "practical-order": "Learn the order of the practical: set up fairly (same soil, same slope), predict, pour the same amount of water, then compare the catch pots.",
+  "chain-order": "Learn each chain one step at a time: cause, then effect, then the effect of that.",
+  "urban-def": "Urbanisation is towns and cities growing, with a bigger SHARE of people living in them.",
+  "runoff": "Runoff is rain that flows over the surface instead of soaking in. Roads and roofs are sealed, so rain cannot soak in.",
+  "sponge": "A sponge city lets rain soak in or be stored: permeable paving, rain gardens and green roofs.",
+  "brownfield": "Brownfield land is land that has been built on before.",
+  "green-belt": "A green belt is a ring of land round a city, kept from being built on. London’s is about 500,000 hectares.",
+  "city-terms": "Learn the places: Wuhan is a sponge city. London has a Green Belt. Brownfield land has been built on before.",
+  "conserve-never": "Conservation is careful use so a resource lasts. It is not no use at all.",
+  "conserve-fast": "Conservation can bring a resource back, but it can take decades. Protecting early works best.",
+  "sustainable-nothing": "Sustainable does not mean nothing is taken. It means no more than the resource replaces, so the stock does not shrink.",
+  "recycle-def": "Recycling is resource management: it cuts how much new, often non-renewable, material is needed.",
+  "method-match": "Match the method to the resource: quotas for fish, replanting for forests, recycling for materials that do not regrow, breeding programmes for tiny populations.",
+  "prevent": "Match the method to the kind of resource: quotas for fish, replanting for forests, recycling for materials that do not regrow, breeding programmes for populations that have fallen very low.",
+  "deplete-def": "Depletion is use outrunning replacement for long enough that not enough is left. It can happen to living resources and to dug-up ones.",
+  "big-number-safe": "A huge number is not a safe number. If it falls faster than it regrows, it still reaches zero.",
+  "case-mismatch": "Learn each real case with what actually happened: helium (hospitals rationing it), the Aral Sea (lost over 90%), bluefin tuna (quotas), bison (a few hundred left).",
+  "judge-model": "When you judge a claim, say what the evidence DID show and what it cannot show. A small, quick model shows a pattern but does not prove every real case.",
+  "yield-percent": "The growth rate is a percentage, so divide by 100. Sustainable yield = stock × rate ÷ 100.",
+  "yield-flip": "Multiply the stock by the rate. Do not divide by it. Sustainable yield = stock × rate ÷ 100.",
+  "yield-compare": "Work out the sustainable yield first (stock × rate ÷ 100). Then compare it with what is actually taken.",
+  "pct-points": "Percentage POINTS are the difference between two percentages. Do not divide by the starting percentage.",
+  "pct-wrong-base": "Percentage change = change ÷ the ORIGINAL amount × 100. Divide by the amount you started with.",
+  "pct-left": "The question asks for the percentage that was LOST, not the percentage that is left.",
+  "pct-forgot100": "A percentage of an amount is amount × percentage ÷ 100. Do not forget to divide by 100.",
+  "cover-left": "Read the question for what it asks: the area that is covered, not the area that is left.",
+  "decline-stop": "Apply the fraction once for EACH period, in turn. Do not stop early.",
+  "decline-extra": "Apply the fraction once for each period and then stop. Do not go one period too far.",
+  "decline-lost": "The question asks how much is LEFT, not how much was lost.",
+  "decline-linear": "Each period the fraction is taken from what is left NOW, not from the amount you started with.",
+  "recycle-ignored": "Recycling reduces the amount of NEW material used each year, so use the smaller yearly amount.",
+  "recycle-misread": "Recycling CUTS the new material needed. The amount used each year is what is left after the cut.",
+  "ignore-growth": "Remember the stock grows each year as well as being taken from. New stock = old stock + growth − amount taken.",
+  "ignore-catch": "Remember to take away what was caught as well as adding the growth.",
+  "stop-early": "Go on for every year the question asks about, one year at a time.",
+  "growth-original": "The growth each year is a percentage of the stock AT THE START OF THAT YEAR, so it changes as the stock falls.",
+  "share-vs-number": "A bigger SHARE of a bigger population is a different number of people. Work out how many people each time, then subtract.",
+  "ratio-wrong-quantity": "Read what the question asks for: how many TIMES longer. Divide one time by the other.",
+  "reverse-flip": "Here you are given the amount taken and need the stock. Work backwards: stock = amount taken × 100 ÷ rate.",
+  "reverse-scale": "Work backwards, and remember the 100: stock = amount taken × 100 ÷ rate.",
+  "count-early": "Work down the years one at a time until the amount is BELOW the limit. Then count the years.",
+  "count-late": "Stop in the first year that the amount is below the limit. Do not go on a year longer."
+ },
+ "levels": [
+  {
+   "name": "Recall it",
+   "blurb": "This is the lesson itself, one question from each part of the unit. Everyone should finish it with green dots.",
+   "slots": [
+    {
+     "strand": "soil",
+     "skill": "recall",
+     "kind": "build",
+     "pool": [
+      {
+       "stem": "Tap the four things that soil is made of.",
+       "right": [
+        "Broken rock",
+        "Dead organic matter",
+        "Water and air",
+        "Living organisms"
+       ],
+       "distractors": [
+        "Coal",
+        "Concrete",
+        "Plastic",
+        "Pure sand",
+        "Metal",
+        "Salt"
+       ],
+       "draw": 4,
+       "explain": [
+        "Soil has four parts: broken rock (ground down by weather over a very long time), dead organic matter (broken down by decomposers into humus), water and air (held in the gaps between particles) and living organisms (bacteria, fungi, worms and insects)."
+       ],
+       "src": "What The Land Gives Us",
+       "tag": "soil-parts"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "recall",
+     "kind": "order",
+     "pool": [
+      {
+       "stem": "Put these in order, from the QUICKEST to the SLOWEST to form or grow.",
+       "items": [
+        "{crop}",
+        "A few centimetres of soil",
+        "Coal"
+       ],
+       "explain": [
+        "A crop takes months. A few centimetres of soil take a few hundred to about a thousand years. Coal takes millions of years."
+       ],
+       "src": "What The Land Gives Us",
+       "tag": "time-order",
+       "first": "quickest",
+       "last": "slowest"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What is a natural resource?",
+       "right": "Something from the Earth, not made by people, that we use.",
+       "wrongs": [
+        {
+         "t": "Anything that people use every day, such as phones and cars.",
+         "tag": "resource-def",
+         "m": "People use phones every day, but people made them. A natural resource comes from the Earth."
+        },
+        {
+         "t": "Anything made in a factory from metal or plastic.",
+         "tag": "resource-def",
+         "m": "A natural resource is not made by people. A factory product is."
+        },
+        {
+         "t": "Only things that can never run out, however much we use.",
+         "tag": "resource-def",
+         "m": "Many natural resources can run out. That is what the rest of the unit is about."
+        }
+       ],
+       "explain": [
+        "A natural resource comes from the Earth and is not made by people."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "Which of these is a natural resource itself, not something made by people?",
+       "right": "Oil",
+       "wrongs": [
+        {
+         "t": "A phone",
+         "tag": "resource-def",
+         "m": "People made it. The oil, metals and minerals inside it are the natural resources."
+        },
+        {
+         "t": "A plastic bottle",
+         "tag": "resource-def",
+         "m": "People made it, from oil. The oil is the natural resource."
+        },
+        {
+         "t": "A tarmac road",
+         "tag": "resource-def",
+         "m": "People made it, from stone and oil. Those are the natural resources."
+        }
+       ],
+       "explain": [
+        "Oil comes from the Earth and nobody made it. A phone, a bottle and a road are all made by people, from natural resources."
+       ],
+       "src": "What The Earth Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Choose renewable or non-renewable for each.",
+       "rows": [],
+       "options": [
+        "Renewable",
+        "Non-renewable"
+       ],
+       "explain": [
+        "Solar and wind energy are renewable: the Sun and wind supply far more than we could ever use up. Coal, oil, natural gas and metal ores take millions of years to form, far slower than we use them, so they are non-renewable."
+       ],
+       "src": "What The Earth Gives Us",
+       "tag": "renew-class",
+       "note": null
+      }
+     ]
+    },
+    {
+     "strand": "erosion",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What is erosion?",
+       "right": "Soil worn away and carried off by water or wind.",
+       "wrongs": [
+        {
+         "t": "Soil getting loose when it is ploughed.",
+         "tag": "eros-loosen",
+         "m": "Loosening is only half of it. In erosion the soil is also carried off."
+        },
+        {
+         "t": "New soil forming slowly from rock.",
+         "tag": "eros-formation",
+         "m": "That is soil formation, which takes centuries. Erosion is soil being lost."
+        },
+        {
+         "t": "Fertile land in a dry area slowly turning into desert.",
+         "tag": "desert-spreads",
+         "m": "That is desertification. Erosion is soil being worn away and carried off."
+        }
+       ],
+       "explain": [
+        "Erosion has two parts: soil is worn away AND carried off, by water or wind."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "Which two things carry soil away in erosion?",
+       "right": "Water and wind",
+       "wrongs": [
+        {
+         "t": "Roots and leaves",
+         "tag": "cover",
+         "m": "Roots and leaves protect soil. They hold it in place."
+        },
+        {
+         "t": "Worms and insects",
+         "tag": "eros-agents",
+         "m": "Worms and insects live in soil and help it. They do not carry it away."
+        },
+        {
+         "t": "Heat and cold",
+         "tag": "eros-agents",
+         "m": "Not the two the lesson named. Water and wind carry soil off."
+        }
+       ],
+       "explain": [
+        "Water and wind carry soil away."
+       ],
+       "src": "Losing The Soil"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What is urbanisation?",
+       "right": "Towns and cities growing, with a bigger share of people living in them.",
+       "wrongs": [
+        {
+         "t": "Cities getting hotter and more polluted because of all the new concrete.",
+         "tag": "urban-def",
+         "m": "Cities can be hotter, but that is an effect. Urbanisation is towns and cities growing."
+        },
+        {
+         "t": "People moving out of the cities and back into the countryside.",
+         "tag": "urban-def",
+         "m": "That is the opposite. In urbanisation a bigger share of people live in towns and cities."
+        },
+        {
+         "t": "Building one new road across a large area of farmland and fields.",
+         "tag": "urban-def",
+         "m": "One road is a change to land. Urbanisation is about the share of people in towns and cities."
+        }
+       ],
+       "explain": [
+        "Urbanisation has two halves: towns and cities grow, AND a bigger share of people live in them."
+       ],
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "In 1950 about 20 in every 100 people lived in a city. Now about 45 in every 100 do. What is this change called?",
+       "right": "Urbanisation",
+       "wrongs": [
+        {
+         "t": "Erosion",
+         "tag": "urban-def",
+         "m": "Erosion is soil worn away and carried off by water or wind."
+        },
+        {
+         "t": "Desertification",
+         "tag": "urban-def",
+         "m": "Desertification is land degradation in dry areas."
+        },
+        {
+         "t": "Conservation",
+         "tag": "urban-def",
+         "m": "Conservation is using a resource carefully so it lasts."
+        }
+       ],
+       "explain": [
+        "A bigger share of people living in towns and cities is urbanisation."
+       ],
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What does conservation mean?",
+       "right": "Managing a resource carefully so it is still there in future.",
+       "wrongs": [
+        {
+         "t": "Never using a resource at all, so that it is never touched.",
+         "tag": "conserve-never",
+         "m": "Conservation is careful use, not no use."
+        },
+        {
+         "t": "Using a resource as fast as possible while it lasts.",
+         "tag": "conserve-never",
+         "m": "That is the opposite. Conservation makes a resource last."
+        },
+        {
+         "t": "Making a new natural resource in a factory from other materials.",
+         "tag": "resource-def",
+         "m": "People cannot make a natural resource. Conservation protects what we have."
+        }
+       ],
+       "explain": [
+        "Conservation means protecting and managing a resource carefully so it is still available in future."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "What does it mean to take a sustainable amount of a resource?",
+       "right": "No more than the resource can naturally replace.",
+       "wrongs": [
+        {
+         "t": "Nothing at all, so that none is ever used.",
+         "tag": "sustainable-nothing",
+         "m": "Sustainable does not mean nothing is taken. It means the stock does not shrink."
+        },
+        {
+         "t": "As much as people want, for as long as they can get it.",
+         "tag": "sustainable-nothing",
+         "m": "That is likely to deplete the resource. Sustainable means no more than is replaced."
+        },
+        {
+         "t": "Half of whatever is left each year.",
+         "tag": "sustainable-nothing",
+         "m": "Taking half each year would soon run it down. Sustainable means no more than is replaced."
+        }
+       ],
+       "explain": [
+        "A sustainable amount is no more than the resource can naturally replace."
+       ],
+       "src": "Making It Last"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What does resource depletion mean?",
+       "right": "Using a resource faster than it is replaced, until not enough is left.",
+       "wrongs": [
+        {
+         "t": "A resource getting cheaper and cheaper because there is so much of it.",
+         "tag": "deplete-def",
+         "m": "Depletion is about running low, not about price."
+        },
+        {
+         "t": "A resource being moved from one country to another by ship.",
+         "tag": "deplete-def",
+         "m": "Depletion is use outrunning replacement, wherever the resource is."
+        },
+        {
+         "t": "A resource being used up completely in a single day or week.",
+         "tag": "deplete-def",
+         "m": "It is not one event. It is use outrunning replacement for long enough."
+        }
+       ],
+       "explain": [
+        "Depletion is use outrunning replacement for long enough that the amount left stops being enough."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "By the 1870s one flock of passenger pigeons was thought to hold over 3 billion birds. By 1914, how many were left in the world?",
+       "right": "None. They were extinct.",
+       "wrongs": [
+        {
+         "t": "About 3 million birds.",
+         "tag": "big-number-safe",
+         "m": "Far fewer. The last one, Martha, died in the Cincinnati Zoo on 1 September 1914."
+        },
+        {
+         "t": "About 3,000 birds.",
+         "tag": "big-number-safe",
+         "m": "Fewer still. By 1914 there were none."
+        },
+        {
+         "t": "A few hundred birds.",
+         "tag": "big-number-safe",
+         "m": "Fewer. The bison fell to a few hundred, but the passenger pigeon went to zero."
+        }
+       ],
+       "explain": [
+        "The last passenger pigeon, Martha, died on 1 September 1914. Billions of birds were used faster than they could breed, until none were left."
+       ],
+       "src": "Resource Depletion"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "Roughly how long do a few centimetres of soil take to form?",
+       "right": "A few hundred to about a thousand years.",
+       "wrongs": [
+        {
+         "t": "A few months, about the same as a crop.",
+         "tag": "time-fast",
+         "m": "That is a crop. Soil takes centuries."
+        },
+        {
+         "t": "A few years, so soil is quick to replace.",
+         "tag": "time-fast",
+         "m": "Soil can be lost in years, but it takes centuries to form."
+        },
+        {
+         "t": "Millions of years, about the same as coal.",
+         "tag": "time-coal",
+         "m": "That is coal. A few centimetres of soil take a few hundred to about a thousand years."
+        }
+       ],
+       "explain": [
+        "A few centimetres of soil take a few hundred to about a thousand years to form."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "Roughly how long does coal take to form?",
+       "right": "Millions of years.",
+       "wrongs": [
+        {
+         "t": "A few hundred years.",
+         "tag": "time-soil",
+         "m": "That is nearer soil: a few hundred to about a thousand years."
+        },
+        {
+         "t": "A few thousand years.",
+         "tag": "time-soil",
+         "m": "Coal is much slower than that."
+        },
+        {
+         "t": "A few years.",
+         "tag": "time-fast",
+         "m": "Coal takes millions of years. A few years would be far too fast."
+        }
+       ],
+       "explain": [
+        "Coal takes millions of years to form. That is why it is non-renewable."
+       ],
+       "src": "What The Land Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "erosion",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "In the tray practical, one tray of soil was bare and one was covered with turf or leaves. Water was poured over both. Which tray usually lost more soil?",
+       "right": "The bare tray.",
+       "wrongs": [
+        {
+         "t": "The covered tray.",
+         "tag": "cover",
+         "m": "Roots and leaves protect soil from the water, so the covered tray lost less."
+        },
+        {
+         "t": "Both lost exactly the same.",
+         "tag": "cover",
+         "m": "Not usually. Plant cover protects soil, so the bare tray lost more."
+        },
+        {
+         "t": "Neither lost any soil.",
+         "tag": "cover",
+         "m": "The bare tray lost soil. Water carried it into the catch pot."
+        }
+       ],
+       "explain": [
+        "The bare tray usually loses more soil. Roots and leaves protect soil."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "Which of these protects soil from erosion?",
+       "right": "Plant roots and leaves",
+       "wrongs": [
+        {
+         "t": "Ploughing the field again and again",
+         "tag": "cover",
+         "m": "Ploughing leaves soil bare and loose. That makes erosion easier."
+        },
+        {
+         "t": "Leaving the soil bare all winter",
+         "tag": "cover",
+         "m": "Bare soil is the easiest to erode."
+        },
+        {
+         "t": "Letting too many animals graze on it",
+         "tag": "cover",
+         "m": "Too many animals strip the plants off, and the soil is left bare."
+        }
+       ],
+       "explain": [
+        "Roots hold soil in place and leaves shield it from rain. Remove them and the soil can be carried off."
+       ],
+       "src": "Losing The Soil"
+      }
+     ]
+    }
+   ],
+   "lists": {
+    "crops": [
+     "A wheat crop",
+     "A rice crop",
+     "A field of potatoes",
+     "A maize crop"
+    ],
+    "renew_pool": [
+     [
+      "Solar energy",
+      "Renewable"
+     ],
+     [
+      "Wind energy",
+      "Renewable"
+     ]
+    ],
+    "nonrenew_pool": [
+     [
+      "Coal",
+      "Non-renewable"
+     ],
+     [
+      "Oil",
+      "Non-renewable"
+     ],
+     [
+      "Natural gas",
+      "Non-renewable"
+     ],
+     [
+      "A metal ore",
+      "Non-renewable"
+     ]
+    ]
+   }
+  },
+  {
+   "name": "Use it",
+   "blurb": "One step further. Match, order, choose, and do the first calculations.",
+   "slots": [
+    {
+     "strand": "soil",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Match each part of soil to what it is or does.",
+       "rows": [
+        {
+         "t": "Broken rock",
+         "a": "Ground down by weather over a very long time"
+        },
+        {
+         "t": "Dead organic matter",
+         "a": "Broken down by decomposers into humus"
+        },
+        {
+         "t": "Water and air",
+         "a": "Held in the gaps between particles"
+        },
+        {
+         "t": "Living organisms",
+         "a": "Bacteria, fungi, worms and insects"
+        }
+       ],
+       "options": [
+        "Ground down by weather over a very long time",
+        "Broken down by decomposers into humus",
+        "Held in the gaps between particles",
+        "Bacteria, fungi, worms and insects"
+       ],
+       "explain": [
+        "Soil has four parts: broken rock (ground down by weather over a very long time), dead organic matter (broken down by decomposers into humus), water and air (held in the gaps between particles) and living organisms (bacteria, fungi, worms and insects)."
+       ],
+       "src": "What The Land Gives Us",
+       "tag": "soil-parts",
+       "note": null
+      },
+      {
+       "stem": "Match each description to the part of soil it belongs to.",
+       "rows": [
+        {
+         "t": "Ground down by weather over a very long time",
+         "a": "Broken rock"
+        },
+        {
+         "t": "Broken down by decomposers into humus",
+         "a": "Dead organic matter"
+        },
+        {
+         "t": "Held in the gaps between particles",
+         "a": "Water and air"
+        },
+        {
+         "t": "Bacteria, fungi, worms and insects",
+         "a": "Living organisms"
+        }
+       ],
+       "options": [
+        "Broken rock",
+        "Dead organic matter",
+        "Water and air",
+        "Living organisms"
+       ],
+       "explain": [
+        "Soil has four parts: broken rock (ground down by weather over a very long time), dead organic matter (broken down by decomposers into humus), water and air (held in the gaps between particles) and living organisms (bacteria, fungi, worms and insects)."
+       ],
+       "src": "What The Land Gives Us",
+       "tag": "soil-parts",
+       "note": null
+      }
+     ]
+    },
+    {
+     "strand": "soil",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "Which part of soil is made when decomposers break down dead plants and animals?",
+       "right": "Humus, which is dead organic matter.",
+       "wrongs": [
+        {
+         "t": "Broken rock, ground down by weather.",
+         "tag": "soil-parts",
+         "m": "Broken rock is ground down by weather over a very long time, not by decomposers."
+        },
+        {
+         "t": "Water and air, held between the particles.",
+         "tag": "soil-parts",
+         "m": "Water and air sit in the gaps between the particles. They are not made by decomposers."
+        },
+        {
+         "t": "Nothing. Decomposers do not change soil at all.",
+         "tag": "soil-forget-life",
+         "m": "Decomposers break dead organic matter into humus. It is one of the four parts of soil."
+        }
+       ],
+       "explain": [
+        "Decomposers break dead organic matter down into humus. That is one of the four parts of soil."
+       ],
+       "src": "What The Land Gives Us"
+      },
+      {
+       "stem": "Where are the water and the air in soil held?",
+       "right": "In the gaps between the particles.",
+       "wrongs": [
+        {
+         "t": "Inside the pieces of broken rock themselves.",
+         "tag": "soil-parts",
+         "m": "The rock pieces are solid. The water and air are in the gaps between them."
+        },
+        {
+         "t": "Only in the layer of dead leaves on top.",
+         "tag": "soil-parts",
+         "m": "Water and air are throughout the soil, in the gaps between the particles."
+        },
+        {
+         "t": "Nowhere. Soil is solid all the way through.",
+         "tag": "soil-rock-only",
+         "m": "Soil has water and air in the gaps between its particles. It is one of its four parts."
+        }
+       ],
+       "explain": [
+        "Water and air are held in the gaps between the particles of soil."
+       ],
+       "src": "What The Land Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "time_form"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "yield"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "pctpoints"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "pctdec"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A forest is cut down no faster than it regrows. Is the wood a renewable resource?",
+       "right": "Yes. It is replaced as fast as it is used.",
+       "wrongs": [
+        {
+         "t": "No. Once a tree is cut down it is gone for good.",
+         "tag": "can-regrow",
+         "m": "That tree is gone, but the forest regrows. The resource is the forest."
+        },
+        {
+         "t": "No. Wood can never be a renewable resource.",
+         "tag": "can-regrow",
+         "m": "Wood can be renewable, if the forest is cut no faster than it regrows."
+        },
+        {
+         "t": "It depends only on what kind of tree it is.",
+         "tag": "renewable-rate",
+         "m": "It depends on the RATE: how fast it is replaced against how fast it is used."
+        }
+       ],
+       "explain": [
+        "A forest cut no faster than it regrows is renewable. Renewable or not is about the rate."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "A fish stock is caught faster than the fish can breed. What happens to the number of fish over time?",
+       "right": "It falls, and it could run out.",
+       "wrongs": [
+        {
+         "t": "It stays the same, because fish are a renewable resource.",
+         "tag": "renewable-rate",
+         "m": "Renewable does not mean it cannot run out. It means it CAN be replaced, if it is used slowly enough."
+        },
+        {
+         "t": "It grows, because the fish keep breeding.",
+         "tag": "renewable-rate",
+         "m": "Breeding is slower than the catch, so the number falls."
+        },
+        {
+         "t": "It stays the same until every fish has gone.",
+         "tag": "renewable-rate",
+         "m": "The stock falls as the fish are caught faster than they breed."
+        }
+       ],
+       "explain": [
+        "Caught faster than they breed, the fish fall in number. Caught fast enough for long enough, the stock could run out."
+       ],
+       "src": "What The Earth Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "erosion",
+     "skill": "recall",
+     "kind": "order",
+     "pool": [
+      {
+       "stem": "Put the chain in order, from farming to desertification.",
+       "items": [
+        "Farmers remove the plant cover",
+        "The soil is left bare",
+        "Wind and water carry the soil away",
+        "In a dry area the land turns desert-like"
+       ],
+       "explain": [
+        "Farming removes plant cover, the soil is left bare, wind and water erode it, and in a dry area the land turns desert-like. That is desertification."
+       ],
+       "src": "Losing The Soil",
+       "tag": "chain-order",
+       "first": "first",
+       "last": "last"
+      },
+      {
+       "stem": "Put the tray practical in order, from the set-up to the result.",
+       "items": [
+        "Set up two trays with the same soil and slope, and cover one",
+        "Predict which tray will lose more soil",
+        "Pour the same amount of water over both trays",
+        "Compare the soil and water in the two catch pots"
+       ],
+       "explain": [
+        "Set up fairly (the same soil and slope), predict, pour the same amount of water, then compare what reached the catch pots. The bare tray usually loses more soil."
+       ],
+       "src": "Losing The Soil",
+       "tag": "practical-order",
+       "first": "first",
+       "last": "last"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "recall",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "What is runoff?",
+       "right": "Rain that flows over the ground instead of soaking in.",
+       "wrongs": [
+        {
+         "t": "Rain that soaks deep down into the soil and rock.",
+         "tag": "runoff",
+         "m": "That is the opposite. Runoff is rain that does NOT soak in."
+        },
+        {
+         "t": "Rain water that is collected from roofs and stored in a tank.",
+         "tag": "runoff",
+         "m": "Runoff is not stored. It flows over the surface."
+        },
+        {
+         "t": "Soil that is washed out of a field by heavy rain.",
+         "tag": "eros-loosen",
+         "m": "That is erosion. Runoff is the rain that flows over the surface."
+        }
+       ],
+       "explain": [
+        "Runoff is rain that flows over the ground instead of soaking in."
+       ],
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "What happens to rain that falls on a road?",
+       "right": "It cannot soak in, so it runs off into the drains.",
+       "wrongs": [
+        {
+         "t": "It soaks into the tarmac, like water into a sponge.",
+         "tag": "runoff",
+         "m": "Tarmac is sealed. Rain cannot soak in."
+        },
+        {
+         "t": "It turns into soil on the road surface.",
+         "tag": "runoff",
+         "m": "Rain does not turn into soil."
+        },
+        {
+         "t": "It stays where it falls for several weeks.",
+         "tag": "runoff",
+         "m": "It runs off into drains, or floods the street."
+        }
+       ],
+       "explain": [
+        "Rain cannot soak into a road. It runs off into the drains."
+       ],
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Match each place or word to what it is.",
+       "rows": [
+        {
+         "t": "Wuhan",
+         "a": "A sponge city that lets rain soak in"
+        },
+        {
+         "t": "The London Green Belt",
+         "a": "A ring of land kept from being built on"
+        },
+        {
+         "t": "Brownfield land",
+         "a": "Land that has been built on before"
+        },
+        {
+         "t": "Urbanisation",
+         "a": "More of the people living in towns and cities"
+        }
+       ],
+       "options": [
+        "A sponge city that lets rain soak in",
+        "A ring of land kept from being built on",
+        "Land that has been built on before",
+        "More of the people living in towns and cities"
+       ],
+       "explain": [
+        "Wuhan is a sponge city with permeable paving, rain gardens and green roofs. The London Green Belt is a ring of land round London kept from being built on. Brownfield land has been built on before. Urbanisation is a bigger share of people in towns and cities."
+       ],
+       "src": "Cities And What Can Be Done",
+       "tag": "city-terms",
+       "note": null
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "decline2"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Match each problem to the method that would best prevent depletion.",
+       "rows": [
+        {
+         "t": "A fish stock is being caught faster than it can breed.",
+         "a": "A catch quota below the sustainable yield"
+        },
+        {
+         "t": "A forest is being cut faster than it regrows.",
+         "a": "Replant trees at least as fast as they are cut"
+        },
+        {
+         "t": "A non-renewable material is running low.",
+         "a": "Recycle what has already been extracted"
+        },
+        {
+         "t": "A wild species is too few to find mates easily.",
+         "a": "A breeding programme to raise young and release them"
+        }
+       ],
+       "options": [
+        "A catch quota below the sustainable yield",
+        "Replant trees at least as fast as they are cut",
+        "Recycle what has already been extracted",
+        "A breeding programme to raise young and release them"
+       ],
+       "explain": [
+        "Match the method to the kind of resource: quotas for fish that breed, replanting for forests, recycling for materials that do not regrow, breeding programmes for populations that have fallen very low."
+       ],
+       "src": "Making It Last",
+       "tag": "method-match",
+       "note": null
+      }
+     ]
+    }
+   ],
+   "lists": {}
+  },
+  {
+   "name": "Spot the mistake",
+   "blurb": "Each question gives you a claim that sounds sensible but is wrong. Find what is wrong with it. There are also two-step calculations.",
+   "slots": [
+    {
+     "strand": "soil",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Soil is just crushed rock.” What is wrong with this?",
+       "right": "It leaves out organic matter, water and air, and living organisms.",
+       "wrongs": [
+        {
+         "t": "Nothing is wrong. Soil is crushed rock and it is nothing else at all.",
+         "tag": "soil-rock-only",
+         "m": "Broken rock is only one of the four parts of soil."
+        },
+        {
+         "t": "Soil is not made of rock at all, so the claim is simply false.",
+         "tag": "soil-rock-only",
+         "m": "Broken rock IS one of the four parts: rock ground down by weather over a very long time."
+        },
+        {
+         "t": "It leaves out only the water. Soil is made of rock and water.",
+         "tag": "soil-forget-life",
+         "m": "Water and air are one part, but dead organic matter and living organisms are parts too."
+        }
+       ],
+       "explain": [
+        "Soil has four parts: broken rock (ground down by weather over a very long time), dead organic matter (broken down by decomposers into humus), water and air (held in the gaps between particles) and living organisms (bacteria, fungi, worms and insects)."
+       ],
+       "src": "What The Land Gives Us"
+      },
+      {
+       "stem": "A student says: “Soil is just dirt. It does not really do anything.” What is wrong with this?",
+       "right": "Producers grow in soil and get water and nutrients from it, so land food chains start there.",
+       "wrongs": [
+        {
+         "t": "Soil only matters for building roads and houses, and for nothing that lives.",
+         "tag": "soil-job",
+         "m": "Soil is where producers grow, and food chains start with producers."
+        },
+        {
+         "t": "Nothing is wrong, because plants get everything they need from sunlight alone.",
+         "tag": "soil-job",
+         "m": "Plants need sunlight, but they also get water and nutrients from soil."
+        },
+        {
+         "t": "Soil matters, but only to the worms and insects that live in it, not to plants.",
+         "tag": "soil-job",
+         "m": "Worms and insects live in soil, but producers depend on it too, and so does every land food chain."
+        }
+       ],
+       "explain": [
+        "Soil is not just dirt. Producers grow in it and get water and nutrients from it, so nearly every land food chain starts there."
+       ],
+       "src": "What The Land Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Soil lost in a few years will be replaced in a few years.” What is wrong with this?",
+       "right": "A few centimetres of soil take a few hundred to about a thousand years.",
+       "wrongs": [
+        {
+         "t": "Soil is never replaced at all, however many centuries people wait.",
+         "tag": "time-never",
+         "m": "Soil does form again, but very slowly."
+        },
+        {
+         "t": "Soil is replaced within a few months, in the same way as a crop.",
+         "tag": "time-fast",
+         "m": "A crop takes months. Soil takes centuries."
+        },
+        {
+         "t": "Soil takes millions of years to form, in just the same way that coal does.",
+         "tag": "time-coal",
+         "m": "That is coal. A few centimetres of soil take a few hundred to about a thousand years."
+        }
+       ],
+       "explain": [
+        "Centuries to make, years to lose. A few centimetres of soil take a few hundred to about a thousand years to form."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "A student says: “Coal, soil and vegetables all form at about the same speed.” What is wrong with this?",
+       "right": "A crop takes months, soil takes centuries, and coal takes millions of years.",
+       "wrongs": [
+        {
+         "t": "Soil is the quickest of the three to form, then coal, then vegetables.",
+         "tag": "time-order",
+         "m": "A crop is the quickest: months."
+        },
+        {
+         "t": "Coal is the quickest of the three, because it is dug up so fast.",
+         "tag": "time-order",
+         "m": "How fast we dig it up is not how fast it forms. Coal takes millions of years."
+        },
+        {
+         "t": "Vegetables take longer than soil, because they are alive.",
+         "tag": "time-order",
+         "m": "A crop takes months. Soil takes a few hundred to about a thousand years."
+        }
+       ],
+       "explain": [
+        "Order from quickest to slowest: a crop (months), a few centimetres of soil (centuries), coal (millions of years)."
+       ],
+       "src": "What The Land Gives Us"
+      },
+      {
+       "stem": "A student says: “Erosion is not a problem, because soil is renewable.” What is wrong with this?",
+       "right": "New soil forms far slower than it is lost, so it is non-renewable on a human timescale.",
+       "wrongs": [
+        {
+         "t": "Soil is not renewable at all, because new soil never forms again, ever.",
+         "tag": "time-never",
+         "m": "New soil does form, but far slower than we lose it."
+        },
+        {
+         "t": "Erosion only matters in deserts, so it is not a problem in farming areas.",
+         "tag": "eros-desert-only",
+         "m": "Erosion happens anywhere soil is bare and water or wind can carry it off."
+        },
+        {
+         "t": "Soil forms faster than erosion removes it, so there is no need to worry.",
+         "tag": "time-fast",
+         "m": "It is the other way round. Formation takes centuries. Loss can take years."
+        }
+       ],
+       "explain": [
+        "Soil can form again, but far slower than it is lost, so on a human timescale it is non-renewable."
+       ],
+       "src": "What The Land Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "erosion",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Erosion only happens in deserts.” What is wrong with this?",
+       "right": "It happens anywhere soil is bare and water or wind can carry it off.",
+       "wrongs": [
+        {
+         "t": "Erosion never happens in deserts at all, only in wet places.",
+         "tag": "eros-desert-only",
+         "m": "Erosion can happen in deserts. The claim is wrong because it also happens in many other places."
+        },
+        {
+         "t": "Erosion only happens in places where it is raining heavily.",
+         "tag": "eros-water-only",
+         "m": "Wind carries soil off too."
+        },
+        {
+         "t": "Nothing is wrong. Erosion needs a desert to be there before it can happen.",
+         "tag": "eros-desert-only",
+         "m": "The tray practical used ordinary soil and still lost it."
+        }
+       ],
+       "explain": [
+        "Erosion happens wherever soil is bare and water or wind can carry it off. The tray practical used ordinary soil."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "A student says: “Desertification is a desert spreading by itself.” What is wrong with this?",
+       "right": "It is land degradation in dry areas, from climate variation AND human activity.",
+       "wrongs": [
+        {
+         "t": "Nothing is wrong. Deserts spread on their own, with no help from people.",
+         "tag": "desert-spreads",
+         "m": "People contribute: overgrazing, over-cultivation, deforestation and poor irrigation."
+        },
+        {
+         "t": "It is caused by drought alone, and never by people.",
+         "tag": "desert-spreads",
+         "m": "Drought makes it worse, but farming can start it."
+        },
+        {
+         "t": "It only happens in places that are already deserts.",
+         "tag": "desert-spreads",
+         "m": "It turns fertile land in a dry area into desert-like land."
+        }
+       ],
+       "explain": [
+        "Desertification is land degradation in dry areas from climate variation AND human activity, such as overgrazing, over-cultivation, deforestation and poor irrigation."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "A student says: “Ploughing does not matter, because the soil is still there.” What is wrong with this?",
+       "right": "Ploughed soil is bare and loose, so water and wind can carry it off.",
+       "wrongs": [
+        {
+         "t": "Ploughing makes new soil form much faster than it did before.",
+         "tag": "time-fast",
+         "m": "Soil forms over centuries. Ploughing does not speed that up."
+        },
+        {
+         "t": "Soil that is still there in the field cannot be eroded at all by anything.",
+         "tag": "eros-loosen",
+         "m": "It is there until water or wind carries it off, as in the bare tray."
+        },
+        {
+         "t": "Ploughing adds extra soil to the field each time it is done.",
+         "tag": "eros-loosen",
+         "m": "Ploughing does not add soil. It leaves what is there bare and loose."
+        }
+       ],
+       "explain": [
+        "Ploughing leaves soil bare and loose. The soil is still there until water or wind carries it off, as it did in tray A."
+       ],
+       "src": "Losing The Soil"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Rain soaks into tarmac, so cities flood less.” What is wrong with this?",
+       "right": "Rain cannot soak into tarmac. It runs off into drains and can flood.",
+       "wrongs": [
+        {
+         "t": "Nothing is wrong. Tarmac soaks up the rain like a big sponge.",
+         "tag": "runoff",
+         "m": "Tarmac is sealed. Rain cannot soak in."
+        },
+        {
+         "t": "Cities flood less, because the tarmac dries out again very quickly after rain.",
+         "tag": "runoff",
+         "m": "Rain runs off before it can dry, and can flood the streets."
+        },
+        {
+         "t": "Rain that falls on tarmac turns into soil, so the city grows.",
+         "tag": "runoff",
+         "m": "Rain does not turn into soil."
+        }
+       ],
+       "explain": [
+        "Rain cannot soak into tarmac. It runs off (runoff) into drains and can flood streets."
+       ],
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "A student says: “A green belt is a park in the middle of a city.” What is wrong with this?",
+       "right": "It is a ring of land round a city, kept from being built on.",
+       "wrongs": [
+        {
+         "t": "It is a roof that is covered with grass and other plants.",
+         "tag": "sponge",
+         "m": "That is a green roof, one thing a sponge city uses."
+        },
+        {
+         "t": "It is land that has been built on before, then left empty and unused.",
+         "tag": "brownfield",
+         "m": "That is brownfield land."
+        },
+        {
+         "t": "It is a ring of new houses that is built round a city.",
+         "tag": "green-belt",
+         "m": "Green belt land is kept from being built on."
+        }
+       ],
+       "explain": [
+        "A green belt is a ring of land round a city, kept from being built on. London’s is about 500,000 hectares."
+       ],
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "A student says: “Sponge cities send rain away faster.” What is wrong with this?",
+       "right": "They let rain soak in, using permeable paving, rain gardens and green roofs.",
+       "wrongs": [
+        {
+         "t": "They build much wider drains so that all of the rain can leave the city faster.",
+         "tag": "sponge",
+         "m": "A sponge city does the opposite: it keeps the rain where it falls."
+        },
+        {
+         "t": "They seal the ground with concrete and tarmac so no water can get in.",
+         "tag": "sponge",
+         "m": "Sealing is what roads do. A sponge city lets water in."
+        },
+        {
+         "t": "They only work in cities that have no rain at all, so they are rare.",
+         "tag": "sponge",
+         "m": "They are built for rain. They let it soak in or be stored."
+        }
+       ],
+       "explain": [
+        "A sponge city lets rain soak in or be stored: permeable paving, rain gardens and green roofs. Wuhan is one."
+       ],
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Coal is not a natural resource, because people have to mine it before we can use it.” What is wrong with this?",
+       "right": "It comes from the Earth and is not made by people. Mining only gets it out.",
+       "wrongs": [
+        {
+         "t": "Coal is made in factories from other materials, so people do make it.",
+         "tag": "resource-def",
+         "m": "Coal was not manufactured. It formed over millions of years."
+        },
+        {
+         "t": "Coal is renewable, so it is not counted as a natural resource at all by scientists.",
+         "tag": "resource-def",
+         "m": "Coal is non-renewable, and it is still a natural resource."
+        },
+        {
+         "t": "Nothing is wrong. Anything that is mined has been made by people.",
+         "tag": "resource-def",
+         "m": "Mining digs it out. It does not make it."
+        }
+       ],
+       "explain": [
+        "Coal is the natural resource. Mining just gets it out of the ground."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "A student says: “Wood is non-renewable, because once a tree is cut down, it is gone.” What is wrong with this?",
+       "right": "The tree is gone, but the forest regrows. Wood is renewable if cut slowly enough.",
+       "wrongs": [
+        {
+         "t": "Wood is never renewable, however slowly the trees are cut down and replaced.",
+         "tag": "can-regrow",
+         "m": "Cut no faster than it regrows, a forest is renewable."
+        },
+        {
+         "t": "Wood is renewable however fast the forest is cut down, as it always regrows later.",
+         "tag": "renewable-rate",
+         "m": "It depends on the rate. Cut too fast, a forest shrinks."
+        },
+        {
+         "t": "Trees cannot regrow once they have been cut, so the wood is lost for good.",
+         "tag": "can-regrow",
+         "m": "Forests regrow. The question is whether they regrow fast enough."
+        }
+       ],
+       "explain": [
+        "One tree is gone, but the resource is the forest. It is renewable if cut no faster than it regrows."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "A student says: “Fresh water is always renewable, because rain keeps falling.” What is wrong with this?",
+       "right": "Rivers refill quickly, but deep, old groundwater can be pumped out far faster than it refills.",
+       "wrongs": [
+        {
+         "t": "Fresh water is never renewable, because every bit of it gets used up in the end.",
+         "tag": "renewable-rate",
+         "m": "Water in rivers and ordinary wells is refilled quickly by rain."
+        },
+        {
+         "t": "Rain does not reach groundwater, so groundwater is never refilled by anything.",
+         "tag": "renewable-rate",
+         "m": "Ordinary groundwater is refilled by rain. Deep, old groundwater refills very slowly."
+        },
+        {
+         "t": "Water is only renewable in cold countries, because the rain there is stored as ice.",
+         "tag": "renewable-rate",
+         "m": "It depends on the rate of refilling against the rate of use, not on the climate."
+        }
+       ],
+       "explain": [
+        "The same kind of resource, water, can be renewable in one place and non-renewable in another. It is the rate that decides."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "A student says: “Fish are a renewable resource, so a fishery can never run out.” What is wrong with this?",
+       "right": "Fish are renewable only if caught no faster than they breed, so a fishery can collapse.",
+       "wrongs": [
+        {
+         "t": "Fish are not renewable at all, because once a fish is caught it is gone for good.",
+         "tag": "renewable-rate",
+         "m": "Fish can breed, so they can be renewable if caught slowly enough."
+        },
+        {
+         "t": "A fishery can run out, but only if the sea itself dries up or runs out of water.",
+         "tag": "renewable-rate",
+         "m": "It is the catch against the breeding that decides, not the water."
+        },
+        {
+         "t": "Nothing is wrong. Fish always breed fast enough to replace whatever is caught.",
+         "tag": "can-regrow",
+         "m": "Cod off Newfoundland fell by about 93% in thirty years."
+        }
+       ],
+       "explain": [
+        "Cod off Newfoundland fell by about 93% between 1962 and 1992. Renewable only if caught no faster than they breed."
+       ],
+       "src": "What The Earth Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Conservation means never using a resource at all.” What is wrong with this?",
+       "right": "Conservation means careful use so the resource lasts, not no use at all.",
+       "wrongs": [
+        {
+         "t": "Conservation means using as much as possible while it lasts.",
+         "tag": "conserve-never",
+         "m": "That would deplete it. Conservation is careful use."
+        },
+        {
+         "t": "Conservation only applies to animals, never to forests or minerals.",
+         "tag": "conserve-never",
+         "m": "It applies to any resource that could run out."
+        },
+        {
+         "t": "Nothing is wrong. A resource must not be touched or used at all.",
+         "tag": "conserve-never",
+         "m": "Conservation allows use, at a rate that lets the resource last."
+        }
+       ],
+       "explain": [
+        "Conservation is careful use so a resource is still there in future, not no use at all."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A student says: “A forest cut at exactly its regrowth rate is not sustainable, because trees are still being cut down.” What is wrong with this?",
+       "right": "It is sustainable: the forest stays the same size, year after year.",
+       "wrongs": [
+        {
+         "t": "It is sustainable, but only for a year or two before the forest runs out.",
+         "tag": "sustainable-nothing",
+         "m": "It stays the same size every year it is repeated."
+        },
+        {
+         "t": "It is not sustainable, because the forest shrinks a little.",
+         "tag": "sustainable-nothing",
+         "m": "It does not shrink. What is cut regrows."
+        },
+        {
+         "t": "A forest can only be sustainable if no tree is ever cut.",
+         "tag": "sustainable-nothing",
+         "m": "Sustainable means no more than is replaced, not nothing."
+        }
+       ],
+       "explain": [
+        "Sustainable does not mean nothing is taken. It means the stock does not shrink: cut what regrows."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A student says: “Recycling is not resource management, because it does not stop a resource running out.” What is wrong with this?",
+       "right": "Recycling is management: it cuts how much new material has to be used.",
+       "wrongs": [
+        {
+         "t": "Recycling only works for plastic and paper, never for metals or glass.",
+         "tag": "recycle-def",
+         "m": "Metals are recycled too. It cuts how much new material is needed."
+        },
+        {
+         "t": "Recycling turns a non-renewable resource into a renewable one for good.",
+         "tag": "recycle-def",
+         "m": "It does not make it renewable. It reduces how fast new material is used."
+        },
+        {
+         "t": "Nothing is wrong. Only fishing quotas and bans count as management.",
+         "tag": "recycle-def",
+         "m": "Quotas, bans, replanting and recycling are all ways to manage a resource."
+        }
+       ],
+       "explain": [
+        "Recycling is a real way to manage a resource: less new, often non-renewable, material is needed."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A student says: “Once a resource has collapsed, like cod, conservation can never help.” What is wrong with this?",
+       "right": "Conservation can allow recovery, as humpback whales show, but it can take decades.",
+       "wrongs": [
+        {
+         "t": "Conservation helps at once, and the stock is back within a year or two.",
+         "tag": "conserve-fast",
+         "m": "Whales needed decades. Conservation works, but slowly."
+        },
+        {
+         "t": "Nothing is wrong. After a collapse there is no way back for the resource at all, ever.",
+         "tag": "conserve-never",
+         "m": "Humpback whales recovered after the 1986 ban."
+        },
+        {
+         "t": "Conservation only helps resources that have not collapsed yet, never after.",
+         "tag": "conserve-never",
+         "m": "It helped whales that had fallen to about 450 off Brazil."
+        }
+       ],
+       "explain": [
+        "Humpback numbers recovered after hunting was banned in 1986, but it took decades. Protecting early works best."
+       ],
+       "src": "Making It Last"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "spot",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “Renewable resources cannot run out.” What is wrong with this?",
+       "right": "A renewable resource can run out if it is used too fast for long enough.",
+       "wrongs": [
+        {
+         "t": "They cannot run out, because the Sun keeps on shining and the rain falls.",
+         "tag": "renewable-cannot-run-out",
+         "m": "Some renewable resources, such as sunlight, cannot. Fish, trees and animals can."
+        },
+        {
+         "t": "They can run out, but only if they turn into non-renewable ones first.",
+         "tag": "renewable-cannot-run-out",
+         "m": "A renewable resource can run out if it is used too fast, with no change of kind."
+        },
+        {
+         "t": "Nothing is wrong. Renewable means that the supply is unlimited for ever.",
+         "tag": "renewable-cannot-run-out",
+         "m": "Renewable means CAN be replaced. It does not mean it always is."
+        }
+       ],
+       "explain": [
+        "Passenger pigeons were renewable and they went extinct. Used faster than they could replace themselves, for long enough."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "A student says: “There were billions of passenger pigeons, so they were safe.” What is wrong with this?",
+       "right": "A huge number that falls faster than it regrows still reaches zero, just later.",
+       "wrongs": [
+        {
+         "t": "There were too many to kill, so something else must have wiped them out.",
+         "tag": "big-number-safe",
+         "m": "They were used faster than they could breed, for decades."
+        },
+        {
+         "t": "They were safe for a very long time, until the last one died by accident.",
+         "tag": "big-number-safe",
+         "m": "The loss was steady and caused by people."
+        },
+        {
+         "t": "Nothing is wrong. A very large number of animals simply cannot be used up by people.",
+         "tag": "big-number-safe",
+         "m": "A large number only delays the end."
+        }
+       ],
+       "explain": [
+        "More than 3 billion in the 1870s, none by 1914. A big number is not a safe number."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "A student says: “Resource depletion only happens to things that are dug up.” What is wrong with this?",
+       "right": "It also happens to living things, such as fish and animals, that are used faster than they breed.",
+       "wrongs": [
+        {
+         "t": "Depletion only happens to non-renewable things such as oil, coal and gas, and never to living things.",
+         "tag": "deplete-def",
+         "m": "The Aral Sea, bluefin tuna and bison were renewable and were depleted."
+        },
+        {
+         "t": "Depletion only happens in the sea, where fish are caught, and never to anything on land.",
+         "tag": "deplete-def",
+         "m": "Bison were depleted on land. The Aral Sea is water diverted from rivers."
+        },
+        {
+         "t": "Nothing is wrong. Living things breed again, so they cannot be depleted by people at all.",
+         "tag": "renewable-cannot-run-out",
+         "m": "Passenger pigeons, bison and tuna are living resources that were depleted."
+        }
+       ],
+       "explain": [
+        "Helium is non-renewable. Water in the Aral Sea, bluefin tuna and bison were renewable, and were still depleted."
+       ],
+       "src": "Resource Depletion"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "yield_left"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "decline3"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "cover_area"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Match each thing to how long it takes.",
+       "rows": [
+        {
+         "t": "Growing a wheat crop",
+         "a": "Months"
+        },
+        {
+         "t": "Forming a few centimetres of soil",
+         "a": "A few hundred to about a thousand years"
+        },
+        {
+         "t": "Forming coal",
+         "a": "Millions of years"
+        },
+        {
+         "t": "Losing the soil from a bare, ploughed field",
+         "a": "It can be as little as a few years"
+        }
+       ],
+       "options": [
+        "Months",
+        "A few hundred to about a thousand years",
+        "Millions of years",
+        "It can be as little as a few years"
+       ],
+       "explain": [
+        "Centuries to make, years to lose. A crop takes months, a few centimetres of soil a few hundred to about a thousand years, coal millions of years. Erosion can take soil in years."
+       ],
+       "src": "Losing The Soil",
+       "tag": "time-order",
+       "note": null
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "recall",
+     "kind": "assign",
+     "pool": [
+      {
+       "stem": "Choose for each: renewable, or not renewable in practice. Think about the rate.",
+       "rows": [],
+       "options": [
+        "Renewable",
+        "Not renewable in practice"
+       ],
+       "explain": [
+        "Renewable or not is about the rate. Cut no faster than it regrows, or caught no faster than they breed: renewable. Pumped out, or cut, or caught far faster than it is replaced, or taking centuries to form: not renewable in practice."
+       ],
+       "src": "What The Earth Gives Us",
+       "tag": "renew-rate",
+       "note": null
+      }
+     ]
+    }
+   ],
+   "lists": {
+    "rate_pool_renew": [
+     "A forest cut no faster than it regrows",
+     "A fish stock caught no faster than the fish can breed",
+     "A river that rain refills within months"
+    ],
+    "rate_pool_not": [
+     "A forest cut far faster than it regrows",
+     "Deep, old groundwater pumped out far faster than it refills",
+     "Soil, which takes centuries to form but can be lost in years",
+     "Helium, which forms far slower than we use it"
+    ]
+   }
+  },
+  {
+   "name": "Say it in words",
+   "blurb": "Now the questions that look like the test. Four of them ask you to write an answer. Then you see a model answer and tick what your answer had.",
+   "slots": [
+    {
+     "strand": "last",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "tpl": "gss"
+      }
+     ]
+    },
+    {
+     "strand": "soil",
+     "skill": "explain",
+     "kind": "written",
+     "pool": [
+      {
+       "stem": "Describe what soil is made of, and explain why a few centimetres of soil take so long to form.",
+       "marks": 4,
+       "points": [
+        {
+         "t": "Names broken rock and dead organic matter (humus).",
+         "miss": "Learn all four parts of soil: broken rock, dead organic matter, water and air, and living organisms."
+        },
+        {
+         "t": "Names water and air, and living organisms such as bacteria, fungi, worms or insects.",
+         "miss": "Do not leave out the living part, or the water and air held in the gaps."
+        },
+        {
+         "t": "Says why it is slow: the rock is ground down by weather over a very long time, and organic matter has to build up.",
+         "miss": "Say WHY it is slow, not only that it is slow."
+        },
+        {
+         "t": "Gives the time: a few hundred to about a thousand years for a few centimetres.",
+         "miss": "Learn the number: a few hundred to about a thousand years for a few centimetres."
+        }
+       ],
+       "model": "Soil is made of broken rock, dead organic matter (humus), water and air held in the gaps between the particles, and living organisms such as bacteria, fungi, worms and insects. It takes so long because the rock is ground down very slowly by weather and the organic matter has to build up. A few centimetres take a few hundred to about a thousand years.",
+       "src": "What The Land Gives Us"
+      },
+      {
+       "stem": "Explain why soil is more than just crushed rock.",
+       "marks": 3,
+       "points": [
+        {
+         "t": "It also contains dead organic matter, which decomposers break down into humus.",
+         "miss": "Name the dead organic matter (humus) as well as the rock."
+        },
+        {
+         "t": "It also has water and air held in the gaps, and living organisms such as bacteria, fungi, worms and insects.",
+         "miss": "Include the water and air, and the living organisms."
+        },
+        {
+         "t": "Producers grow in it and get their water and nutrients from it, so nearly every land food chain starts there.",
+         "miss": "Say why it matters: producers grow in it and food chains start there."
+        }
+       ],
+       "model": "Soil is not just crushed rock. It also contains dead organic matter, which decomposers break down into humus, water and air held in the gaps between the particles, and living organisms such as bacteria, fungi, worms and insects. Producers grow in it and get their water and nutrients from it, so nearly every land food chain starts there.",
+       "src": "What The Land Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "Helium is non-renewable, and global demand has outpaced supply for years. Choose what really happened.",
+       "right": "Prices rose sharply, and many hospitals began rationing it for MRI scanners.",
+       "wrongs": [
+        {
+         "t": "The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with the Aral Sea, not this case."
+        },
+        {
+         "t": "Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bluefin tuna, not this case."
+        },
+        {
+         "t": "The Plains nations that depended on bison for survival lost their main resource almost overnight.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bison, not this case."
+        }
+       ],
+       "explain": [
+        "Prices rose sharply, and many hospitals began rationing it for MRI scanners."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "Rivers feeding Central Asia’s Aral Sea were diverted for irrigation, starting in the 1960s. Choose what really happened.",
+       "right": "The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed.",
+       "wrongs": [
+        {
+         "t": "Prices rose sharply, and many hospitals began rationing it for MRI scanners.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with helium, not this case."
+        },
+        {
+         "t": "Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bluefin tuna, not this case."
+        },
+        {
+         "t": "The Plains nations that depended on bison for survival lost their main resource almost overnight.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bison, not this case."
+        }
+       ],
+       "explain": [
+        "The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "Atlantic bluefin tuna were fished far faster than they could breed, for decades. Choose what really happened.",
+       "right": "Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.",
+       "wrongs": [
+        {
+         "t": "Prices rose sharply, and many hospitals began rationing it for MRI scanners.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with helium, not this case."
+        },
+        {
+         "t": "The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with the Aral Sea, not this case."
+        },
+        {
+         "t": "The Plains nations that depended on bison for survival lost their main resource almost overnight.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bison, not this case."
+        }
+       ],
+       "explain": [
+        "Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "American bison numbered tens of millions in the 1850s, and only a few hundred by 1889. Choose what really happened.",
+       "right": "The Plains nations that depended on bison for survival lost their main resource almost overnight.",
+       "wrongs": [
+        {
+         "t": "Prices rose sharply, and many hospitals began rationing it for MRI scanners.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with helium, not this case."
+        },
+        {
+         "t": "The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with the Aral Sea, not this case."
+        },
+        {
+         "t": "Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.",
+         "tag": "case-mismatch",
+         "m": "That is what really happened with bluefin tuna, not this case."
+        }
+       ],
+       "explain": [
+        "The Plains nations that depended on bison for survival lost their main resource almost overnight."
+       ],
+       "src": "Resource Depletion"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "explain",
+     "kind": "written",
+     "pool": [
+      {
+       "stem": "Explain why a forest can be renewable in one place and non-renewable in another.",
+       "marks": 3,
+       "points": [
+        {
+         "t": "Cut no faster than it regrows: the forest stays the same size, so it is renewable.",
+         "miss": "Say what happens when it is cut no faster than it regrows."
+        },
+        {
+         "t": "Cut faster than it regrows: the forest shrinks, so it is non-renewable in practice.",
+         "miss": "Say what happens when it is cut too fast."
+        },
+        {
+         "t": "Says that it is the RATE that decides, not the kind of resource.",
+         "miss": "Always link back to the rate: how fast it is replaced against how fast it is used."
+        }
+       ],
+       "model": "If a forest is cut no faster than it regrows, it stays the same size, so it is renewable. If it is cut faster than it regrows, it shrinks, so in practice it is non-renewable. It is the rate that decides, not the kind of resource.",
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "Explain why fresh water can be renewable in one place and non-renewable in another.",
+       "marks": 3,
+       "points": [
+        {
+         "t": "An ordinary river or well is refilled quickly by rain, so it is renewable.",
+         "miss": "Say what happens to an ordinary river or well."
+        },
+        {
+         "t": "Deep, old groundwater is pumped out far faster than it refills, so there it is non-renewable in practice.",
+         "miss": "Say what happens to deep, old groundwater."
+        },
+        {
+         "t": "Says that it is the RATE of refilling against the rate of use that decides, not the kind of resource.",
+         "miss": "Always link back to the rate."
+        }
+       ],
+       "model": "Rain refills an ordinary river or well quickly, so it is renewable. Deep, old groundwater can be pumped out far faster than it refills, so there it is non-renewable in practice. It is the rate that decides, not the kind of resource.",
+       "src": "What The Earth Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A fish stock is being caught faster than it can breed, and the numbers are falling. Choose the method that would best prevent depletion here.",
+       "right": "Bring in a catch quota that is below the sustainable yield.",
+       "wrongs": [
+        {
+         "t": "Send more boats out at once, before the stock disappears completely.",
+         "tag": "prevent",
+         "m": "That makes depletion worse. It increases how much is taken."
+        },
+        {
+         "t": "Recycle the fishing nets so that less plastic is made.",
+         "tag": "prevent",
+         "m": "That does not change how many fish are caught."
+        },
+        {
+         "t": "Build more factories to process the fish faster.",
+         "tag": "prevent",
+         "m": "That is about processing fish, not about how many are left in the sea."
+        }
+       ],
+       "explain": [
+        "A quota below the sustainable yield lets the stock recover or hold steady."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A non-renewable material is running low, and demand keeps rising. Choose the method that would best prevent depletion here.",
+       "right": "Recycle what has already been dug up.",
+       "wrongs": [
+        {
+         "t": "Bring in a closed season, so that none is dug up for a while.",
+         "tag": "prevent",
+         "m": "A closed season is for living resources that can breed back. Metal does not regrow."
+        },
+        {
+         "t": "Start a breeding programme to raise more of it.",
+         "tag": "prevent",
+         "m": "A breeding programme is for animal populations, not a mined material."
+        },
+        {
+         "t": "Set its sustainable yield to zero and keep digging.",
+         "tag": "prevent",
+         "m": "A non-renewable material has no sustainable yield to begin with."
+        }
+       ],
+       "explain": [
+        "Recycling cuts how much new material has to be dug up."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A forest is being cut faster than it regrows, and its total area is shrinking. Choose the method that would best prevent depletion here.",
+       "right": "Replant trees at least as fast as they are cut.",
+       "wrongs": [
+        {
+         "t": "Recycle wood products so that people stop buying wood.",
+         "tag": "prevent",
+         "m": "That reduces the need for NEW wood, but it does not replace a shrinking forest."
+        },
+        {
+         "t": "Bring in a fishing quota to protect the trees.",
+         "tag": "prevent",
+         "m": "A fishing quota manages fish, not a forest."
+        },
+        {
+         "t": "Start a captive breeding programme for the trees.",
+         "tag": "prevent",
+         "m": "That is for animal populations, not for a forest."
+        }
+       ],
+       "explain": [
+        "Replanting at least as fast as the cutting keeps the forest the same size."
+       ],
+       "src": "Making It Last"
+      },
+      {
+       "stem": "A wild species has fallen to such a small number that it struggles to find mates. Choose the method that would best prevent depletion here.",
+       "right": "Start a breeding programme that raises young and releases them.",
+       "wrongs": [
+        {
+         "t": "Bring in a catch quota and wait for it to recover by itself.",
+         "tag": "prevent",
+         "m": "A quota limits how much is taken. This population needs active help to recover."
+        },
+        {
+         "t": "Recycle the materials that are made from the species.",
+         "tag": "prevent",
+         "m": "That does not help a population that is struggling to breed."
+        },
+        {
+         "t": "Replant the species in rows, like a crop.",
+         "tag": "prevent",
+         "m": "A wild animal population cannot be replanted like a forest."
+        }
+       ],
+       "explain": [
+        "A breeding programme gives a tiny population a chance to grow back."
+       ],
+       "src": "Making It Last"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "explain",
+     "kind": "written",
+     "pool": [
+      {
+       "stem": "Explain why passenger pigeons went extinct, even though there had been billions of them.",
+       "marks": 3,
+       "points": [
+        {
+         "t": "They were killed faster than they could breed and replace themselves.",
+         "miss": "Say that use was faster than replacement."
+        },
+        {
+         "t": "This went on for decades, long enough for the number to reach zero.",
+         "miss": "Say how long it went on: for years, until none were left."
+        },
+        {
+         "t": "A huge number is not a safe number: a number that falls faster than it regrows still reaches zero.",
+         "miss": "Make the point that a big number does not protect a species."
+        }
+       ],
+       "model": "Passenger pigeons were killed faster than they could breed and replace themselves. This went on for decades, until none were left. A huge number is not a safe number: if it falls faster than it regrows it still reaches zero.",
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "Explain how a renewable resource, such as a fish stock, can still run out completely.",
+       "marks": 3,
+       "points": [
+        {
+         "t": "The fish are caught faster than they can breed.",
+         "miss": "Say that use was faster than replacement."
+        },
+        {
+         "t": "This carries on for long enough.",
+         "miss": "Say that it has to go on for long enough."
+        },
+        {
+         "t": "The stock falls so low that it cannot recover. Renewable means it CAN be replaced, not that it always is.",
+         "miss": "Finish by explaining that renewable does not mean it cannot run out."
+        }
+       ],
+       "model": "If fish are caught faster than they can breed, for long enough, the stock falls so low that it cannot recover. Renewable means a resource can be replaced, not that it always is.",
+       "src": "Resource Depletion"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "decline_third2"
+      }
+     ]
+    },
+    {
+     "strand": "erosion",
+     "skill": "explain",
+     "kind": "written",
+     "pool": [
+      {
+       "stem": "Explain how farming can lead to erosion, and then to desertification.",
+       "marks": 4,
+       "points": [
+        {
+         "t": "Farming removes the plant cover (ploughing, too many animals, or clearing trees).",
+         "miss": "Start the chain with farming removing the plant cover."
+        },
+        {
+         "t": "This leaves the soil bare.",
+         "miss": "Do not skip the link: the soil is left bare."
+        },
+        {
+         "t": "Wind and water then carry the soil away: erosion.",
+         "miss": "Name erosion and say what carries the soil off: wind and water."
+        },
+        {
+         "t": "In a dry area the land can turn desert-like. This is desertification, caused by climate AND human activity.",
+         "miss": "Finish the chain: in a dry area the land turns desert-like."
+        }
+       ],
+       "model": "Farming removes plant cover, for example by ploughing, too many animals or clearing trees. That leaves the soil bare, and wind and water carry it away. In a dry area the land can turn desert-like. That is desertification, and it comes from climate and human activity together.",
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "Explain how plant cover protects soil from erosion, and what happens to soil that is left bare.",
+       "marks": 4,
+       "points": [
+        {
+         "t": "Roots hold the soil in place.",
+         "miss": "Say what roots do for soil."
+        },
+        {
+         "t": "Leaves shield the soil from the rain.",
+         "miss": "Say what leaves do for soil."
+        },
+        {
+         "t": "Bare soil has nothing to hold or shield it, so water and wind carry it off.",
+         "miss": "Say what happens to bare soil: water and wind carry it off."
+        },
+        {
+         "t": "In the tray practical, the bare tray usually lost more soil than the covered tray.",
+         "miss": "Use the evidence: the bare tray lost more soil than the covered one."
+        }
+       ],
+       "model": "Roots hold the soil in place and leaves shield it from the rain. Bare soil has nothing to hold or shield it, so water and wind carry it off. In the tray practical, the bare tray usually lost more soil than the covered tray.",
+       "src": "Losing The Soil"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A town is planning a new housing estate. Which action would best reduce runoff and flooding there?",
+       "right": "Permeable paving and rain gardens, so that rain can soak in.",
+       "wrongs": [
+        {
+         "t": "Wider tarmac roads, so that the rain drains away faster.",
+         "tag": "runoff",
+         "m": "Tarmac is sealed. More of it means more runoff."
+        },
+        {
+         "t": "More drains, so that the rain leaves the estate as quickly as possible.",
+         "tag": "runoff",
+         "m": "That moves the water faster. It does not let it soak in."
+        },
+        {
+         "t": "A green belt inside the estate, with nothing built on it.",
+         "tag": "green-belt",
+         "m": "A green belt is a ring of land round a city, not a feature inside one estate."
+        }
+       ],
+       "explain": [
+        "Permeable paving and rain gardens let the rain soak in, so less of it runs off. That is what a sponge city does."
+       ],
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "Which statement about Wuhan or London is correct?",
+       "right": "Wuhan became a sponge city, and London keeps a Green Belt round it.",
+       "wrongs": [
+        {
+         "t": "London became a sponge city, and Wuhan keeps a Green Belt round it.",
+         "tag": "city-terms",
+         "m": "It is the other way round."
+        },
+        {
+         "t": "Wuhan keeps a Green Belt, and London has no way to protect its land.",
+         "tag": "city-terms",
+         "m": "London has a Green Belt of about 500,000 hectares."
+        },
+        {
+         "t": "Both became sponge cities by building more roads and drains.",
+         "tag": "city-terms",
+         "m": "A sponge city lets rain soak in. Roads do the opposite."
+        }
+       ],
+       "explain": [
+        "Wuhan, in central China, is a sponge city. London has a ring of land, the Green Belt, kept from being built on."
+       ],
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "recycle_years"
+      }
+     ]
+    }
+   ],
+   "lists": {}
+  },
+  {
+   "name": "Past the test",
+   "blurb": "This level is meant to be too hard. It is past anything on the test, and the last two questions are close to impossible. Do what you can and read every working.",
+   "slots": [
+    {
+     "strand": "soil",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A farmer cuts every crop plant and dead leaf from a field and burns them, so that nothing is left to rot in the soil. Which part of the soil will run down first, and why?",
+       "right": "Dead organic matter, because nothing is added for decomposers to break down into humus.",
+       "wrongs": [
+        {
+         "t": "Broken rock, because the plants take the rock up into their roots and use it all up.",
+         "tag": "soil-parts",
+         "m": "Broken rock is ground down by weather. Plants do not use it up."
+        },
+        {
+         "t": "Water and air, because burning the plants dries all the gaps in the soil right out for good.",
+         "tag": "soil-parts",
+         "m": "Water and air sit in the gaps between particles, and the gaps are not what runs down first."
+        },
+        {
+         "t": "Living organisms, because they only ever feed on the broken rock and nothing else.",
+         "tag": "soil-forget-life",
+         "m": "Soil organisms feed on dead organic matter, so they run short after it does."
+        }
+       ],
+       "explain": [
+        "Decomposers turn dead organic matter into humus. If nothing dead is added, the organic matter runs down, and the living organisms that feed on it run short."
+       ],
+       "src": "What The Land Gives Us"
+      },
+      {
+       "stem": "A new housing estate seals 40% of a farm field under concrete. What is lost, and how long would it take to make again?",
+       "right": "The soil under it. A few centimetres take a few hundred to about a thousand years.",
+       "wrongs": [
+        {
+         "t": "Only the plants. The soil underneath is unchanged and still works just as well as before.",
+         "tag": "soil-job",
+         "m": "Sealed soil cannot grow plants, take in rain or feed the organisms in it."
+        },
+        {
+         "t": "The soil, but it would form again within a few years once the concrete went.",
+         "tag": "time-fast",
+         "m": "A few centimetres need a few hundred to about a thousand years."
+        },
+        {
+         "t": "The soil, which would take millions of years to make again, like coal.",
+         "tag": "time-coal",
+         "m": "That is coal. Soil takes a few hundred to about a thousand years for a few centimetres."
+        }
+       ],
+       "explain": [
+        "Soil sealed under concrete is lost for centuries: it cannot grow plants, and a few centimetres take a few hundred to about a thousand years to form."
+       ],
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "renew",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "Two wells are pumped at the same fast rate. Well A is shallow, and rain refills it within months. Well B holds deep, old groundwater that took thousands of years to collect. Which statement is best?",
+       "right": "Well A may stay renewable, but well B is non-renewable in practice, as it refills far too slowly.",
+       "wrongs": [
+        {
+         "t": "Both wells are renewable, because rain keeps on falling and filling them both again.",
+         "tag": "renewable-rate",
+         "m": "Rain refills well A quickly, but deep, old water refills very slowly."
+        },
+        {
+         "t": "Both wells are non-renewable, because they are both being pumped out far too fast.",
+         "tag": "renewable-rate",
+         "m": "Well A refills within months, so it may keep up."
+        },
+        {
+         "t": "Well B is renewable and well A is not, because B is the much bigger store of water.",
+         "tag": "renewable-rate",
+         "m": "The size of the store is not what matters. The refill rate is, and B refills far slower."
+        }
+       ],
+       "explain": [
+        "The same kind of resource, water, is renewable in one place and non-renewable in another. It is the rate of refilling against the rate of pumping."
+       ],
+       "src": "What The Earth Gives Us"
+      },
+      {
+       "stem": "Forest X is cut at 3% of its area a year, and regrows 5% a year. Forest Y is cut at 8% of its area a year, and regrows 5% a year. Which statement is best?",
+       "right": "Forest X is renewable in practice, but forest Y is cut faster than it regrows.",
+       "wrongs": [
+        {
+         "t": "Both forests are renewable, because forests are a renewable resource.",
+         "tag": "renewable-rate",
+         "m": "Forest Y is cut faster than it regrows, so it shrinks."
+        },
+        {
+         "t": "Both forests are shrinking, because any cutting makes a forest smaller.",
+         "tag": "sustainable-nothing",
+         "m": "Forest X is cut more slowly than it regrows, so it does not shrink."
+        },
+        {
+         "t": "Forest Y is the renewable one, because it is the one that is cut the most.",
+         "tag": "renewable-rate",
+         "m": "Look at the rates. Forest Y is cut faster than it regrows."
+        }
+       ],
+       "explain": [
+        "Compare the rate of cutting with the rate of regrowth. Cut more slowly than it regrows, a forest is renewable. Cut faster, it shrinks."
+       ],
+       "src": "What The Earth Gives Us"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "next_stock"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "share"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "Helium, the Aral Sea, bluefin tuna and bison were all used too fast. Which statement about the four cases is true?",
+       "right": "Only helium is non-renewable. The other three were renewable, and were still depleted.",
+       "wrongs": [
+        {
+         "t": "All four were non-renewable resources, so they were always bound to run out.",
+         "tag": "renewable-cannot-run-out",
+         "m": "The Aral Sea water, tuna and bison were renewable, and they were still depleted."
+        },
+        {
+         "t": "Only the two animals were depleted. Helium and the Aral Sea were both left completely untouched.",
+         "tag": "deplete-def",
+         "m": "Helium is in short supply, and the Aral Sea lost over 90% of its volume."
+        },
+        {
+         "t": "All four of them recovered fully once the use of each one slowed down a little.",
+         "tag": "conserve-fast",
+         "m": "Not all four. The Aral Sea lost over 90% of its volume, and the bison fell to a few hundred."
+        }
+       ],
+       "explain": [
+        "Helium is non-renewable. Water, tuna and bison are renewable, and still ran short because they were used faster than they were replaced."
+       ],
+       "src": "Resource Depletion"
+      },
+      {
+       "stem": "Which feature do passenger pigeons and bluefin tuna share, but helium does not?",
+       "right": "They are living, renewable resources that were taken faster than they breed.",
+       "wrongs": [
+        {
+         "t": "They were both used faster than they could be replaced, over many long years.",
+         "tag": "deplete-def",
+         "m": "Helium was too. That is shared by all three, so it does not tell them apart."
+        },
+        {
+         "t": "They are non-renewable resources that formed over millions of years.",
+         "tag": "renewable-cannot-run-out",
+         "m": "They are renewable. Helium is the non-renewable one."
+        },
+        {
+         "t": "They were only ever used as food, and never for anything else at all.",
+         "tag": "deplete-def",
+         "m": "That is not what separates them from helium."
+        }
+       ],
+       "explain": [
+        "Pigeons and tuna are living and renewable. Helium is non-renewable. All three were used faster than they were replaced."
+       ],
+       "src": "Resource Depletion"
+      }
+     ]
+    },
+    {
+     "strand": "last",
+     "skill": "judge",
+     "kind": "mc",
+     "pool": [
+      {
+       "stem": "A student says: “The tray practical proves that farming always destroys soil.” Which is the fairest judgement?",
+       "right": "Bare soil lost more than covered soil, but a small, quick model cannot prove it for every farm.",
+       "wrongs": [
+        {
+         "t": "The student is right. The trays behave exactly like a whole real field would.",
+         "tag": "judge-model",
+         "m": "The trays were a small, quick model, so they cannot prove what happens in every field."
+        },
+        {
+         "t": "The student is wrong. A small tray can show us nothing at all about a real field.",
+         "tag": "judge-model",
+         "m": "It did show something real: bare soil lost more than covered soil."
+        },
+        {
+         "t": "The student is wrong, because the two trays were not set up as a fair test of the soil.",
+         "tag": "judge-model",
+         "m": "They were fair: same soil, same slope, same water. The limit is that they were small and quick."
+        }
+       ],
+       "explain": [
+        "A fair judgement says what the trays showed (bare soil lost more) and what they cannot show (every real field)."
+       ],
+       "src": "Losing The Soil"
+      },
+      {
+       "stem": "A student says: “If farming removes plant cover and causes erosion, farming should stop completely.” Which is the fairest judgement?",
+       "right": "Erosion always happens, slowly. Farming changes the speed, so farm in ways that keep soil covered.",
+       "wrongs": [
+        {
+         "t": "The student is right. Farming is the only cause of erosion, so it should stop completely and at once.",
+         "tag": "eros-desert-only",
+         "m": "Water and wind erode soil anyway. What farming changes is how fast."
+        },
+        {
+         "t": "The student is wrong. Farming has no effect at all on how fast soil is lost from a field.",
+         "tag": "cover",
+         "m": "Farming that removes plant cover leaves soil bare, and bare soil is lost faster."
+        },
+        {
+         "t": "The student is wrong. Erosion only happens in dry areas, and never on farms or fields.",
+         "tag": "eros-desert-only",
+         "m": "Erosion happens wherever soil is bare and water or wind can carry it off."
+        }
+       ],
+       "explain": [
+        "Erosion always happens, slowly. What farming changes is the speed. Keeping plant cover on the soil slows the loss."
+       ],
+       "src": "Losing The Soil"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "calc",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "linear"
+      }
+     ]
+    },
+    {
+     "strand": "cities",
+     "skill": "judge",
+     "kind": "written",
+     "pool": [
+      {
+       "stem": "A newspaper says: “Cities are destroying our land, and nothing can be done.” Judge this claim. Use Wuhan and London.",
+       "marks": 4,
+       "points": [
+        {
+         "t": "Agrees with part of it: cities cover soil with concrete and cause runoff.",
+         "miss": "Start with what is true in the claim: cities seal soil and cause runoff."
+        },
+        {
+         "t": "Disagrees with the rest: things can be done.",
+         "miss": "Say clearly which part of the claim is wrong."
+        },
+        {
+         "t": "Wuhan is a sponge city: permeable paving, rain gardens and green roofs let rain soak in.",
+         "miss": "Name the place and what it did: Wuhan, a sponge city."
+        },
+        {
+         "t": "London keeps a ring of land, the Green Belt, from being built on.",
+         "miss": "Name the place and what it did: the London Green Belt."
+        }
+       ],
+       "model": "Part of the claim is true: cities cover soil with concrete, and rain runs off. But it is wrong that nothing can be done. Wuhan became a sponge city, using permeable paving, rain gardens and green roofs so that rain can soak in. London keeps a ring of land, its Green Belt, from being built on.",
+       "src": "Cities And What Can Be Done"
+      },
+      {
+       "stem": "A councillor says: “Building houses on farmland does no lasting harm, because soil is renewable.” Judge this claim.",
+       "marks": 4,
+       "points": [
+        {
+         "t": "Agrees that new soil does form.",
+         "miss": "Start with what is true in the claim: new soil does form."
+        },
+        {
+         "t": "But a few centimetres take a few hundred to about a thousand years.",
+         "miss": "Give the time it takes to form: a few hundred to about a thousand years."
+        },
+        {
+         "t": "Soil sealed under buildings and roads cannot grow plants, so it is lost for centuries.",
+         "miss": "Say what happens to sealed soil: it is lost for centuries."
+        },
+        {
+         "t": "So on a human timescale it is non-renewable, and it is better to build on brownfield land or to protect a green belt.",
+         "miss": "Finish with the conclusion, and one thing that can be done."
+        }
+       ],
+       "model": "It is true that new soil forms, but a few centimetres take a few hundred to about a thousand years. Soil sealed under buildings and roads cannot grow plants, so it is lost for centuries. On a human timescale it is non-renewable, so it is better to build on brownfield land or to protect a green belt.",
+       "src": "Cities And What Can Be Done"
+      }
+     ]
+    },
+    {
+     "strand": "time",
+     "skill": "puzzle",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "vh_ratio"
+      },
+      {
+       "tpl": "vh_reverse"
+      }
+     ]
+    },
+    {
+     "strand": "deplete",
+     "skill": "puzzle",
+     "kind": "num",
+     "pool": [
+      {
+       "tpl": "vh_count"
+      },
+      {
+       "tpl": "vh_stock2"
+      }
+     ]
+    }
+   ],
+   "lists": {}
+  }
+ ]
+}

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earth Resources revision</title>
+<style>
+  :root {
+    --earth: #3D2B1F; --gold: #C99A3D; --goldink: #8F6D2A; --slate: #6A8C9A; --terra: #B5482E; --sand: #F2EBDD; --sand2: #E4D8BE;
+    --ink: #2A1D14; --soft: #6B5A48; --green: #1F7A48; --white: #fff; --amber: #B8860B;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--sand); color: var(--ink); font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 840px; padding: 14px 16px 36px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--earth); margin: 0 0 8px; }
+  h3 { font-family: Georgia, 'Times New Roman', serif; color: var(--earth); margin: 14px 0 6px; font-size: 18px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .pill { background: var(--earth); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--terra); }
+  .clock { font-size: 13px; color: var(--soft); white-space: nowrap; }
+  .dots { display: flex; gap: 5px; flex-wrap: wrap; }
+  .dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--earth); background: var(--white); }
+  .dot.now { background: var(--sand2); } .dot.right { background: var(--green); border-color: var(--green); } .dot.wrong { background: var(--terra); border-color: var(--terra); } .dot.part { background: var(--gold); border-color: var(--goldink); }
+  .topic { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--goldink); margin: 0 0 6px; }
+  .card { background: var(--white); border: 2px solid var(--sand2); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .ask { font-size: 19px; color: var(--earth); font-weight: 700; margin: 0 0 12px; line-height: 1.38; }
+  .sub { font-size: 15px; color: var(--soft); margin: 8px 0 0; line-height: 1.4; }
+  .hint { font-size: 14px; color: var(--soft); margin: 0 0 10px; }
+  button { font: inherit; cursor: pointer; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; background: var(--earth); color: var(--white); border: 2px solid var(--earth); }
+  .btn.ghost { background: var(--white); color: var(--earth); } .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  .btn.gold { background: var(--gold); border-color: var(--goldink); color: var(--earth); }
+  button:disabled { opacity: .45; cursor: default; }
+  .opt:disabled, .chip:disabled, .oitem:disabled { opacity: 1; }
+  button:focus-visible, summary:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .btnrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 58px; padding: 8px 14px; background: var(--white); border: 2px solid var(--sand2); border-radius: 12px; font-size: 16.5px; font-weight: 700; color: var(--earth); touch-action: manipulation; line-height: 1.3; }
+  .opt b { width: 32px; height: 32px; border-radius: 50%; background: var(--sand2); display: flex; align-items: center; justify-content: center; font-size: 16px; flex: none; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--terra); background: #FBEAE6; }
+  .chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+  .chip { min-height: 56px; padding: 8px 12px; border: 2px solid var(--sand2); border-radius: 12px; background: var(--white); font-size: 16.5px; font-weight: 700; color: var(--earth); touch-action: manipulation; }
+  .chip.on { border-color: var(--goldink); background: #FBF1D9; }
+  .chip.good { border-color: var(--green); background: #EAF6EF; } .chip.bad { border-color: var(--terra); background: #FBEAE6; } .chip.miss { border-color: var(--green); border-style: dashed; background: #fff; }
+  .order { display: grid; gap: 10px; margin-bottom: 12px; }
+  .oitem { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 14px; border: 2px solid var(--sand2); border-radius: 12px; background: var(--white); font-size: 16.5px; font-weight: 700; color: var(--earth); text-align: left; touch-action: manipulation; }
+  .oitem b { width: 32px; height: 32px; border-radius: 50%; border: 2px dashed var(--soft); display: flex; align-items: center; justify-content: center; flex: none; font-size: 16px; color: var(--soft); }
+  .oitem.placed { border-color: var(--goldink); background: #FBF1D9; } .oitem.placed b { border: 0; background: var(--earth); color: var(--white); }
+  .oitem.good { border-color: var(--green); background: #EAF6EF; } .oitem.bad { border-color: var(--terra); background: #FBEAE6; }
+  .arow { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--sand2); }
+  .arow:last-child { border-bottom: 0; }
+  .arow .t { font-size: 16.5px; font-weight: 700; color: var(--earth); line-height: 1.35; }
+  .arow.good { background: #EAF6EF; } .arow.bad { background: #FBEAE6; }
+  .arow .say { font-size: 14.5px; color: var(--soft); }
+  select, input[type=text], input[inputmode], textarea { font: inherit; font-size: 16px; padding: 10px 12px; border: 2px solid var(--sand2); border-radius: 10px; background: var(--white); color: var(--ink); width: 100%; }
+  textarea { min-height: 130px; resize: vertical; line-height: 1.4; }
+  .answerrow { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+  .answerrow input { width: 200px; font-size: 22px; font-weight: 700; } .answerrow .unit { font-size: 17px; color: var(--soft); font-weight: 700; }
+  .ticks label { display: flex; gap: 12px; align-items: flex-start; padding: 10px 6px; border-bottom: 1px solid var(--sand2); font-size: 16px; line-height: 1.4; cursor: pointer; }
+  .ticks label:last-child { border-bottom: 0; } .ticks input { width: 22px; height: 22px; margin-top: 1px; flex: none; accent-color: var(--green); }
+  .model { background: #FBF1D9; border: 2px solid var(--goldink); border-radius: 12px; padding: 12px 14px; margin: 10px 0; font-size: 16px; line-height: 1.45; color: var(--earth); }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; } #feedback.wrong { border-color: var(--terra); background: #FBEAE6; } #feedback.part { border-color: var(--goldink); background: #FBF1D9; }
+  #feedback .head { font-size: 21px; font-weight: 700; margin-bottom: 6px; } #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--terra); } #feedback.part .head { color: var(--goldink); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--earth); margin-bottom: 8px; line-height: 1.4; }
+  .how { font-size: 15px; color: var(--soft); margin: 8px 0 2px; }
+  .work { font-size: 16.5px; color: var(--earth); font-weight: 700; line-height: 1.5; } .work div { margin: 2px 0; }
+  .from { font-size: 13.5px; color: var(--soft); margin-top: 8px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--sand2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--sand2); overflow: hidden; width: 140px; flex: none; } .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; margin: 0 0 10px; } .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--earth); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 16.5px; line-height: 1.4; }
+  .step { border-left: 5px solid var(--gold); padding: 6px 0 6px 14px; margin: 12px 0; }
+  .step .nm { font-weight: 700; font-size: 17px; color: var(--earth); } .step div { font-size: 15.5px; line-height: 1.45; margin: 3px 0; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--earth); }
+  details.review { border: 2px solid var(--sand2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--earth); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; } details.review > summary::after { content: '\25BE'; font-size: 18px; flex: none; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--sand2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--earth); font-size: 15px; } .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; } .verdict.ok { color: var(--green); } .verdict.no { color: var(--terra); } .verdict.na { color: var(--soft); } .verdict.pt { color: var(--goldink); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; } .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--earth); line-height: 1.4; }
+  .rq .mine { font-size: 15px; background: var(--sand); border-radius: 8px; padding: 8px 10px; margin: 6px 0; white-space: pre-wrap; }
+  .hide { display: none !important; }
+  @media print { body { background: #fff; } .btn, #stop, .noprint { display: none !important; } details.review { break-inside: avoid; } }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * EARTH RESOURCES REVISION. Nobody gets the same game.
+   *
+   * Five levels, 54 questions, built to last about an hour. Level 1 is the lessons; each level after it is harder; level 5 is past the test.
+   * The questions come from a bank (BANK, written by build/earth-resources-bank.py) and from numeric templates (TPL, below). Each question slot
+   * has a pool; a game code, different for every student, picks one item from each pool, shuffles the options and draws the numbers. Opening
+   * the file with #CODE after the address gives the same game again. The SKILLS and their order are the same for everyone, so the
+   * diagnostic at the end means the same thing for every student.
+   *
+   * Question kinds: mc (choose one), num (type a number), build (tap all that apply), assign (a menu for each row), order (tap in order),
+   * written (type an answer, see a model answer, tick the mark points your answer made: honest self-marking, not auto-marking).
+   * ================================================================== */
+  var BANK = /*DATA*/null/*END*/;
+
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  function comma(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+  var RESOURCES = [
+    { name: 'fish stock', unit: 'tonnes', verb: 'caught' }, { name: 'forest', unit: 'hectares', verb: 'cut' }, { name: 'deer herd', unit: 'deer', verb: 'hunted' },
+    { name: 'seal colony', unit: 'seals', verb: 'taken' }, { name: 'timber plantation', unit: 'hectares', verb: 'cut' }, { name: 'lobster population', unit: 'tonnes', verb: 'caught' },
+  ];
+  var GSS_TEXT = ['This resource is being depleted', 'This resource is not being depleted; it stays the same', 'This resource is not being depleted; it is growing', 'There is not enough information to decide'];
+
+  /* ================================================================== *
+   * NUMERIC TEMPLATES. Each returns a question with the answer, the named mistakes (each with the sum that produces it) and the working.
+   * Every value is a whole number, every mistake differs from the answer and from the other mistakes. build/check-earth-resources-game.py
+   * re-derives all of it with sympy.
+   * ================================================================== */
+  function numQ(id, o) { o.kind = o.kind || 'num'; o.tpl = id; return o; }
+  function mk(value, tag, msg, how) { return { value: value, tag: tag, msg: msg, how: how }; }
+
+  var TPL = {
+    time_form: function (c) {
+      var R, n; do { R = c.pick([100, 150, 200, 250, 300]); n = c.pick([2, 3, 4]); } while (R * n > 1000);
+      var ans = R * n;
+      return numQ('time_form', { prompt: 'Suppose soil forms at 1 cm every ' + R + ' years. How many years would ' + n + ' cm take to form?', unit: 'years', answer: ans, params: { R: R, n: n },
+        mistakes: [mk(R + n, 'time-calc-add', 'You added. To find the time for several centimetres, multiply.', R + ' + ' + n + ' = ' + (R + n)), mk(R, 'time-calc-one', 'That is the time for 1 cm. The question asks for ' + n + ' cm.', 'time for 1 cm = ' + R)],
+        explain: [n + ' cm × ' + R + ' years for each cm = ' + comma(ans) + ' years.'] });
+    },
+    yield: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([100000, 150000, 200000, 250000, 300000, 400000, 500000, 600000]), g = c.pick([2, 4, 5, 8]), Y = S * g / 100;
+      return numQ('yield', { prompt: 'A ' + r.name + ' of ' + comma(S) + ' ' + r.unit + ' grows by ' + g + '% a year. Calculate the greatest amount that can be ' + r.verb + ' each year without shrinking it.', unit: r.unit, answer: Y, params: { S: S, rate: g, unit: r.unit },
+        mistakes: [mk(S * g, 'yield-percent', 'The rate is a percentage, so divide by 100.', comma(S) + ' × ' + g + ' = ' + comma(S * g)), mk(S / g, 'yield-flip', 'You divided by the rate. Multiply by it, then divide by 100.', comma(S) + ' ÷ ' + g + ' = ' + comma(S / g))],
+        explain: ['Sustainable yield = stock × rate ÷ 100.', comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y) + ' ' + r.unit + '.'] });
+    },
+    pctpoints: function (c) {
+      var ab = c.pick([[20, 25], [20, 30], [40, 50], [10, 15], [40, 60], [50, 60], [25, 30], [60, 75]]), a = ab[0], b = ab[1];
+      var ctx = c.pick(['Farmland in a country grows', 'The share of a country covered by buildings and roads grows', 'The share of a country used for farming grows']);
+      var rel = Math.round((b - a) * 100 / a);
+      return numQ('pctpoints', { prompt: ctx + ' from ' + a + '% to ' + b + '% of its area. Calculate the increase, in percentage points.', unit: 'percentage points', answer: b - a, params: { a: a, b: b },
+        mistakes: [mk(rel, 'pct-points', 'That is the percentage increase. Percentage POINTS are just the difference between the two percentages.', '(' + b + ' − ' + a + ') ÷ ' + a + ' × 100 = ' + rel)],
+        explain: [b + ' − ' + a + ' = ' + (b - a) + ' percentage points.'] });
+    },
+    pctdec: function (c) {
+      var S = c.pick([200000, 400000, 600000, 800000]), p = c.pick([20, 60, 75, 90]), nw = S * (100 - p) / 100;
+      var wb = p * 100 / (100 - p);
+      return numQ('pctdec', { prompt: 'A fish stock of ' + comma(S) + ' tonnes falls to ' + comma(nw) + ' tonnes. Calculate the percentage decrease.', unit: '%', answer: p, params: { S: S, now: nw },
+        mistakes: [mk(wb, 'pct-wrong-base', 'You divided by the NEW amount. Divide the change by the amount you started with.', comma(S - nw) + ' ÷ ' + comma(nw) + ' × 100 = ' + wb), mk(100 - p, 'pct-left', 'That is the percentage that is LEFT. The question asks for the percentage lost.', '100 − ' + p + ' = ' + (100 - p))],
+        explain: ['Change = ' + comma(S) + ' − ' + comma(nw) + ' = ' + comma(S - nw) + '.', 'Percentage decrease = ' + comma(S - nw) + ' ÷ ' + comma(S) + ' × 100 = ' + p + '%.'] });
+    },
+    decline2: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([40000, 80000, 120000, 160000, 200000, 240000, 280000, 320000]), end = S / 4;
+      return numQ('decline2', { prompt: 'A ' + r.name + ' starts at ' + comma(S) + ' ' + r.unit + '. It loses half of what is left every year. Calculate how much is left after 2 years.', unit: r.unit, answer: end, params: { S: S, n: 2, unit: r.unit },
+        mistakes: [mk(S / 2, 'decline-stop', 'That is after only 1 year. Halve again for the second year.', comma(S) + ' ÷ 2 = ' + comma(S / 2)), mk(S * 3 / 4, 'decline-lost', 'That is how much was LOST. The question asks how much is left.', comma(S) + ' − ' + comma(end) + ' = ' + comma(S * 3 / 4))],
+        explain: ['Year 1: ' + comma(S) + ' ÷ 2 = ' + comma(S / 2) + '.', 'Year 2: ' + comma(S / 2) + ' ÷ 2 = ' + comma(end) + ' ' + r.unit + ' left.'] });
+    },
+    yield_left: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([200000, 250000, 300000, 400000, 500000]), g = c.pick([4, 5, 8]), Y = S * g / 100, k = c.pick([1000, 2000, 3000]), taken = Y - k;
+      return numQ('yield_left', { prompt: 'A ' + r.name + ' of ' + comma(S) + ' ' + r.unit + ' grows by ' + g + '% a year. This year ' + comma(taken) + ' ' + r.unit + ' have been ' + r.verb + '. How many more ' + r.unit + ' could be ' + r.verb + ' this year without shrinking it?', unit: r.unit, answer: k, params: { S: S, rate: g, taken: taken, unit: r.unit },
+        mistakes: [mk(Y, 'yield-compare', 'That is the whole sustainable yield. Some of it has already been taken.', comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y)), mk(taken, 'yield-compare', 'That is what has been taken already. Compare it with the sustainable yield.', 'amount taken = ' + comma(taken))],
+        explain: ['Sustainable yield = ' + comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y) + ' ' + r.unit + '.', 'Already ' + r.verb + ': ' + comma(taken) + '. So ' + comma(Y) + ' − ' + comma(taken) + ' = ' + comma(k) + ' ' + r.unit + ' more.'] });
+    },
+    decline3: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([80000, 160000, 240000, 320000, 400000, 480000]), end = S / 8;
+      return numQ('decline3', { prompt: 'A ' + r.name + ' starts at ' + comma(S) + ' ' + r.unit + '. It loses half of what is left every year. Calculate how much is left after 3 years.', unit: r.unit, answer: end, params: { S: S, n: 3, unit: r.unit },
+        mistakes: [mk(S / 4, 'decline-stop', 'That is after only 2 years. Halve once more.', comma(S) + ' ÷ 4 = ' + comma(S / 4)), mk(S / 16, 'decline-extra', 'That is after 4 years. Stop after 3.', comma(S) + ' ÷ 16 = ' + comma(S / 16)), mk(S - end, 'decline-lost', 'That is how much was LOST. The question asks how much is left.', comma(S) + ' − ' + comma(end) + ' = ' + comma(S - end))],
+        explain: ['Year 1: ' + comma(S) + ' ÷ 2 = ' + comma(S / 2) + '.', 'Year 2: ' + comma(S / 2) + ' ÷ 2 = ' + comma(S / 4) + '.', 'Year 3: ' + comma(S / 4) + ' ÷ 2 = ' + comma(end) + ' ' + r.unit + ' left.'] });
+    },
+    cover_area: function (c) {
+      var A = c.pick([2000, 2400, 3000, 4000]), p = c.pick([25, 35, 45, 60]), ans = A * p / 100;
+      return numQ('cover_area', { prompt: 'A city covers ' + comma(A) + ' hectares of land. Buildings, roads and car parks seal ' + p + '% of it. How many hectares are sealed?', unit: 'hectares', answer: ans, params: { A: A, p: p },
+        mistakes: [mk(A - ans, 'cover-left', 'That is the area that is NOT sealed. The question asks for the sealed area.', comma(A) + ' − ' + comma(ans) + ' = ' + comma(A - ans)), mk(A * p, 'pct-forgot100', 'The percentage needs dividing by 100.', comma(A) + ' × ' + p + ' = ' + comma(A * p))],
+        explain: [comma(A) + ' × ' + p + ' ÷ 100 = ' + comma(ans) + ' hectares are sealed.'] });
+    },
+    gss: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([80000, 100000, 120000, 150000, 180000, 200000]), g = c.pick([4, 5, 8, 10]), Y = S * g / 100, cat = c.pick(['depleted', 'same', 'growing']), k = c.pick([500, 1000, 1500, 2000]);
+      var taken = cat === 'depleted' ? Y + k : cat === 'same' ? Y : Y - k;
+      var correct = cat === 'depleted' ? GSS_TEXT[0] : cat === 'same' ? GSS_TEXT[1] : GSS_TEXT[2];
+      var rel = taken > Y ? 'MORE than' : taken < Y ? 'LESS than' : 'EXACTLY';
+      var opts = c.shuffle(GSS_TEXT).map(function (t) {
+        return { text: t, tag: t === correct ? null : 'yield-compare', msg: t === correct ? '' : (t === GSS_TEXT[3] ? 'The sustainable yield is ' + comma(Y) + ' ' + r.unit + ', and ' + comma(taken) + ' are ' + r.verb + '. That is enough to decide.' : 'The sustainable yield is ' + comma(Y) + ' ' + r.unit + '. ' + comma(taken) + ' are ' + r.verb + ', which is ' + rel + ' that.') };
+      });
+      return numQ('gss', { kind: 'mc', prompt: 'A ' + r.name + ' of ' + comma(S) + ' ' + r.unit + ' grows by ' + g + '% a year. This year ' + comma(taken) + ' ' + r.unit + ' are ' + r.verb + '. Decide what is happening to it.', options: opts, correctIndex: opts.map(function (o) { return o.tag === null; }).indexOf(true),
+        params: { S: S, rate: g, taken: taken, cat: cat },
+        explain: ['Sustainable yield: ' + comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y) + ' ' + r.unit + '.', comma(taken) + ' ' + r.unit + ' are ' + r.verb + ', which is ' + (taken > Y ? 'more than the yield: it is being depleted.' : taken < Y ? 'less than the yield: it is growing.' : 'exactly the yield: it stays the same.')] });
+    },
+    decline_third2: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([90000, 180000, 270000, 360000, 450000, 540000]), end = S * 4 / 9;
+      return numQ('decline_third2', { prompt: 'A ' + r.name + ' starts at ' + comma(S) + ' ' + r.unit + '. It loses a third of what is left every 5 years. Calculate how much is left after 10 years.', unit: r.unit, answer: end, params: { S: S, unit: r.unit },
+        mistakes: [mk(S * 2 / 3, 'decline-stop', 'That is after only 5 years. Take away a third again for the second 5 years.', comma(S) + ' × 2 ÷ 3 = ' + comma(S * 2 / 3)), mk(S * 5 / 9, 'decline-lost', 'That is how much was LOST. The question asks how much is left.', comma(S) + ' − ' + comma(end) + ' = ' + comma(S * 5 / 9)), mk(S / 3, 'decline-linear', 'You took a third of the ORIGINAL amount each time. Each time, take a third of what is left now.', comma(S) + ' − 2 × ' + comma(S / 3) + ' = ' + comma(S / 3))],
+        explain: ['A third lost means two thirds are left each time.', 'After 5 years: ' + comma(S) + ' × 2 ÷ 3 = ' + comma(S * 2 / 3) + '.', 'After 10 years: ' + comma(S * 2 / 3) + ' × 2 ÷ 3 = ' + comma(end) + ' ' + r.unit + '.'] });
+    },
+    recycle_years: function (c) {
+      var combos = [];
+      [600000, 900000, 1200000].forEach(function (M) { [20000, 40000].forEach(function (U) { [25, 40].forEach(function (cut) {
+        var U2 = U * (100 - cut) / 100, wrong2 = U * cut / 100;
+        if (M % U2 === 0 && M % wrong2 === 0 && M % U === 0 && M / U2 !== M / U && M / U2 !== M / wrong2 && M / U !== M / wrong2) combos.push([M, U, cut]);
+      }); }); });
+      var t = c.pick(combos), M = t[0], U = t[1], cut = t[2], U2 = U * (100 - cut) / 100, yrs = M / U2;
+      return numQ('recycle_years', { prompt: 'A mine holds ' + comma(M) + ' tonnes of a metal. ' + comma(U) + ' tonnes are dug up each year. Recycling cuts the amount of NEW metal needed by ' + cut + '%. For how many years will the mine last with recycling?', unit: 'years', answer: yrs, params: { M: M, U: U, cut: cut },
+        mistakes: [mk(M / U, 'recycle-ignored', 'That is how long it lasts WITHOUT recycling. Recycling cuts the amount dug up each year.', comma(M) + ' ÷ ' + comma(U) + ' = ' + (M / U)), mk(M / (U * cut / 100), 'recycle-misread', 'You used the amount SAVED each year. The mine is used at the amount that is left after the saving.', comma(M) + ' ÷ ' + comma(U * cut / 100) + ' = ' + (M / (U * cut / 100)))],
+        explain: ['Recycling cuts the new metal needed by ' + cut + '%, so ' + (100 - cut) + '% is still dug up each year: ' + comma(U) + ' × ' + (100 - cut) + ' ÷ 100 = ' + comma(U2) + ' tonnes.', comma(M) + ' ÷ ' + comma(U2) + ' = ' + yrs + ' years.'] });
+    },
+    next_stock: function (c) {
+      var S = c.pick([300000, 400000, 500000, 600000]), g = c.pick([4, 5, 6, 8]), Y = S * g / 100, k = c.pick([2000, 3000, 4000, 6000]), C = Y + k, ans = S + Y - C;
+      return numQ('next_stock', { prompt: 'A fish stock of ' + comma(S) + ' tonnes grows by ' + g + '% a year. This year ' + comma(C) + ' tonnes are caught. How big is the stock at the start of next year?', unit: 'tonnes', answer: ans, params: { S: S, rate: g, caught: C },
+        mistakes: [mk(S - C, 'ignore-growth', 'You forgot the growth. The stock also grows during the year.', comma(S) + ' − ' + comma(C) + ' = ' + comma(S - C)), mk(S + Y, 'ignore-catch', 'You forgot to take away the catch.', comma(S) + ' + ' + comma(Y) + ' = ' + comma(S + Y))],
+        explain: ['Growth: ' + comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y) + ' tonnes.', 'New stock = ' + comma(S) + ' + ' + comma(Y) + ' − ' + comma(C) + ' = ' + comma(ans) + ' tonnes.'] });
+    },
+    share: function (c) {
+      var t = c.pick([[50, 40, 60, 55], [60, 50, 90, 60], [20, 35, 30, 50], [100, 30, 150, 40], [40, 45, 80, 50]]), P1 = t[0], p1 = t[1], P2 = t[2], p2 = t[3];
+      var u1 = P1 * p1 / 100, u2 = P2 * p2 / 100, ans = u2 - u1;
+      return numQ('share', { prompt: 'A country has ' + P1 + ' million people, and ' + p1 + '% of them live in cities. Later it has ' + P2 + ' million people, and ' + p2 + '% of them live in cities. How many MORE million people live in cities now?', unit: 'million people', answer: ans, params: { P1: P1, p1: p1, P2: P2, p2: p2 },
+        mistakes: [mk(p2 - p1, 'share-vs-number', 'That is how much the SHARE rose, in percentage points. The question asks for how many more people.', p2 + ' − ' + p1 + ' = ' + (p2 - p1)), mk(P2 - P1, 'share-vs-number', 'That is how many more people the country has. The question asks how many more live in cities.', P2 + ' − ' + P1 + ' = ' + (P2 - P1))],
+        explain: ['First time: ' + P1 + ' × ' + p1 + ' ÷ 100 = ' + u1 + ' million in cities.', 'Later: ' + P2 + ' × ' + p2 + ' ÷ 100 = ' + u2 + ' million in cities.', u2 + ' − ' + u1 + ' = ' + ans + ' million more people.'] });
+    },
+    linear: function (c) {
+      var r = c.pick(RESOURCES), S = c.pick([125000, 250000, 375000, 500000]), end = S * 64 / 125;
+      return numQ('linear', { prompt: 'A ' + r.name + ' starts at ' + comma(S) + ' ' + r.unit + '. It loses a fifth of what is left every year. Calculate how much is left after 3 years.', unit: r.unit, answer: end, params: { S: S, unit: r.unit },
+        mistakes: [mk(S * 2 / 5, 'decline-linear', 'You took a fifth of the ORIGINAL amount each year. Each year, take a fifth of what is left now.', comma(S) + ' − 3 × ' + comma(S / 5) + ' = ' + comma(S * 2 / 5)), mk(S * 16 / 25, 'decline-stop', 'That is after only 2 years. Take a fifth away once more.', comma(S) + ' × 4 ÷ 5 × 4 ÷ 5 = ' + comma(S * 16 / 25)), mk(S - end, 'decline-lost', 'That is how much was LOST. The question asks how much is left.', comma(S) + ' − ' + comma(end) + ' = ' + comma(S - end))],
+        explain: ['A fifth lost means four fifths are left each year.', 'Year 1: ' + comma(S) + ' × 4 ÷ 5 = ' + comma(S * 4 / 5) + '.', 'Year 2: ' + comma(S * 4 / 5) + ' × 4 ÷ 5 = ' + comma(S * 16 / 25) + '.', 'Year 3: ' + comma(S * 16 / 25) + ' × 4 ÷ 5 = ' + comma(end) + ' ' + r.unit + ' left.'] });
+    },
+    vh_ratio: function (c) {
+      var t = c.pick([[200, 3, 5, 24], [250, 2, 5, 20], [300, 3, 10, 30], [150, 4, 5, 20], [100, 3, 4, 12]]), R = t[0], L = t[1], Y = t[2], D = t[3];
+      var lose = D * Y / L, rebuild = D * R, ans = R * L / Y;
+      return numQ('vh_ratio', { prompt: 'In an imagined field, soil forms at 1 cm every ' + R + ' years. A bare field with ' + D + ' cm of topsoil loses ' + L + ' cm every ' + Y + ' years. How many times longer does it take to form ' + D + ' cm of soil than for the field to lose it all?', unit: 'times longer', answer: ans, params: { R: R, L: L, Y: Y, D: D },
+        mistakes: [mk(rebuild, 'ratio-wrong-quantity', 'That is the number of YEARS to form the soil. The question asks how many TIMES longer that is than the time to lose it.', D + ' × ' + R + ' = ' + comma(rebuild)), mk(lose, 'ratio-wrong-quantity', 'That is the number of YEARS to lose the soil. The question asks how many TIMES longer forming takes.', D + ' ÷ ' + L + ' × ' + Y + ' = ' + lose)],
+        explain: ['Time to form ' + D + ' cm: ' + D + ' × ' + R + ' = ' + comma(rebuild) + ' years.', 'Time to lose it: ' + D + ' ÷ ' + L + ' × ' + Y + ' = ' + lose + ' years.', comma(rebuild) + ' ÷ ' + lose + ' = ' + ans + ' times longer.'] });
+    },
+    vh_reverse: function (c) {
+      var t = c.pick([[4, 2800, 70000], [5, 3500, 70000], [8, 4000, 50000], [4, 3200, 80000], [5, 4000, 80000], [8, 5600, 70000], [5, 2500, 50000]]), g = t[0], H = t[1], S = t[2];
+      return numQ('vh_reverse', { prompt: 'A forest regrows ' + g + '% of its area every year. A company cuts exactly ' + comma(H) + ' hectares a year, and that is exactly the sustainable amount. How many hectares is the forest?', unit: 'hectares', answer: S, params: { rate: g, H: H },
+        mistakes: [mk(H * g / 100, 'reverse-flip', 'You worked forwards, as if ' + comma(H) + ' were the stock. Here ' + comma(H) + ' is the yield, so work backwards to the stock.', comma(H) + ' × ' + g + ' ÷ 100 = ' + comma(H * g / 100)), mk(H / g, 'reverse-scale', 'You forgot the 100. The yield is the stock × rate ÷ 100, so the stock is yield × 100 ÷ rate.', comma(H) + ' ÷ ' + g + ' = ' + comma(H / g))],
+        explain: ['Sustainable yield = stock × rate ÷ 100.', 'So stock = yield × 100 ÷ rate = ' + comma(H) + ' × 100 ÷ ' + g + ' = ' + comma(S) + ' hectares.', 'Check: ' + comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(H) + '.'] });
+    },
+    vh_count: function (c) {
+      var t = c.pick([[81000, 30000, 3], [81000, 20000, 4], [162000, 60000, 3], [162000, 40000, 4]]), S = t[0], lim = t[1], n = t[2];
+      var vals = [S]; for (var i = 1; i <= n; i++) vals.push(vals[i - 1] * 2 / 3);
+      var early = vals[n - 1], late = vals[n];
+      var line = []; for (var y = 1; y <= n; y++) line.push('Year ' + y + ': ' + comma(vals[y]) + (vals[y] < lim ? ' (below ' + comma(lim) + ')' : ' (not yet below ' + comma(lim) + ')'));
+      return numQ('vh_count', { prompt: 'A store of ' + comma(S) + ' tonnes loses a third of what is left each year. After how many years is there less than ' + comma(lim) + ' tonnes left?', unit: 'years', answer: n, params: { S: S, lim: lim },
+        mistakes: [mk(n - 1, 'count-early', 'After ' + (n - 1) + ' years there are still ' + comma(early) + ' tonnes, which is not below ' + comma(lim) + '.', 'after ' + (n - 1) + ' years: ' + comma(early)), mk(n + 1, 'count-late', 'It is already below ' + comma(lim) + ' after ' + n + ' years. Stop in the first year it is below.', 'after ' + n + ' years: ' + comma(vals[n]))],
+        explain: ['Two thirds are left each year.'].concat(line) });
+    },
+    vh_stock2: function (c) {
+      var t = c.pick([[100000, 5, 7000], [200000, 10, 24000], [120000, 5, 8000], [300000, 10, 35000]]), S = t[0], g = t[1], H = t[2];
+      var Y = S * g / 100, s1 = S + Y - H, y2 = s1 * g / 100, s2 = s1 + y2 - H;
+      var orig = S + 2 * Y - 2 * H;
+      return numQ('vh_stock2', { prompt: 'A forest of ' + comma(S) + ' hectares regrows ' + g + '% of its size each year, and ' + comma(H) + ' hectares are cut each year. Each year the forest grows first and then the cutting is taken off. How many hectares are left after 2 years?', unit: 'hectares', answer: s2, params: { S: S, rate: g, H: H },
+        mistakes: [mk(S - 2 * H, 'ignore-growth', 'You forgot the growth. The forest regrows each year as well as being cut.', comma(S) + ' − 2 × ' + comma(H) + ' = ' + comma(S - 2 * H)), mk(s1, 'stop-early', 'That is after only 1 year. Do the second year as well.', comma(S) + ' + ' + comma(Y) + ' − ' + comma(H) + ' = ' + comma(s1)), mk(orig, 'growth-original', 'You took the second year’s growth from the ORIGINAL size. It is a percentage of the size at the start of that year.', comma(S) + ' + 2 × ' + comma(Y) + ' − 2 × ' + comma(H) + ' = ' + comma(orig))],
+        explain: ['Year 1: growth ' + comma(S) + ' × ' + g + ' ÷ 100 = ' + comma(Y) + '. Size = ' + comma(S) + ' + ' + comma(Y) + ' − ' + comma(H) + ' = ' + comma(s1) + '.', 'Year 2: growth ' + comma(s1) + ' × ' + g + ' ÷ 100 = ' + comma(y2) + '. Size = ' + comma(s1) + ' + ' + comma(y2) + ' − ' + comma(H) + ' = ' + comma(s2) + ' hectares.'] });
+    },
+  };
+
+  /* ================================================================== *
+   * GENERATING A GAME
+   * ================================================================== */
+  function generate(code) {
+    var rnd = makeRng(code);
+    var c = {
+      pick: function (arr) { return arr[Math.floor(rnd() * arr.length)]; },
+      shuffle: function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; },
+    };
+    c.sample = function (arr, n) { return c.shuffle(arr).slice(0, n); };
+    var out = [];
+
+    function base(it, kind) { return { kind: kind, prompt: it.stem, src: it.src, explain: it.explain, item: it.stem }; }
+    var BUILD = {
+      mc: function (it) {
+        var opts = c.shuffle([{ text: it.right, tag: null, msg: '' }].concat(it.wrongs.map(function (w) { return { text: w.t, tag: w.tag, msg: w.m }; })));
+        var q = base(it, 'mc'); q.options = opts; q.correctIndex = opts.map(function (o) { return o.tag === null; }).indexOf(true); return q;
+      },
+      assign: function (it, lv) {
+        var rows = it.rows;
+        if (it.tag === 'renew-class') rows = lv.lists.renew_pool.concat(c.sample(lv.lists.nonrenew_pool, 2)).map(function (p) { return { t: p[0], a: p[1] }; });
+        if (it.tag === 'renew-rate') rows = c.sample(lv.lists.rate_pool_renew, 2).map(function (t) { return { t: t, a: 'Renewable' }; }).concat(c.sample(lv.lists.rate_pool_not, 2).map(function (t) { return { t: t, a: 'Not renewable in practice' }; }));
+        var q = base(it, 'assign');
+        q.rows = c.shuffle(rows).map(function (r) { return { text: r.t, answer: r.a }; });
+        q.options = it.options.length > 2 ? c.shuffle(it.options) : it.options.slice();
+        q.tag = it.tag; return q;
+      },
+      order: function (it, lv) {
+        var items = it.items.slice();
+        if (items[0] === '{crop}') items[0] = c.pick(lv.lists.crops);
+        var shown; do { shown = c.shuffle(items); } while (shown.join('|') === items.join('|'));
+        var q = base(it, 'order'); q.items = items; q.shown = shown; q.first = it.first; q.last = it.last; q.tag = it.tag; return q;
+      },
+      build: function (it) {
+        var q = base(it, 'build'); q.correct = it.right.slice(); q.cards = c.shuffle(it.right.concat(c.sample(it.distractors, it.draw))); q.tag = it.tag; return q;
+      },
+      written: function (it) {
+        var q = base(it, 'written'); q.points = it.points.map(function (p) { return { text: p.t, miss: p.miss }; }); q.model = it.model; q.marks = it.marks; return q;
+      },
+    };
+
+    BANK.levels.forEach(function (lv, li) {
+      lv.slots.forEach(function (sl, si) {
+        var item = c.pick(sl.pool), Q;
+        if (item.tpl) Q = TPL[item.tpl](c);
+        else Q = BUILD[sl.kind](item, lv);
+        Q.level = li + 1; Q.n = si + 1; Q.strand = sl.strand; Q.skill = sl.skill; Q.slotKind = sl.kind;
+        if (!Q.src) Q.src = BANK.strands[sl.strand].lesson;
+        out.push(Q);
+      });
+    });
+    out.forEach(function (q, i) { q.idx = i; });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var NLEV = BANK.levels.length;
+  var SIZES = BANK.levels.map(function (l) { return l.slots.length; });
+  var OFFSET = []; SIZES.reduce(function (a, n, i) { OFFSET[i] = a; return a + n; }, 0);
+  var TOTAL = SIZES.reduce(function (a, n) { return a + n; }, 0);
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  var app = document.getElementById('app');
+  var state, locked, qStart, levelStart, gameStart, ui;
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), lv: 0, i: 0, results: [], screen: 'start' }; locked = false; gameStart = null; }
+  function idx() { return OFFSET[state.lv] + state.i; }
+  function q() { return state.qs[idx()]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; ui = {}; }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function clock() { if (!gameStart) return '0:00'; var s = Math.round((Date.now() - gameStart) / 1000); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+
+  function display(Q) {
+    var d = Q.prompt;
+    if (Q.options) d += ' | ' + Q.options.map(function (o) { return o.text || o; }).join(' / ');
+    if (Q.rows) d += ' | ' + Q.rows.map(function (r) { return r.text; }).join(' / ');
+    if (Q.shown) d += ' | ' + Q.shown.join(' / ');
+    if (Q.cards) d += ' | ' + Q.cards.join(' / ');
+    return d;
+  }
+  var LEVEL_NOTES = [
+    'Everyone should finish this level with green dots.',
+    'One step further than the lessons.',
+    'Spot what is wrong, and do two-step sums.',
+    'The questions that look like the test. You write four answers and mark them yourself.',
+    'This level is past the test. It is meant to be too hard. Do what you can and read every working.',
+  ];
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Earth Resources revision'));
+    card.appendChild(el('p', 'lead', 'This game covers the whole unit: what soil is made of, how fast soil forms and is lost, erosion, cities and land, natural resources, making them last, and what happens when they run out.'));
+    card.appendChild(el('p', 'lead', '<b>Five levels, 54 questions, built to last about an hour.</b> Each level is harder than the one before. You are not expected to finish. Use “Stop and see my results” when your teacher says.'));
+    card.appendChild(el('p', 'lead', '<b>Level 5 is past the test and is meant to be too hard.</b> A red dot there does not mean you are bad at this. It is there to stretch you.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. At the end you get a list of what to go back to, and what to practise. There is no timer on the questions, and the time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start level 1'); b.id = 'start'; b.onclick = beginLevel; app.appendChild(b); b.focus();
+  }
+  function beginLevel() { state.i = 0; levelStart = Date.now(); if (!gameStart) gameStart = Date.now(); question(); }
+
+  function header() {
+    var h = el('header'), L = BANK.levels[state.lv];
+    h.appendChild(el('span', 'pill' + (state.lv >= NLEV - 1 ? ' hard' : ''), 'Level ' + (state.lv + 1) + ' of ' + NLEV + ' · ' + L.name));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of ' + SIZES[state.lv]);
+    for (var k = 0; k < SIZES[state.lv]; k++) { var res = state.results[OFFSET[state.lv] + k]; d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : res.score > 0 ? ' part' : ' wrong') : (k === state.i ? ' now' : '')))); }
+    h.appendChild(d); h.appendChild(el('span', 'clock', 'Time played ' + clock())); return h;
+  }
+
+  function workHtml(Q) {
+    var expl = (Q.explain || []).map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('');
+    return expl ? '<p class="how">Working:</p><div class="work">' + expl + '</div>' : '';
+  }
+  function fromHtml(Q) { return '<div class="from">Revise: ' + esc(Q.src) + '</div>'; }
+
+  function question() {
+    clear(); state.screen = 'question'; locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard';
+    card.appendChild(el('p', 'topic', BANK.strands[Q.strand].name));
+    card.appendChild(el('p', 'ask', esc(Q.prompt)));
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    KIND[Q.kind].render(Q);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var bar = el('div', 'btnrow'); bar.id = 'navrow'; bar.style.marginTop = '14px';
+    var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; bar.appendChild(go);
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.onclick = final; bar.appendChild(stop);
+    app.appendChild(bar);
+  }
+
+  /* ---------- recording an answer and showing the feedback ---------- */
+  function record(res, headText, fbClass, msgHtml) {
+    var Q = q();
+    res.secs = Math.max(1, Math.round((Date.now() - qStart) / 1000)); res.strand = Q.strand; res.skill = Q.skill; res.level = Q.level; res.kind = Q.kind;
+    res.ok = res.score >= 0.999;
+    state.results[idx()] = res; locked = true;
+    var fb = document.getElementById('feedback'); fb.className = fbClass || (res.ok ? 'right' : res.score > 0 ? 'part' : 'wrong');
+    fb.innerHTML = '<div class="head">' + esc(headText) + '</div>' + (msgHtml || '') + fromHtml(Q);
+    var last = state.i === SIZES[state.lv] - 1, label = last ? (state.lv === NLEV - 1 ? 'See results' : 'Finish level') : 'Next';
+    var go = document.getElementById('nextbtn'); go.textContent = label; go.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (res.ok ? 'right' : res.score > 0 ? 'part' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < SIZES[state.lv] - 1) { state.i++; question(); } else levelEnd(); }
+
+  /* ---------- the question kinds ---------- */
+  var KIND = {};
+
+  KIND.mc = {
+    render: function (Q) {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt', '<b>' + LETTERS[k] + '</b><span>' + esc(o.text) + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { KIND.mc.pick(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    },
+    pick: function (k) {
+      if (state.screen !== 'question' || locked) return;
+      var Q = q(), ok = k === Q.correctIndex, o = Q.options[k], tags = ok ? [] : [o.tag || 'other'];
+      document.querySelectorAll('.opt').forEach(function (b, j) { b.disabled = true; if (j === Q.correctIndex) b.classList.add('correct'); else if (j === k) b.classList.add('picked'); });
+      record({ score: ok ? 1 : 0, tags: tags, wrote: o.text }, ok ? 'Correct.' : 'Not quite. The answer is: ' + Q.options[Q.correctIndex].text, null,
+        (ok ? '' : '<div class="msg">' + esc(o.msg || 'Read the question again, and check the working below.') + '</div>') + workHtml(Q));
+    },
+    review: function (Q, x) { return '<div class="wrote">You chose <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(Q.options[Q.correctIndex].text) + '</b>.</div>'; },
+  };
+
+  function parseNum(s) {
+    var t = String(s).replace(/[,\s  ]/g, '').replace(/^[−–]/, '-');
+    var m = t.match(/^(-?\d+(?:\.\d+)?)([A-Za-z%.²³]*)$/);
+    return m ? parseFloat(m[1]) : null;
+  }
+  KIND.num = {
+    render: function (Q) {
+      var row = el('div', 'answerrow');
+      var inp = el('input'); inp.type = 'text'; inp.setAttribute('inputmode', 'decimal'); inp.setAttribute('autocomplete', 'off'); inp.id = 'numin'; inp.setAttribute('aria-label', 'Your answer in ' + Q.unit);
+      row.appendChild(inp); row.appendChild(el('span', 'unit', esc(Q.unit))); app.appendChild(row);
+      var b = el('button', 'btn', 'Check my answer'); b.id = 'check'; b.type = 'button'; b.onclick = function () { KIND.num.check(); }; app.appendChild(b);
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); if (!locked) KIND.num.check(); else next(); } });
+      setTimeout(function () { inp.focus(); }, 0);
+    },
+    check: function () {
+      if (locked) return;
+      var Q = q(), inp = document.getElementById('numin'), v = parseNum(inp.value);
+      if (v === null) { inp.focus(); inp.style.borderColor = 'var(--terra)'; return; }
+      var ok = Math.abs(v - Q.answer) < 1e-9, hit = null;
+      if (!ok) Q.mistakes.forEach(function (m) { if (!hit && Math.abs(m.value - v) < 1e-9) hit = m; });
+      inp.disabled = true; document.getElementById('check').classList.add('hide');
+      var wrote = inp.value.trim() + ' ' + Q.unit;
+      var msg = '';
+      if (!ok) msg = '<div class="msg">' + esc(hit ? hit.msg : 'That is not the answer. Check the working below.') + '</div>' + (hit ? '<p class="how">How that answer comes about:</p><div class="work"><div>' + esc(hit.how) + '</div></div>' : '');
+      record({ score: ok ? 1 : 0, tags: ok ? [] : [hit ? hit.tag : 'other'], wrote: wrote, hit: hit ? hit.how : null }, ok ? 'Correct.' : 'Not quite. The answer is ' + comma(Q.answer) + ' ' + Q.unit + '.', null, msg + workHtml(Q));
+    },
+    review: function (Q, x) { return '<div class="wrote">You wrote <b>' + esc(x.wrote) + '</b>. The answer is <b>' + esc(comma(Q.answer) + ' ' + Q.unit) + '</b>.</div>' + (x.hit ? '<p class="how">Your answer comes from: ' + esc(x.hit) + '</p>' : '') + '<p class="how">How to get there:</p>' + workHtml(Q).replace('<p class="how">Working:</p>', ''); },
+  };
+
+  KIND.build = {
+    render: function (Q) {
+      app.appendChild(el('p', 'hint', 'Tap every card that belongs. Tap again to take one off.'));
+      var box = el('div', 'chips'); box.id = 'chips';
+      Q.cards.forEach(function (t, k) {
+        var b = el('button', 'chip', esc(t)); b.type = 'button'; b.dataset.c = String(k); b.setAttribute('aria-pressed', 'false');
+        b.onclick = function () { if (locked) return; var on = b.classList.toggle('on'); b.setAttribute('aria-pressed', String(on)); document.getElementById('check').disabled = !document.querySelector('.chip.on'); };
+        box.appendChild(b);
+      });
+      app.appendChild(box);
+      var b = el('button', 'btn', 'Check my answer'); b.id = 'check'; b.type = 'button'; b.disabled = true; b.onclick = function () { KIND.build.check(); }; app.appendChild(b);
+    },
+    check: function () {
+      if (locked) return;
+      var Q = q(), picked = [], hits = 0, wrong = 0;
+      document.querySelectorAll('.chip').forEach(function (b, k) {
+        var t = Q.cards[k], on = b.classList.contains('on'), right = Q.correct.indexOf(t) >= 0; b.disabled = true;
+        if (on) picked.push(t);
+        if (on && right) { b.className = 'chip good'; hits++; } else if (on && !right) { b.className = 'chip bad'; wrong++; } else if (!on && right) b.className = 'chip miss';
+      });
+      document.getElementById('check').classList.add('hide');
+      var need = Q.correct.length, score = Math.max(0, (hits - wrong) / need), ok = hits === need && wrong === 0;
+      var missed = Q.correct.filter(function (t) { return picked.indexOf(t) < 0; }), extra = picked.filter(function (t) { return Q.correct.indexOf(t) < 0; });
+      var msg = ok ? '' : '<div class="msg">' + (missed.length ? 'You missed: ' + esc(missed.join(', ')) + '. ' : '') + (extra.length ? 'These do not belong: ' + esc(extra.join(', ')) + '.' : '') + '</div>';
+      record({ score: ok ? 1 : score, tags: ok ? [] : [Q.tag], wrote: picked.join(', ') || '(nothing)', got: hits, of: need }, ok ? 'Correct.' : hits + ' of ' + need + ' right.', null, msg + workHtml(Q));
+    },
+    review: function (Q, x) { return '<div class="wrote">You tapped <b>' + esc(x.wrote) + '</b>. The four parts are <b>' + esc(Q.correct.join(', ')) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q).replace('<p class="how">Working:</p>', ''); },
+  };
+
+  KIND.assign = {
+    render: function (Q) {
+      app.appendChild(el('p', 'hint', 'Choose an answer for every row.'));
+      var card = el('div', 'card'); card.id = 'rows';
+      Q.rows.forEach(function (r, k) {
+        var row = el('div', 'arow'); row.dataset.r = String(k);
+        row.appendChild(el('div', 't', esc(r.text)));
+        var sel = el('select'); sel.setAttribute('aria-label', 'Answer for: ' + r.text); sel.id = 'sel' + k;
+        sel.appendChild(el('option', null, 'Choose…')).value = '';
+        Q.options.forEach(function (o) { var op = el('option', null, esc(o)); op.value = o; sel.appendChild(op); });
+        sel.onchange = function () { var all = true; document.querySelectorAll('#rows select').forEach(function (s) { if (!s.value) all = false; }); document.getElementById('check').disabled = !all; };
+        row.appendChild(sel); card.appendChild(row);
+      });
+      app.appendChild(card);
+      var b = el('button', 'btn', 'Check my answers'); b.id = 'check'; b.type = 'button'; b.disabled = true; b.onclick = function () { KIND.assign.check(); }; app.appendChild(b);
+    },
+    check: function () {
+      if (locked) return;
+      var Q = q(), good = 0, wrote = [];
+      document.querySelectorAll('#rows .arow').forEach(function (row, k) {
+        var sel = row.querySelector('select'), r = Q.rows[k], ok = sel.value === r.answer; sel.disabled = true; if (ok) good++;
+        wrote.push(r.text + ' → ' + sel.value);
+        row.classList.add(ok ? 'good' : 'bad');
+        row.appendChild(el('div', 'say', ok ? 'Right.' : 'Not quite. The answer is: <b>' + esc(r.answer) + '</b>'));
+      });
+      document.getElementById('check').classList.add('hide');
+      var n = Q.rows.length, ok = good === n;
+      record({ score: good / n, tags: ok ? [] : [Q.tag], wrote: wrote.join('\n'), got: good, of: n, rowsWrote: wrote }, ok ? 'Correct.' : good + ' of ' + n + ' right.', null, workHtml(Q));
+    },
+    review: function (Q, x) {
+      var lines = Q.rows.map(function (r, k) { var mine = (x.rowsWrote[k] || '').split(' → ')[1] || ''; return '<div>' + esc(r.text) + ': you chose <b>' + esc(mine) + '</b>' + (mine === r.answer ? ' (right)' : '. The answer is <b>' + esc(r.answer) + '</b>.') + '</div>'; }).join('');
+      return '<div class="wrote">' + lines + '</div><p class="how">How to get there:</p>' + workHtml(Q).replace('<p class="how">Working:</p>', '');
+    },
+  };
+
+  KIND.order = {
+    render: function (Q) {
+      app.appendChild(el('p', 'hint', 'Tap the items in order. The first tap is the ' + Q.first + ', the last tap is the ' + Q.last + '. Tap a numbered item to take it off.'));
+      var box = el('div', 'order'); box.id = 'order'; ui.seq = [];
+      Q.shown.forEach(function (t, k) {
+        var b = el('button', 'oitem', '<b></b><span>' + esc(t) + '</span>'); b.type = 'button'; b.dataset.t = t;
+        b.onclick = function () {
+          if (locked) return; var p = ui.seq.indexOf(t); if (p >= 0) ui.seq.splice(p, 1); else ui.seq.push(t);
+          document.querySelectorAll('.oitem').forEach(function (e) { var n = ui.seq.indexOf(e.dataset.t); e.classList.toggle('placed', n >= 0); e.querySelector('b').textContent = n >= 0 ? String(n + 1) : ''; });
+          document.getElementById('check').disabled = ui.seq.length !== Q.items.length;
+        };
+        box.appendChild(b);
+      });
+      app.appendChild(box);
+      var row = el('div', 'btnrow');
+      var b = el('button', 'btn', 'Check my order'); b.id = 'check'; b.type = 'button'; b.disabled = true; b.onclick = function () { KIND.order.check(); }; row.appendChild(b);
+      var r = el('button', 'btn ghost small', 'Start again'); r.id = 'reset'; r.type = 'button'; r.onclick = function () { if (locked) return; ui.seq = []; document.querySelectorAll('.oitem').forEach(function (e) { e.classList.remove('placed'); e.querySelector('b').textContent = ''; }); document.getElementById('check').disabled = true; }; row.appendChild(r);
+      app.appendChild(row);
+    },
+    check: function () {
+      if (locked) return;
+      var Q = q(), seq = ui.seq.slice(), right = 0;
+      document.querySelectorAll('.oitem').forEach(function (e) { var n = seq.indexOf(e.dataset.t); e.disabled = true; var ok = Q.items[n] === e.dataset.t; if (ok) right++; e.classList.remove('placed'); e.classList.add(ok ? 'good' : 'bad'); });
+      document.getElementById('check').classList.add('hide'); document.getElementById('reset').classList.add('hide');
+      var ok = seq.join('|') === Q.items.join('|');
+      var shown = '<div class="msg">' + (ok ? '' : 'The right order, from the ' + esc(Q.first) + ' to the ' + esc(Q.last) + ': ' + Q.items.map(function (t, k) { return (k + 1) + '. ' + esc(t); }).join('; ') + '.') + '</div>';
+      record({ score: ok ? 1 : 0, tags: ok ? [] : [Q.tag], wrote: seq.map(function (t, k) { return (k + 1) + '. ' + t; }).join('; '), got: right, of: Q.items.length }, ok ? 'Correct.' : 'Not quite.', null, shown + workHtml(Q));
+    },
+    review: function (Q, x) { return '<div class="wrote">You put: <b>' + esc(x.wrote) + '</b>.<br>The right order: <b>' + esc(Q.items.map(function (t, k) { return (k + 1) + '. ' + t; }).join('; ')) + '</b>.</div><p class="how">How to get there:</p>' + workHtml(Q).replace('<p class="how">Working:</p>', ''); },
+  };
+
+  KIND.written = {
+    render: function (Q) {
+      app.appendChild(el('p', 'hint', Q.marks + ' marks. Write your answer, then see a model answer and tick the points your answer made. Be honest: only you will see it, and it is the quickest way to find what to fix.'));
+      var ta = el('textarea'); ta.id = 'wtext'; ta.setAttribute('aria-label', 'Your answer'); ta.setAttribute('placeholder', 'Write your answer here…'); app.appendChild(ta);
+      var row = el('div', 'btnrow'); row.id = 'wbtns';
+      var b = el('button', 'btn', 'Show the model answer'); b.id = 'reveal'; b.type = 'button'; b.disabled = true; b.onclick = function () { KIND.written.reveal(false); }; row.appendChild(b);
+      var s = el('button', 'btn ghost small', 'I am stuck. Show me the answer.'); s.id = 'stuck'; s.type = 'button'; s.onclick = function () { KIND.written.reveal(true); }; row.appendChild(s);
+      app.appendChild(row);
+      ta.addEventListener('input', function () { document.getElementById('reveal').disabled = ta.value.trim().length < 8; });
+      setTimeout(function () { ta.focus(); }, 0);
+    },
+    reveal: function (stuck) {
+      if (locked || ui.revealed) return; ui.revealed = true;
+      var Q = q(), ta = document.getElementById('wtext'); ui.text = ta.value.trim(); ui.stuck = !!stuck; ta.disabled = true;
+      document.getElementById('wbtns').classList.add('hide');
+      var box = el('div', 'card'); box.id = 'marking';
+      box.appendChild(el('h3', null, 'Model answer'));
+      box.appendChild(el('div', 'model', esc(Q.model)));
+      if (stuck) {
+        box.appendChild(el('p', 'hint', 'These are the mark points. Read them, then go on. This one counts as 0 marks.'));
+        var ul = el('ul', 'tips'); Q.points.forEach(function (p) { ul.appendChild(el('li', null, esc(p.text))); }); box.appendChild(ul);
+        var fbEl = document.getElementById('feedback'); app.insertBefore(box, fbEl);
+        var d = el('button', 'btn', 'Done'); d.id = 'wdone'; d.type = 'button'; d.onclick = function () { KIND.written.done(); }; app.insertBefore(d, fbEl);
+        return;
+      }
+      box.appendChild(el('h3', null, 'Tick each point that your answer made'));
+      var t = el('div', 'ticks');
+      Q.points.forEach(function (p, k) { var l = el('label'); var cb = el('input'); cb.type = 'checkbox'; cb.id = 'pt' + k; l.appendChild(cb); l.appendChild(el('span', null, esc(p.text))); t.appendChild(l); });
+      box.appendChild(t); var fbEl2 = document.getElementById('feedback'); app.insertBefore(box, fbEl2);
+      var d2 = el('button', 'btn', 'Done'); d2.id = 'wdone'; d2.type = 'button'; d2.onclick = function () { KIND.written.done(); }; app.insertBefore(d2, fbEl2);
+    },
+    done: function () {
+      if (locked) return;
+      var Q = q(), got = 0, missed = [];
+      Q.points.forEach(function (p, k) { var cb = document.getElementById('pt' + k); if (cb && cb.checked) got++; else missed.push(p); if (cb) cb.disabled = true; });
+      document.getElementById('wdone').classList.add('hide');
+      var n = Q.marks, ok = got === n;
+      var msg = ok ? '' : '<div class="msg">To get the missing marks next time:</div><ul class="tips">' + missed.map(function (p) { return '<li>' + esc(p.miss) + '</li>'; }).join('') + '</ul>';
+      record({ score: got / n, tags: [], wrote: ui.text || '(nothing written)', got: got, of: n, missed: missed.map(function (p) { return p.miss; }), stuck: ui.stuck }, ok ? 'Full marks: ' + n + ' of ' + n + '.' : got + ' of ' + n + ' marks.', null, msg);
+    },
+    review: function (Q, x) {
+      return '<div class="wrote">You wrote:</div><div class="mine">' + esc(x.wrote) + '</div><div class="wrote">Marks: <b>' + x.got + ' of ' + x.of + '</b>' + (x.stuck ? ' (you asked for the answer)' : '') + '.</div><div class="model">' + esc(Q.model) + '</div>' +
+        (x.missed && x.missed.length ? '<p class="how">To get the missing marks next time:</p><ul class="tips">' + x.missed.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('') + '</ul>' : '');
+    },
+  };
+
+  /* ---------- the review: a drop-down per level; time, right or wrong, what was written and how to get there ---------- */
+  function shortText(Q) { return Q.prompt; }
+  function reviewItem(lv, k) {
+    var Q = state.qs[OFFSET[lv] + k], x = state.results[OFFSET[lv] + k], n = OFFSET[lv] + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + esc(shortText(Q)) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + esc(shortText(Q)) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">' + (Q.kind === 'written' ? 'Full marks' : 'Correct') + '</div>' + (Q.kind === 'written' ? KIND.written.review(Q, x) : '') + '</div>';
+    h += '<div class="verdict ' + (x.score > 0 ? 'pt' : 'no') + '">' + (x.score > 0 ? 'Partly right' : 'Wrong') + '</div>' + KIND[Q.kind].review(Q, x);
+    return h + '</div>';
+  }
+  function reviewHtml(lv, open) {
+    var mine = state.results.slice(OFFSET[lv], OFFSET[lv] + SIZES[lv]), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Level ' + (lv + 1) + ' · ' + BANK.levels[lv].name + ' · ' + right + ' of ' + (done.length === SIZES[lv] ? SIZES[lv] : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < SIZES[lv]; k++) body += reviewItem(lv, k);
+    return '<details class="review" data-level="' + (lv + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+  function levelEnd() {
+    clear(); state.screen = 'levelend';
+    var mine = state.results.slice(OFFSET[state.lv], OFFSET[state.lv] + SIZES[state.lv]), right = mine.filter(function (x) { return x && x.ok; }).length, secs = Math.round((Date.now() - levelStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Level ' + (state.lv + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of ' + SIZES[state.lv]));
+    card.appendChild(el('p', 'small', 'Level time ' + fmtTime(secs) + '. Time played so far ' + clock() + '. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, what you wrote, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.lv, false));
+    app.appendChild(card);
+    var nextNote = state.lv < NLEV - 1 ? el('div', 'card', '<b>Next: level ' + (state.lv + 2) + ', ' + esc(BANK.levels[state.lv + 1].name) + '.</b> ' + esc(LEVEL_NOTES[state.lv + 1])) : null;
+    if (nextNote) app.appendChild(nextNote);
+    var b = el('button', 'btn', state.lv < NLEV - 1 ? 'Start level ' + (state.lv + 2) : 'See what to practise'); b.id = 'levelnext';
+    b.onclick = function () { if (state.lv < NLEV - 1) { state.lv++; beginLevel(); } else final(); }; app.appendChild(b); b.focus();
+    var st = el('button', 'btn ghost small', 'Stop and see my results'); st.id = 'stop2'; st.type = 'button'; st.style.marginLeft = '10px'; st.onclick = final; app.appendChild(st);
+  }
+
+  /* ---------- the end: what to practise ---------- */
+  function pct(rs) { return rs.length ? rs.reduce(function (a, x) { return a + x.score; }, 0) / rs.length : 0; }
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; });
+    var test = done.filter(function (x) { return x.level <= 4; }), top = done.filter(function (x) { return x.level === 5; });
+    var fully = done.filter(function (x) { return x.ok; }).length, partly = done.filter(function (x) { return !x.ok && x.score > 0; }).length;
+    var card = el('div', 'card'); card.appendChild(el('h2', null, 'What to practise')); card.appendChild(el('div', 'score', fully + ' of ' + done.length));
+    card.appendChild(el('p', 'small', 'questions fully right' + (partly ? ', and ' + partly + ' partly right' : '') + '. ' + (done.length < TOTAL ? (TOTAL - done.length) + ' of ' + TOTAL + ' not reached. ' : '') + 'Time played ' + clock() + '.'));
+    var wr = done.filter(function (x) { return x.kind === 'written'; });
+    if (wr.length) card.appendChild(el('p', 'small', 'Written answers: ' + wr.reduce(function (a, x) { return a + x.got; }, 0) + ' of ' + wr.reduce(function (a, x) { return a + x.of; }, 0) + ' marks.'));
+    app.appendChild(card);
+
+    /* the three next steps: the weakest topics in levels 1 to 4 (the test level), with the lesson to go back to */
+    var byStrand = {}; test.forEach(function (x) { (byStrand[x.strand] = byStrand[x.strand] || []).push(x); });
+    var ranked = Object.keys(byStrand).filter(function (s) { return byStrand[s].length >= 2; }).map(function (s) { return { s: s, p: pct(byStrand[s]), n: byStrand[s].length, ok: byStrand[s].filter(function (x) { return x.ok; }).length }; }).sort(function (a, b) { return a.p - b.p; });
+    var weak = ranked.filter(function (r) { return r.p < 0.8; }).slice(0, 3);
+    var steps = el('div', 'card'); steps.id = 'steps'; steps.appendChild(el('h2', null, 'Your next steps'));
+    if (!test.length) steps.appendChild(el('p', 'lead', 'You did not answer enough questions to say what to practise. Play on.'));
+    else if (!weak.length) steps.appendChild(el('p', 'lead', 'Nothing below 80% in the test levels. Your next step is to try the harder questions again, with a new game code, and to explain each answer out loud.'));
+    else weak.forEach(function (r, k) {
+      var S = BANK.strands[r.s];
+      steps.insertAdjacentHTML('beforeend', '<div class="step" data-strand="' + r.s + '"><div class="nm">' + (k + 1) + '. ' + esc(S.name) + ' (' + r.ok + ' of ' + r.n + ' right)</div><div><b>Go back to:</b> ' + esc(S.lesson) + '</div><div><b>Remember:</b> ' + esc(S.key) + '</div><div><b>Practise:</b> ' + esc(S.practise) + '</div></div>');
+    });
+    app.appendChild(steps);
+
+    var bars = el('div', 'card'); bars.appendChild(el('h2', null, 'By topic')); bars.appendChild(el('p', 'small', 'Levels 1 to 4 only. Level 5 is past the test, so it is not counted here.'));
+    Object.keys(BANK.strands).forEach(function (s) {
+      var all = state.qs.filter(function (Q) { return Q.strand === s && Q.level <= 4; }).length, rs = byStrand[s] || [], p = pct(rs);
+      bars.appendChild(el('div', 'row', '<span><b>' + esc(BANK.strands[s].name) + '</b><br><span class="small">' + rs.filter(function (x) { return x.ok; }).length + ' of ' + all + ' right' + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * p * rs.length / Math.max(1, all)) + '%"></i></span>'));
+    });
+    app.appendChild(bars);
+
+    var kinds = el('div', 'card'); kinds.appendChild(el('h2', null, 'By kind of question'));
+    Object.keys(BANK.skills).forEach(function (k) {
+      if (k === 'puzzle') return;
+      var all = state.qs.filter(function (Q) { return Q.skill === k && Q.level <= 4; }).length, rs = test.filter(function (x) { return x.skill === k; });
+      if (!all) return;
+      kinds.appendChild(el('div', 'row', '<span><b>' + esc(BANK.skills[k]) + '</b><br><span class="small">' + rs.filter(function (x) { return x.ok; }).length + ' of ' + all + ' right' + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span><span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * pct(rs) * rs.length / Math.max(1, all)) + '%"></i></span>'));
+    });
+    app.appendChild(kinds);
+
+    var past = el('div', 'card'); past.appendChild(el('h2', null, 'Level 5: past the test'));
+    past.appendChild(el('p', 'lead', top.length ? top.filter(function (x) { return x.ok; }).length + ' of ' + top.length + ' answered right. This level is meant to be too hard. If you got any right, that is well beyond the test.' : 'You did not reach level 5.'));
+    app.appendChild(past);
+
+    var tips = el('div', 'card'); tips.id = 'mistakes'; tips.appendChild(el('h2', null, 'Mistakes to stop making'));
+    var counts = {}; done.forEach(function (x) { (x.tags || []).forEach(function (t) { counts[t] = (counts[t] || 0) + 1; }); });
+    var tags = Object.keys(counts).filter(function (t) { return t !== 'other'; }).sort(function (a, b) { return counts[b] - counts[a]; }).slice(0, 6);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No named mistakes. Every answer you gave was right, or not one the game could name.' : 'You did not answer any questions.'));
+    else { var ul = el('ul', 'tips'); tags.forEach(function (t) { var n = counts[t]; ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + esc(BANK.habits[t] || 'Read the question again, and check the working.'))); }); tips.appendChild(ul); }
+    var missed = []; done.forEach(function (x) { (x.missed || []).forEach(function (m) { if (missed.indexOf(m) < 0) missed.push(m); }); });
+    if (missed.length) { tips.appendChild(el('h3', null, 'Points you left out of written answers')); var ul2 = el('ul', 'tips'); missed.slice(0, 8).forEach(function (m) { ul2.appendChild(el('li', null, esc(m))); }); tips.appendChild(ul2); }
+    app.appendChild(tips);
+
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a level to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var lv = 0; lv < NLEV; lv++) rev.insertAdjacentHTML('beforeend', reviewHtml(lv, false));
+    app.appendChild(rev);
+    app.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    var row = el('div', 'btnrow noprint');
+    var p = el('button', 'btn gold', 'Print or save my plan'); p.id = 'print'; p.type = 'button'; p.onclick = function () { document.querySelectorAll('details.review').forEach(function (d) { d.open = true; }); window.print(); }; row.appendChild(p);
+    var b = el('button', 'btn ghost', 'Play again with new questions'); b.id = 'again'; b.type = 'button'; b.onclick = function () { fresh(); start(); }; row.appendChild(b);
+    app.appendChild(row); b.focus();
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || state.screen !== 'question') return;
+    var Q = q(), tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (Q.kind === 'mc' && /^[1-4]$/.test(e.key) && !locked) { e.preventDefault(); KIND.mc.pick(parseInt(e.key, 10) - 1); }
+    else if (e.key === 'Enter' && locked && tag !== 'TEXTAREA') { e.preventDefault(); next(); }
+  });
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display, bank: function () { return BANK; }, parseNum: parseNum, sizes: SIZES };
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

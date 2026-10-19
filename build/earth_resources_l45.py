@@ -1,0 +1,207 @@
+"""Levels 4 and 5 of the Earth Resources revision game: Say it in words, and Past the test."""
+from earth_resources_helpers import *
+from earth_resources_l12 import LAND, SOIL, CITY, EARTH, LAST, DEP, SOIL_PARTS
+
+# ------------------------------------------------------------------------------------------------------------------------------------- the real cases (Resource Depletion)
+CASES = [
+    ('helium', 'Helium is non-renewable, and global demand has outpaced supply for years.', 'Prices rose sharply, and many hospitals began rationing it for MRI scanners.', 'helium'),
+    ('aral', 'Rivers feeding Central Asia’s Aral Sea were diverted for irrigation, starting in the 1960s.', 'The sea lost over 90% of its volume, and the whole commercial fishing industry collapsed.', 'the Aral Sea'),
+    ('tuna', 'Atlantic bluefin tuna were fished far faster than they could breed, for decades.', 'Strict international quotas were introduced, and a single large tuna can now sell for millions of dollars.', 'bluefin tuna'),
+    ('bison', 'American bison numbered tens of millions in the 1850s, and only a few hundred by 1889.', 'The Plains nations that depended on bison for survival lost their main resource almost overnight.', 'bison'),
+]
+
+
+def case_items():
+    out = []
+    for key, text, cons, name in CASES:
+        wrongs = [(c[2], 'case-mismatch', f'That is what really happened with {c[3]}, not this case.') for c in CASES if c[0] != key]
+        out.append(mc(f'{text} Choose what really happened.', cons, wrongs, [cons], DEP))
+    return out
+
+
+PREVENT = [
+    mc('A fish stock is being caught faster than it can breed, and the numbers are falling. Choose the method that would best prevent depletion here.',
+       'Bring in a catch quota that is below the sustainable yield.',
+       [('Send more boats out at once, before the stock disappears completely.', 'prevent', 'That makes depletion worse. It increases how much is taken.'),
+        ('Recycle the fishing nets so that less plastic is made.', 'prevent', 'That does not change how many fish are caught.'),
+        ('Build more factories to process the fish faster.', 'prevent', 'That is about processing fish, not about how many are left in the sea.')],
+       ['A quota below the sustainable yield lets the stock recover or hold steady.'], LAST),
+    mc('A non-renewable material is running low, and demand keeps rising. Choose the method that would best prevent depletion here.',
+       'Recycle what has already been dug up.',
+       [('Bring in a closed season, so that none is dug up for a while.', 'prevent', 'A closed season is for living resources that can breed back. Metal does not regrow.'),
+        ('Start a breeding programme to raise more of it.', 'prevent', 'A breeding programme is for animal populations, not a mined material.'),
+        ('Set its sustainable yield to zero and keep digging.', 'prevent', 'A non-renewable material has no sustainable yield to begin with.')],
+       ['Recycling cuts how much new material has to be dug up.'], LAST),
+    mc('A forest is being cut faster than it regrows, and its total area is shrinking. Choose the method that would best prevent depletion here.',
+       'Replant trees at least as fast as they are cut.',
+       [('Recycle wood products so that people stop buying wood.', 'prevent', 'That reduces the need for NEW wood, but it does not replace a shrinking forest.'),
+        ('Bring in a fishing quota to protect the trees.', 'prevent', 'A fishing quota manages fish, not a forest.'),
+        ('Start a captive breeding programme for the trees.', 'prevent', 'That is for animal populations, not for a forest.')],
+       ['Replanting at least as fast as the cutting keeps the forest the same size.'], LAST),
+    mc('A wild species has fallen to such a small number that it struggles to find mates. Choose the method that would best prevent depletion here.',
+       'Start a breeding programme that raises young and releases them.',
+       [('Bring in a catch quota and wait for it to recover by itself.', 'prevent', 'A quota limits how much is taken. This population needs active help to recover.'),
+        ('Recycle the materials that are made from the species.', 'prevent', 'That does not help a population that is struggling to breed.'),
+        ('Replant the species in rows, like a crop.', 'prevent', 'A wild animal population cannot be replanted like a forest.')],
+       ['A breeding programme gives a tiny population a chance to grow back.'], LAST),
+]
+
+# ------------------------------------------------------------------------------------------------------------------------------------- LEVEL 4
+LEVEL4 = {
+    'name': 'Say it in words',
+    'blurb': 'Now the questions that look like the test. Four of them ask you to write an answer. Then you see a model answer and tick what your answer had.',
+    'slots': [
+        slot('last', 'judge', 'mc', [tpl('gss')]),
+        slot('soil', 'explain', 'written', [
+            written('Describe what soil is made of, and explain why a few centimetres of soil take so long to form.',
+                    [('Names broken rock and dead organic matter (humus).', 'Learn all four parts of soil: broken rock, dead organic matter, water and air, and living organisms.'),
+                     ('Names water and air, and living organisms such as bacteria, fungi, worms or insects.', 'Do not leave out the living part, or the water and air held in the gaps.'),
+                     ('Says why it is slow: the rock is ground down by weather over a very long time, and organic matter has to build up.', 'Say WHY it is slow, not only that it is slow.'),
+                     ('Gives the time: a few hundred to about a thousand years for a few centimetres.', 'Learn the number: a few hundred to about a thousand years for a few centimetres.')],
+                    'Soil is made of broken rock, dead organic matter (humus), water and air held in the gaps between the particles, and living organisms such as bacteria, fungi, worms and insects. It takes so long because the rock is ground down very slowly by weather and the organic matter has to build up. A few centimetres take a few hundred to about a thousand years.', LAND),
+            written('Explain why soil is more than just crushed rock.',
+                    [('It also contains dead organic matter, which decomposers break down into humus.', 'Name the dead organic matter (humus) as well as the rock.'),
+                     ('It also has water and air held in the gaps, and living organisms such as bacteria, fungi, worms and insects.', 'Include the water and air, and the living organisms.'),
+                     ('Producers grow in it and get their water and nutrients from it, so nearly every land food chain starts there.', 'Say why it matters: producers grow in it and food chains start there.')],
+                    'Soil is not just crushed rock. It also contains dead organic matter, which decomposers break down into humus, water and air held in the gaps between the particles, and living organisms such as bacteria, fungi, worms and insects. Producers grow in it and get their water and nutrients from it, so nearly every land food chain starts there.', LAND),
+        ]),
+        slot('deplete', 'judge', 'mc', case_items()),
+        slot('renew', 'explain', 'written', [
+            written('Explain why a forest can be renewable in one place and non-renewable in another.',
+                    [('Cut no faster than it regrows: the forest stays the same size, so it is renewable.', 'Say what happens when it is cut no faster than it regrows.'),
+                     ('Cut faster than it regrows: the forest shrinks, so it is non-renewable in practice.', 'Say what happens when it is cut too fast.'),
+                     ('Says that it is the RATE that decides, not the kind of resource.', 'Always link back to the rate: how fast it is replaced against how fast it is used.')],
+                    'If a forest is cut no faster than it regrows, it stays the same size, so it is renewable. If it is cut faster than it regrows, it shrinks, so in practice it is non-renewable. It is the rate that decides, not the kind of resource.', EARTH),
+            written('Explain why fresh water can be renewable in one place and non-renewable in another.',
+                    [('An ordinary river or well is refilled quickly by rain, so it is renewable.', 'Say what happens to an ordinary river or well.'),
+                     ('Deep, old groundwater is pumped out far faster than it refills, so there it is non-renewable in practice.', 'Say what happens to deep, old groundwater.'),
+                     ('Says that it is the RATE of refilling against the rate of use that decides, not the kind of resource.', 'Always link back to the rate.')],
+                    'Rain refills an ordinary river or well quickly, so it is renewable. Deep, old groundwater can be pumped out far faster than it refills, so there it is non-renewable in practice. It is the rate that decides, not the kind of resource.', EARTH),
+        ]),
+        slot('last', 'judge', 'mc', PREVENT),
+        slot('deplete', 'explain', 'written', [
+            written('Explain why passenger pigeons went extinct, even though there had been billions of them.',
+                    [('They were killed faster than they could breed and replace themselves.', 'Say that use was faster than replacement.'),
+                     ('This went on for decades, long enough for the number to reach zero.', 'Say how long it went on: for years, until none were left.'),
+                     ('A huge number is not a safe number: a number that falls faster than it regrows still reaches zero.', 'Make the point that a big number does not protect a species.')],
+                    'Passenger pigeons were killed faster than they could breed and replace themselves. This went on for decades, until none were left. A huge number is not a safe number: if it falls faster than it regrows it still reaches zero.', DEP),
+            written('Explain how a renewable resource, such as a fish stock, can still run out completely.',
+                    [('The fish are caught faster than they can breed.', 'Say that use was faster than replacement.'),
+                     ('This carries on for long enough.', 'Say that it has to go on for long enough.'),
+                     ('The stock falls so low that it cannot recover. Renewable means it CAN be replaced, not that it always is.', 'Finish by explaining that renewable does not mean it cannot run out.')],
+                    'If fish are caught faster than they can breed, for long enough, the stock falls so low that it cannot recover. Renewable means a resource can be replaced, not that it always is.', DEP),
+        ]),
+        slot('deplete', 'calc', 'num', [tpl('decline_third2')]),
+        slot('erosion', 'explain', 'written', [
+            written('Explain how farming can lead to erosion, and then to desertification.',
+                    [('Farming removes the plant cover (ploughing, too many animals, or clearing trees).', 'Start the chain with farming removing the plant cover.'),
+                     ('This leaves the soil bare.', 'Do not skip the link: the soil is left bare.'),
+                     ('Wind and water then carry the soil away: erosion.', 'Name erosion and say what carries the soil off: wind and water.'),
+                     ('In a dry area the land can turn desert-like. This is desertification, caused by climate AND human activity.', 'Finish the chain: in a dry area the land turns desert-like.')],
+                    'Farming removes plant cover, for example by ploughing, too many animals or clearing trees. That leaves the soil bare, and wind and water carry it away. In a dry area the land can turn desert-like. That is desertification, and it comes from climate and human activity together.', SOIL),
+            written('Explain how plant cover protects soil from erosion, and what happens to soil that is left bare.',
+                    [('Roots hold the soil in place.', 'Say what roots do for soil.'),
+                     ('Leaves shield the soil from the rain.', 'Say what leaves do for soil.'),
+                     ('Bare soil has nothing to hold or shield it, so water and wind carry it off.', 'Say what happens to bare soil: water and wind carry it off.'),
+                     ('In the tray practical, the bare tray usually lost more soil than the covered tray.', 'Use the evidence: the bare tray lost more soil than the covered one.')],
+                    'Roots hold the soil in place and leaves shield it from the rain. Bare soil has nothing to hold or shield it, so water and wind carry it off. In the tray practical, the bare tray usually lost more soil than the covered tray.', SOIL),
+        ]),
+        slot('cities', 'judge', 'mc', [
+            mc('A town is planning a new housing estate. Which action would best reduce runoff and flooding there?', 'Permeable paving and rain gardens, so that rain can soak in.',
+               [('Wider tarmac roads, so that the rain drains away faster.', 'runoff', 'Tarmac is sealed. More of it means more runoff.'),
+                ('More drains, so that the rain leaves the estate as quickly as possible.', 'runoff', 'That moves the water faster. It does not let it soak in.'),
+                ('A green belt inside the estate, with nothing built on it.', 'green-belt', 'A green belt is a ring of land round a city, not a feature inside one estate.')],
+               ['Permeable paving and rain gardens let the rain soak in, so less of it runs off. That is what a sponge city does.'], CITY),
+            mc('Which statement about Wuhan or London is correct?', 'Wuhan became a sponge city, and London keeps a Green Belt round it.',
+               [('London became a sponge city, and Wuhan keeps a Green Belt round it.', 'city-terms', 'It is the other way round.'),
+                ('Wuhan keeps a Green Belt, and London has no way to protect its land.', 'city-terms', 'London has a Green Belt of about 500,000 hectares.'),
+                ('Both became sponge cities by building more roads and drains.', 'city-terms', 'A sponge city lets rain soak in. Roads do the opposite.')],
+               ['Wuhan, in central China, is a sponge city. London has a ring of land, the Green Belt, kept from being built on.'], CITY),
+        ]),
+        slot('last', 'calc', 'num', [tpl('recycle_years')]),
+    ],
+}
+
+# ------------------------------------------------------------------------------------------------------------------------------------- LEVEL 5
+LEVEL5 = {
+    'name': 'Past the test',
+    'blurb': 'This level is meant to be too hard. It is past anything on the test, and the last two questions are close to impossible. Do what you can and read every working.',
+    'slots': [
+        slot('soil', 'judge', 'mc', [
+            mc('A farmer cuts every crop plant and dead leaf from a field and burns them, so that nothing is left to rot in the soil. Which part of the soil will run down first, and why?',
+               'Dead organic matter, because nothing is added for decomposers to break down into humus.',
+               [('Broken rock, because the plants take the rock up into their roots and use it all up.', 'soil-parts', 'Broken rock is ground down by weather. Plants do not use it up.'),
+                ('Water and air, because burning the plants dries all the gaps in the soil right out for good.', 'soil-parts', 'Water and air sit in the gaps between particles, and the gaps are not what runs down first.'),
+                ('Living organisms, because they only ever feed on the broken rock and nothing else.', 'soil-forget-life', 'Soil organisms feed on dead organic matter, so they run short after it does.')],
+               ['Decomposers turn dead organic matter into humus. If nothing dead is added, the organic matter runs down, and the living organisms that feed on it run short.'], LAND),
+            mc('A new housing estate seals 40% of a farm field under concrete. What is lost, and how long would it take to make again?',
+               'The soil under it. A few centimetres take a few hundred to about a thousand years.',
+               [('Only the plants. The soil underneath is unchanged and still works just as well as before.', 'soil-job', 'Sealed soil cannot grow plants, take in rain or feed the organisms in it.'),
+                ('The soil, but it would form again within a few years once the concrete went.', 'time-fast', 'A few centimetres need a few hundred to about a thousand years.'),
+                ('The soil, which would take millions of years to make again, like coal.', 'time-coal', 'That is coal. Soil takes a few hundred to about a thousand years for a few centimetres.')],
+               ['Soil sealed under concrete is lost for centuries: it cannot grow plants, and a few centimetres take a few hundred to about a thousand years to form.'], CITY),
+        ]),
+        slot('renew', 'judge', 'mc', [
+            mc('Two wells are pumped at the same fast rate. Well A is shallow, and rain refills it within months. Well B holds deep, old groundwater that took thousands of years to collect. Which statement is best?',
+               'Well A may stay renewable, but well B is non-renewable in practice, as it refills far too slowly.',
+               [('Both wells are renewable, because rain keeps on falling and filling them both again.', 'renewable-rate', 'Rain refills well A quickly, but deep, old water refills very slowly.'),
+                ('Both wells are non-renewable, because they are both being pumped out far too fast.', 'renewable-rate', 'Well A refills within months, so it may keep up.'),
+                ('Well B is renewable and well A is not, because B is the much bigger store of water.', 'renewable-rate', 'The size of the store is not what matters. The refill rate is, and B refills far slower.')],
+               ['The same kind of resource, water, is renewable in one place and non-renewable in another. It is the rate of refilling against the rate of pumping.'], EARTH),
+            mc('Forest X is cut at 3% of its area a year, and regrows 5% a year. Forest Y is cut at 8% of its area a year, and regrows 5% a year. Which statement is best?',
+               'Forest X is renewable in practice, but forest Y is cut faster than it regrows.',
+               [('Both forests are renewable, because forests are a renewable resource.', 'renewable-rate', 'Forest Y is cut faster than it regrows, so it shrinks.'),
+                ('Both forests are shrinking, because any cutting makes a forest smaller.', 'sustainable-nothing', 'Forest X is cut more slowly than it regrows, so it does not shrink.'),
+                ('Forest Y is the renewable one, because it is the one that is cut the most.', 'renewable-rate', 'Look at the rates. Forest Y is cut faster than it regrows.')],
+               ['Compare the rate of cutting with the rate of regrowth. Cut more slowly than it regrows, a forest is renewable. Cut faster, it shrinks.'], EARTH),
+        ]),
+        slot('last', 'calc', 'num', [tpl('next_stock')]),
+        slot('cities', 'calc', 'num', [tpl('share')]),
+        slot('deplete', 'judge', 'mc', [
+            mc('Helium, the Aral Sea, bluefin tuna and bison were all used too fast. Which statement about the four cases is true?',
+               'Only helium is non-renewable. The other three were renewable, and were still depleted.',
+               [('All four were non-renewable resources, so they were always bound to run out.', 'renewable-cannot-run-out', 'The Aral Sea water, tuna and bison were renewable, and they were still depleted.'),
+                ('Only the two animals were depleted. Helium and the Aral Sea were both left completely untouched.', 'deplete-def', 'Helium is in short supply, and the Aral Sea lost over 90% of its volume.'),
+                ('All four of them recovered fully once the use of each one slowed down a little.', 'conserve-fast', 'Not all four. The Aral Sea lost over 90% of its volume, and the bison fell to a few hundred.')],
+               ['Helium is non-renewable. Water, tuna and bison are renewable, and still ran short because they were used faster than they were replaced.'], DEP),
+            mc('Which feature do passenger pigeons and bluefin tuna share, but helium does not?',
+               'They are living, renewable resources that were taken faster than they breed.',
+               [('They were both used faster than they could be replaced, over many long years.', 'deplete-def', 'Helium was too. That is shared by all three, so it does not tell them apart.'),
+                ('They are non-renewable resources that formed over millions of years.', 'renewable-cannot-run-out', 'They are renewable. Helium is the non-renewable one.'),
+                ('They were only ever used as food, and never for anything else at all.', 'deplete-def', 'That is not what separates them from helium.')],
+               ['Pigeons and tuna are living and renewable. Helium is non-renewable. All three were used faster than they were replaced.'], DEP),
+        ]),
+        slot('last', 'judge', 'mc', [
+            mc('A student says: “The tray practical proves that farming always destroys soil.” Which is the fairest judgement?',
+               'Bare soil lost more than covered soil, but a small, quick model cannot prove it for every farm.',
+               [('The student is right. The trays behave exactly like a whole real field would.', 'judge-model', 'The trays were a small, quick model, so they cannot prove what happens in every field.'),
+                ('The student is wrong. A small tray can show us nothing at all about a real field.', 'judge-model', 'It did show something real: bare soil lost more than covered soil.'),
+                ('The student is wrong, because the two trays were not set up as a fair test of the soil.', 'judge-model', 'They were fair: same soil, same slope, same water. The limit is that they were small and quick.')],
+               ['A fair judgement says what the trays showed (bare soil lost more) and what they cannot show (every real field).'], SOIL),
+            mc('A student says: “If farming removes plant cover and causes erosion, farming should stop completely.” Which is the fairest judgement?',
+               'Erosion always happens, slowly. Farming changes the speed, so farm in ways that keep soil covered.',
+               [('The student is right. Farming is the only cause of erosion, so it should stop completely and at once.', 'eros-desert-only', 'Water and wind erode soil anyway. What farming changes is how fast.'),
+                ('The student is wrong. Farming has no effect at all on how fast soil is lost from a field.', 'cover', 'Farming that removes plant cover leaves soil bare, and bare soil is lost faster.'),
+                ('The student is wrong. Erosion only happens in dry areas, and never on farms or fields.', 'eros-desert-only', 'Erosion happens wherever soil is bare and water or wind can carry it off.')],
+               ['Erosion always happens, slowly. What farming changes is the speed. Keeping plant cover on the soil slows the loss.'], SOIL),
+        ]),
+        slot('deplete', 'calc', 'num', [tpl('linear')]),
+        slot('cities', 'judge', 'written', [
+            written('A newspaper says: “Cities are destroying our land, and nothing can be done.” Judge this claim. Use Wuhan and London.',
+                    [('Agrees with part of it: cities cover soil with concrete and cause runoff.', 'Start with what is true in the claim: cities seal soil and cause runoff.'),
+                     ('Disagrees with the rest: things can be done.', 'Say clearly which part of the claim is wrong.'),
+                     ('Wuhan is a sponge city: permeable paving, rain gardens and green roofs let rain soak in.', 'Name the place and what it did: Wuhan, a sponge city.'),
+                     ('London keeps a ring of land, the Green Belt, from being built on.', 'Name the place and what it did: the London Green Belt.')],
+                    'Part of the claim is true: cities cover soil with concrete, and rain runs off. But it is wrong that nothing can be done. Wuhan became a sponge city, using permeable paving, rain gardens and green roofs so that rain can soak in. London keeps a ring of land, its Green Belt, from being built on.', CITY),
+            written('A councillor says: “Building houses on farmland does no lasting harm, because soil is renewable.” Judge this claim.',
+                    [('Agrees that new soil does form.', 'Start with what is true in the claim: new soil does form.'),
+                     ('But a few centimetres take a few hundred to about a thousand years.', 'Give the time it takes to form: a few hundred to about a thousand years.'),
+                     ('Soil sealed under buildings and roads cannot grow plants, so it is lost for centuries.', 'Say what happens to sealed soil: it is lost for centuries.'),
+                     ('So on a human timescale it is non-renewable, and it is better to build on brownfield land or to protect a green belt.', 'Finish with the conclusion, and one thing that can be done.')],
+                    'It is true that new soil forms, but a few centimetres take a few hundred to about a thousand years. Soil sealed under buildings and roads cannot grow plants, so it is lost for centuries. On a human timescale it is non-renewable, so it is better to build on brownfield land or to protect a green belt.', CITY),
+        ]),
+        # the last two are drawn from two small pools of equal difficulty: a harder framing of the rates, and a longer chain of periods
+        slot('time', 'puzzle', 'num', [tpl('vh_ratio'), tpl('vh_reverse')]),
+        slot('deplete', 'puzzle', 'num', [tpl('vh_count'), tpl('vh_stock2')]),
+    ],
+}
