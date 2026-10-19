@@ -1,5 +1,6 @@
 key	file	author	licence	url	crop
 air	ov:7f5efc4a-c3c5-460d-92ce-e8bb5df1d059	Spojení	CC BY 2.0	https://www.flickr.com/photos/91514913@N00/250801417	0.5,0.55,1.0
+aluminium	Aluminium foil closeup.jpg	http://images-of-elements.com/	CC BY 3.0	https://commons.wikimedia.org/wiki/File:Aluminium_foil_closeup.jpg	0.5,0.5,1.0
 ant	ov:03e2b2c4-64eb-4f24-ade0-34e1daa94865	spotter_nl	CC BY 2.0	https://www.flickr.com/photos/30733371@N00/28671685151	0.5,0.45,1.0
 atm_aerosol	ov:d69e28a0-37f7-4bbf-9d07-1e5b14153ee0	nicolas.boullosa	CC BY 2.0	https://www.flickr.com/photos/90802476@N00/9044189416	0.45,0.5,1.0
 atm_converter	ov:0451a461-315c-497b-a2d9-d836d5fc94c2	oakridgelabnews	CC BY 2.0	https://www.flickr.com/photos/37940997@N05/4293629922	0.55,0.5,1.0
@@ -42,14 +43,18 @@ bac_tem	ov:5591d2d7-f218-4713-ac50-6cf1d1d2643a		CC BY 4.0	https://wellcomecolle
 bac_vent	ov:b8e1011a-00d3-4b6c-8489-5ace15e49469	NOAA Photo Library	CC BY 2.0	https://www.flickr.com/photos/51647007@N08/5277263409	0.5,0.5,1.0
 bac_yoghurt	ov:db591ecf-3535-4d44-ba78-f7db8281aa28	Alabama Extension	CC0	https://www.flickr.com/photos/184594136@N08/50088084781	0.5,0.5,1.0
 bag	ov:5b7c3e00-77f3-4f7c-980b-87b2da3a3d77	megforce1	CC0	https://www.flickr.com/photos/35608308@N05/28404475294	0.5,0.5,1.0
+bale	Compressed aluminium cans.jpg	[Tycho]  talk , http://shansov.net	CC0	https://commons.wikimedia.org/wiki/File:Compressed_aluminium_cans.jpg	0.5,0.5,1.0
 ball	ov:59dc0317-c399-40b4-962c-3cc67f54a2bf	wjarrettc	CC BY 2.0	https://www.flickr.com/photos/77744839@N00/3445300205	0.5,0.55,1.0
 bicycle	ov:a9e0bff3-3272-4c3a-bbd4-92e542e1f41a	Bernard Spragg	CC0	https://www.flickr.com/photos/88123769@N02/15655615295	fit
 bird	House Sparrow, England - May 09.jpg	Diliff	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:House_Sparrow,_England_-_May_09.jpg	0.45,0.5,1.0
 book	ov:b926f80c-23aa-4a71-836f-da7df8047946	freestocks.org	CC0	https://www.flickr.com/photos/135396164@N05/26421751605	0.4,0.6,1.0
 breathing	ov:b36b61af-af8c-4063-99b3-a18bc0dcf1fe	Spojení	CC BY 2.0	https://www.flickr.com/photos/91514913@N00/250795391	0.5,0.4,1.0
+bulb	Incandescent bulb lit.jpg	Zarnivop	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:Incandescent_bulb_lit.jpg	0.5,0.5,1.0
 butterfly	Peacock butterfly (Aglais io) 2.jpg	Charles J. Sharp	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:Peacock_butterfly_(Aglais_io)_2.jpg	0.5,0.45,1.0
 cactus	Cute Cactus.jpg	TylaLyn	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:Cute_Cactus.jpg	0.5,0.5,1.0
+cans	Cans recycling.jpg	Radulf del Maresme	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:Cans_recycling.jpg	0.5,0.5,1.0
 car	ov:a4791d0a-7e62-4c41-9e6c-61950c1d474b	gabitobalderas	CC BY 2.0	https://www.flickr.com/photos/53801973@N02/8302494744	fit
+carbon	Charcoal 9.jpg	Dati Bendo, European Commission	CC BY 4.0	https://commons.wikimedia.org/wiki/File:Charcoal_9.jpg	0.5,0.5,0.8
 cat	20231125 housecat south meadows PD100306.jpg	Paul Danese	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:20231125_housecat_south_meadows_PD100306.jpg	0.5,0.5,0.9
 caterpillar	ov:84e9c9e7-7322-4dba-b220-7c300ff81290	Michael Hodge	CC BY 2.0	https://www.flickr.com/photos/27142448@N00/1216047199	0.5,0.55,1.0
 chair	ov:04889801-ae64-4921-8193-9eef95abf354	erix!	CC BY 2.0	https://www.flickr.com/photos/68387408@N00/2404195905	0.5,0.6,1.0
@@ -57,6 +62,8 @@ chick	ov:8d2577f8-b05d-48d5-be9b-e7f49a8cbc7d	@joefoodie	CC BY 2.0	https://www.f
 chicken	ov:482133f8-62fe-4488-86e5-18b7de3cfe0e	sk8geek	CC BY-SA 2.0	https://www.flickr.com/photos/26170836@N05/5829689691	0.55,0.5,1.0
 clock	ov:6c461049-718f-4b11-8c3f-0674bc93f5cc	Alan Cleaver	CC BY 2.0	https://www.flickr.com/photos/11121568@N06/4293345631	0.5,0.5,1.0
 cloud	ov:e7b2c91d-87a8-48cc-a5b5-72b91f90b5df	Wonderlane	CC BY 2.0	https://www.flickr.com/photos/71401718@N00/39795265154	0.6,0.4,1.0
+copper	NatCopper.jpg	"Native_Copper_Macro_Digon3.jpg: “Jonathan Zander (Digon3)""
+derivative work: Materialscientist (talk)"	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:NatCopper.jpg	0.5,0.5,1.0
 cow	ov:c3491873-2fcc-475a-b041-9a82bfe1c567	kemeko1971	CC BY 2.0	https://www.flickr.com/photos/8868801@N03/5158365330	0.48,0.5,1.0
 cup	ov:982b40d2-906a-4cfa-8591-6a5e5bd303d5	DeaPeaJay	CC BY-SA 2.0	https://www.flickr.com/photos/30815420@N00/2569795007	0.5,0.5,1.0
 dog	20110425 German Shepherd Dog 8505.jpg	Jakub Hałun	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:20110425_German_Shepherd_Dog_8505.jpg	0.52,0.55,1.0
@@ -68,18 +75,28 @@ forest	ov:bcaeb4a8-f5b3-4c1e-84e4-4e79fcee00e7	laszlo-photo	CC BY 2.0	https://ww
 frog	Australia green tree frog (Litoria caerulea) crop.jpg	LiquidGhoul	Public domain	https://commons.wikimedia.org/wiki/File:Australia_green_tree_frog_(Litoria_caerulea)_crop.jpg	fit
 girl	Portrait of a Smiling Little Indian Girl - Flickr - Nithi clicks.jpg	Nithi Anand from Paris, France	CC BY 2.0	https://commons.wikimedia.org/wiki/File:Portrait_of_a_Smiling_Little_Indian_Girl_-_Flickr_-_Nithi_clicks.jpg	0.5,0.4,0.95
 goat	ov:3e57cb38-9f61-4e37-972c-ff91b7405571	Neil T	CC BY-SA 2.0	https://www.flickr.com/photos/41894148532@N01/9275632815	0.55,0.4,1.0
+gold	taught deck, 9 Oct 2026: gold bars	Stevebidmead	CC0		0.5,0.5,1.0
 grazing	ov:c2d22ae2-bbba-4c48-a8a6-4356e8a2af87		CC0	https://www.rawpixel.com/image/5902423/photo-image-background-public-domain-green	0.5,0.62,1.0
+helium	Balloons, Belfast, May 2010.jpg	Ardfern	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:Balloons,_Belfast,_May_2010.jpg	0.42,0.5,1.0
 horse	Domestic horse at Suryachaur and the mountains in the back1.jpg	Shadow Ayush	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:Domestic_horse_at_Suryachaur_and_the_mountains_in_the_back1.jpg	0.5,0.5,1.0
+iron	Bar-magnet-iron-filings max.jpg	MikeRun and Vera Wurmsdobler	CC BY-SA 4.0		0.5,0.5,1.0
 kite	ov:1907a72b-4679-4247-a791-75225aa6f111	Vironevaeh	CC BY-SA 2.0	https://www.flickr.com/photos/14549450@N03/3985783648	0.75,0.45,1.0
 kitten	ov:5775e205-685b-4319-a2f7-e925251f8cb9	mathias-erhart	CC BY-SA 2.0	https://www.flickr.com/photos/17676866@N00/761601969	0.5,0.55,1.0
+lightning	Lightning 14.07.2009 20-42-33.JPG	Hansueli Krapf	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:Lightning_14.07.2009_20-42-33.JPG	0.78,0.5,1.0
+nail	ov:5047a382-1ef1-44a0-9a92-6aa28d05ff82		CC0	https://www.rawpixel.com/image/6034955/pile-nails-free-public-domain-cc0-photo	0.5,0.5,0.85
+oxygen	taught deck, 9 Oct 2026: oxygen cylinder	US Food and Drug Administration	Public domain		0.5,0.5,1.0
+pan	Griswold cast iron skillet.jpg	NMorales (WMF)	CC BY-SA 4.0	https://commons.wikimedia.org/wiki/File:Griswold_cast_iron_skillet.jpg	fit
 pencil	ov:4c580d26-9ffd-4fd4-a4ea-49e405808c83	orangeacid	CC BY 2.0	https://www.flickr.com/photos/71753457@N00/204163563	0.45,0.55,1.0
 phone	ov:9d739f11-3555-4544-8581-24102a273eec	liewcf	CC BY-SA 2.0	https://www.flickr.com/photos/34353636@N00/3547131277	fit
 puppy	ov:eb2c360e-ec1c-4718-a855-07be91006af4	Lisa L Wiedmeier	CC BY-SA 2.0	https://www.flickr.com/photos/83328170@N06/8165530858	0.5,0.55,1.0
+ring	Gold ring MET DP109248.jpg		CC0	https://commons.wikimedia.org/wiki/File:Gold_ring_MET_DP109248.jpg	0.5,0.5,0.9
 robot	ov:07a21ca1-b5fc-47bc-b349-de80d20cd95d	Images George Rex	CC BY-SA 2.0	https://www.flickr.com/photos/36692623@N06/5677072988	0.5,0.45,1.0
 rock	Granite boulder beside Argyll and Sutherland Highlanders War Memorial, Oban, July 2020.jpg	Blood Red Sandman	CC BY 4.0	https://commons.wikimedia.org/wiki/File:Granite_boulder_beside_Argyll_and_Sutherland_Highlanders_War_Memorial,_Oban,_July_2020.jpg	0.5,0.55,1.0
 seed	ov:7cac3af0-a81a-4092-a912-971d3c4901e1	Daniel Gasteiger	CC BY 2.0	https://www.flickr.com/photos/30014417@N04/4420215081	0.55,0.5,1.0
 seedling	ov:f4540af4-6ed3-4623-8daf-9f554b32ada7	energyandintensity	CC BY-SA 2.0	https://www.flickr.com/photos/26491139@N04/3583740751	0.5,0.6,1.0
+silicon	Polycrystalline silicon 2.jpg	Tiia Monto	CC BY 4.0	https://commons.wikimedia.org/wiki/File:Polycrystalline_silicon_2.jpg	0.5,0.5,0.92
 snail	Garden snail crossing the sidewalk.jpg	Grendelkhan	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:Garden_snail_crossing_the_sidewalk.jpg	0.5,0.5,0.75
+sulfur	00014 11 cm sulfur gypsum.jpg	Siim Sepp (Sandatlas)	CC BY-SA 3.0	https://commons.wikimedia.org/wiki/File:00014_11_cm_sulfur_gypsum.jpg	fit
 sun	ov:5bde90db-2b2f-4e66-8582-281fbedba815	NASA Goddard Photo and Video	CC BY 2.0	https://www.flickr.com/photos/24662369@N07/7931832934	0.5,0.5,1.0
 sunflower	ov:3187a28d-7820-4e63-9e15-cf2b666185dd	Donald Lee Pardue	CC BY 2.0	https://www.flickr.com/photos/37216036@N05/7188283911	0.5,0.45,1.0
 tadpole	ov:f53efae7-4c85-4a84-aeaf-86dcbdab827b	brewbooks	CC BY-SA 2.0	https://www.flickr.com/photos/93452909@N00/421050989	0.45,0.55,1.0
@@ -88,3 +105,4 @@ tree	Lone field tree - geograph.org.uk - 6638016.jpg	Robert Graham	CC BY-SA 2.0	
 umbrella	ov:5d05e884-821f-460d-a12f-5177f9459ec0	dlg_images	CC BY 2.0	https://www.flickr.com/photos/131260238@N08/16722739971	fit
 water	ov:f18c7c8f-368b-41a3-b067-58563421c317	Toukou Sousui 淙穂鶫箜	CC BY 2.0	https://www.flickr.com/photos/62687403@N04/14032632716	0.5,0.55,1.0
 watering	ov:6a6b218a-cf4b-429e-b9f2-3e2aec54a9a8	oddharmonic	CC BY-SA 2.0	https://www.flickr.com/photos/42528087@N00/4972167516	0.5,0.6,1.0
+wire	Enamelled litz copper wire.jpg	Alisdojo	CC0		0.5,0.5,1.0

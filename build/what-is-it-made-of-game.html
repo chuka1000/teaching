@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Periodic Table: sentence builder</title>
+<style>
+/*PALETTE*/
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--white); color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 760px; padding: 14px 16px 28px; }
+  h1, h2 { margin: 0; color: var(--dark); font-family: Georgia, 'Times New Roman', serif; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .pill { background: var(--dark); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--dark); background: var(--white); }
+  .dot.now { background: var(--accent); }
+  .dot.right { background: var(--support); border-color: var(--support); }
+  .dot.wrong { background: var(--alert); border-color: var(--alert); }
+  .card { background: var(--tint); border-radius: 16px; padding: 16px; margin-bottom: 12px; text-align: center; }
+  .ask { font-size: 22px; font-weight: 700; color: var(--dark); margin: 4px 0 10px; }
+  .pic { width: 190px; height: 190px; object-fit: contain; display: block; margin: 0 auto 8px; border-radius: 12px; }
+  .pic.wide { width: 270px; height: 152px; }
+  .pics { display: flex; justify-content: center; gap: 14px; }
+  .pics .pic { width: 120px; height: 120px; margin: 0 0 8px; }
+  .pics .pic.wide { width: 200px; height: 112px; }
+  .word { font-size: 40px; font-weight: 700; color: var(--dark); }
+  .say { font-size: 24px; color: var(--inkSoft); letter-spacing: .04em; margin-top: 2px; }
+  .say b { color: var(--dark); }
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .choices.stack { grid-template-columns: 1fr; }
+  button { font: inherit; cursor: pointer; }
+  .choice { min-height: 74px; font-size: 28px; font-weight: 700; color: var(--dark); background: var(--white);
+    border: 3px solid var(--tintDeep); border-radius: 16px; padding: 8px 10px; touch-action: manipulation; }
+  .choice.long { font-size: 22px; font-family: Georgia, serif; }
+  .choice:active { background: var(--tintDeep); }
+  .choice.pickedOK { border-color: var(--support); background: #E3F6EF; }
+  .choice.pickedNo { border-color: var(--alert); background: #FDE7EC; }
+  .btn { padding: 15px 30px; border-radius: 14px; font-size: 22px; font-weight: 700; min-height: 58px;
+    background: var(--dark); color: var(--white); border: 3px solid var(--dark); touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--dark); }
+  button:disabled { opacity: .4; cursor: default; }
+  button:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 4px solid var(--accentInk); outline-offset: 2px; }
+  #feedback { border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; border: 4px solid; text-align: center; }
+  #feedback.right { border-color: var(--support); background: #E3F6EF; }
+  #feedback.wrong { border-color: var(--alert); background: #FDE7EC; }
+  #feedback .head { font-size: 26px; font-weight: 700; color: var(--dark); }
+  #feedback .msg { font-size: 20px; font-weight: 700; color: var(--dark); margin-top: 6px; }
+  #feedback .mean { font-size: 18px; color: var(--ink); margin-top: 6px; }
+  #feedback .gest { font-size: 16px; color: var(--inkSoft); margin-top: 6px; font-style: italic; }
+  #feedback .sent { font-size: 26px; font-weight: 700; color: var(--dark); margin-top: 8px; font-family: Georgia, serif; }
+  #feedback .aloud { font-size: 18px; font-weight: 700; color: var(--accentInk); margin-top: 6px; }
+  .yn { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .yn .choice { min-height: 70px; font-size: 32px; }
+  .sentence { font-size: 28px; font-weight: 700; color: var(--dark); line-height: 1.9; font-family: Georgia, serif; }
+  .gap { display: inline-block; min-width: 92px; min-height: 48px; padding: 0 10px; margin: 0 4px; border: 3px dashed var(--inkSoft);
+    border-radius: 10px; vertical-align: middle; line-height: 42px; background: var(--white); font-family: Arial, sans-serif; font-size: 24px; color: var(--dark); }
+  .gap.filled { border-style: solid; border-color: var(--dark); cursor: pointer; }
+  .gap.ok { border-color: var(--support); background: #E3F6EF; }
+  .gap.no { border-color: var(--alert); background: #FDE7EC; }
+  .tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 12px; }
+  .tile { min-height: 60px; min-width: 96px; font-size: 24px; font-weight: 700; color: var(--dark); background: var(--white);
+    border: 3px solid var(--dark); border-radius: 14px; padding: 6px 16px; touch-action: manipulation; }
+  .tile:disabled { visibility: hidden; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--tintDeep); text-align: left; }
+  .row:last-child { border-bottom: 0; }
+  .row img { width: 56px; height: 56px; object-fit: contain; flex: none; border-radius: 8px; }
+  .row .w { font-size: 24px; font-weight: 700; color: var(--dark); }
+  .row .s { font-size: 17px; color: var(--inkSoft); }
+  .bar { height: 14px; border-radius: 7px; background: var(--tintDeep); overflow: hidden; width: 120px; flex: none; }
+  .bar i { display: block; height: 100%; background: var(--support); }
+  .lead { font-size: 22px; line-height: 1.45; margin: 8px 0; }
+  .small { font-size: 14px; color: var(--inkSoft); }
+  .score { font-size: 46px; font-family: Georgia, serif; font-weight: 700; color: var(--dark); }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--dark); }
+  .hide { display: none !important; }
+  details.rev { background: var(--white); border: 2px solid var(--tintDeep); border-radius: 14px; margin: 10px 0; text-align: left; }
+  details.rev summary { padding: 12px 14px; font-size: 18px; font-weight: 700; color: var(--dark); cursor: pointer; }
+  details.rev ol { margin: 0; padding: 0 14px 12px 38px; }
+  details.rev li { padding: 8px 0; border-top: 1px solid var(--tintDeep); font-size: 16px; line-height: 1.4; }
+  details.rev li .mark { font-weight: 700; }
+  details.rev li .mark.right { color: var(--support); } details.rev li .mark.wrong { color: var(--alert); }
+  details.rev li .how { color: var(--inkSoft); }
+  @media (max-width: 480px) {
+    .pic { width: 150px; height: 150px; } .pic.wide { width: 230px; height: 130px; } .pics .pic { width: 96px; height: 96px; } .pics .pic.wide { width: 150px; height: 84px; }
+    .word { font-size: 34px; } .choice { font-size: 24px; min-height: 66px; } .choice.long { font-size: 19px; } .sentence { font-size: 22px; }
+    .gap { min-width: 74px; font-size: 20px; } .tile { font-size: 20px; min-width: 78px; padding: 6px 10px; } .bar { width: 80px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+  var IMG = /*IMAGES*/;
+  var D = /*DATA*/;
+  var WORDS = D.words, ORDER = D.order, CONFUSE = D.confuse, HARD = D.hard, TODAY = D.today;
+
+  /* ================================================================== *
+   * NOBODY GETS THE SAME GAME. Every game is generated from a six-character code,
+   * random for each student. Opening the file with #CODE on the end of the address
+   * gives the same game again, so a teacher can see what a student saw.
+   * The skills and their order are the same for everyone (words, then samples, then
+   * sentences), so the end screen means the same thing for every student.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var cap = function (s) { return s.charAt(0).toUpperCase() + s.slice(1); };
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var without = function (arr, x) { return arr.filter(function (y) { return y !== x; }); };
+    var out = [];
+
+    /* ---- Round 1: words. Yes or no first, then either/or (CLIL order: never open first). Half the words are from the
+            last two lessons and half from the first three; the two the class finds hardest are in every game. ---- */
+    var todayWord = pick(TODAY);
+    var older = shuffle(ORDER.filter(function (w) { return HARD.indexOf(w) < 0 && TODAY.indexOf(w) < 0; })).slice(0, 3);
+    var targets = shuffle(HARD.concat([todayWord], older));
+    var truths = shuffle([true, false]);
+    targets.forEach(function (w, i) {
+      var wrongWord = pick(CONFUSE[w]);
+      if (i < 2) out.push({ round: 1, n: i + 1, type: 'yn', cat: 'words', word: w, shown: truths[i] ? w : wrongWord, truth: truths[i],
+        ask: 'Is "' + (truths[i] ? w : wrongWord) + '" the word for this picture?', answer: truths[i] ? 'Yes' : 'No: the word is "' + w + '"', how: 'The picture shows "' + w + '".' });
+      else out.push({ round: 1, n: i + 1, type: 'eo', cat: 'words', word: w, options: shuffle([w, wrongWord]),
+        ask: 'Tap the word for this picture.', answer: w, how: 'The picture shows "' + w + '": ' + WORDS[w].mean });
+    });
+
+    /* ---- Round 2, part 1: metal or non-metal. Silicon (shiny, and a non-metal) is in every game, with one metal and one other. ---- */
+    var metals = D.classPool.filter(function (k) { return D.samples[k].cls === 'metal'; });
+    var m1 = pick(metals), other = pick(without(without(D.classPool, 'silicon'), m1));
+    shuffle(['silicon', m1, other]).forEach(function (k, i) {
+      var s = D.samples[k];
+      out.push({ round: 2, n: 7 + i, type: 'cls', cat: 'class', sample: k, options: shuffle(['metal', 'non-metal']), truth: s.cls,
+        ask: 'Metal or non-metal? (' + s.name + ')', answer: cap(s.name) + ' is ' + (s.cls === 'metal' ? 'a metal' : 'a non-metal') + '.',
+        how: s.cls === 'metal' ? 'Blue on the table is a metal.' : 'Not blue on the table is a non-metal' + (k === 'silicon' ? ' (silicon is shiny, but the table decides).' : '.') });
+    });
+    /* ---- Round 2, part 2: conducts or does not conduct. Sulfur and the pencil lead (the surprise) are in every game. ---- */
+    var cmetal = pick(D.conductPool.filter(function (c) { return c.conducts && c.key !== 'pencil'; }));
+    shuffle([cmetal, D.conductPool.filter(function (c) { return c.key === 'sulfur'; })[0], D.conductPool.filter(function (c) { return c.key === 'pencil'; })[0]]).forEach(function (c, i) {
+      var yes = cap(c.element) + ' conducts electricity.', no = cap(c.element) + ' does not conduct electricity.';
+      out.push({ round: 2, n: 10 + i, type: 'cond', cat: 'conduct', item: c.key, element: c.element, options: shuffle([yes, no]), truth: c.conducts ? yes : no,
+        ask: 'Does the bulb light up? (' + c.name + ')', answer: c.conducts ? yes : no,
+        how: c.key === 'pencil' ? 'The pencil lead is graphite, a kind of carbon. Carbon is a non-metal, and this one conducts: a surprise.' : (c.conducts ? 'Metals conduct electricity.' : 'Sulfur is a non-metal and it does not conduct.') });
+    });
+
+    /* ---- Round 3: build the sentence. Tap the words into the gaps. ---- */
+    var objs = D.objects;                         // { key: { name, element, gas } }
+    var solids = ['nail', 'ring', 'wire', 'pan'];
+    var o1 = pick(solids), o2 = pick(solids.filter(function (k) { return objs[k].element !== objs[o1].element; }));
+    var tilesOf = function (need, extra) { return shuffle(need.concat(extra)); };
+    var madeOf = function (k, id) {
+      var o = objs[k], otherNames = solids.filter(function (x) { return objs[x].name !== o.name; }).map(function (x) { return objs[x].name; });
+      var otherEl = D.elementNames.filter(function (e) { return e !== o.element; });
+      var d1 = pick(otherNames), d2 = pick(otherEl);
+      return { id: id, pics: [k], segs: ['A ', { gap: 0 }, ' is made of ', { gap: 1 }, '.'], gaps: [[o.name], [o.element]],
+        tiles: tilesOf([o.name, o.element], [d1, d2]), full: 'A ' + o.name + ' is made of ' + o.element + '.', words: [], gest: 'made of: hands building.' };
+    };
+    var gk = pick(['tank', 'balloons']), g = objs[gk];
+    var fullOf = { id: 'fullof', pics: [gk], segs: ['A ', { gap: 0 }, ' is full of ', { gap: 1 }, '.'], gaps: [[g.name], [g.element]],
+      tiles: tilesOf([g.name, g.element], [objs[gk === 'tank' ? 'balloons' : 'tank'].name, objs[gk === 'tank' ? 'balloons' : 'tank'].element]),
+      full: 'A ' + g.name + ' is full of ' + g.element + '.', words: ['full'], gest: 'full: round arms, a big balloon.' };
+    var sNames = D.sampleNames;                   // the four vial samples
+    var s2 = pick(sNames), sd = shuffle(without(sNames, s2)).slice(0, 2);
+    var sm = D.samples[s2];
+    var sample2 = { id: 'sample2', pics: [s2], segs: ['This is ', { gap: 0 }, '. It is a ', { gap: 1 }, '.'], gaps: [[sm.name], [sm.cls]],
+      tiles: tilesOf([sm.name, sm.cls], sd.map(function (k) { return D.samples[k].name; }).concat([sm.cls === 'metal' ? 'non-metal' : 'metal'])),
+      full: 'This is ' + sm.name + '. It is ' + (sm.cls === 'metal' ? 'a metal' : 'a non-metal') + '.', words: ['metal', 'non-metal'], gest: '', tag: 'sample' };
+    var yesCond = pick([true, false]);
+    var conds = { id: 'conducts', pics: [yesCond ? 'circuit_on' : 'circuit_off'], segs: [yesCond ? 'Copper ' : 'Sulfur ', { gap: 0 }, ' electricity.'],
+      gaps: [[yesCond ? 'conducts' : 'does not conduct']], tiles: shuffle(['conducts', 'does not conduct', 'bulb', 'circuit']),
+      full: (yesCond ? 'Copper conducts' : 'Sulfur does not conduct') + ' electricity.', words: ['conduct', 'electricity'], gest: 'conduct: run a finger along the other forearm.', tag: 'conducts' };
+    var s3 = pick(without(sNames, s2)), s3d = shuffle(without(without(sNames, s3), s2)).slice(0, 1).concat([s2]);
+    var sm3 = D.samples[s3];
+    var other3 = (sm3.cls === 'metal' ? 'non-metal' : 'metal'), otherLook = sm3.look === 'shiny' ? 'not shiny' : 'shiny';
+    var sample3 = { id: 'sample3', pics: [s3], segs: ['This is ', { gap: 0 }, '. It is a ', { gap: 1 }, '. It is ', { gap: 2 }, '.'], gaps: [[sm3.name], [sm3.cls], [sm3.look]],
+      tiles: tilesOf([sm3.name, sm3.cls, sm3.look], [D.samples[s3d[0]].name, other3, otherLook]),
+      full: 'This is ' + sm3.name + '. It is ' + (sm3.cls === 'metal' ? 'a metal' : 'a non-metal') + '. It is ' + sm3.look + '.', words: ['metal', 'non-metal', 'shiny'], gest: '', tag: 'sample' };
+    // easy first (made of, made of, full of), then the sample, the conducts sentence, and the longest last
+    [madeOf(o1, 'madeof1'), madeOf(o2, 'madeof2'), fullOf, sample2, conds, sample3].forEach(function (s, i) {
+      s.round = 3; s.n = 13 + i; s.type = 'build'; s.cat = 'sentences'; s.ask = 'Build: ' + s.full; s.answer = s.full; s.how = 'Say it out loud: ' + s.full; out.push(s);
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var ROUND_NAMES = ['Words', 'Samples', 'Sentences'];
+  var CATS = { words: 'Words', 'class': 'Metal or non-metal', conduct: 'Conducts electricity', sentences: 'Sentences' };
+  var HABIT = {
+    table: 'silicon is shiny, but it is a non-metal. The colour of the box on the table decides: not blue is a non-metal.',
+    graphite: 'the pencil lead. It is carbon, a non-metal, and it conducts electricity: a surprise.',
+    picture: 'the picture. Look at the picture, then choose the word.',
+    conducts: 'conducts and does not conduct. Metals conduct electricity. Sulfur does not.',
+    classes: 'metal and non-metal. Blue on the table is a metal. Not blue is a non-metal.',
+    other: 'the words in the sentence. Read it again.'
+  };
+
+  var app = document.getElementById('app');
+  var state, filled, locked, startedAt;
+
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), i: 0, results: [], screen: 'start' }; locked = false; }
+  function Q() { return state.qs[state.i]; }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var WIDE = { circuit_gap: 1, circuit_on: 1, circuit_off: 1 };
+  function img(name, cls) { return '<img class="pic ' + (WIDE[name] ? 'wide ' : '') + (cls || '') + '" alt="" src="' + IMG[name] + '">'; }
+  function sayHtml(w) { return '<span class="say">' + WORDS[w].say.split('-').map(function (s) { return s === s.toUpperCase() && /[A-Z]/.test(s) ? '<b>' + s + '</b>' : s; }).join('-') + '</span>'; }
+  function fmtTime(ms) { var s = Math.max(1, Math.round(ms / 1000)); return s < 60 ? s + ' s' : Math.floor(s / 60) + ' min ' + (s % 60) + ' s'; }
+
+  function header() {
+    var q = Q(), h = el('header');
+    h.appendChild(el('span', 'pill', 'Round ' + q.round + ' · ' + ROUND_NAMES[q.round - 1]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (q.n - (q.round - 1) * 6) + ' of 6');
+    for (var k = 0; k < 6; k++) {
+      var idx = (q.round - 1) * 6 + k, res = state.results[idx];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (idx === state.i ? ' now' : ''))));
+    }
+    h.appendChild(d); return h;
+  }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'The Periodic Table: sentence builder'));
+    card.appendChild(el('p', 'lead', 'Look. Tap. Say it out loud.'));
+    card.appendChild(el('p', 'lead', '3 rounds.'));
+    card.appendChild(el('p', 'small', 'Your game is different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start'); b.id = 'start'; b.onclick = function () { state.i = 0; question(); }; app.appendChild(b); b.focus();
+  }
+
+  function question() {
+    clear(); locked = false; filled = null; state.screen = 'question'; startedAt = Date.now();
+    var q = Q(); app.appendChild(header());
+    if (q.type === 'yn') ynScreen(q); else if (q.type === 'eo') eoScreen(q); else if (q.type === 'cls') clsScreen(q); else if (q.type === 'cond') condScreen(q); else buildScreen(q);
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    var nb = el('button', 'btn hide', 'Next'); nb.id = 'next'; nb.onclick = next; app.appendChild(nb);
+  }
+
+  function record(ok, tag, words, chosen) {
+    var q = Q();
+    state.results[state.i] = { ok: ok, tag: tag || null, cat: q.cat, words: words || [], ms: Date.now() - startedAt, chosen: chosen, ask: q.ask, answer: q.answer, how: q.how };
+    locked = true;
+  }
+  function showFeedback(ok, headText, msg, w, extraHtml, gest) {
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong';
+    fb.innerHTML = '<div class="head">' + headText + '</div>' + (msg ? '<div class="msg">' + msg + '</div>' : '') +
+      (w ? '<div class="word" style="font-size:32px;margin-top:8px">' + w + '</div>' + sayHtml(w) + '<div class="mean">' + WORDS[w].mean + '</div>' + (WORDS[w].gest ? '<div class="gest">Gesture: ' + WORDS[w].gest + '</div>' : '') : '') +
+      (gest ? '<div class="gest">' + gest + '</div>' : '') + (extraHtml || '');
+    var nb = document.getElementById('next'); nb.classList.remove('hide'); nb.textContent = state.i % 6 === 5 ? 'Finish round' : 'Next';
+    var d = document.querySelectorAll('.dot'); if (d[state.i % 6]) d[state.i % 6].className = 'dot ' + (ok ? 'right' : 'wrong');
+    nb.scrollIntoView({ block: 'nearest' });
+  }
+  function disable(sel) { [].forEach.call(document.querySelectorAll(sel), function (b) { b.disabled = true; b.style.opacity = '1'; }); }
+
+  /* ---- round 1: yes or no ---- */
+  function ynScreen(q) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Is this right?'));
+    card.appendChild(el('div', null, img(WORDS[q.word].pic)));
+    card.appendChild(el('div', 'word', q.shown));
+    app.appendChild(card);
+    var box = el('div', 'yn');
+    [['Yes', true], ['No', false]].forEach(function (o) {
+      var b = el('button', 'choice', o[0]); b.type = 'button'; b.dataset.k = o[1] ? 'yes' : 'no';
+      b.onclick = function () { answerYN(q, o[1], b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerYN(q, said, btn) {
+    if (locked) return;
+    var ok = said === q.truth;
+    record(ok, ok ? null : 'word', ok ? [] : [q.word], said ? 'Yes' : 'No');
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', ok ? '' : (q.truth ? 'It is right.' : 'The word is wrong. Look.'), q.word);
+    disable('.yn .choice');
+  }
+
+  /* ---- round 1: either/or ---- */
+  function eoScreen(q) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Tap the word.'));
+    card.appendChild(el('div', null, img(WORDS[q.word].pic)));
+    app.appendChild(card);
+    var box = el('div', 'choices');
+    q.options.forEach(function (w, i) {
+      var b = el('button', 'choice', w); b.type = 'button'; b.dataset.k = String(i + 1);
+      b.onclick = function () { answerEO(q, w, b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerEO(q, w, btn) {
+    if (locked) return;
+    var ok = w === q.word;
+    record(ok, ok ? null : 'word', ok ? [] : [q.word], w);
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    if (!ok) [].forEach.call(document.querySelectorAll('.choices .choice'), function (b) { if (b.textContent === q.word) b.classList.add('pickedOK'); });
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', '', q.word);
+    disable('.choices .choice');
+  }
+
+  /* ---- round 2: metal or non-metal ---- */
+  function clsScreen(q) {
+    var s = D.samples[q.sample];
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Metal or non-metal?'));
+    card.appendChild(el('div', null, img(q.sample)));
+    card.appendChild(el('div', 'word', s.name));
+    card.appendChild(el('div', 'small', 'Symbol ' + s.sym));
+    app.appendChild(card);
+    var box = el('div', 'choices');
+    q.options.forEach(function (w, i) {
+      var b = el('button', 'choice', w); b.type = 'button'; b.dataset.k = String(i + 1);
+      b.onclick = function () { answerCls(q, w, b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerCls(q, w, btn) {
+    if (locked) return;
+    var s = D.samples[q.sample], ok = w === q.truth;
+    var tag = ok ? null : (q.sample === 'silicon' ? 'table' : 'classes');
+    record(ok, tag, ok ? [] : ['metal', 'non-metal'], w);
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    if (!ok) [].forEach.call(document.querySelectorAll('.choices .choice'), function (b) { if (b.textContent === q.truth) b.classList.add('pickedOK'); });
+    var msg = q.sample === 'silicon' ? 'Silicon is shiny, but it is a non-metal. The table decides: it is not blue.' : (ok ? '' : (s.cls === 'metal' ? 'Blue on the table is a metal.' : 'Not blue on the table is a non-metal.'));
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', msg, null, '<div class="sent">' + q.answer + '</div><div class="aloud">Say it out loud.</div>', 'metal: knock-knock. non-metal: knock, then sweep your hands apart.');
+    disable('.choices .choice');
+  }
+
+  /* ---- round 2: conducts or does not conduct ---- */
+  function condScreen(q) {
+    var c = D.conductPool.filter(function (x) { return x.key === q.item; })[0];
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'The bulb. Does it light up?'));
+    card.appendChild(el('div', null, img(c.key)));
+    card.appendChild(el('div', 'word', c.name));
+    app.appendChild(card);
+    var box = el('div', 'choices stack');
+    q.options.forEach(function (w, i) {
+      var b = el('button', 'choice long', w); b.type = 'button'; b.dataset.k = String(i + 1);
+      b.onclick = function () { answerCond(q, w, b); }; box.appendChild(b);
+    });
+    app.appendChild(box);
+  }
+  function answerCond(q, w, btn) {
+    if (locked) return;
+    var ok = w === q.truth, tag = ok ? null : (q.item === 'pencil' ? 'graphite' : 'conducts');
+    record(ok, tag, ok ? [] : ['conduct', 'electricity'], w);
+    btn.classList.add(ok ? 'pickedOK' : 'pickedNo');
+    if (!ok) [].forEach.call(document.querySelectorAll('.choices .choice'), function (b) { if (b.textContent === q.truth) b.classList.add('pickedOK'); });
+    var msg = q.item === 'pencil' ? 'A surprise! The pencil lead is carbon, a non-metal, and the bulb lights up.' : (ok ? '' : (q.truth.indexOf('does not') > 0 ? 'The bulb stays off.' : 'The bulb lights up.'));
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', msg, null, '<div class="sent">' + q.truth + '</div><div class="aloud">Say it out loud.</div>', 'conduct: run a finger along the other forearm.');
+    disable('.choices .choice');
+  }
+
+  /* ---- round 3: build the sentence ---- */
+  function buildScreen(q) {
+    filled = q.gaps.map(function () { return null; });
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'ask', 'Fill the gaps.'));
+    var pics = el('div', 'pics');
+    q.pics.forEach(function (p) { pics.appendChild(el('div', null, img(p))); });
+    card.appendChild(pics);
+    var s = el('div', 'sentence'); s.id = 'sentence';
+    q.segs.forEach(function (seg) {
+      if (typeof seg === 'string') s.appendChild(document.createTextNode(seg));
+      else { var g = el('span', 'gap'); g.dataset.g = seg.gap; g.setAttribute('role', 'button'); g.setAttribute('tabindex', '0');
+        g.onclick = function () { removeGap(seg.gap); }; g.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); removeGap(seg.gap); } }; s.appendChild(g); }
+    });
+    card.appendChild(s); app.appendChild(card);
+    var tl = el('div', 'tiles'); tl.id = 'tiles';
+    q.tiles.forEach(function (t, i) {
+      var b = el('button', 'tile', t); b.type = 'button'; b.dataset.t = t; b.dataset.i = String(i + 1);
+      b.onclick = function () { addTile(b); }; tl.appendChild(b);
+    });
+    app.appendChild(tl);
+    var cb = el('button', 'btn', 'Check'); cb.id = 'check'; cb.disabled = true; cb.onclick = checkBuild; app.appendChild(cb);
+    app.appendChild(el('div', null, '<div style="height:12px"></div>'));
+  }
+  function paintGaps() {
+    var gs = document.querySelectorAll('.gap');
+    [].forEach.call(gs, function (g, i) { g.textContent = filled[i] ? filled[i].t : ''; g.className = 'gap' + (filled[i] ? ' filled' : ''); });
+    var cb = document.getElementById('check'); if (cb && !locked) cb.disabled = filled.some(function (x) { return !x; });
+  }
+  function addTile(b) {
+    if (locked || b.disabled) return;
+    var i = filled.findIndex(function (x) { return !x; }); if (i < 0) return;
+    filled[i] = { t: b.dataset.t, btn: b }; b.disabled = true; paintGaps();
+  }
+  function removeGap(i) { if (locked || !filled[i]) return; filled[i].btn.disabled = false; filled[i] = null; paintGaps(); }
+  function checkBuild() {
+    if (locked) return;
+    var q = Q(), got = filled.map(function (x) { return x.t; });
+    var good = q.gaps.map(function (a, i) { return a.indexOf(got[i]) >= 0; });
+    var ok = good.every(function (x) { return x; }), tag = null;
+    if (!ok) tag = q.id === 'conducts' ? 'conducts' : (q.pics[0] === 'silicon' ? 'table' : (q.tag === 'sample' ? (good[0] ? 'classes' : 'picture') : 'picture'));
+    record(ok, tag, ok ? [] : q.words, got.join(' / '));
+    [].forEach.call(document.querySelectorAll('.gap'), function (g, i) { g.classList.add(good[i] ? 'ok' : 'no'); });
+    disable('.tile'); document.getElementById('check').classList.add('hide');
+    var msg = '';
+    if (!ok) msg = tag === 'table' ? 'Silicon is shiny, but it is a non-metal. The table decides.' : tag === 'conducts' ? 'Look at the bulb: on is conducts, off is does not conduct.' : tag === 'classes' ? 'Blue on the table is a metal. Not blue is a non-metal.' : tag === 'picture' ? 'Look at the picture.' : 'Read the sentence again.';
+    showFeedback(ok, ok ? 'Yes!' : 'Not this one.', msg, null, '<div class="sent">' + q.full + '</div><div class="aloud">Say it out loud.</div>', q.gest);
+  }
+
+  var lastRound = 0;                              // the round that has just finished
+  function next() {
+    if (!locked) return;
+    if (state.i % 6 === 5) { lastRound = Math.floor(state.i / 6); roundEnd(); }
+    else { state.i++; question(); }
+  }
+
+  /* ---- the review: one drop-down for a round, closed to start with, native <details> ---- */
+  function review(r) {
+    var d = el('details', 'rev'); d.dataset.round = String(r + 1);
+    d.appendChild(el('summary', null, 'Round ' + (r + 1) + ' review: ' + ROUND_NAMES[r]));
+    var ol = el('ol');
+    for (var k = 0; k < 6; k++) {
+      var x = state.results[r * 6 + k], q = state.qs[r * 6 + k], li;
+      if (!x) li = el('li', null, '<span class="mark">Not reached.</span> ' + q.ask);
+      else li = el('li', null, '<span class="mark ' + (x.ok ? 'right' : 'wrong') + '">' + (x.ok ? 'Right' : 'Wrong') + '</span> · ' + fmtTime(x.ms) + ' · ' + x.ask +
+        (x.ok ? '' : '<br>You chose: ' + (x.chosen || '') + '<br>Right answer: ' + x.answer + '<br><span class="how">' + x.how + '</span>'));
+      ol.appendChild(li);
+    }
+    d.appendChild(ol); return d;
+  }
+
+  function roundEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(lastRound * 6, lastRound * 6 + 6);
+    var right = mine.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Round ' + (lastRound + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 6'));
+    var missed = []; mine.forEach(function (x) { if (!x.ok) (x.words || []).forEach(function (w) { if (missed.indexOf(w) < 0) missed.push(w); }); });
+    if (missed.length) { card.appendChild(el('p', 'lead', 'Say these again:')); missed.forEach(function (w) { card.appendChild(wordRow(w)); }); }
+    else card.appendChild(el('p', 'lead', 'Every one right.'));
+    card.appendChild(el('p', 'small', 'The time does not count for anything.'));
+    card.appendChild(review(lastRound));
+    app.appendChild(card);
+    var b = el('button', 'btn', lastRound < 2 ? 'Round ' + (lastRound + 2) : 'See results'); b.id = 'roundnext';
+    b.onclick = function () { if (lastRound < 2) { state.i = (lastRound + 1) * 6; question(); } else final(); };
+    app.appendChild(b); b.focus();
+  }
+
+  function wordRow(w) {
+    return el('div', 'row', '<img alt="" src="' + IMG[WORDS[w].pic] + '"><div><div class="w">' + w + '</div>' + sayHtml(w) + '<div class="s">' + WORDS[w].mean + '</div></div>');
+  }
+
+  function final() {
+    clear(); state.screen = 'final';
+    var total = state.results.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Your results'));
+    card.appendChild(el('div', 'score', total + ' of 18'));
+    Object.keys(CATS).forEach(function (c) {
+      var rs = state.results.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span style="flex:1"><b style="font-size:20px">' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + rs.length + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / Math.max(1, rs.length)) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var missed = [];
+    state.results.forEach(function (x) { if (!x.ok) (x.words || []).forEach(function (w) { if (missed.indexOf(w) < 0) missed.push(w); }); });
+    var tips = el('div', 'card');
+    tips.appendChild(el('h2', null, missed.length ? 'Say these words again' : 'Every word was right'));
+    missed.forEach(function (w) { tips.appendChild(wordRow(w)); });
+    var counts = {};
+    state.results.forEach(function (x) { if (!x.ok && x.tag && x.tag !== 'word') counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    Object.keys(counts).forEach(function (t) { tips.appendChild(el('p', 'lead', 'Look again: ' + (HABIT[t] || HABIT.other))); });
+    tips.appendChild(el('h2', null, 'Review'));
+    [0, 1, 2].forEach(function (r) { tips.appendChild(review(r)); });
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same game.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); lastRound = 0; start(); }; app.appendChild(b); b.focus();
+  }
+
+  /* ---------- keyboard ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.screen !== 'question') return;
+    var q = Q();
+    if (e.key === 'Enter') {
+      if (locked) { e.preventDefault(); next(); }
+      else if (q.type === 'build') { var cb = document.getElementById('check'); if (cb && !cb.disabled) { e.preventDefault(); checkBuild(); } }
+      return;
+    }
+    if (locked) return;
+    if (q.type === 'yn') { if (e.key === 'y' || e.key === 'Y' || e.key === '1') document.querySelector('.yn .choice[data-k="yes"]').click(); else if (e.key === 'n' || e.key === 'N' || e.key === '2') document.querySelector('.yn .choice[data-k="no"]').click(); }
+    else if (q.type === 'eo' || q.type === 'cls' || q.type === 'cond') { var b = document.querySelector('.choices .choice[data-k="' + e.key + '"]'); if (b) b.click(); }
+    else if (q.type === 'build') {
+      if (e.key === 'Backspace') { e.preventDefault(); for (var i = filled.length - 1; i >= 0; i--) if (filled[i]) { removeGap(i); break; } }
+      else { var tb = document.querySelector('.tile[data-i="' + e.key + '"]'); if (tb && !tb.disabled) tb.click(); }
+    }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, data: D, questions: function () { return state.qs; }, code: function () { return state.code; } };  // read by the test script only
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>

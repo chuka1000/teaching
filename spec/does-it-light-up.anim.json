@@ -1,0 +1,684 @@
+{
+  "deck": "out/Does It Light Up/Does It Light Up.pptx",
+  "output": "out/Does It Light Up/Does It Light Up.pptx",
+  "defaults": {
+    "transition": "fade",
+    "dur": 400
+  },
+  "slides": [
+    {
+      "index": 1,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 2,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "o0",
+          "members": [
+            "o0_bg",
+            "o0_num",
+            "o0_img0",
+            "o0_t"
+          ]
+        },
+        {
+          "name": "o1",
+          "members": [
+            "o1_bg",
+            "o1_num",
+            "o1_img0",
+            "o1_t"
+          ]
+        },
+        {
+          "name": "o2",
+          "members": [
+            "o2_bg",
+            "o2_num",
+            "o2_img0",
+            "o2_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "o0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "o2",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rm0_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm1_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm2_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm3_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm4_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm5_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm6_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm7_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rm8_word",
+              "effect": "zoom",
+              "delay": 0
+            },
+            {
+              "target": "rm9_word",
+              "effect": "zoom",
+              "delay": 150
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "w_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "wr0",
+          "members": [
+            "w0_word",
+            "w0_say",
+            "w0_mean"
+          ]
+        },
+        {
+          "name": "wr1",
+          "members": [
+            "w1_word",
+            "w1_say",
+            "w1_mean"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "wr0",
+              "effect": "exit",
+              "delay": 0
+            },
+            {
+              "target": "wr1",
+              "effect": "exit",
+              "delay": 150
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "w_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "fmg0",
+          "members": [
+            "fm0_bg",
+            "fm0_img",
+            "fm0_t",
+            "fm0_chip"
+          ]
+        },
+        {
+          "name": "fmg1",
+          "members": [
+            "fm1_bg",
+            "fm1_img",
+            "fm1_t",
+            "fm1_chip"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "circuit_video",
+              "effect": "play"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fmg0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "fmg1",
+              "effect": "fade"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "transition": "fade",
+      "builds": []
+    },
+    {
+      "index": 8,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "hsg0",
+          "members": [
+            "hs0_bg",
+            "hs0_n",
+            "hs0_img",
+            "hs0_t"
+          ]
+        },
+        {
+          "name": "hsg1",
+          "members": [
+            "hs1_bg",
+            "hs1_n",
+            "hs1_img",
+            "hs1_t"
+          ]
+        },
+        {
+          "name": "hsg2",
+          "members": [
+            "hs2_bg",
+            "hs2_n",
+            "hs2_img",
+            "hs2_t"
+          ]
+        },
+        {
+          "name": "hsg3",
+          "members": [
+            "hs3_bg",
+            "hs3_n",
+            "hs3_img",
+            "hs3_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "hsg0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hsg1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hsg2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "hsg3",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "frame_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "transition": "fade",
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "ts0_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ts1_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ts2_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ts3_chip",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "ts4_chip",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "rsOn",
+          "members": [
+            "rs_p0",
+            "rs_n0",
+            "rs_p1",
+            "rs_n1",
+            "rs_p2",
+            "rs_n2"
+          ]
+        },
+        {
+          "name": "rsOff",
+          "members": [
+            "rs_p3",
+            "rs_n3"
+          ]
+        },
+        {
+          "name": "spg",
+          "members": [
+            "sp_bg",
+            "sp_img",
+            "sp_t"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "rsOn",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "rsOff",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "spg",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "res_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "transition": "fade",
+      "groups": [
+        {
+          "name": "t0",
+          "members": [
+            "t0_bg",
+            "t0_img0",
+            "t0_k",
+            "t0_h",
+            "t0_b"
+          ]
+        },
+        {
+          "name": "t1",
+          "members": [
+            "t1_bg",
+            "t1_img0",
+            "t1_img1",
+            "t1_k",
+            "t1_h",
+            "t1_b"
+          ]
+        },
+        {
+          "name": "t2",
+          "members": [
+            "t2_bg",
+            "t2_img0",
+            "t2_img1",
+            "t2_k",
+            "t2_h",
+            "t2_b"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "t0",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t1",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "t2",
+              "effect": "fade"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "yd_banner",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "transition": {
+        "type": "push",
+        "dir": "up",
+        "speed": "med"
+      },
+      "groups": [
+        {
+          "name": "tgg0",
+          "members": [
+            "tg0_chip",
+            "tg0_tick"
+          ]
+        },
+        {
+          "name": "tgg1",
+          "members": [
+            "tg1_chip",
+            "tg1_tick"
+          ]
+        },
+        {
+          "name": "tgg2",
+          "members": [
+            "tg2_chip",
+            "tg2_tick"
+          ]
+        },
+        {
+          "name": "tgg3",
+          "members": [
+            "tg3_chip",
+            "tg3_tick"
+          ]
+        },
+        {
+          "name": "tgg4",
+          "members": [
+            "tg4_chip",
+            "tg4_tick"
+          ]
+        }
+      ],
+      "builds": [
+        {
+          "steps": [
+            {
+              "target": "tgg0",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tgg1",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tgg2",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tgg3",
+              "effect": "zoom"
+            }
+          ]
+        },
+        {
+          "steps": [
+            {
+              "target": "tgg4",
+              "effect": "zoom"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

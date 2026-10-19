@@ -138,6 +138,9 @@ def search(query, n=12):
         if len(keep) == n:
             break
     SEARCH.mkdir(exist_ok=True)
+    if not keep:
+        print(f'no usable results for "{query}"')
+        return
     font = ImageFont.truetype('/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf', 18)
     cols, cell = 4, 300
     sheet = Image.new('RGB', (cols * cell, ((len(keep) + cols - 1) // cols) * (cell + 30)), 'white')

@@ -45,6 +45,8 @@ const PICTURES = {
   // classroom routines
   eyes: '1F440', speech: '1F4AC', writing: '270D', tick: '2705', cross: '274C', question: '2753', ear: '1F442',
   pair: '1F46B', hand: '270B', point: '1F449', sort: '1F5C2', target: '1F3AF', star: '2B50', magnifier: '1F50D', link: '1F517',
+  // The Periodic Table (T3 Unit 8)
+  recycle: '267B', game: '1F3AE', checklist: '1F4CB',
 };
 
 /** One emoji's <svg> out of the sprite. The sprite nests one 128 x 128 svg per emoji, each with its own ids. */
