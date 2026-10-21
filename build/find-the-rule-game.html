@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find The Rule</title>
+<style>
+  :root {
+    --navy: #2B2350; --coral: #EC6B58; --brick: #C0392B; --lav: #F2F0F8; --lav2: #E1DDEF;
+    --ink: #1E1A3A; --soft: #5E5A70; --green: #1F7A48; --white: #fff; --blue: #1F6FB2;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--white); color: var(--ink);
+    font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust: 100%; }
+  body { min-height: 100vh; display: flex; justify-content: center; }
+  #app { width: 100%; max-width: 780px; padding: 14px 16px 28px; }
+  h1, h2 { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); margin: 0; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .pill { background: var(--navy); color: var(--white); font-size: 12px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; border-radius: 999px; padding: 7px 14px; white-space: nowrap; }
+  .pill.hard { background: var(--brick); }
+  .dots { display: flex; gap: 6px; }
+  .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid var(--navy); background: var(--white); }
+  .dot.now { background: var(--lav2); }
+  .dot.right { background: var(--green); border-color: var(--green); }
+  .dot.wrong { background: var(--brick); border-color: var(--brick); }
+  .card { background: var(--lav); border-radius: 14px; padding: 16px 16px; margin-bottom: 12px; }
+  .ask { font-size: 20px; color: var(--navy); font-weight: 700; margin: 0 0 12px; line-height: 1.3; }
+  .story { font-size: 16px; color: var(--soft); margin: 0 0 10px; line-height: 1.4; }
+  .sub { font-size: 15px; color: var(--soft); margin: 10px 0 0; line-height: 1.35; }
+  table.tbl { border-collapse: collapse; margin: 6px 0 4px; font-size: 22px; font-weight: 700; color: var(--navy); max-width: 100%; }
+  table.tbl th, table.tbl td { border: 2px solid var(--navy); padding: 6px 14px; text-align: center; background: var(--white); min-width: 52px; }
+  table.tbl th { background: var(--lav2); font-size: 15px; text-align: left; }
+  table.tbl td.q { background: var(--white); color: var(--brick); border: 3px dashed var(--brick); }
+  .rules { display: grid; gap: 8px; margin: 6px 0; }
+  .rulebox { background: var(--white); border: 2px solid var(--navy); border-radius: 12px; padding: 10px 14px; font-size: 24px; font-weight: 700; color: var(--navy); font-family: Georgia, serif; }
+  #answer { min-height: 64px; border: 3px solid var(--navy); border-radius: 12px; background: var(--white);
+    font-size: 34px; font-weight: 700; color: var(--navy); display: flex; align-items: center; padding: 0 16px;
+    margin-bottom: 12px; font-family: Georgia, serif; flex-wrap: wrap; gap: 4px 6px; }
+  #answer.empty { color: #9A96AE; font-weight: 400; font-size: 20px; font-family: Arial, sans-serif; }
+  #answer.ruleans { padding: 8px 12px; font-size: 30px; }
+  .slot { display: inline-flex; align-items: center; justify-content: center; min-width: 64px; height: 50px; padding: 0 8px; border: 3px solid var(--lav2); border-radius: 10px; background: var(--lav);
+    color: var(--navy); font-size: 30px; cursor: pointer; touch-action: manipulation; }
+  .slot.on { border-color: var(--coral); background: var(--white); }
+  .conn { font-size: 30px; padding: 0 2px; }
+  .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  button { font: inherit; cursor: pointer; }
+  .key { height: 60px; font-size: 28px; font-weight: 700; color: var(--navy); background: var(--white);
+    border: 2px solid var(--lav2); border-radius: 12px; touch-action: manipulation; }
+  .key:active { background: var(--lav2); }
+  .key.fn { background: var(--lav); font-size: 22px; }
+  .key.go, .btn { background: var(--navy); color: var(--white); border: 2px solid var(--navy); }
+  .key.go { font-size: 20px; grid-column: 1 / -1; }
+  .btn { padding: 15px 26px; border-radius: 12px; font-size: 18px; font-weight: 700; min-height: 54px; touch-action: manipulation; }
+  .btn.ghost { background: var(--white); color: var(--navy); }
+  .btn.small { padding: 8px 14px; font-size: 14px; min-height: 44px; }
+  button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible, .slot:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt { display: flex; align-items: center; gap: 14px; text-align: left; min-height: 60px; padding: 8px 16px; background: var(--white);
+    border: 2px solid var(--lav2); border-radius: 12px; font-size: 22px; font-weight: 700; color: var(--navy); touch-action: manipulation; line-height: 1.25; }
+  .opt b { width: 34px; height: 34px; border-radius: 50%; background: var(--lav2); display: flex; align-items: center; justify-content: center; font-size: 17px; flex: none; }
+  .opt.long { font-size: 17px; }
+  .opt.correct { border-color: var(--green); background: #EAF6EF; } .opt.picked { border-color: var(--brick); background: #FDF0EE; }
+  #feedback { border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; border: 3px solid; }
+  #feedback.right { border-color: var(--green); background: #EAF6EF; }
+  #feedback.wrong { border-color: var(--brick); background: #FDF0EE; }
+  #feedback .head { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  #feedback.right .head { color: var(--green); } #feedback.wrong .head { color: var(--brick); }
+  #feedback .msg { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  #feedback .work, .rq .work { font-size: 19px; font-family: Georgia, serif; color: var(--navy); font-weight: 700; line-height: 1.5; }
+  #feedback .how { font-size: 15px; color: var(--soft); margin: 0 0 4px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--lav2); }
+  .row:last-child { border-bottom: 0; }
+  .bar { height: 12px; border-radius: 6px; background: var(--lav2); overflow: hidden; width: 140px; flex: none; }
+  .bar i { display: block; height: 100%; background: var(--green); }
+  .lead { font-size: 18px; line-height: 1.45; }
+  .small { font-size: 13px; color: var(--soft); }
+  .score { font-size: 44px; font-family: Georgia, serif; font-weight: 700; color: var(--navy); }
+  ul.tips { padding-left: 20px; margin: 8px 0 0; } ul.tips li { margin: 8px 0; font-size: 17px; line-height: 1.4; }
+  .code { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: .12em; color: var(--navy); }
+  details.review { border: 2px solid var(--lav2); border-radius: 12px; background: var(--white); margin: 10px 0 0; }
+  details.review > summary { cursor: pointer; padding: 12px 14px; font-weight: 700; color: var(--navy); font-size: 16px; line-height: 1.35; list-style: none; display: flex; justify-content: space-between; gap: 10px; align-items: center; min-height: 48px; }
+  details.review > summary::-webkit-details-marker { display: none; }
+  details.review > summary::after { content: '▾'; font-size: 18px; flex: none; transition: transform .15s; }
+  details.review[open] > summary::after { transform: rotate(180deg); }
+  details.review > summary:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+  .rq { padding: 12px 14px; border-top: 1px solid var(--lav2); }
+  .rq .top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .rq .qn { font-weight: 700; color: var(--navy); font-size: 15px; }
+  .rq .meta { font-size: 14px; color: var(--soft); white-space: nowrap; }
+  .rq .verdict { font-weight: 700; font-size: 15px; }
+  .rq .verdict.ok { color: var(--green); } .rq .verdict.no { color: var(--brick); } .rq .verdict.na { color: var(--soft); }
+  .rq .txt { font-size: 15px; line-height: 1.4; margin: 4px 0; }
+  .rq .wrote { font-size: 15px; margin: 6px 0 2px; color: var(--navy); }
+  .rq .how { font-size: 14px; color: var(--soft); margin: 6px 0 2px; }
+  .hide { display: none !important; }
+  @media (max-width: 480px) {
+    .ask { font-size: 18px; } table.tbl { font-size: 18px; } table.tbl th, table.tbl td { padding: 5px 8px; min-width: 40px; }
+    .key { height: 56px; } #answer { font-size: 30px; } .slot { min-width: 54px; height: 46px; font-size: 26px; }
+    .bar { width: 80px; } .opt { font-size: 19px; } .rulebox { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<div id="app" aria-live="polite"></div>
+<script>
+(function () {
+  'use strict';
+
+  /* ================================================================== *
+   * FIND THE RULE. A standalone practice game on ONE skill: finding the rule
+   * y = mx + c from a table of x and y values (the thing 8CN found hard).
+   *
+   * Nobody gets the same game. Every question is built from a template with
+   * random numbers, from a six-character game code that is random for each
+   * student. Opening the file with #CODE after the address gives the same game
+   * again, so a teacher can see exactly what a student saw. The SKILLS and their
+   * order are the same for everyone, so the diagnostic at the end means the
+   * same thing for every student.
+   *
+   * Five levels of eight questions. Level 1 is a warm-up. Level 2 is the lesson.
+   * Level 3 has bigger steps in x, level 4 is real life, and level 5 is meant to
+   * be too hard: negative numbers, a falling rule, a rule written with brackets,
+   * two rules that meet. A student who cannot do one still gets the working, and
+   * there is no penalty for slowness. build/check-find-the-rule-game.py re-derives
+   * every answer, every mistake and every line of working with sympy.
+   * ================================================================== */
+  var ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  function newCode() {
+    var out = '', bytes = new Uint8Array(6);
+    if (window.crypto && window.crypto.getRandomValues) window.crypto.getRandomValues(bytes);
+    else for (var k = 0; k < 6; k++) bytes[k] = Math.floor(Math.random() * 256);
+    for (var i = 0; i < 6; i++) out += ALPHABET[bytes[i] % ALPHABET.length];
+    return out;
+  }
+  function validCode(c) { return typeof c === 'string' && /^[A-HJ-NP-Z2-9]{6}$/.test(c); }
+  function makeRng(code) {                                   // xmur3 hash, then mulberry32
+    var h = 1779033703 ^ code.length;
+    for (var i = 0; i < code.length; i++) { h = Math.imul(h ^ code.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+    var a = (h ^ (h >>> 16)) >>> 0;
+    return function () {
+      a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var PER = 8;                                               // questions in a level
+  var LEVELS = 5;
+  var LEVEL_NAMES = ['Look at the table', 'Find the rule', 'Bigger steps', 'Real life', 'Meant to be too hard'];
+
+  /* ---------- writing numbers and rules ---------- */
+  var N = function (x) { return x < 0 ? '−' + (-x) : String(x); };          // a number as written
+  var P = function (x) { return x < 0 ? '(−' + (-x) + ')' : String(x); };   // a number inside a sum, in brackets if negative
+  function ruleText(m, c) {                                                  // y = 3x + 4, y = −2x + 20, y = x − 5
+    var mt = m === 1 ? 'x' : m === -1 ? '−x' : N(m) + 'x';
+    return 'y = ' + mt + (c === 0 ? '' : c < 0 ? ' − ' + (-c) : ' + ' + c);
+  }
+  function bracketText(m, k) { return 'y = ' + N(m) + '(x ' + (k < 0 ? '− ' + (-k) : '+ ' + k) + ')'; }
+  function ysOf(xs, m, c) { return xs.map(function (x) { return m * x + c; }); }
+  // The working that finds the rule from a table: the gap in y, the gap in x, the multiplier, the number added.
+  function ruleLines(xs, ys) {
+    var dy = ys[1] - ys[0], dx = xs[1] - xs[0], m = dy / dx, c = ys[0] - m * xs[0], L = [];
+    L.push(N(ys[1]) + ' − ' + P(ys[0]) + ' = ' + N(dy));
+    if (dx !== 1) { L.push(N(xs[1]) + ' − ' + P(xs[0]) + ' = ' + N(dx)); L.push(N(dy) + ' ÷ ' + P(dx) + ' = ' + N(m)); }
+    L.push(P(m) + ' × ' + P(xs[0]) + ' = ' + N(m * xs[0]));
+    L.push(N(ys[0]) + ' − ' + P(m * xs[0]) + ' = ' + N(c));
+    L.push(ruleText(m, c));
+    return L;
+  }
+
+  /* ---------- stories: a fixed charge and a price for each unit ---------- */
+  var STORIES = [
+    { id: 'taxi',  xl: 'Distance (km)', yl: 'Fare (£)',   unit: 'km',    units: 'km',     fixed: 'fixed fee',        intro: 'A taxi company charges a fixed fee and then a price for each kilometre. These fares are in the table.', thing: 'journey', buy: 'travel' },
+    { id: 'gym',   xl: 'Months',        yl: 'Cost (£)',   unit: 'month', units: 'months', fixed: 'joining fee',      intro: 'A gym charges a joining fee and then a price for each month. These total costs are in the table.', thing: 'membership', buy: 'pay for' },
+    { id: 'phone', xl: 'GB used',       yl: 'Bill (£)',   unit: 'GB',    units: 'GB',     fixed: 'connection fee',   intro: 'A phone company charges a connection fee and then a price for each GB. These bills are in the table.', thing: 'bill', buy: 'use' },
+    { id: 'park',  xl: 'Hours',         yl: 'Cost (£)',   unit: 'hour',  units: 'hours',  fixed: 'entry fee',        intro: 'A car park charges an entry fee and then a price for each hour. These costs are in the table.', thing: 'stay', buy: 'park for' },
+    { id: 'post',  xl: 'Parcels',       yl: 'Cost (£)',   unit: 'parcel', units: 'parcels', fixed: 'collection fee', intro: 'A courier charges a collection fee and then a price for each parcel. These costs are in the table.', thing: 'delivery', buy: 'send' }
+  ];
+
+  function generate(code) {
+    var rnd = makeRng(code);
+    var int = function (a, b) { return a + Math.floor(rnd() * (b - a + 1)); };
+    var pick = function (arr) { return arr[Math.floor(rnd() * arr.length)]; };
+    var shuffle = function (arr) { var r = arr.slice(); for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var t = r[i]; r[i] = r[j]; r[j] = t; } return r; };
+    var until = function (f) { for (var t = 0; t < 6000; t++) { var r = f(); if (r) return r; } throw new Error('generator stuck'); };
+
+    var MSG = {
+      first:    'The number added is not the first y. It is the y you get when x is 0.',
+      swap:     'You swapped the two numbers. The multiplier goes with x. The number added is on its own.',
+      gap:      'That is the change in y over the whole gap in x. Divide by the gap in x to get the change for ONE step.',
+      sign:     'Check the sign: is the number added to the multiple of x, or taken away?',
+      skip:     'The rule has two parts, the multiplier and the number added. Use both.',
+      forward:  'Going back means taking the step away, not adding it.',
+      step:     'That is the step in y, not the number added. Take the step away from the first y.',
+      stepback: 'x = 0 is further back than that. Keep going back until x is 0.',
+      onecol:   'One column back does not reach x = 0 yet. Keep going back until x is 0.',
+      addone:   'y goes up by the multiplier each time x goes up by 1, not by 1.',
+      ratio:    'The number added means y is not in proportion to x, so you cannot just scale the first pair up.',
+      order:    'Multiply by the multiplier first, then add the number. The number added is not multiplied.',
+      output:   'That is the y value. The question asks for x.',
+      expanded: 'That is the rule without brackets. Take the multiplier out: the number inside the bracket is the number added divided by the multiplier.',
+      fall:     'y goes DOWN as x goes up, so the multiplier is negative.',
+      only:     'A rule found from the first pair only can fit that pair and fail the next. Check it with another pair.'
+    };
+    var W = function (value, tag, how) { return { value: value, tag: tag, how: how, msg: MSG[tag] }; };
+    var WR = function (m, c, tag) { return { m: m, c: c, tag: tag, how: ruleText(m, c), msg: MSG[tag] }; };
+    var BWR = function (m, k, tag) { return { m: m, c: k, tag: tag, how: bracketText(m, k), msg: MSG[tag] }; };
+
+    var mk = function (level, n, cat, kind, o) { o.level = level; o.n = n; o.cat = cat; o.kind = kind; return o; };
+    var cols = function (x1, d, n) { var xs = []; for (var i = 0; i < n; i++) xs.push(x1 + i * d); return xs; };
+    var tbl = function (xs, ys, xl, yl, hide) { return { xs: xs, ys: ys, xl: xl || 'x', yl: yl || 'y', hide: hide || null }; };
+    var story = function () { return pick(STORIES); };
+
+    // The four options of a "which rule" question: the right one and the slips, shuffled.
+    var ruleOptions = function (right, slips) {
+      var opts = shuffle([{ text: ruleText(right[0], right[1]), tag: null }].concat(slips.map(function (s) { return { text: ruleText(s[0], s[1]), tag: s[2], msg: MSG[s[2]] }; })));
+      return opts;
+    };
+    var ruleQ = function (level, n, cat, ask, t, m, c, wr, extra) {
+      var o = { ask: ask, table: t, answer: { m: m, c: c }, formula: ruleText(m, c), m: m, c: c, worked: ruleLines(t.xs, t.ys), wrong: wr };
+      for (var k in (extra || {})) o[k] = extra[k];
+      return mk(level, n, cat, 'rule', o);
+    };
+
+    /* ---------------- LEVEL 1: look at the table (x goes up by 1) ---------------- */
+    var L1 = {
+      step4: function () {
+        var m = int(2, 6), c = int(1, 9), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return mk(1, 1, 'step', 'num', { ask: 'x goes up by 1 each time. How much does y go up each time?', table: tbl(xs, ys), answer: m, m: m, c: c,
+          worked: [N(ys[1]) + ' − ' + N(ys[0]) + ' = ' + N(m)], method: 'x goes up by 1, so the gap between two y values is the multiplier.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(ys[3] - ys[0], 'gap', ys[3] + ' − ' + ys[0])] });
+      },
+      step3: function () {
+        var m = int(3, 9), c = int(1, 9), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        return mk(1, 2, 'step', 'num', { ask: 'x goes up by 1 each time. By how much does y go up each time?', table: tbl(xs, ys), answer: m, m: m, c: c,
+          worked: [N(ys[1]) + ' − ' + N(ys[0]) + ' = ' + N(m)], method: 'x goes up by 1, so the gap between two y values is the multiplier.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(ys[2] - ys[0], 'gap', ys[2] + ' − ' + ys[0])] });
+      },
+      zero: function () {
+        var m = int(2, 6), c = int(3, 12), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        return mk(1, 3, 'zero', 'num', { ask: 'Go back one step. What is y when x = 0?', table: tbl(xs, ys), answer: c, m: m, c: c,
+          worked: [N(ys[0]) + ' − ' + N(m) + ' = ' + N(c)], method: 'The table goes up by ' + m + ' each time, so one step back from x = 1 is x = 0: take ' + m + ' away from ' + ys[0] + '.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(m, 'step', String(m)), W(ys[0] + m, 'forward', ys[0] + ' + ' + m)] });
+      },
+      zeroStory: function () {
+        var s = story(), m = int(2, 5), c = int(4, 12), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        return mk(1, 4, 'zero', 'num', { story: s.intro, ask: 'What do you pay for 0 ' + s.units + '?', table: tbl(xs, ys, s.xl, s.yl), answer: c, m: m, c: c, sid: s.id,
+          worked: [N(ys[0]) + ' − ' + N(m) + ' = ' + N(c)], method: 'With 0 ' + s.units + ' you pay only the ' + s.fixed + '. Go back one step from 1 ' + s.unit + '.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(m, 'step', String(m)), W(ys[0] + m, 'forward', ys[0] + ' + ' + m)] });
+      },
+      rule: function () {
+        var m = int(2, 6), c = int(1, 9), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(1, 5, 'rule', 'Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(m, ys[0], 'first'), WR(c, m, 'swap')]);
+      },
+      ruleMc: function () {
+        return until(function () {
+          var m = int(2, 6), c = int(2, 9), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+          if (c === m || ys[0] === c || m === ys[0]) return null;
+          var opts = ruleOptions([m, c], [[m, ys[0], 'first'], [c, m, 'swap'], [m, -c, 'sign']]);
+          var ci = opts.map(function (o) { return o.tag === null; }).indexOf(true);
+          return mk(1, 6, 'rule', 'mc', { ask: 'Which rule fits the table?', table: tbl(xs, ys), options: opts, correctIndex: ci, answer: ci + 1, formula: ruleText(m, c), m: m, c: c, worked: ruleLines(xs, ys) });
+        });
+      },
+      use: function () {
+        var m = int(2, 7), c = int(2, 9), k = int(6, 12);
+        return mk(1, 7, 'use', 'num', { ask: 'The rule is ' + ruleText(m, c) + '. Find y when x = ' + k + '.', rule: ruleText(m, c), answer: m * k + c, m: m, c: c, k: k,
+          worked: [m + ' × ' + k + ' = ' + (m * k), (m * k) + ' + ' + c + ' = ' + (m * k + c)], method: 'Put x = ' + k + ' in: multiply by ' + m + ', then add ' + c + '.',
+          wrong: [W(m * k, 'skip', m + ' × ' + k), W(m * (k + c), 'order', m + ' × (' + k + ' + ' + c + ')')] });
+      },
+      useBack: function () {
+        var m = int(2, 7), c = int(2, 9), k = int(4, 12), Y = m * k + c, wr = [W(Y - c, 'skip', Y + ' − ' + c)];
+        if ((Y + c) % m === 0) wr.push(W((Y + c) / m, 'sign', '(' + Y + ' + ' + c + ') ÷ ' + m));
+        return mk(1, 8, 'use', 'num', { ask: 'The rule is ' + ruleText(m, c) + '. Find x when y = ' + Y + '.', rule: ruleText(m, c), answer: k, m: m, c: c, Y: Y,
+          worked: [Y + ' − ' + c + ' = ' + (Y - c), (Y - c) + ' ÷ ' + m + ' = ' + k], method: 'Undo the rule: take away ' + c + ', then divide by ' + m + '.', wrong: wr });
+      }
+    };
+
+    /* ---------------- LEVEL 2: find the rule (the number added is bigger, or taken away, or the table starts at 0) ---------------- */
+    var L2 = {
+      bigC: function () {
+        var m = int(3, 9), c = int(m + 1, 14), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        return ruleQ(2, 1, 'rule', 'Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(m, ys[0], 'first'), WR(c, m, 'swap')]);
+      },
+      minus: function () {
+        var m = int(4, 9), c = -int(1, m - 1), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(2, 2, 'rule', 'The number added is negative. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(m, ys[0], 'first'), WR(m, -c, 'sign')]);
+      },
+      fromZero: function () {
+        var m = int(2, 7), c = int(2, 9), xs = cols(0, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(2, 3, 'rule', 'This table starts at x = 0. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(m, ys[1], 'first'), WR(c, m, 'swap')]);
+      },
+      fixed: function () {
+        var s = story(), m = int(2, 6), c = int(5, 14), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        return mk(2, 4, 'zero', 'num', { story: s.intro, ask: 'What is the ' + s.fixed + '?', table: tbl(xs, ys, s.xl, s.yl), answer: c, m: m, c: c, sid: s.id,
+          worked: [N(ys[0]) + ' − ' + N(m) + ' = ' + N(c)], method: 'The ' + s.fixed + ' is what you pay for 0 ' + s.units + ': go back one step from 1 ' + s.unit + '.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(m, 'step', String(m)), W(ys[0] + m, 'forward', ys[0] + ' + ' + m)] });
+      },
+      storyRule: function () {
+        var s = story(), m = int(2, 6), c = int(4, 12), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(2, 5, 'rule', 'Let x be the number of ' + s.units + ' and y the cost. Find the rule. Write it as y = mx + c.', tbl(xs, ys, s.xl, s.yl), m, c,
+          [WR(m, ys[0], 'first'), WR(c, m, 'swap')], { story: s.intro, sid: s.id });
+      },
+      checkYes: function () {                                    // a correct rule: does it fit this pair? Yes
+        var m = int(2, 7), c = int(2, 9), xs = cols(1, 1, 3), ys = ysOf(xs, m, c), k = xs[2];
+        var opts = [{ text: 'Yes, it fits', tag: null }, { text: 'No, it does not fit', tag: 'sign', msg: MSG.sign }];
+        return mk(2, 6, 'check', 'mc', { ask: 'A student says the rule is ' + ruleText(m, c) + '. Does it fit the pair x = ' + k + ', y = ' + ys[2] + '?', table: tbl(xs, ys), options: opts, correctIndex: 0, answer: 1, m: m, c: c, k: k, fits: true,
+          worked: [m + ' × ' + k + ' = ' + (m * k), (m * k) + ' + ' + c + ' = ' + (m * k + c)], method: 'Put x = ' + k + ' in the rule. The table says y = ' + ys[2] + '. They match.', formula: 'Yes, it fits' });
+      },
+      useTable: function () {
+        return until(function () {
+          var m = int(2, 7), c = int(2, 12), xs = cols(1, 1, 3), ys = ysOf(xs, m, c), k = int(10, 15);
+          var wr = [W(m * k, 'skip', m + ' × ' + k), W(ys[2] + (k - 3), 'addone', ys[2] + ' + ' + (k - 3)), W(ys[0] * k, 'ratio', ys[0] + ' × ' + k)];
+          return mk(2, 7, 'use', 'num', { ask: 'Use the table to find y when x = ' + k + '.', table: tbl(xs, ys), answer: m * k + c, m: m, c: c, k: k,
+            worked: ruleLines(xs, ys).concat([m + ' × ' + k + ' = ' + (m * k), (m * k) + ' + ' + c + ' = ' + (m * k + c)]), method: 'Find the rule first, then put x = ' + k + ' in.', wrong: wr });
+        });
+      },
+      useBackTable: function () {
+        return until(function () {
+          var m = int(2, 7), c = int(2, 12), xs = cols(1, 1, 3), ys = ysOf(xs, m, c), k = int(8, 15), Y = m * k + c;
+          var wr = [W(Y - c, 'skip', Y + ' − ' + c)];
+          if ((Y + c) % m === 0) wr.push(W((Y + c) / m, 'sign', '(' + Y + ' + ' + c + ') ÷ ' + m));
+          return mk(2, 8, 'use', 'num', { ask: 'Use the table to find x when y = ' + Y + '.', table: tbl(xs, ys), answer: k, m: m, c: c, Y: Y,
+            worked: ruleLines(xs, ys).concat([Y + ' − ' + c + ' = ' + (Y - c), (Y - c) + ' ÷ ' + m + ' = ' + k]), method: 'Find the rule first, then undo it: take away ' + c + ', then divide by ' + m + '.', wrong: wr });
+        });
+      }
+    };
+
+    /* ---------------- LEVEL 3: bigger steps in x ---------------- */
+    var L3 = {
+      stepWords: function () {
+        var dx = int(2, 5), m = int(2, 8), dy = m * dx;
+        return mk(3, 1, 'step', 'num', { ask: 'x goes up by ' + dx + ' and y goes up by ' + dy + '. By how much does y go up when x goes up by 1?', answer: m, m: m, dx: dx, dy: dy,
+          worked: [dy + ' ÷ ' + dx + ' = ' + m], method: 'The multiplier is the change in y for ONE step of x: divide the change in y by the change in x.',
+          wrong: [W(dy, 'gap', String(dy)), W(dx, 'swap', String(dx))] });
+      },
+      stepTable: function () {
+        return until(function () {
+          var d = int(2, 3), m = int(2, 8), c = int(1, 9), x1 = int(2, 5), xs = cols(x1, d, 3), ys = ysOf(xs, m, c);
+          return mk(3, 2, 'step', 'num', { ask: 'What is the multiplier? How much does y go up when x goes up by 1?', table: tbl(xs, ys), answer: m, m: m, c: c,
+            worked: [N(ys[1]) + ' − ' + N(ys[0]) + ' = ' + N(m * d), N(xs[1]) + ' − ' + N(xs[0]) + ' = ' + N(d), N(m * d) + ' ÷ ' + N(d) + ' = ' + N(m)],
+            method: 'Divide the change in y by the change in x.', wrong: [W(m * d, 'gap', String(m * d)), W(ys[0], 'first', String(ys[0]))] });
+        });
+      },
+      zeroFar: function () {
+        var d = int(2, 3), m = int(2, 7), c = int(2, 9), xs = cols(2 * d, d, 3), ys = ysOf(xs, m, c), dy = m * d;
+        return mk(3, 3, 'zero', 'num', { ask: 'What is y when x = 0?', table: tbl(xs, ys), answer: c, m: m, c: c, d: d,
+          worked: [N(ys[0]) + ' − ' + N(dy) + ' = ' + N(ys[0] - dy), N(ys[0] - dy) + ' − ' + N(dy) + ' = ' + N(c)],
+          method: 'Go back one column at a time until x is 0. The table starts at x = ' + xs[0] + ', which is ' + 2 + ' columns from 0.',
+          wrong: [W(ys[0] - dy, 'onecol', ys[0] + ' − ' + dy), W(ys[0], 'first', String(ys[0])), W(ys[0] - m, 'stepback', ys[0] + ' − ' + m)] });
+      },
+      ruleMc: function () {
+        return until(function () {
+          var d = int(2, 3), m = int(2, 7), c = int(2, 9), x1 = int(2, 4), xs = cols(x1, d, 3), ys = ysOf(xs, m, c), dy = m * d;
+          var texts = [ruleText(m, c), ruleText(dy, c), ruleText(m, ys[0]), ruleText(c, m)];
+          if (texts.some(function (a, i) { return texts.indexOf(a) !== i; })) return null;
+          var opts = ruleOptions([m, c], [[dy, c, 'gap'], [m, ys[0], 'first'], [c, m, 'swap']]);
+          var ci = opts.map(function (o) { return o.tag === null; }).indexOf(true);
+          return mk(3, 4, 'rule', 'mc', { ask: 'Which rule fits the table?', table: tbl(xs, ys), options: opts, correctIndex: ci, answer: ci + 1, formula: ruleText(m, c), m: m, c: c, worked: ruleLines(xs, ys) });
+        });
+      },
+      rule2: function () {
+        var m = int(3, 8), c = int(1, 9), xs = cols(2, 2, 4), ys = ysOf(xs, m, c);
+        return ruleQ(3, 5, 'rule', 'x goes up by 2. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(2 * m, c, 'gap'), WR(m, ys[0], 'first')]);
+      },
+      rule3: function () {
+        var d = pick([3, 4, 5]), m = int(2, 6), c = int(1, 9), x1 = pick([3, 4, 5]), xs = cols(x1, d, 3), ys = ysOf(xs, m, c);
+        return ruleQ(3, 6, 'rule', 'x goes up by ' + d + ' and does not start at 1. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(m * d, c, 'gap'), WR(m, ys[0], 'first')]);
+      },
+      checkNo: function () {                                     // a student's rule from the first pair only: does it fit the SECOND pair? No
+        return until(function () {
+          var d = int(2, 3), m = int(2, 7), c = int(2, 9), x1 = int(2, 5), xs = cols(x1, d, 3), ys = ysOf(xs, m, c), s = ys[0] - xs[0];
+          if (s < 1) return null;
+          var opts = [{ text: 'Yes, it fits', tag: 'only', msg: MSG.only }, { text: 'No, it does not fit', tag: null }];
+          return mk(3, 7, 'check', 'mc', { ask: 'A student used only the first pair (x = ' + xs[0] + ', y = ' + ys[0] + ') and found the rule y = x + ' + s + '. Does the rule fit the second pair?', table: tbl(xs, ys), options: opts, correctIndex: 1, answer: 2, m: m, c: c, s: s, fits: false,
+            worked: [xs[1] + ' + ' + s + ' = ' + (xs[1] + s)], method: 'The rule gives y = ' + (xs[1] + s) + ' when x = ' + xs[1] + '. The table says y = ' + ys[1] + '. They do not match, so the rule is wrong.', formula: 'No, it does not fit' });
+        });
+      },
+      useTable: function () {
+        return until(function () {
+          var d = int(2, 3), m = int(2, 7), c = int(2, 12), x1 = int(2, 5), xs = cols(x1, d, 3), ys = ysOf(xs, m, c), k = int(18, 25);
+          var wr = [W(m * k, 'skip', m + ' × ' + k), W(ys[2] + (k - xs[2]), 'addone', ys[2] + ' + ' + (k - xs[2]))];
+          return mk(3, 8, 'use', 'num', { ask: 'Use the table to find y when x = ' + k + '.', table: tbl(xs, ys), answer: m * k + c, m: m, c: c, k: k,
+            worked: ruleLines(xs, ys).concat([m + ' × ' + k + ' = ' + (m * k), (m * k) + ' + ' + c + ' = ' + (m * k + c)]), method: 'Find the rule first, then put x = ' + k + ' in.', wrong: wr });
+        });
+      }
+    };
+
+    /* ---------------- LEVEL 4: real life ---------------- */
+    var L4 = {
+      rule1: function () {
+        var s = story(), m = int(2, 6), c = int(m + 1, 15), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(4, 1, 'rule', 'Let x be the number of ' + s.units + ' and y the cost in pounds. Find the rule. Write it as y = mx + c.', tbl(xs, ys, s.xl, s.yl), m, c,
+          [WR(m, ys[0], 'first'), WR(c, m, 'swap')], { story: s.intro, sid: s.id });
+      },
+      rule2: function () {
+        var s = story(), m = int(2, 5), c = int(4, 14), xs = cols(2, 2, 3), ys = ysOf(xs, m, c);
+        return ruleQ(4, 2, 'rule', 'Let x be the number of ' + s.units + ' and y the cost in pounds. Find the rule. Write it as y = mx + c.', tbl(xs, ys, s.xl, s.yl), m, c,
+          [WR(2 * m, c, 'gap'), WR(m, ys[0], 'first')], { story: s.intro, sid: s.id });
+      },
+      cost: function () {
+        return until(function () {
+          var s = story(), m = int(2, 6), c = int(5, 14), xs = cols(1, 1, 3), ys = ysOf(xs, m, c), k = int(12, 20);
+          var wr = [W(m * k, 'skip', m + ' × ' + k), W(ys[2] + (k - 3), 'addone', ys[2] + ' + ' + (k - 3))];
+          return mk(4, 3, 'use', 'num', { story: s.intro, ask: 'How much does it cost for ' + k + ' ' + s.units + '? Give your answer in pounds.', table: tbl(xs, ys, s.xl, s.yl), answer: m * k + c, m: m, c: c, k: k, sid: s.id,
+            worked: ruleLines(xs, ys).concat([m + ' × ' + k + ' = ' + (m * k), (m * k) + ' + ' + c + ' = ' + (m * k + c)]), method: 'Find the rule, then put ' + k + ' in for x.', wrong: wr });
+        });
+      },
+      compare: function () {
+        return until(function () {
+          var s = story(), m1 = int(2, 4), c1 = int(10, 18), m2 = m1 + int(1, 3), c2 = c1 - int(4, 8), k = int(12, 20);
+          if (c2 < 2) return null;
+          var A = m1 * k + c1, B = m2 * k + c2, diff = Math.abs(A - B);
+          if (diff < 3) return null;
+          var xs = cols(1, 1, 3);
+          return mk(4, 4, 'use', 'num', { story: 'Two companies charge for ' + s.units + '. Each charges a fixed fee and then a price for each ' + s.unit + '.', ask: 'How much cheaper is the cheaper company for ' + k + ' ' + s.units + '? Give your answer in pounds.',
+            tableA: tbl(xs, ysOf(xs, m1, c1), s.xl, 'Company A (£)'), tableB: tbl(xs, ysOf(xs, m2, c2), s.xl, 'Company B (£)'), answer: diff, m1: m1, c1: c1, m2: m2, c2: c2, k: k, sid: s.id,
+            worked: [m1 + ' × ' + k + ' + ' + c1 + ' = ' + A, m2 + ' × ' + k + ' + ' + c2 + ' = ' + B, (A > B ? A + ' − ' + B : B + ' − ' + A) + ' = ' + diff],
+            method: 'Find each company’s rule, work out the cost for ' + k + ' ' + s.units + ' for each, then take the smaller from the larger.',
+            wrong: [W((m2 - m1) * k, 'skip', m2 + ' × ' + k + ' − ' + m1 + ' × ' + k), W(c1 - c2, 'skip', c1 + ' − ' + c2)] });
+        });
+      },
+      fixed2: function () {
+        var s = story(), m = int(2, 6), c = int(4, 14), xs = cols(2, 2, 3), ys = ysOf(xs, m, c), dy = 2 * m;
+        return mk(4, 5, 'zero', 'num', { story: s.intro, ask: 'What is the ' + s.fixed + '? Give your answer in pounds.', table: tbl(xs, ys, s.xl, s.yl), answer: c, m: m, c: c, sid: s.id,
+          worked: [N(ys[0]) + ' − ' + N(dy) + ' = ' + N(c)], method: 'The table goes up by ' + dy + ' each column, and the first column is 2 ' + s.units + ', so one column back is 0 ' + s.units + ': that is the ' + s.fixed + '.',
+          wrong: [W(ys[0], 'first', String(ys[0])), W(ys[0] - m, 'stepback', ys[0] + ' − ' + m)] });
+      },
+      match: function () {
+        return until(function () {
+          var s = story(), m = int(2, 6), c = int(5, 14), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+          if (m === c || ys[0] === c || ys[0] === m) return null;
+          var say = function (a, b, word) { return '£' + a + ' for each ' + s.unit + ' and a £' + b + ' ' + word; };
+          var opts = shuffle([
+            { text: say(m, c, s.fixed), tag: null },
+            { text: say(c, m, s.fixed), tag: 'swap', msg: MSG.swap },
+            { text: say(m, ys[0], s.fixed), tag: 'first', msg: MSG.first },
+            { text: '£' + m + ' for each ' + s.unit + ' and a £' + c + ' discount', tag: 'sign', msg: MSG.sign }
+          ]);
+          var ci = opts.map(function (o) { return o.tag === null; }).indexOf(true);
+          return mk(4, 6, 'rule', 'mc', { story: s.intro, ask: 'Which description matches the table?', table: tbl(xs, ys, s.xl, s.yl), options: opts, correctIndex: ci, answer: ci + 1, formula: opts[ci].text, m: m, c: c, sid: s.id, worked: ruleLines(xs, ys) });
+        });
+      },
+      budget: function () {
+        return until(function () {
+          var s = story(), m = int(2, 6), c = int(5, 14), xs = cols(1, 1, 3), ys = ysOf(xs, m, c), k = int(9, 18), B = m * k + c;
+          var wr = [W(B - c, 'skip', B + ' − ' + c)];
+          if ((B + c) % m === 0) wr.push(W((B + c) / m, 'sign', '(' + B + ' + ' + c + ') ÷ ' + m));
+          return mk(4, 7, 'use', 'num', { story: s.intro, ask: 'Sam has £' + B + ' to ' + s.buy + '. How many ' + s.units + ' can Sam pay for?', table: tbl(xs, ys, s.xl, s.yl), answer: k, m: m, c: c, B: B, sid: s.id,
+            worked: ruleLines(xs, ys).concat([B + ' − ' + c + ' = ' + (B - c), (B - c) + ' ÷ ' + m + ' = ' + k]), method: 'Find the rule, then undo it: take away the ' + s.fixed + ', then divide by the price for each ' + s.unit + '.', wrong: wr });
+        });
+      },
+      checkSlip: function () {
+        var s = story(), m = int(2, 6), c = int(4, 12), xs = cols(1, 1, 3), ys = ysOf(xs, m, c);
+        var opts = [{ text: 'Yes, the student is right', tag: 'first', msg: MSG.first }, { text: 'No, the student is wrong', tag: null }];
+        return mk(4, 8, 'check', 'mc', { story: s.intro, ask: 'A student says: "The ' + s.fixed + ' is £' + ys[0] + ', because that is the cost for 1 ' + s.unit + '." Is the student right?', table: tbl(xs, ys, s.xl, s.yl), options: opts, correctIndex: 1, answer: 2, m: m, c: c, sid: s.id, fits: false,
+          worked: [N(ys[0]) + ' − ' + N(m) + ' = ' + N(c)], method: 'The ' + s.fixed + ' is the cost for 0 ' + s.units + ', not for 1. One ' + s.unit + ' costs the ' + s.fixed + ' and one price for each ' + s.unit + ' together.', formula: 'No, the student is wrong' });
+      }
+    };
+
+    /* ---------------- LEVEL 5: meant to be too hard ---------------- */
+    var L5 = {
+      falling: function () {
+        var m = -int(2, 6), c = int(15, 30), xs = cols(1, 1, 4), ys = ysOf(xs, m, c);
+        return ruleQ(5, 1, 'puzzle', 'y goes down as x goes up. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+          [WR(-m, c, 'fall'), WR(m, ys[0], 'first')]);
+      },
+      negX: function () {
+        return until(function () {
+          var m = int(2, 5), c = pick([-1, 1]) * int(2, 8), xs = cols(-5, 2, 4), ys = ysOf(xs, m, c);
+          if (ys.some(function (y) { return y === 0; })) return null;
+          return ruleQ(5, 2, 'puzzle', 'The table has negative numbers in it. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+            [WR(2 * m, c, 'gap'), WR(m, ys[0], 'first')]);
+        });
+      },
+      missingY: function () {
+        return until(function () {
+          var m = int(2, 7), c = int(2, 12), xs = shuffle([2, 3, 5, 6, 8, 9, 11]).slice(0, 4), ys = ysOf(xs, m, c), q = int(0, 3);
+          var known = [0, 1, 2, 3].filter(function (i) { return i !== q; });
+          var hide = { y: q }, show = ys.map(function (y, i) { return i === q ? null : y; });
+          var kx = known.map(function (i) { return xs[i]; }), ky = known.map(function (i) { return ys[i]; });
+                    var order = known.slice().sort(function (a, b) { return xs[a] - xs[b]; });
+          kx = order.map(function (i) { return xs[i]; }); ky = order.map(function (i) { return ys[i]; });
+          var wr = [W(m * xs[q], 'skip', m + ' × ' + xs[q])];
+          var nearest = order.reduce(function (b, i) { return Math.abs(xs[i] - xs[q]) < Math.abs(xs[b] - xs[q]) ? i : b; }, order[0]);
+          wr.push(W(ys[nearest] + (xs[q] - xs[nearest]), 'addone', ys[nearest] + (xs[q] - xs[nearest] < 0 ? ' − ' + (xs[nearest] - xs[q]) : ' + ' + (xs[q] - xs[nearest]))));
+          var t = tbl(xs, show, 'x', 'y', hide);
+          return mk(5, 3, 'puzzle', 'num', { ask: 'The x values are not in order and one y is missing. Find the missing y.', table: t, answer: ys[q], m: m, c: c, q: q,
+            worked: ruleLines([kx[0], kx[1]], [ky[0], ky[1]]).concat([m + ' × ' + xs[q] + ' = ' + (m * xs[q]), (m * xs[q]) + ' + ' + c + ' = ' + ys[q]]),
+            method: 'Use two known pairs to find the rule, then put the missing x in.', wrong: wr });
+        });
+      },
+      missingX: function () {
+        return until(function () {
+          var m = int(2, 7), c = -int(1, 9), xs = shuffle([2, 3, 4, 5, 6, 7, 8, 9]).slice(0, 4), ys = ysOf(xs, m, c), q = 3;
+          if (ys.some(function (y) { return y <= 0; })) return null;
+          var t = tbl(xs, ys, 'x', 'y', { x: q });
+          var Y = ys[q], wr = [W(Y - c, 'skip', Y + ' − ' + P(c))];
+          if ((Y + c) % m === 0) wr.push(W((Y + c) / m, 'sign', '(' + Y + ' + ' + P(c) + ') ÷ ' + m));
+          return mk(5, 4, 'puzzle', 'num', { ask: 'The rule has a negative number added. Find the missing x.', table: t, answer: xs[q], m: m, c: c, Y: Y, q: q,
+            worked: ruleLines([xs[0], xs[1]], [ys[0], ys[1]]).concat([Y + ' − ' + P(c) + ' = ' + (Y - c), (Y - c) + ' ÷ ' + m + ' = ' + xs[q]]),
+            method: 'Find the rule from two known pairs, then undo it: the number added is negative, so taking it away makes y bigger.', wrong: wr });
+        });
+      },
+      meet: function () {
+        return until(function () {
+          var k = int(2, 9), a = int(4, 9), cc = int(1, a - 2), b = int(1, 9), d = b + (a - cc) * k;
+          if (d > 60) return null;
+          // y = a x + b and y = cc x + d' meet at x = k:  a k + b = cc k + d'   ->   d' = b + (a - cc) k
+          var Y = a * k + b;
+          return mk(5, 5, 'puzzle', 'num', { ask: 'Find the value of x where the two rules give the same y.', rules: [ruleText(a, b), ruleText(cc, d)], answer: k, a: a, b: b, c2: cc, d: d, Y: Y,
+            worked: [d + ' − ' + b + ' = ' + (d - b), a + ' − ' + cc + ' = ' + (a - cc), (d - b) + ' ÷ ' + (a - cc) + ' = ' + k, a + ' × ' + k + ' + ' + b + ' = ' + Y, cc + ' × ' + k + ' + ' + d + ' = ' + (cc * k + d)],
+            method: 'The rules give the same y when ' + a + 'x + ' + b + ' = ' + cc + 'x + ' + d + '. Collect the x terms on one side and the numbers on the other.',
+            wrong: [W(Y, 'output', String(Y)), W(d - b, 'skip', d + ' − ' + b)] });
+        });
+      },
+      bracket: function () {
+        return until(function () {
+          var m = int(2, 6), k = pick([-1, 1]) * int(2, 7), xs = cols(1, 1, 3), c = m * k, ys = ysOf(xs, m, c);
+          return mk(5, 6, 'puzzle', 'bracket', { ask: 'Write the rule as y = m(x + k): a number times a bracket.', table: tbl(xs, ys), answer: { m: m, c: k }, formula: bracketText(m, k), m: m, c: c, k: k,
+            worked: ruleLines(xs, ys).slice(0, -1).concat([ruleText(m, c), N(c) + ' ÷ ' + P(m) + ' = ' + N(k), bracketText(m, k)]),
+            method: 'Find y = ' + m + 'x ' + (c < 0 ? '− ' + (-c) : '+ ' + c) + ', then take the ' + m + ' out of both terms: ' + c + ' ÷ ' + m + ' = ' + k + '.',
+            wrong: [BWR(m, c, 'expanded'), BWR(c, m, 'swap')] });
+        });
+      },
+      hardA: function () {
+        return until(function () {
+          var m = -int(3, 6), c = int(5, 25), xs = cols(-4, 3, 4), ys = ysOf(xs, m, c);
+          return ruleQ(5, 7, 'puzzle', 'x goes up by 3, starts below 0, and y goes down. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+            [WR(3 * m, c, 'gap'), WR(-m, c, 'fall')], { pool: 'a' });
+        });
+      },
+      hardB: function () {
+        return until(function () {
+          var m = int(2, 6), c = pick([-1, 1]) * int(3, 12), xs = [1, 4, 5, 9], ys = ysOf(xs, m, c);
+          return ruleQ(5, 7, 'puzzle', 'The x values go up by different amounts. Find the rule. Write it as y = mx + c.', tbl(xs, ys), m, c,
+            [WR(m, ys[0], 'first'), WR(ys[1] - ys[0], c, 'gap')], { pool: 'b' });
+        });
+      },
+      twoPoints: function () {
+        return until(function () {
+          var m = -int(2, 5), c = int(2, 12), x1 = -int(2, 5), x2 = int(3, 7), y1 = m * x1 + c, y2 = m * x2 + c;
+          var t = tbl([x1, x2], [y1, y2]);
+          return ruleQ(5, 8, 'puzzle', 'Only two pairs are known, and they are far apart. Find the rule. Write it as y = mx + c.', t, m, c,
+            [WR(-m, c, 'fall'), WR(m, y1, 'first')], { pool: 'a' });
+        });
+      },
+      meetNeg: function () {
+        return until(function () {
+          var k = int(2, 8), a = -int(2, 5), cc = int(1, 6), b = int(15, 40), d = b + (a - cc) * k;
+          // y = a x + b (falling) and y = cc x + d meet at x = k:  d = b + (a - cc) k   (d is negative here, a < 0)
+          if (d >= 0 || d < -30) return null;
+          var Y = a * k + b;
+          return mk(5, 8, 'puzzle', 'num', { ask: 'Find the value of x where the two rules give the same y.', rules: [ruleText(a, b), ruleText(cc, d)], answer: k, a: a, b: b, c2: cc, d: d, Y: Y, pool: 'b',
+            worked: [N(d) + ' − ' + b + ' = ' + N(d - b), N(a) + ' − ' + cc + ' = ' + N(a - cc), N(d - b) + ' ÷ ' + P(a - cc) + ' = ' + k, N(a) + ' × ' + k + ' + ' + b + ' = ' + Y, cc + ' × ' + k + ' + ' + P(d) + ' = ' + (cc * k + d)],
+            method: 'The rules give the same y when ' + N(a) + 'x + ' + b + ' = ' + cc + 'x ' + (d < 0 ? '− ' + (-d) : '+ ' + d) + '. Collect the x terms on one side and the numbers on the other.',
+            wrong: [W(Y, 'output', String(Y)), W(-(d - b), 'sign', '−(' + N(d) + ' − ' + b + ')')].filter(function (w) { return true; }) });
+        });
+      }
+    };
+
+    var plan = [
+      [L1.step4, L1.step3, L1.zero, L1.zeroStory, L1.rule, L1.ruleMc, L1.use, L1.useBack],
+      [L2.bigC, L2.minus, L2.fromZero, L2.fixed, L2.storyRule, L2.checkYes, L2.useTable, L2.useBackTable],
+      [L3.stepWords, L3.stepTable, L3.zeroFar, L3.ruleMc, L3.rule2, L3.rule3, L3.checkNo, L3.useTable],
+      [L4.rule1, L4.rule2, L4.cost, L4.compare, L4.fixed2, L4.match, L4.budget, L4.checkSlip],
+      [L5.falling, L5.negX, L5.missingY, L5.missingX, L5.meet, L5.bracket, pick([L5.hardA, L5.hardB]), null]
+    ];
+    plan[4][7] = pick([L5.twoPoints, L5.meetNeg]);
+    // the pool question and the last one are different skills' hard forms; keep them from clashing in kind
+    var out = [];
+    plan.forEach(function (lv, li) {
+      lv.forEach(function (make, qi) {
+        var q = make();
+        q.level = li + 1; q.n = qi + 1; q.levelName = LEVEL_NAMES[li];
+        var seen = {}, wrong = {};
+        (q.wrong || []).forEach(function (w) {
+          if (!w) return;
+          if (q.kind === 'rule' || q.kind === 'bracket') {
+            var key = w.m + '|' + w.c, ans = q.answer.m + '|' + q.answer.c;
+            if (key !== ans && !seen[key] && Math.abs(w.m) <= 999 && Math.abs(w.c) <= 999) { seen[key] = 1; wrong[key] = { tag: w.tag, how: w.how, msg: w.msg }; }
+          } else if (w.value !== null && w.value === Math.round(w.value) && w.value !== q.answer && Math.abs(w.value) <= 99999 && !seen[w.value]) {
+            seen[w.value] = 1; wrong[String(w.value)] = { tag: w.tag, how: w.how, msg: w.msg };
+          }
+        });
+        q.wrong = wrong;
+        out.push(q);
+      });
+    });
+    return out;
+  }
+
+  /* ================================================================== *
+   * THE GAME
+   * ================================================================== */
+  var CATS = { step: 'Reading the steps', zero: 'The number added (y at x = 0)', rule: 'Finding the rule', use: 'Using the rule', check: 'Checking a rule', puzzle: 'Past the lesson' };
+  var HABIT = {
+    first: 'You used the first y as the number added. The number added is the y you get when x is 0: go back to x = 0.',
+    swap: 'You swapped the multiplier and the number added. The multiplier goes with x.',
+    gap: 'You used the gap in y as the multiplier. Divide by the gap in x: how much does y go up for ONE step of x?',
+    sign: 'You got a sign wrong. Check whether the number is added or taken away.',
+    skip: 'You missed a part of the rule. Use the multiplier and the number added.',
+    forward: 'You added the step when you went back. Going back means taking it away.',
+    step: 'You gave the step in y instead of the number added.',
+    stepback: 'You went back one step of 1, but x = 0 is further back than that.',
+    onecol: 'You went back one column, but the table is further from x = 0 than that.',
+    addone: 'You added 1 to y for each step of x. y goes up by the multiplier.',
+    ratio: 'You scaled the first pair up. The number added means y is not in proportion to x.',
+    order: 'You multiplied the number added. Multiply first, then add it.',
+    output: 'You gave y when the question asked for x.',
+    expanded: 'You wrote the rule without brackets. Take the multiplier out to put it in a bracket.',
+    fall: 'When y goes down as x goes up, the multiplier is negative.',
+    only: 'You trusted a rule found from one pair. Check it with another pair.'
+  };
+  var GENERIC = 'Write out each step and check it with another pair from the table.';
+
+  var app = document.getElementById('app');
+  var state, typed, locked, levelStart, qStart;
+
+  function fromHash() { var h = (location.hash || '').replace('#', '').toUpperCase(); return validCode(h) ? h : null; }
+  function fresh(code) { var c = code || newCode(); state = { code: c, qs: generate(c), r: 0, i: 0, results: [], screen: 'start' }; resetTyped(); locked = false; }
+  function resetTyped() { typed = { m: '', c: '', sm: 1, sc: 1, active: 'm', n: '' }; }
+  function idx() { return state.r * 8 + state.i; }
+  function q() { return state.qs[idx()]; }
+
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+  function clear() { app.innerHTML = ''; }
+  var val = function (x) { return x === null || x === undefined ? '?' : N(x); };
+
+  function tableHtml(t) {
+    var h = '<table class="tbl"><tr><th>' + t.xl + '</th>' + t.xs.map(function (x, i) { return t.hide && t.hide.x === i ? '<td class="q">?</td>' : '<td>' + N(x) + '</td>'; }).join('') + '</tr>' +
+      '<tr><th>' + t.yl + '</th>' + t.ys.map(function (y, i) { return (t.hide && t.hide.y === i) || y === null ? '<td class="q">?</td>' : '<td>' + N(y) + '</td>'; }).join('') + '</tr></table>';
+    return h;
+  }
+  function tableText(t) {
+    return t.xl + ': ' + t.xs.map(function (x, i) { return t.hide && t.hide.x === i ? '?' : N(x); }).join(', ') + ' | ' + t.yl + ': ' + t.ys.map(function (y, i) { return (t.hide && t.hide.y === i) || y === null ? '?' : N(y); }).join(', ');
+  }
+  // What is on the screen for a question (also read by the test).
+  function display(Q) {
+    var parts = [];
+    if (Q.story) parts.push(Q.story);
+    parts.push(Q.ask);
+    if (Q.table) parts.push('TABLE ' + tableText(Q.table));
+    if (Q.tableA) parts.push('A ' + tableText(Q.tableA), 'B ' + tableText(Q.tableB));
+    if (Q.rules) parts.push('RULES ' + Q.rules.join(' | '));
+    if (Q.options) parts.push('OPTIONS ' + Q.options.map(function (o) { return o.text; }).join(' | '));
+    return parts.join(' || ');
+  }
+  function cardHtml(Q) {
+    var h = '';
+    if (Q.story) h += '<p class="story">' + Q.story + '</p>';
+    h += '<p class="ask">' + Q.ask + '</p>';
+    if (Q.table) h += tableHtml(Q.table);
+    if (Q.tableA) h += tableHtml(Q.tableA) + tableHtml(Q.tableB);
+    if (Q.rules) h += '<div class="rules">' + Q.rules.map(function (r) { return '<div class="rulebox">' + r + '</div>'; }).join('') + '</div>';
+    return h;
+  }
+  function shortText(Q) { return (Q.story ? Q.story + ' ' : '') + Q.ask + (Q.table ? ' ' + tableText(Q.table) + '.' : '') + (Q.tableA ? ' ' + tableText(Q.tableA) + '. ' + tableText(Q.tableB) + '.' : '') + (Q.rules ? ' ' + Q.rules.join(' and ') + '.' : ''); }
+
+  /* ---------- screens ---------- */
+  function start() {
+    clear(); state.screen = 'start';
+    var card = el('div', 'card');
+    card.appendChild(el('h1', null, 'Find The Rule'));
+    card.appendChild(el('p', 'lead', 'Five levels of eight questions, all about one thing: finding the rule y = mx + c from a table. Each level is harder than the one before.'));
+    card.appendChild(el('p', 'lead', 'Level 5 is meant to be too hard. Do what you can and read the working: that is where you learn.'));
+    card.appendChild(el('p', 'lead', 'A wrong answer tells you what the mistake probably was. There is no timer on the questions. You can stop and see your results at any time.'));
+    card.appendChild(el('p', 'small', 'Your questions are different from everyone else’s. Game code <span class="code" id="code">' + state.code + '</span>'));
+    app.appendChild(card);
+    var b = el('button', 'btn', 'Start level 1'); b.id = 'start'; b.onclick = beginLevel; app.appendChild(b);
+    b.focus();
+  }
+  function beginLevel() { state.i = 0; levelStart = Date.now(); question(); }
+
+  function header() {
+    var h = el('header');
+    h.appendChild(el('span', 'pill' + (state.r === 4 ? ' hard' : ''), 'Level ' + (state.r + 1) + ' · ' + LEVEL_NAMES[state.r]));
+    var d = el('div', 'dots'); d.setAttribute('aria-label', 'Question ' + (state.i + 1) + ' of 8');
+    for (var k = 0; k < 8; k++) {
+      var res = state.results[state.r * 8 + k];
+      d.appendChild(el('span', 'dot' + (res ? (res.ok ? ' right' : ' wrong') : (k === state.i ? ' now' : ''))));
+    }
+    h.appendChild(d); return h;
+  }
+
+  var LETTERS = ['A', 'B', 'C', 'D'];
+  function isRule(Q) { return Q.kind === 'rule' || Q.kind === 'bracket'; }
+  function question() {
+    clear(); state.screen = 'question'; resetTyped(); locked = false; qStart = Date.now();
+    var Q = q();
+    app.appendChild(header());
+    var card = el('div', 'card'); card.id = 'qcard'; card.innerHTML = cardHtml(Q);
+    card.setAttribute('data-display', display(Q));
+    app.appendChild(card);
+    if (Q.kind === 'mc') {
+      var opts = el('div', 'opts'); opts.id = 'opts';
+      Q.options.forEach(function (o, k) {
+        var b = el('button', 'opt' + (o.text.length > 34 ? ' long' : ''), '<b>' + LETTERS[k] + '</b><span>' + o.text + '</span>');
+        b.type = 'button'; b.dataset.o = String(k + 1); b.setAttribute('aria-label', 'Option ' + LETTERS[k] + ': ' + o.text);
+        b.onclick = function () { pressOpt(k); }; opts.appendChild(b);
+      });
+      app.appendChild(opts);
+    } else if (isRule(Q)) {
+      var ans = el('div', 'ruleans'); ans.id = 'answer'; ans.setAttribute('role', 'group'); ans.setAttribute('aria-label', 'Your rule');
+      app.appendChild(ans); paintRule();
+    } else {
+      var an = el('div', 'empty'); an.id = 'answer'; an.setAttribute('role', 'status'); an.textContent = 'Type your answer'; app.appendChild(an);
+    }
+    var fb = el('div', 'hide'); fb.id = 'feedback'; app.appendChild(fb);
+    if (Q.kind !== 'mc') {
+      var pad = el('div', 'pad'); pad.id = 'pad';
+      ['1','2','3','4','5','6','7','8','9','neg','0','back','go'].forEach(function (k) {
+        var b = el('button', 'key' + (k === 'back' || k === 'neg' ? ' fn' : k === 'go' ? ' go' : ''), k === 'back' ? '⌫' : k === 'neg' ? '−' : k === 'go' ? (isRule(Q) ? 'Next' : 'Check') : k);
+        b.type = 'button'; b.dataset.k = k;
+        if (k === 'back') b.setAttribute('aria-label', 'Delete'); if (k === 'neg') b.setAttribute('aria-label', 'Minus');
+        b.onclick = function () { press(k); };
+        pad.appendChild(b);
+      });
+      app.appendChild(pad);
+    } else {
+      var go = el('button', 'btn hide', 'Next'); go.id = 'nextbtn'; go.type = 'button'; go.onclick = next; app.appendChild(go);
+    }
+    var stop = el('button', 'btn ghost small', 'Stop and see my results'); stop.id = 'stop'; stop.type = 'button'; stop.style.marginTop = '14px';
+    stop.onclick = final; app.appendChild(stop);
+  }
+
+  /* the rule widget: y = [m] x + [c], or y = [m] ( x + [k] ). The sign of the second number sits in the connector. */
+  function slotText(v, s, first) { return (s < 0 && (first || v !== '') ? '−' : '') + v; }
+  function paintRule() {
+    var a = document.getElementById('answer'); if (!a) return;
+    var Q = q(), br = Q.kind === 'bracket';
+    var mS = (typed.sm < 0 ? '−' : '') + typed.m, cS = typed.c;
+    var conn = typed.sc < 0 ? '−' : '+';
+    a.innerHTML = 'y = <span class="slot' + (typed.active === 'm' ? ' on' : '') + '" id="slot-m" tabindex="0" role="button" aria-label="Multiplier">' + (mS || '&nbsp;') + '</span>' +
+      (br ? ' ( x ' : ' x ') + '<span class="conn" id="conn">' + conn + '</span> ' +
+      '<span class="slot' + (typed.active === 'c' ? ' on' : '') + '" id="slot-c" tabindex="0" role="button" aria-label="' + (br ? 'Number in the bracket' : 'Number added') + '">' + (cS || '&nbsp;') + '</span>' + (br ? ' )' : '');
+    document.getElementById('slot-m').onclick = function () { if (!locked) { typed.active = 'm'; paintRule(); setGo(); } };
+    document.getElementById('slot-c').onclick = function () { if (!locked) { typed.active = 'c'; paintRule(); setGo(); } };
+  }
+  function setGo() { var g = document.querySelector('.key.go'); if (g && !locked) g.textContent = typed.active === 'm' ? 'Next' : 'Check'; }
+  function paintAnswer() {
+    var a = document.getElementById('answer'); if (!a) return;
+    a.className = typed.n ? '' : 'empty'; a.textContent = typed.n ? typed.n.replace('-', '−') : 'Type your answer';
+  }
+  function press(k) {
+    if (state.screen !== 'question') return;
+    var Q = q();
+    if (locked) { if (k === 'go') next(); return; }
+    if (isRule(Q)) {
+      var f = typed.active;
+      if (k === 'back') { if (typed[f] === '' && f === 'c') { typed.active = 'm'; } else typed[f] = typed[f].slice(0, -1); }
+      else if (k === 'neg') { if (f === 'm') typed.sm = -typed.sm; else typed.sc = -typed.sc; }
+      else if (k === 'go') {
+        if (f === 'm') { if (typed.m !== '') typed.active = 'c'; }
+        else if (typed.m !== '' && typed.c !== '') { check({ m: typed.sm * parseInt(typed.m, 10), c: typed.sc * parseInt(typed.c, 10) }, null); return; }
+      }
+      else if (typed[f].length < 3) typed[f] += k;
+      paintRule(); setGo(); return;
+    }
+    if (k === 'back') typed.n = typed.n.slice(0, -1);
+    else if (k === 'neg') { if (typed.n === '') typed.n = '-'; else if (typed.n === '-') typed.n = ''; }
+    else if (k === 'go') { if (typed.n && typed.n !== '-') check(parseInt(typed.n, 10), null); }
+    else if (typed.n.replace('-', '').length < 5) typed.n += k;
+    paintAnswer();
+  }
+  function pressOpt(k) { if (state.screen !== 'question') return; if (locked) return; check(k + 1, k); }
+
+  function feedbackHtml(Q, head, msg) {
+    var work = Q.worked.map(function (l) { return '<div>' + l.replace(/^-/, '−') + '</div>'; }).join('');
+    var how = isRule(Q) || Q.kind === 'num' && Q.table ? 'Work it out like this:' : 'Check it:';
+    return '<div class="head">' + head + '</div>' + (msg ? '<div class="msg">' + msg + '</div>' : '') +
+      (Q.method ? '<p class="how">' + Q.method + '</p>' : '') + '<p class="how">' + how + '</p><div class="work">' + work + '</div>';
+  }
+  function writtenOf(Q, given, picked) {
+    if (Q.kind === 'mc') return Q.options[picked].text;
+    if (Q.kind === 'bracket') return bracketText(given.m, given.c);
+    if (Q.kind === 'rule') return ruleText(given.m, given.c);
+    return N(given);
+  }
+  function rightOf(Q) {
+    if (Q.kind === 'mc') return Q.formula;
+    if (Q.kind === 'bracket') return Q.formula;
+    if (Q.kind === 'rule') return Q.formula;
+    return N(Q.answer);
+  }
+  function check(given, picked) {
+    var Q = q(), ok, tag = null, msg = '', head;
+    if (Q.kind === 'mc') {
+      ok = picked === Q.correctIndex;
+      if (!ok) { tag = Q.options[picked].tag || 'other'; msg = Q.options[picked].msg || GENERIC; }
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + Q.formula + '.';
+      document.querySelectorAll('.opt').forEach(function (b, k) { b.disabled = true; if (k === Q.correctIndex) b.classList.add('correct'); else if (k === picked) b.classList.add('picked'); });
+    } else if (isRule(Q)) {
+      ok = given.m === Q.answer.m && given.c === Q.answer.c;
+      var w = ok ? null : Q.wrong[given.m + '|' + given.c];
+      tag = ok ? null : (w ? w.tag : 'other'); msg = ok ? '' : (w ? w.msg : GENERIC);
+      head = ok ? 'Correct. The rule is ' + Q.formula + '.' : 'Not quite. The rule is ' + Q.formula + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    } else {
+      ok = given === Q.answer;
+      var w2 = ok ? null : Q.wrong[String(given)];
+      tag = ok ? null : (w2 ? w2.tag : 'other'); msg = ok ? '' : (w2 ? w2.msg : GENERIC);
+      head = ok ? 'Correct.' : 'Not quite. The answer is ' + N(Q.answer) + '.';
+      document.getElementById('answer').style.opacity = '.6';
+    }
+    state.results[idx()] = { ok: ok, tag: tag, cat: Q.cat, secs: Math.max(1, Math.round((Date.now() - qStart) / 1000)), wrote: writtenOf(Q, given, picked) };
+    locked = true;
+    var fb = document.getElementById('feedback'); fb.className = ok ? 'right' : 'wrong'; fb.innerHTML = feedbackHtml(Q, head, msg);
+    var last = state.i === 7;
+    var label = last ? (state.r === 4 ? 'See results' : 'Finish level') : 'Next';
+    var goBtn = document.querySelector('.key.go') || document.getElementById('nextbtn');
+    goBtn.textContent = label; goBtn.classList.remove('hide');
+    document.querySelectorAll('.dot')[state.i].className = 'dot ' + (ok ? 'right' : 'wrong');
+    fb.scrollIntoView({ block: 'nearest' });
+  }
+  function next() { if (state.i < 7) { state.i++; question(); } else levelEnd(); }
+
+  /* ---------- the review: a drop-down for a level, with the time for each question, right or wrong,
+   *            and for a wrong answer what the student wrote and how to get to the right one ---------- */
+  function fmtTime(secs) { return secs < 60 ? secs + ' s' : Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s'; }
+  function reviewItem(r, k) {
+    var Q = state.qs[r * 8 + k], x = state.results[r * 8 + k], n = r * 8 + k + 1;
+    var h = '<div class="rq" data-q="' + n + '"><div class="top"><span class="qn">Question ' + n + '</span>';
+    if (!x) return h + '<span class="verdict na">Not reached</span></div><div class="txt">' + shortText(Q) + '</div></div>';
+    h += '<span class="meta">' + fmtTime(x.secs) + '</span></div><div class="txt">' + shortText(Q) + '</div>';
+    if (x.ok) return h + '<div class="verdict ok">Correct</div></div>';
+    h += '<div class="verdict no">Wrong</div><div class="wrote">You wrote <b>' + x.wrote + '</b>. The answer is <b>' + rightOf(Q) + '</b>.</div>';
+    h += (Q.method ? '<p class="how">' + Q.method + '</p>' : '') + '<p class="how">How to get there:</p><div class="work">' + Q.worked.map(function (l) { return '<div>' + l.replace(/^-/, '−') + '</div>'; }).join('') + '</div>';
+    return h + '</div>';
+  }
+  function reviewHtml(r, open) {
+    var mine = state.results.slice(r * 8, r * 8 + 8), done = mine.filter(function (x) { return x; }), right = done.filter(function (x) { return x.ok; }).length;
+    var secs = done.reduce(function (a, x) { return a + x.secs; }, 0);
+    var sum = 'Level ' + (r + 1) + ' · ' + LEVEL_NAMES[r] + ' · ' + right + ' of ' + (done.length === 8 ? 8 : done.length + ' answered') + (done.length ? ' · ' + fmtTime(secs) : '');
+    var body = ''; for (var k = 0; k < 8; k++) body += reviewItem(r, k);
+    return '<details class="review" data-round="' + (r + 1) + '"' + (open ? ' open' : '') + '><summary><span>' + sum + '</span></summary>' + body + '</details>';
+  }
+
+  function levelEnd() {
+    clear(); state.screen = 'round';
+    var mine = state.results.slice(state.r * 8, state.r * 8 + 8);
+    var right = mine.filter(function (x) { return x && x.ok; }).length;
+    var secs = Math.round((Date.now() - levelStart) / 1000);
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'Level ' + (state.r + 1) + ' done'));
+    card.appendChild(el('div', 'score', right + ' of 8'));
+    card.appendChild(el('p', 'small', 'Level time ' + Math.floor(secs / 60) + ' min ' + (secs % 60) + ' s. The time does not count for anything.'));
+    card.appendChild(el('p', 'small', 'Open the summary to see how long each question took, and how to get to the answer for any you missed.'));
+    card.insertAdjacentHTML('beforeend', reviewHtml(state.r, false));
+    app.appendChild(card);
+    var last = state.r === LEVELS - 1;
+    var b = el('button', 'btn', last ? 'See what to practise' : 'Start level ' + (state.r + 2)); b.id = 'roundnext';
+    b.onclick = function () { if (!last) { state.r++; beginLevel(); } else final(); };
+    app.appendChild(b); b.focus();
+  }
+
+  function final() {
+    clear(); state.screen = 'final';
+    var done = state.results.filter(function (x) { return x; }), total = done.filter(function (x) { return x.ok; }).length;
+    var card = el('div', 'card');
+    card.appendChild(el('h2', null, 'What to practise'));
+    card.appendChild(el('div', 'score', total + ' of 40'));
+    if (done.length < 40) card.appendChild(el('p', 'small', done.length + ' of 40 questions answered.'));
+    Object.keys(CATS).forEach(function (c) {
+      var all = state.qs.filter(function (Q) { return Q.cat === c; }).length;
+      var rs = done.filter(function (x) { return x.cat === c; }), ok = rs.filter(function (x) { return x.ok; }).length;
+      card.appendChild(el('div', 'row', '<span><b>' + CATS[c] + '</b><br><span class="small">' + ok + ' of ' + all + (rs.length < all ? ' (' + (all - rs.length) + ' not reached)' : '') + '</span></span>' +
+        '<span class="bar" aria-hidden="true"><i style="width:' + Math.round(100 * ok / all) + '%"></i></span>'));
+    });
+    app.appendChild(card);
+    var rev = el('div', 'card'); rev.appendChild(el('h2', null, 'Every question'));
+    rev.appendChild(el('p', 'small', 'Open a level to see the time for each question, what you wrote and how to get to each right answer.'));
+    for (var rr = 0; rr < LEVELS; rr++) rev.insertAdjacentHTML('beforeend', reviewHtml(rr, false));
+    app.appendChild(rev);
+    var tips = el('div', 'card'); tips.appendChild(el('h2', null, 'Your mistakes'));
+    var counts = {};
+    done.forEach(function (x) { if (!x.ok) counts[x.tag] = (counts[x.tag] || 0) + 1; });
+    var tags = Object.keys(counts);
+    if (!tags.length) tips.appendChild(el('p', 'lead', done.length ? 'No mistakes. Every answer you gave was right.' : 'You did not answer any questions.'));
+    else {
+      var ul = el('ul', 'tips');
+      tags.forEach(function (t) {
+        var n = counts[t], text = t === 'other' ? 'Some answers did not match a common mistake. Look back at the working shown after each one.' : (HABIT[t] || GENERIC);
+        ul.appendChild(el('li', null, '<b>' + n + (n === 1 ? ' time. ' : ' times. ') + '</b>' + text));
+      });
+      tips.appendChild(ul);
+    }
+    tips.appendChild(el('p', 'small', 'Game code <span class="code">' + state.code + '</span>. Your teacher can open this file with #' + state.code + ' on the end of the address to see the same questions.'));
+    app.appendChild(tips);
+    var b = el('button', 'btn ghost', 'Play again'); b.id = 'again'; b.onclick = function () { fresh(); start(); }; app.appendChild(b);
+    b.focus();
+  }
+
+  /* ---------- keyboard: digits, minus, Backspace, Enter, Tab or arrows between the two boxes; 1 to 4 for the multiple choice ---------- */
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.screen !== 'question') return;
+    var Q = q();
+    if (Q.kind === 'mc') {
+      if (/^[1-4]$/.test(e.key) && !locked && parseInt(e.key, 10) <= Q.options.length) { e.preventDefault(); pressOpt(parseInt(e.key, 10) - 1); }
+      else if (e.key === 'Enter' && locked) { e.preventDefault(); next(); }
+      return;
+    }
+    if (isRule(Q) && !locked && (e.key === 'Tab' || e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      e.preventDefault(); typed.active = (e.key === 'ArrowLeft' || (e.key === 'Tab' && e.shiftKey)) ? 'm' : (e.key === 'Tab' ? (typed.active === 'm' ? 'c' : 'm') : 'c'); paintRule(); setGo(); return;
+    }
+    if (/^[0-9]$/.test(e.key)) { e.preventDefault(); press(e.key); }
+    else if (e.key === '-') { e.preventDefault(); press('neg'); }
+    else if (e.key === 'Backspace') { e.preventDefault(); press('back'); }
+    else if (e.key === 'Enter') { e.preventDefault(); press('go'); }
+  });
+
+  window.__game = { generate: generate, newCode: newCode, questions: function () { return state.qs; }, code: function () { return state.code; }, display: display };   // read by the test script only
+  fresh(fromHash()); start();
+})();
+</script>
+</body>
+</html>
