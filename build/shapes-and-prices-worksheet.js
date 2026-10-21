@@ -62,7 +62,7 @@ function worksheet(answers) {
 
   /* ---- BRONZE ---- */
   k.push(tier('BRONZE'));
-  k.push(p('Add up a perimeter, write a price and an age, and find a rule from a table.', { size: 10, italic: true, color: C.soft, after: 60 }));
+  k.push(p('Add up a perimeter, write a price and an age, and find a rule from a table.', { size: 10, italic: true, color: C.soft, after: 60, keepNext: true }));
   k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
     `A triangle has sides ${sidesText(sh.bw.sides.slice(0, 2))} and ${sh.bw.sides[2]}. Add the sides: (${sh.bw.sides[0]}) + (${sh.bw.sides[1]}) + ${sh.bw.sides[2]}.`,
     `x terms: x + x + 2x = 4x. Numbers: 1 + 1 = 2. Perimeter = ${sh.bw.ans}.`,
@@ -86,7 +86,7 @@ function worksheet(answers) {
 
   /* ---- SILVER ---- */
   k.push(tier('SILVER'));
-  k.push(p('Bigger shapes, a bracket in a price, and a table that goes up in steps of 2.', { size: 10, italic: true, color: C.soft, after: 60 }));
+  k.push(p('Bigger shapes, a bracket in a price, and a table that goes up in steps of 2.', { size: 10, italic: true, color: C.soft, after: 60, keepNext: true }));
   k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
     `A rectangle has sides ${sh.sw.sides[0]} and ${sh.sw.sides[1]}. There are two of each side, so the perimeter is 2(${sh.sw.sides[0]}) + 2(${sh.sw.sides[1]}) = 4x + 2 + 2x + 8 = ${sh.sw.ans}.`,
     `Check x = ${sh.sw.chk}: the sides are 5 and 6, so 5 + 6 + 5 + 6 = ${A.sum(sh.sw.sides, sh.sw.chk)}, and 6 × ${sh.sw.chk} + 10 = ${A.at('6*x + 10', sh.sw.chk)}. It matches.`,
@@ -112,7 +112,7 @@ function worksheet(answers) {
 
   /* ---- GOLD ---- */
   k.push(tier('GOLD'));
-  k.push(p('Past the lesson: an L-shape, real prices, and working backwards.', { size: 10, italic: true, color: C.soft, after: 60 }));
+  k.push(p('Past the lesson: an L-shape, real prices, and working backwards.', { size: 10, italic: true, color: C.soft, after: 60, keepNext: true }));
   k.push(...box('WORKED EXAMPLE. Read it; do not solve it.', [
     `A regular hexagon has six equal sides, each ${sh.gw.side}. Perimeter = 6(${sh.gw.side}) = ${sh.gw.ans}.`,
     `Check x = ${sh.gw.chk}: each side is 3, so 6 × 3 = 18, and 12 × ${sh.gw.chk} − 6 = ${A.at('12*x - 6', sh.gw.chk)}. It matches.`,
